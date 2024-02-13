@@ -52,5 +52,9 @@ class _LoginPage extends State<LoginPage> {
 
     final userData = await FacebookAuth.instance.getUserData();
     debugPrint(userData['name']);
+
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, "/");
+    }
   }
 }

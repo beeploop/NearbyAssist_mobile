@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/screens/login.dart';
+import 'package:nearby_assist/route_generator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      initialRoute: "/",
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
