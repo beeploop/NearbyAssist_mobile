@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="app_name">NearbyAssist</string>
+    <string name="facebook_app_id">242104548868317</string>
+    <string name="fb_login_protocol_scheme">fb242104548868317</string>
+    <string name="facebook_client_token">0fbe50009b3f3a2a21e97e3722c0da1e</string>
+</resources>
