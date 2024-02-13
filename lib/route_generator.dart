@@ -7,9 +7,9 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
-      case "/":
+      case '/':
         return MaterialPageRoute(builder: (_) => const Homapage());
-      case "/login":
+      case '/login':
         return MaterialPageRoute(builder: (_) => const LoginPage());
       default:
         return _errorRoute();

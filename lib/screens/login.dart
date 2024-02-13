@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/auth_model.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPage();
+  ConsumerState<LoginPage> createState() => _LoginPage();
 }
 
-class _LoginPage extends State<LoginPage> {
+class _LoginPage extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +40,6 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void _handleLogin() async {
-    debugPrint('login');
     final response = await FacebookAuth.instance.login();
 
     if (response.status == LoginStatus.failed) {
@@ -51,10 +53,13 @@ class _LoginPage extends State<LoginPage> {
     }
 
     final userData = await FacebookAuth.instance.getUserData();
-    debugPrint(userData['name']);
+    UserInfo user = UserInfo.fromJson(userData);
+
+    ref.watch(authProvider.notifier).state.setLoggedIn();
+    ref.watch(authProvider.notifier).state.setUserInfo(user);
 
     if (context.mounted) {
-      Navigator.pushReplacementNamed(context, "/");
+      Navigator.pushReplacementNamed(context, '/');
     }
   }
 }
