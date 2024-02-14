@@ -10,6 +10,8 @@ class Homapage extends StatefulWidget {
 }
 
 class _Homepage extends State<Homapage> {
+  final userInfo = getIt.get<AuthModel>().getUser();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +20,7 @@ class _Homepage extends State<Homapage> {
         child: Column(
           children: [
             const Text('main page'),
+            Text(userInfo!.name),
             ElevatedButton(
               onPressed: () {
                 getIt.get<AuthModel>().logout();

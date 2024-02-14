@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/user_info.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -54,8 +55,8 @@ class _LoginPage extends State<LoginPage> {
     }
 
     final userData = await FacebookAuth.instance.getUserData();
-    debugPrint('user name: ${userData['name']}');
+    UserInfo user = UserInfo.fromJson(userData);
 
-    getIt.get<AuthModel>().login();
+    getIt.get<AuthModel>().login(user);
   }
 }
