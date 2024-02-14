@@ -21,7 +21,7 @@ class AppRouter {
           }),
     ],
     redirect: (context, state) {
-      final loginStatus = authProvider.getLoginStatus();
+      final loginStatus = getIt.get<AuthModel>().getLoginStatus();
 
       if (loginStatus == AuthStatus.unauthenticated) {
         return '/login';
@@ -29,5 +29,6 @@ class AppRouter {
 
       return '/';
     },
+    refreshListenable: getIt.get<AuthModel>(),
   );
 }

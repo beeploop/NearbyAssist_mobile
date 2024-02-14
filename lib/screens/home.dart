@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 
 class Homapage extends StatefulWidget {
   const Homapage({super.key});
@@ -19,7 +20,7 @@ class _Homepage extends State<Homapage> {
             const Text('main page'),
             ElevatedButton(
               onPressed: () {
-                context.goNamed('login');
+                getIt.get<AuthModel>().logout();
               },
               child: const Text('Logout'),
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -39,19 +39,23 @@ class _LoginPage extends State<LoginPage> {
   }
 
   void _handleLogin() async {
-    debugPrint('login');
-    authProvider.login();
-    context.goNamed('home');
-    //   if (context.mounted) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       const SnackBar(
-    //         content: Text('Login Failed'),
-    //       ),
-    //     );
-    //   }
-    // }
-    //
-    // final userData = await FacebookAuth.instance.getUserData();
-    // debugPrint(userData['name']);
+    final resp = await FacebookAuth.instance.login();
+
+    if (resp.status == LoginStatus.failed) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login Failed'),
+          ),
+        );
+      }
+
+      return;
+    }
+
+    final userData = await FacebookAuth.instance.getUserData();
+    debugPrint('user name: ${userData['name']}');
+
+    getIt.get<AuthModel>().login();
   }
 }
