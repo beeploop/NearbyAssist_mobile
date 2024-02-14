@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/model/auth_model.dart';
-// import 'package:nearby_assist/route_generator.dart';
 import 'package:nearby_assist/router/app_router.dart';
 
 final authProvider = AuthModel();
@@ -19,8 +18,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter().router,
-      // initialRoute: "/",
-      // onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
