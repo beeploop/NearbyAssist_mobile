@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nearby_assist/models/auth_model.dart';
-import 'package:nearby_assist/route_generator.dart';
+import 'package:nearby_assist/model/auth_model.dart';
+// import 'package:nearby_assist/route_generator.dart';
+import 'package:nearby_assist/router/app_router.dart';
 
-final authProvider = StateProvider<AuthModel>((ref) => AuthModel());
+final authProvider = AuthModel();
 
 void main() {
   runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
+    const MyApp(),
   );
 }
 
@@ -18,10 +16,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      onGenerateRoute: RouteGenerator.generateRoute,
+      routerConfig: AppRouter().router,
+      // initialRoute: "/",
+      // onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

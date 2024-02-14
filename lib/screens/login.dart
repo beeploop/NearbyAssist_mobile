@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/auth_model.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  ConsumerState<LoginPage> createState() => _LoginPage();
+  State<LoginPage> createState() => _LoginPage();
 }
 
-class _LoginPage extends ConsumerState<LoginPage> {
+class _LoginPage extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,26 +39,19 @@ class _LoginPage extends ConsumerState<LoginPage> {
   }
 
   void _handleLogin() async {
-    final response = await FacebookAuth.instance.login();
-
-    if (response.status == LoginStatus.failed) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login Failed'),
-          ),
-        );
-      }
-    }
-
-    final userData = await FacebookAuth.instance.getUserData();
-    UserInfo user = UserInfo.fromJson(userData);
-
-    ref.watch(authProvider.notifier).state.setLoggedIn();
-    ref.watch(authProvider.notifier).state.setUserInfo(user);
-
-    if (context.mounted) {
-      Navigator.pushReplacementNamed(context, '/');
-    }
+    debugPrint('login');
+    authProvider.login();
+    context.goNamed('home');
+    //   if (context.mounted) {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       const SnackBar(
+    //         content: Text('Login Failed'),
+    //       ),
+    //     );
+    //   }
+    // }
+    //
+    // final userData = await FacebookAuth.instance.getUserData();
+    // debugPrint(userData['name']);
   }
 }
