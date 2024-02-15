@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/controller/auth_controller.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 
@@ -23,7 +24,7 @@ class _Homepage extends State<Homapage> {
             Text(userInfo!.name),
             ElevatedButton(
               onPressed: () {
-                getIt.get<AuthModel>().logout();
+                AuthController.logout();
               },
               child: const Text('Logout'),
             ),
