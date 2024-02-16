@@ -12,11 +12,26 @@ class Homapage extends StatefulWidget {
 
 class _Homepage extends State<Homapage> {
   final userInfo = getIt.get<AuthModel>().getUser();
+  List<Map> drawerItems = [
+    {'title': 'search', 'icon': Icons.search},
+    {'title': 'messages', 'icon': Icons.message_outlined},
+    {'title': 'in-progress', 'icon': Icons.av_timer_outlined},
+    {'title': 'history', 'icon': Icons.history},
+    {'title': 'complaints', 'icon': Icons.feedback_outlined},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Main Page')),
+      appBar: AppBar(
+        title: const Text('Main Page'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          children: _drawerItems(),
+        ),
+      ),
       body: Center(
         child: Column(
           children: [
@@ -32,5 +47,29 @@ class _Homepage extends State<Homapage> {
         ),
       ),
     );
+  }
+
+  List<Widget> _drawerItems() {
+    List<Widget> items = [];
+
+    for (var item in drawerItems) {
+      items.add(GestureDetector(
+        onTap: () {
+          debugPrint('clicked $item');
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              Icon(item['icon'] as IconData, size: 20),
+              const SizedBox(width: 10),
+              Text(item['title']),
+            ],
+          ),
+        ),
+      ));
+    }
+
+    return items;
   }
 }
