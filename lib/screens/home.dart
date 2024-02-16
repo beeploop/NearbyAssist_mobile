@@ -24,7 +24,20 @@ class _Homepage extends State<Homapage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Main Page'),
+        actions: [
+          Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Row(
+                children: [
+                  Text(userInfo!.name),
+                  const SizedBox(width: 10),
+                  const CircleAvatar(
+                    radius: 16,
+                    child: Icon(Icons.person),
+                  ),
+                ],
+              ))
+        ],
       ),
       drawer: Drawer(
         child: ListView(
