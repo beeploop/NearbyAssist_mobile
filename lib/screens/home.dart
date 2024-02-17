@@ -40,10 +40,15 @@ class _Homepage extends State<Homapage> {
               ))
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-          children: _drawerItems(),
+      drawer: SafeArea(
+        child: Drawer(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            children: [
+              _drawerHeader(),
+              ..._drawerItems(),
+            ],
+          ),
         ),
       ),
       body: const Center(
@@ -85,5 +90,22 @@ class _Homepage extends State<Homapage> {
     );
 
     return items;
+  }
+
+  Widget _drawerHeader() {
+    return DrawerHeader(
+      child: Column(
+        children: [
+          const CircleAvatar(
+            radius: 30,
+            child: Icon(Icons.person),
+          ),
+          Text(
+            getIt.get<AuthModel>().getUser()!.name,
+            style: const TextStyle(fontSize: 20),
+          )
+        ],
+      ),
+    );
   }
 }
