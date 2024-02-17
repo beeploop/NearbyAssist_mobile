@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/user_info.dart';
@@ -7,9 +8,12 @@ import 'package:nearby_assist/model/user_info.dart';
 enum AuthResult { success, failed }
 
 class AuthController {
-  static void mockLogin() {
+  static void mockLogin(BuildContext context) {
     final user = UserInfo(name: 'Juan Dela Cruz', email: 'user@email.com');
     getIt.get<AuthModel>().login(user);
+    if (context.mounted) {
+      context.goNamed('home');
+    }
   }
 
   static Future<void> login(BuildContext context) async {
@@ -29,10 +33,18 @@ class AuthController {
     UserInfo user = UserInfo.fromJson(userData);
 
     getIt.get<AuthModel>().login(user);
+
+    if (context.mounted) {
+      context.goNamed('home');
+    }
   }
 
-  static logout() async {
+  static logout(BuildContext context) async {
     await FacebookAuth.instance.logOut();
     getIt.get<AuthModel>().logout();
+
+    if (context.mounted) {
+      context.goNamed('login');
+    }
   }
 }
