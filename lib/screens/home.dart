@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/controller/auth_controller.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/widgets/search_service.dart';
 
 class Homapage extends StatefulWidget {
   const Homapage({super.key});
@@ -48,6 +49,7 @@ class _Homepage extends State<Homapage> {
       body: Center(
         child: Column(
           children: [
+            const ServiceSearch(),
             const Text('main page'),
             Text(userInfo!.name),
             ElevatedButton(
