@@ -7,6 +7,11 @@ import 'package:nearby_assist/model/user_info.dart';
 enum AuthResult { success, failed }
 
 class AuthController {
+  static void mockLogin() {
+    final user = UserInfo(name: 'Juan Dela Cruz', email: 'user@email.com');
+    getIt.get<AuthModel>().login(user);
+  }
+
   static Future<void> login(BuildContext context) async {
     final resp = await FacebookAuth.instance.login();
 

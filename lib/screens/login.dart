@@ -32,6 +32,22 @@ class _LoginPage extends State<LoginPage> {
                 style: TextStyle(color: Colors.white),
               ),
             ),
+            ElevatedButton.icon(
+              onPressed: () async {
+                AuthController.mockLogin();
+              },
+              icon: const Icon(
+                Icons.facebook,
+                color: Colors.white,
+              ),
+              style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.blue),
+              ),
+              label: const Text(
+                'Mock Facebook Login',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           ],
         ),
       ),
