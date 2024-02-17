@@ -33,8 +33,6 @@ class _LoginPage extends State<LoginPage> {
   Widget _customButton(String text, Function() controller) {
     return ElevatedButton.icon(
       onPressed: () async {
-        debugPrint(text);
-        // AuthController.mockLogin(context);
         await controller();
       },
       icon: const Icon(
