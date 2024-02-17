@@ -46,18 +46,10 @@ class _Homepage extends State<Homapage> {
           children: _drawerItems(),
         ),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           children: [
-            const ServiceSearch(),
-            const Text('main page'),
-            Text(userInfo!.name),
-            ElevatedButton(
-              onPressed: () {
-                AuthController.logout();
-              },
-              child: const Text('Logout'),
-            ),
+            ServiceSearch(),
           ],
         ),
       ),
@@ -68,22 +60,29 @@ class _Homepage extends State<Homapage> {
     List<Widget> items = [];
 
     for (var item in drawerItems) {
-      items.add(GestureDetector(
+      items.add(ListTile(
         onTap: () {
-          debugPrint('clicked $item');
+          debugPrint('clicked ${item['title']}');
         },
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: Row(
-            children: [
-              Icon(item['icon'] as IconData, size: 20),
-              const SizedBox(width: 10),
-              Text(item['title']),
-            ],
-          ),
-        ),
+        title: Text(item['title']),
+        leading: Icon(item['icon'] as IconData, size: 20),
       ));
     }
+
+    items.add(const Divider());
+    items.add(
+      ListTile(
+        onTap: () {
+          debugPrint('logout');
+          AuthController.logout();
+        },
+        leading: const Icon(Icons.logout_outlined, color: Colors.red),
+        title: const Text(
+          'Logout',
+          style: TextStyle(color: Colors.red),
+        ),
+      ),
+    );
 
     return items;
   }
