@@ -42,9 +42,9 @@ class _LoginPage extends State<LoginPage> {
       style: const ButtonStyle(
         backgroundColor: MaterialStatePropertyAll(Colors.blue),
       ),
-      label: const Text(
-        'Mock Facebook Login',
-        style: TextStyle(color: Colors.white),
+      label: Text(
+        text,
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }
