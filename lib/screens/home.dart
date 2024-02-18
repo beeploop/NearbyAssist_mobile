@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
-import 'package:nearby_assist/widgets/search_service.dart';
+import 'package:nearby_assist/widgets/search_bar.dart';
 
 class Homapage extends StatefulWidget {
   const Homapage({super.key});
@@ -37,7 +37,7 @@ class _Homepage extends State<Homapage> {
       body: const Center(
         child: Column(
           children: [
-            ServiceSearch(),
+            ServiceSearchBar(),
           ],
         ),
       ),

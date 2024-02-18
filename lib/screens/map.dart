@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/widgets/search_bar.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -12,8 +13,11 @@ class _MapPage extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: const Center(
-        child: Text('map view'),
+      body: const Column(
+        children: [
+          ServiceSearchBar(),
+          Text('Map view'),
+        ],
       ),
     );
   }

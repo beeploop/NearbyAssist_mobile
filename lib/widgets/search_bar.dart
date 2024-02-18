@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/search_service.dart';
 
-class ServiceSearch extends StatefulWidget {
-  const ServiceSearch({super.key});
+class ServiceSearchBar extends StatefulWidget {
+  const ServiceSearchBar({super.key});
 
   @override
-  State<ServiceSearch> createState() => _ServiceSearch();
+  State<ServiceSearchBar> createState() => _ServiceSearchBar();
 }
 
-class _ServiceSearch extends State<ServiceSearch> {
+class _ServiceSearchBar extends State<ServiceSearchBar> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    _searchController.text = getIt.get<SearchingService>().lastSearch();
+
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -26,20 +29,14 @@ class _ServiceSearch extends State<ServiceSearch> {
             ElevatedButton(
               onPressed: () {
                 FocusManager.instance.primaryFocus?.unfocus();
-                _handleSearch();
+                getIt.get<SearchingService>().searchService(
+                      context,
+                      _searchController.text,
+                    );
               },
               child: const Text('search'),
             ),
           ],
         ));
-  }
-
-  void _handleSearch() {
-    if (_searchController.text.isEmpty) {
-      return;
-    }
-
-    debugPrint(_searchController.value.text);
-    context.goNamed('map');
   }
 }
