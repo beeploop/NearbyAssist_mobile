@@ -45,7 +45,9 @@ class _Conversations extends State<Conversations> {
             : const Text('No messages'),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          context.goNamed('new-message');
+        },
         icon: const Icon(Icons.add),
         label: const Text('New Message'),
       ),
