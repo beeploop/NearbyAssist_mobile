@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/widgets/avatar.dart';
-import 'package:nearby_assist/widgets/search_bar.dart';
+import 'package:nearby_assist/widgets/map.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -20,10 +20,9 @@ class _MapPage extends State<MapPage> {
       appBar: AppBar(
         actions: [Avatar(user: userInfo!.name)],
       ),
-      body: const Column(
+      body: const Stack(
         children: [
-          ServiceSearchBar(),
-          Text('Map view'),
+          CustomMap(),
         ],
       ),
     );
