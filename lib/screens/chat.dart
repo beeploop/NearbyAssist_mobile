@@ -55,12 +55,17 @@ class _Chat extends State<Chat> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: _messageController,
-                        maxLines: 2,
-                        keyboardType: TextInputType.multiline,
-                        decoration:
-                            const InputDecoration(hintText: 'Write message'),
+                      child: Form(
+                        child: TextFormField(
+                          onTapOutside: (_) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          controller: _messageController,
+                          maxLines: 2,
+                          keyboardType: TextInputType.multiline,
+                          decoration:
+                              const InputDecoration(hintText: 'Write message'),
+                        ),
                       ),
                     ),
                     TextButton(
