@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/widgets/avatar.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/search_bar.dart';
 
@@ -18,20 +19,7 @@ class _Homepage extends State<Homapage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Row(
-                children: [
-                  Text(userInfo!.name),
-                  const SizedBox(width: 10),
-                  const CircleAvatar(
-                    radius: 16,
-                    child: Icon(Icons.person),
-                  ),
-                ],
-              ))
-        ],
+        actions: [Avatar(user: userInfo!.name)],
       ),
       drawer: const CustomDrawer(),
       body: const Center(
