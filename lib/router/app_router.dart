@@ -1,12 +1,13 @@
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/screens/chat.dart';
 import 'package:nearby_assist/screens/complaints.dart';
 import 'package:nearby_assist/screens/history.dart';
 import 'package:nearby_assist/screens/home.dart';
 import 'package:nearby_assist/screens/in_progress.dart';
 import 'package:nearby_assist/screens/login.dart';
-import 'package:nearby_assist/screens/messages.dart';
+import 'package:nearby_assist/screens/conversations.dart';
 
 class AppRouter {
   final router = GoRouter(
@@ -21,8 +22,17 @@ class AppRouter {
           path: '/messages',
           name: 'messages',
           builder: (context, state) {
-            return const Messages();
-          }),
+            return const Conversations();
+          },
+          routes: [
+            GoRoute(
+                path: ':userId',
+                name: 'chat',
+                builder: (context, state) {
+                  final userId = state.pathParameters['userId']!;
+                  return Chat(userId: userId);
+                }),
+          ]),
       GoRoute(
           path: '/in-progress',
           name: 'in-progress',
