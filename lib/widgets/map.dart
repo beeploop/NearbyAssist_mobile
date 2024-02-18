@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/location_service.dart';
 
 class CustomMap extends StatefulWidget {
   const CustomMap({super.key});
@@ -10,11 +11,13 @@ class CustomMap extends StatefulWidget {
 }
 
 class _CustomMap extends State<CustomMap> {
+  final currentLocation = getIt.get<LocationService>().getLocation();
+
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      options: const MapOptions(
-        initialCenter: LatLng(7.422365, 125.825984),
+      options: MapOptions(
+        initialCenter: currentLocation,
         initialZoom: 18.0,
       ),
       children: [
@@ -22,11 +25,11 @@ class _CustomMap extends State<CustomMap> {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.example.app',
         ),
-        const MarkerLayer(
+        MarkerLayer(
           markers: [
             Marker(
-                point: LatLng(7.422365, 125.825984),
-                child: Icon(
+                point: currentLocation,
+                child: const Icon(
                   Icons.pin_drop,
                   color: Colors.red,
                 )),
@@ -35,7 +38,7 @@ class _CustomMap extends State<CustomMap> {
         CircleLayer(
           circles: [
             CircleMarker(
-              point: const LatLng(7.422365, 125.825984),
+              point: currentLocation,
               radius: 200,
               color: Colors.blue.withOpacity(0.5),
               useRadiusInMeter: true,
