@@ -32,6 +32,16 @@ class _CustomMap extends State<CustomMap> {
                 )),
           ],
         ),
+        CircleLayer(
+          circles: [
+            CircleMarker(
+              point: const LatLng(7.422365, 125.825984),
+              radius: 200,
+              color: Colors.blue.withOpacity(0.5),
+              useRadiusInMeter: true,
+            )
+          ],
+        )
       ],
     );
   }
