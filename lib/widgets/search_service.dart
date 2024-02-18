@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ServiceSearch extends StatefulWidget {
   const ServiceSearch({super.key});
@@ -39,5 +40,6 @@ class _ServiceSearch extends State<ServiceSearch> {
     }
 
     debugPrint(_searchController.value.text);
+    context.goNamed('map');
   }
 }

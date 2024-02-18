@@ -8,6 +8,7 @@ import 'package:nearby_assist/screens/home.dart';
 import 'package:nearby_assist/screens/in_progress.dart';
 import 'package:nearby_assist/screens/login.dart';
 import 'package:nearby_assist/screens/conversations.dart';
+import 'package:nearby_assist/screens/map.dart';
 import 'package:nearby_assist/screens/new_message.dart';
 
 class AppRouter {
@@ -18,7 +19,15 @@ class AppRouter {
           name: 'home',
           builder: (context, state) {
             return const Homapage();
-          }),
+          },
+          routes: [
+            GoRoute(
+                path: 'map',
+                name: 'map',
+                builder: (context, state) {
+                  return const MapPage();
+                }),
+          ]),
       GoRoute(
           path: '/messages',
           name: 'messages',
