@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/location_service.dart';
 
@@ -22,7 +23,7 @@ class _CustomMap extends State<CustomMap> {
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          urlTemplate: tileMapProvider,
           userAgentPackageName: 'com.example.app',
         ),
         MarkerLayer(

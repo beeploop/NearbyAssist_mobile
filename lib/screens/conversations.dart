@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
-import 'package:nearby_assist/model/message.dart';
 
 class Conversations extends StatefulWidget {
   const Conversations({super.key});
@@ -11,11 +11,7 @@ class Conversations extends StatefulWidget {
 }
 
 class _Conversations extends State<Conversations> {
-  List<Message> contacts = [
-    Message(name: 'Firstname Lastname', userId: '1235'),
-    Message(name: 'Firstname Lastname', userId: '1236'),
-    Message(name: 'Firstname Lastname', userId: '1237'),
-  ];
+  final contacts = mockConversations;
 
   @override
   Widget build(BuildContext context) {

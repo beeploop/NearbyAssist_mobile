@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/user_info.dart';
@@ -9,8 +10,7 @@ enum AuthResult { success, failed }
 
 class AuthService {
   static void mockLogin(BuildContext context) {
-    final user = UserInfo(name: 'Juan Dela Cruz', email: 'user@email.com');
-    getIt.get<AuthModel>().login(user);
+    getIt.get<AuthModel>().login(mockUser);
     if (context.mounted) {
       context.goNamed('home');
     }

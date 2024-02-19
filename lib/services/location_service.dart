@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:nearby_assist/config/constants.dart';
 
 class LocationService extends ChangeNotifier {
   Location location = Location();
-  LatLng _currentLocation = const LatLng(7.422365, 125.825984);
+  LatLng _currentLocation = defaultLocation;
 
   LatLng getLocation() {
     return _currentLocation;
