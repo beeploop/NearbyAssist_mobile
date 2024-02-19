@@ -13,18 +13,35 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawer extends State<CustomDrawer> {
   List<Map> drawerItems = [
-    {'title': 'search', 'dist': 'home', 'icon': Icons.search},
-    {'title': 'messages', 'dist': 'messages', 'icon': Icons.message_outlined},
+    {
+      'title': 'search',
+      'dist': 'home',
+      'icon': Icons.search,
+    },
+    {
+      'title': 'messages',
+      'dist': 'messages',
+      'icon': Icons.message_outlined,
+    },
     {
       'title': 'in-progress',
       'dist': 'in-progress',
-      'icon': Icons.av_timer_outlined
+      'icon': Icons.av_timer_outlined,
     },
-    {'title': 'history', 'dist': 'history', 'icon': Icons.history},
+    {
+      'title': 'history',
+      'dist': 'history',
+      'icon': Icons.history,
+    },
     {
       'title': 'complaints',
       'dist': 'complaints',
-      'icon': Icons.feedback_outlined
+      'icon': Icons.feedback_outlined,
+    },
+    {
+      'title': 'offer a service',
+      'dist': 'my-services',
+      'icon': Icons.hardware_outlined,
     },
   ];
 
@@ -64,7 +81,7 @@ class _CustomDrawer extends State<CustomDrawer> {
           debugPrint('logout');
           AuthController.logout(context);
         },
-        leading: const Icon(Icons.logout_outlined, color: Colors.red),
+        leading: const Icon(Icons.logout_outlined, size: 20, color: Colors.red),
         title: const Text(
           'Logout',
           style: TextStyle(color: Colors.red),
