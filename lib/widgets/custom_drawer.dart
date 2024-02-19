@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/controller/auth_controller.dart';
+import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 
@@ -79,7 +79,7 @@ class _CustomDrawer extends State<CustomDrawer> {
       ListTile(
         onTap: () {
           debugPrint('logout');
-          AuthController.logout(context);
+          AuthService.logout(context);
         },
         leading: const Icon(Icons.logout_outlined, size: 20, color: Colors.red),
         title: const Text(

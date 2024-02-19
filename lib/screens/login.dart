@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/controller/auth_controller.dart';
+import 'package:nearby_assist/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,11 +18,11 @@ class _LoginPage extends State<LoginPage> {
           children: [
             _customButton(
               'Login with Facebook',
-              () => AuthController.login(context),
+              () => AuthService.login(context),
             ),
             _customButton(
               'Mock Login',
-              () => AuthController.mockLogin(context),
+              () => AuthService.mockLogin(context),
             ),
           ],
         ),

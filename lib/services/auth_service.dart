@@ -7,7 +7,7 @@ import 'package:nearby_assist/model/user_info.dart';
 
 enum AuthResult { success, failed }
 
-class AuthController {
+class AuthService {
   static void mockLogin(BuildContext context) {
     final user = UserInfo(name: 'Juan Dela Cruz', email: 'user@email.com');
     getIt.get<AuthModel>().login(user);
