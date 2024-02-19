@@ -17,24 +17,33 @@ class _ServiceSearchBar extends State<ServiceSearchBar> {
     _searchController.text = getIt.get<SearchingService>().lastSearch();
 
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
+        color: Colors.white.withOpacity(0.8),
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+        child: Row(
           children: [
-            Form(
-              child: TextFormField(
-                controller: _searchController,
-                decoration: const InputDecoration(hintText: 'search service'),
+            Expanded(
+              child: Form(
+                child: TextFormField(
+                  onTapOutside: (_) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                  controller: _searchController,
+                  decoration: const InputDecoration(hintText: 'search service'),
+                ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                FocusManager.instance.primaryFocus?.unfocus();
-                getIt.get<SearchingService>().searchService(
-                      context,
-                      _searchController.text,
-                    );
-              },
-              child: const Text('search'),
+            SizedBox(
+              width: 50,
+              child: IconButton(
+                onPressed: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  getIt.get<SearchingService>().searchService(
+                        context,
+                        _searchController.text,
+                      );
+                },
+                icon: const Icon(Icons.search),
+              ),
             ),
           ],
         ));

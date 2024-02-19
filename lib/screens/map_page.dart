@@ -3,6 +3,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/widgets/avatar.dart';
 import 'package:nearby_assist/widgets/map.dart';
+import 'package:nearby_assist/widgets/search_bar.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -23,6 +24,10 @@ class _MapPage extends State<MapPage> {
       body: const Stack(
         children: [
           CustomMap(),
+          Align(
+            alignment: Alignment.topLeft,
+            child: ServiceSearchBar(),
+          ),
         ],
       ),
     );
