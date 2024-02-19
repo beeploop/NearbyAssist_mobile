@@ -12,7 +12,12 @@ class AuthModel extends ChangeNotifier {
   }
 
   void login(UserInfo user) {
-    _userInfo = UserInfo(name: user.name, email: user.email);
+    _userInfo = UserInfo(
+      name: user.name,
+      email: user.email,
+      imageUrl: user.imageUrl,
+    );
+
     _isLoggedIn = AuthStatus.authenticated;
     notifyListeners();
   }
