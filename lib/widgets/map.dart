@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/services/search_service.dart';
 
 class CustomMap extends StatefulWidget {
   const CustomMap({super.key});
@@ -13,6 +15,7 @@ class CustomMap extends StatefulWidget {
 
 class _CustomMap extends State<CustomMap> {
   final currentLocation = getIt.get<LocationService>().getLocation();
+  final serviceLocations = getIt.get<SearchingService>().getServiceLocations();
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,7 @@ class _CustomMap extends State<CustomMap> {
                   Icons.pin_drop,
                   color: Colors.red,
                 )),
+            ..._markerBuilder(),
           ],
         ),
         CircleLayer(
@@ -48,5 +52,23 @@ class _CustomMap extends State<CustomMap> {
         )
       ],
     );
+  }
+
+  List<Marker> _markerBuilder() {
+    List<Marker> markers = [];
+
+    for (var service in serviceLocations) {
+      markers.add(
+        Marker(
+          point: LatLng(service.location.latitude, service.location.longitude),
+          child: const Icon(
+            Icons.pin_drop,
+            color: Colors.red,
+          ),
+        ),
+      );
+    }
+
+    return markers;
   }
 }

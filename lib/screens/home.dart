@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/widgets/avatar.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/search_bar.dart';
@@ -22,10 +23,27 @@ class _Homepage extends State<Homapage> {
         actions: [Avatar(user: userInfo!.name)],
       ),
       drawer: const CustomDrawer(),
-      body: const Center(
+      body: Center(
         child: Column(
           children: [
-            ServiceSearchBar(),
+            const ServiceSearchBar(),
+            Expanded(
+              child: Center(
+                child: ListenableBuilder(
+                  listenable: getIt.get<SearchingService>(),
+                  builder: (context, child) {
+                    final isSearching =
+                        getIt.get<SearchingService>().isSearching();
+
+                    if (isSearching) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    return const Text('suggested services');
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       ),
