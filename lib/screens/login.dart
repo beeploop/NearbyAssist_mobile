@@ -17,11 +17,11 @@ class _LoginPage extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _customButton(
-              'Login with Facebook',
+              'Login with features',
               () => AuthService.login(context),
             ),
             _customButton(
-              'Mock Login',
+              'Login without features',
               () => AuthService.mockLogin(context),
             ),
           ],
