@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/router/app_router.dart';
+import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
 GetIt getIt = GetIt.instance;
 
 void main() {
+  getIt.registerSingleton<FeatureFlagService>(FeatureFlagService());
   getIt.registerSingleton<AuthModel>(AuthModel());
   getIt.registerSingleton<SearchingService>(SearchingService());
   getIt.registerSingleton<LocationService>(LocationService());

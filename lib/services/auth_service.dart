@@ -8,12 +8,14 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/user_info.dart';
 import 'package:http/http.dart' as http;
+import 'package:nearby_assist/services/feature_flag_service.dart';
 
 enum AuthResult { success, failed }
 
 class AuthService {
   static void mockLogin(BuildContext context) async {
     getIt.get<AuthModel>().login(mockUser);
+    getIt.get<FeatureFlagService>().backendConnection = false;
 
     if (context.mounted) {
       context.goNamed('home');
@@ -37,6 +39,7 @@ class AuthService {
     UserInfo user = UserInfo.fromJson(userData);
 
     getIt.get<AuthModel>().login(user);
+    getIt.get<FeatureFlagService>().backendConnection = true;
 
     await _registerUser(user);
 

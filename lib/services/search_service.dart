@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_model.dart';
+import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -34,7 +35,9 @@ class SearchingService extends ChangeNotifier {
 
     await getIt.get<LocationService>().getCurrentLocation();
 
-    await _fetchServices();
+    if (getIt.get<FeatureFlagService>().backendConnection) {
+      await _fetchServices();
+    }
 
     _toggleSearching(false);
 
