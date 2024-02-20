@@ -14,8 +14,8 @@ enum AuthResult { success, failed }
 
 class AuthService {
   static void mockLogin(BuildContext context) async {
-    getIt.get<AuthModel>().login(mockUser);
     getIt.get<FeatureFlagService>().backendConnection = false;
+    getIt.get<AuthModel>().login(mockUser);
 
     if (context.mounted) {
       context.goNamed('home');
@@ -23,9 +23,22 @@ class AuthService {
   }
 
   static Future<void> login(BuildContext context) async {
-    final resp = await FacebookAuth.instance.login();
+    getIt.get<FeatureFlagService>().backendConnection = true;
 
-    if (resp.status == LoginStatus.failed) {
+    try {
+      final resp = await FacebookAuth.instance.login();
+
+      if (resp.status == LoginStatus.failed) {
+        throw Exception('Facebook login failed');
+      }
+
+      final userData = await FacebookAuth.instance.getUserData();
+      UserInfo user = UserInfo.fromJson(userData);
+
+      getIt.get<AuthModel>().login(user);
+
+      await _registerUser(user);
+    } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -35,25 +48,27 @@ class AuthService {
       }
     }
 
-    final userData = await FacebookAuth.instance.getUserData();
-    UserInfo user = UserInfo.fromJson(userData);
-
-    getIt.get<AuthModel>().login(user);
-    getIt.get<FeatureFlagService>().backendConnection = true;
-
-    await _registerUser(user);
-
     if (context.mounted) {
       context.goNamed('home');
     }
   }
 
   static logout(BuildContext context) async {
-    await FacebookAuth.instance.logOut();
-    getIt.get<AuthModel>().logout();
+    try {
+      await FacebookAuth.instance.logOut();
+      getIt.get<AuthModel>().logout();
 
-    if (context.mounted) {
-      context.goNamed('login');
+      if (context.mounted) {
+        context.goNamed('login');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Cannot logout at the moment'),
+          ),
+        );
+      }
     }
   }
 
