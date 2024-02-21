@@ -14,6 +14,7 @@ class CustomMap extends StatefulWidget {
 }
 
 class _CustomMap extends State<CustomMap> {
+  final radius = getIt.get<SearchingService>().getRadius();
   final currentLocation = getIt.get<LocationService>().getLocation();
   final serviceLocations = getIt.get<SearchingService>().getServiceLocations();
 
@@ -44,7 +45,7 @@ class _CustomMap extends State<CustomMap> {
           circles: [
             CircleMarker(
               point: currentLocation,
-              radius: 200,
+              radius: radius,
               color: Colors.blue.withOpacity(0.5),
               useRadiusInMeter: true,
             )

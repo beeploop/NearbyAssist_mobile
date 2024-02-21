@@ -13,6 +13,7 @@ class SearchingService extends ChangeNotifier {
   bool _searching = false;
   List<Service> _serviceLocations = [];
   String _searchTerm = '';
+  double _radius = 200;
 
   void _toggleSearching(bool val) {
     _searching = val;
@@ -20,6 +21,13 @@ class SearchingService extends ChangeNotifier {
   }
 
   bool isSearching() => _searching;
+
+  double getRadius() => _radius;
+
+  void setRadius(double val) {
+    _radius = val;
+    notifyListeners();
+  }
 
   Future<void> searchService(BuildContext context, String search) async {
     if (search.isEmpty) return;
@@ -55,7 +63,7 @@ class SearchingService extends ChangeNotifier {
     try {
       final resp = await http.get(
         Uri.parse(
-            '$backendServer/v1/locations/vicinity?lat=${location.latitude}&long=${location.longitude}'),
+            '$backendServer/v1/locations/vicinity?lat=${location.latitude}&long=${location.longitude}&radius=$_radius'),
       );
 
       if (resp.statusCode != 200) {
@@ -63,6 +71,7 @@ class SearchingService extends ChangeNotifier {
             'request responded with status code: ${resp.statusCode}');
       }
 
+      _serviceLocations.clear();
       List services = jsonDecode(resp.body);
       for (var service in services) {
         final s = Service.fromJson(service);
