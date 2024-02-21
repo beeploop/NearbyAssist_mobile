@@ -22,7 +22,7 @@ class _CustomMap extends State<CustomMap> {
     return FlutterMap(
       options: MapOptions(
         initialCenter: currentLocation,
-        initialZoom: 18.0,
+        initialZoom: 17.0,
       ),
       children: [
         TileLayer(
@@ -60,10 +60,10 @@ class _CustomMap extends State<CustomMap> {
     for (var service in serviceLocations) {
       markers.add(
         Marker(
-          point: LatLng(service.location.latitude, service.location.longitude),
+          point: LatLng(service.latitude, service.longitude),
           child: const Icon(
             Icons.pin_drop,
-            color: Colors.red,
+            color: Colors.teal,
           ),
         ),
       );

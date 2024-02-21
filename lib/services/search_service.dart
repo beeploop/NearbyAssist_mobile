@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -51,7 +52,6 @@ class SearchingService extends ChangeNotifier {
   Future<void> _fetchServices() async {
     final location = getIt.get<LocationService>().getLocation();
 
-    // TODO: fetch services from the server
     try {
       final resp = await http.get(
         Uri.parse(
@@ -63,13 +63,15 @@ class SearchingService extends ChangeNotifier {
             'request responded with status code: ${resp.statusCode}');
       }
 
-      debugPrint('service locations: \n${resp.body}');
+      List services = jsonDecode(resp.body);
+      for (var service in services) {
+        final s = Service.fromJson(service);
+        _serviceLocations.add(s);
+      }
     } catch (e) {
       debugPrint('$e');
       _serviceLocations = [];
     }
-
-    // TODO: update serviceLocations
 
     notifyListeners();
   }
