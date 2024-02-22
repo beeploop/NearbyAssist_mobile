@@ -11,7 +11,7 @@ import 'package:nearby_assist/screens/conversations.dart';
 import 'package:nearby_assist/screens/map_page.dart';
 import 'package:nearby_assist/screens/my_services.dart';
 import 'package:nearby_assist/screens/new_message.dart';
-import 'package:nearby_assist/screens/service_vendor.dart';
+import 'package:nearby_assist/screens/vendor.dart';
 
 class AppRouter {
   final router = GoRouter(
@@ -35,7 +35,7 @@ class AppRouter {
                   name: 'vendor',
                   builder: (context, state) {
                     final vendorId = state.pathParameters['vendor']!;
-                    return ServiceVendor(vendorId: vendorId);
+                    return Vendor(vendorId: vendorId);
                   }),
             ],
           ),
