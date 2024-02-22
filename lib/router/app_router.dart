@@ -11,24 +11,36 @@ import 'package:nearby_assist/screens/conversations.dart';
 import 'package:nearby_assist/screens/map_page.dart';
 import 'package:nearby_assist/screens/my_services.dart';
 import 'package:nearby_assist/screens/new_message.dart';
+import 'package:nearby_assist/screens/service_vendor.dart';
 
 class AppRouter {
   final router = GoRouter(
     routes: [
       GoRoute(
-          path: '/',
-          name: 'home',
-          builder: (context, state) {
-            return const Homapage();
-          },
-          routes: [
-            GoRoute(
-                path: 'map',
-                name: 'map',
-                builder: (context, state) {
-                  return const MapPage();
-                }),
-          ]),
+        path: '/',
+        name: 'home',
+        builder: (context, state) {
+          return const Homapage();
+        },
+        routes: [
+          GoRoute(
+            path: 'map',
+            name: 'map',
+            builder: (context, state) {
+              return const MapPage();
+            },
+            routes: [
+              GoRoute(
+                  path: ':vendor',
+                  name: 'vendor',
+                  builder: (context, state) {
+                    final vendorId = state.pathParameters['vendor']!;
+                    return ServiceVendor(vendorId: vendorId);
+                  }),
+            ],
+          ),
+        ],
+      ),
       GoRoute(
           path: '/messages',
           name: 'messages',

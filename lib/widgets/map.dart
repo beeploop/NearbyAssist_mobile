@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
@@ -62,9 +63,14 @@ class _CustomMap extends State<CustomMap> {
       markers.add(
         Marker(
           point: LatLng(service.latitude, service.longitude),
-          child: const Icon(
-            Icons.pin_drop,
-            color: Colors.teal,
+          child: GestureDetector(
+            onTap: () {
+              context.goNamed(
+                'vendor',
+                pathParameters: {'vendor': '${service.ownerId}'},
+              );
+            },
+            child: const Icon(Icons.pin_drop),
           ),
         ),
       );
