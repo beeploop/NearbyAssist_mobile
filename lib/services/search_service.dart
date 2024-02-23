@@ -63,7 +63,7 @@ class SearchingService extends ChangeNotifier {
     try {
       final resp = await http.get(
         Uri.parse(
-            '$backendServer/v1/locations/vicinity?lat=${location.latitude}&long=${location.longitude}&radius=$_radius'),
+            '$backendServer/v1/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius'),
       );
 
       if (resp.statusCode != 200) {
