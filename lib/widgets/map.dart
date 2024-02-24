@@ -15,7 +15,6 @@ class CustomMap extends StatefulWidget {
 }
 
 class _CustomMap extends State<CustomMap> {
-  // final radius = getIt.get<SearchingService>().getRadius();
   final currentLocation = getIt.get<LocationService>().getLocation();
   final serviceLocations = getIt.get<SearchingService>().getServiceLocations();
 
