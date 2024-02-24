@@ -25,7 +25,11 @@ class SearchingService extends ChangeNotifier {
   double getRadius() => _radius;
 
   void setRadius(double val) {
-    _radius = val;
+    if (val <= 100) {
+      _radius = 100;
+    } else {
+      _radius = val;
+    }
     notifyListeners();
   }
 

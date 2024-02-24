@@ -15,7 +15,7 @@ class CustomMap extends StatefulWidget {
 }
 
 class _CustomMap extends State<CustomMap> {
-  final radius = getIt.get<SearchingService>().getRadius();
+  // final radius = getIt.get<SearchingService>().getRadius();
   final currentLocation = getIt.get<LocationService>().getLocation();
   final serviceLocations = getIt.get<SearchingService>().getServiceLocations();
 
@@ -42,16 +42,23 @@ class _CustomMap extends State<CustomMap> {
             ..._markerBuilder(),
           ],
         ),
-        CircleLayer(
-          circles: [
-            CircleMarker(
-              point: currentLocation,
-              radius: radius,
-              color: Colors.blue.withOpacity(0.5),
-              useRadiusInMeter: true,
-            )
-          ],
-        )
+        ListenableBuilder(
+          listenable: getIt.get<SearchingService>(),
+          builder: (context, child) {
+            final radius = getIt.get<SearchingService>().getRadius();
+
+            return CircleLayer(
+              circles: [
+                CircleMarker(
+                  point: currentLocation,
+                  radius: radius,
+                  color: Colors.blue.withOpacity(0.5),
+                  useRadiusInMeter: true,
+                )
+              ],
+            );
+          },
+        ),
       ],
     );
   }
