@@ -16,12 +16,6 @@ class _Chat extends State<Chat> {
   final ScrollController _scrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-    getIt.get<MessageService>().fetchMessages(widget.userId);
-  }
-
-  @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -39,22 +33,27 @@ class _Chat extends State<Chat> {
       body: Column(
         children: [
           Expanded(
-            child: ListenableBuilder(
-              listenable: getIt.get<MessageService>(),
-              builder: (context, child) {
+            child: FutureBuilder(
+              future: getIt.get<MessageService>().fetchMessages(1),
+              builder: (context, snapshot) {
                 final messages = getIt.get<MessageService>().getMessages();
 
-                return ListView.builder(
-                  padding: const EdgeInsets.all(6),
-                  controller: _scrollController,
-                  shrinkWrap: true,
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.all(6),
-                      padding: const EdgeInsets.all(10),
-                      color: Colors.lightGreen,
-                      child: Text(messages[index].content),
+                return ListenableBuilder(
+                  listenable: getIt.get<MessageService>(),
+                  builder: (context, child) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(6),
+                      controller: _scrollController,
+                      shrinkWrap: true,
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(10),
+                          color: Colors.lightGreen,
+                          child: Text(messages[index].content),
+                        );
+                      },
                     );
                   },
                 );
