@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/message_service.dart';
+import 'package:nearby_assist/widgets/chat_input.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key, required this.userId});
@@ -10,7 +13,6 @@ class Chat extends StatefulWidget {
 }
 
 class _Chat extends State<Chat> {
-  final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -31,54 +33,30 @@ class _Chat extends State<Chat> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(6),
-              controller: _scrollController,
-              shrinkWrap: true,
-              itemCount: 20,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.all(6),
-                  padding: const EdgeInsets.all(10),
-                  color: Colors.lightGreen,
-                  child: const Text('message'),
+            child: ListenableBuilder(
+              listenable: getIt.get<MessageService>(),
+              builder: (context, child) {
+                final messages = getIt.get<MessageService>().getMessages();
+                debugPrint('messages len: ${messages.length}');
+
+                return ListView.builder(
+                  padding: const EdgeInsets.all(6),
+                  controller: _scrollController,
+                  shrinkWrap: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(10),
+                      color: Colors.lightGreen,
+                      child: Text(messages[index].content),
+                    );
+                  },
                 );
               },
             ),
           ),
-          SizedBox(
-            height: 60,
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Form(
-                        child: TextFormField(
-                          onTapOutside: (_) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                          controller: _messageController,
-                          maxLines: 2,
-                          keyboardType: TextInputType.multiline,
-                          decoration:
-                              const InputDecoration(hintText: 'Write message'),
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        _scrollToBottom();
-                      },
-                      child: const Icon(Icons.send),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+          ChatInput(scrollToBottom: _scrollToBottom),
         ],
       ),
     );

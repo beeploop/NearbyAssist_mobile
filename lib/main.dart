@@ -4,6 +4,7 @@ import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/router/app_router.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
@@ -15,6 +16,7 @@ void main() {
   getIt.registerSingleton<SearchingService>(SearchingService());
   getIt.registerSingleton<LocationService>(LocationService());
   getIt.registerSingleton<VendorService>(VendorService());
+  getIt.registerSingleton<MessageService>(MessageService());
 
   runApp(
     const MyApp(),

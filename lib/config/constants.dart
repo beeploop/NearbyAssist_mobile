@@ -1,5 +1,5 @@
 import 'package:latlong2/latlong.dart';
-import 'package:nearby_assist/model/message.dart';
+import 'package:nearby_assist/model/conversation.dart';
 import 'package:nearby_assist/model/user_info.dart';
 
 const defaultLocation = LatLng(7.422365, 125.825984);
@@ -13,8 +13,8 @@ final mockUser = UserInfo(
   imageUrl: 'https://dummyimage.com/300',
 );
 
-final List<Message> mockConversations = [
-  Message(name: 'Firstname Lastname', userId: '1235'),
-  Message(name: 'Firstname Lastname', userId: '1236'),
-  Message(name: 'Firstname Lastname', userId: '1237'),
+final List<Conversation> mockConversations = [
+  Conversation(name: 'Firstname Lastname', userId: '1235'),
+  Conversation(name: 'Firstname Lastname', userId: '1236'),
+  Conversation(name: 'Firstname Lastname', userId: '1237'),
 ];

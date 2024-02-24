@@ -1,6 +1,11 @@
 class Message {
-  String name;
-  String userId;
+  int fromId;
+  int toId;
+  String content;
 
-  Message({required this.name, required this.userId});
+  Message({
+    required this.fromId,
+    required this.toId,
+    required this.content,
+  });
 }
