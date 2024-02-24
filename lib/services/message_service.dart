@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/message.dart';
 
 class MessageService extends ChangeNotifier {
@@ -6,12 +8,17 @@ class MessageService extends ChangeNotifier {
 
   List<Message> getMessages() => _messages;
 
-  void newMessage(String text) {
+  Future<void> newMessage(String text, int toId) async {
     if (text.isEmpty) return;
 
+    final userId = getIt.get<AuthModel>().getUserId();
+    if (userId == null) {
+      return;
+    }
+
     final message = Message(
-      fromId: 1,
-      toId: 1,
+      fromId: userId,
+      toId: toId,
       content: text,
     );
 

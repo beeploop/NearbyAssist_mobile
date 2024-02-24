@@ -6,7 +6,7 @@ import 'package:nearby_assist/widgets/chat_input.dart';
 class Chat extends StatefulWidget {
   const Chat({super.key, required this.userId});
 
-  final String userId;
+  final int userId;
 
   @override
   State<Chat> createState() => _Chat();
@@ -56,7 +56,7 @@ class _Chat extends State<Chat> {
               },
             ),
           ),
-          ChatInput(scrollToBottom: _scrollToBottom),
+          ChatInput(scrollToBottom: _scrollToBottom, toId: widget.userId),
         ],
       ),
     );

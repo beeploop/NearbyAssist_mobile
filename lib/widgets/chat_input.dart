@@ -3,9 +3,14 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/message_service.dart';
 
 class ChatInput extends StatefulWidget {
-  const ChatInput({super.key, required this.scrollToBottom});
+  const ChatInput({
+    super.key,
+    required this.scrollToBottom,
+    required this.toId,
+  });
 
   final Function scrollToBottom;
+  final int toId;
 
   @override
   State<ChatInput> createState() => _ChatInput();
@@ -55,7 +60,7 @@ class _ChatInput extends State<ChatInput> {
                 onPressed: () {
                   getIt
                       .get<MessageService>()
-                      .newMessage(_messageController.text);
+                      .newMessage(_messageController.text, widget.toId);
                   _messageController.clear();
                   widget.scrollToBottom();
                 },

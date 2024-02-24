@@ -6,6 +6,7 @@ enum AuthStatus { unauthenticated, authenticated }
 class AuthModel extends ChangeNotifier {
   AuthStatus _isLoggedIn = AuthStatus.unauthenticated;
   UserInfo? _userInfo;
+  int? _userId;
 
   AuthStatus getLoginStatus() {
     return _isLoggedIn;
@@ -17,6 +18,8 @@ class AuthModel extends ChangeNotifier {
       email: user.email,
       imageUrl: user.imageUrl,
     );
+
+    _userId = 1;
 
     _isLoggedIn = AuthStatus.authenticated;
     notifyListeners();
@@ -31,4 +34,6 @@ class AuthModel extends ChangeNotifier {
   UserInfo? getUser() {
     return _userInfo;
   }
+
+  int? getUserId() => _userId;
 }
