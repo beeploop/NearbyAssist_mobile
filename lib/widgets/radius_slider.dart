@@ -13,6 +13,7 @@ class _RadiusSlider extends State<RadiusSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(0),
       color: Colors.white.withOpacity(0.8),
       child: Slider(
         value: getIt.get<SearchingService>().getRadius(),

@@ -18,7 +18,7 @@ class _ServiceSearchBar extends State<ServiceSearchBar> {
 
     return Container(
         color: Colors.white.withOpacity(0.8),
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           children: [
             Expanded(
