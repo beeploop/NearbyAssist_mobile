@@ -66,7 +66,6 @@ class _CustomDrawer extends State<CustomDrawer> {
     for (var item in drawerItems) {
       items.add(ListTile(
         onTap: () {
-          debugPrint('clicked ${item['title']}');
           context.goNamed(item['dist']);
         },
         title: Text(item['title']),
@@ -78,7 +77,6 @@ class _CustomDrawer extends State<CustomDrawer> {
     items.add(
       ListTile(
         onTap: () {
-          debugPrint('logout');
           AuthService.logout(context);
         },
         leading: const Icon(Icons.logout_outlined, size: 20, color: Colors.red),

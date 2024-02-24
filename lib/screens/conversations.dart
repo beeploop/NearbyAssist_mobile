@@ -25,7 +25,6 @@ class _Conversations extends State<Conversations> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      debugPrint('clicked ${contacts[index].name}');
                       context.goNamed(
                         'chat',
                         pathParameters: {'userId': contacts[index].userId},

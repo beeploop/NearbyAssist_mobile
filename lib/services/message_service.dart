@@ -6,6 +6,10 @@ import 'package:nearby_assist/model/message.dart';
 class MessageService extends ChangeNotifier {
   final List<Message> _messages = [];
 
+  Future<void> fetchMessages(int recipientId) async {
+    debugPrint('fetching messages from server');
+  }
+
   List<Message> getMessages() => _messages;
 
   Future<void> newMessage(String text, int toId) async {

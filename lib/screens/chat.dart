@@ -16,6 +16,12 @@ class _Chat extends State<Chat> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+    getIt.get<MessageService>().fetchMessages(widget.userId);
+  }
+
+  @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -37,7 +43,6 @@ class _Chat extends State<Chat> {
               listenable: getIt.get<MessageService>(),
               builder: (context, child) {
                 final messages = getIt.get<MessageService>().getMessages();
-                debugPrint('messages len: ${messages.length}');
 
                 return ListView.builder(
                   padding: const EdgeInsets.all(6),
