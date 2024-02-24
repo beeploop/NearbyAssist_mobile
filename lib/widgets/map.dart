@@ -31,16 +31,21 @@ class _CustomMap extends State<CustomMap> {
           urlTemplate: tileMapProvider,
           userAgentPackageName: 'com.example.app',
         ),
-        MarkerLayer(
-          markers: [
-            Marker(
-                point: currentLocation,
-                child: const Icon(
-                  Icons.pin_drop,
-                  color: Colors.red,
-                )),
-            ..._markerBuilder(),
-          ],
+        ListenableBuilder(
+          listenable: getIt.get<SearchingService>(),
+          builder: (context, child) {
+            return MarkerLayer(
+              markers: [
+                Marker(
+                    point: currentLocation,
+                    child: const Icon(
+                      Icons.pin_drop,
+                      color: Colors.red,
+                    )),
+                ..._markerBuilder(),
+              ],
+            );
+          },
         ),
         ListenableBuilder(
           listenable: getIt.get<SearchingService>(),
