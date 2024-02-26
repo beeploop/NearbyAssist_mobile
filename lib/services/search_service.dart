@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_model.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:http/http.dart' as http;
@@ -63,11 +63,12 @@ class SearchingService extends ChangeNotifier {
 
   Future<void> _fetchServices() async {
     final location = getIt.get<LocationService>().getLocation();
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
 
     try {
       final resp = await http.get(
         Uri.parse(
-            '$backendServer/v1/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius'),
+            '$serverAddr/v1/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius'),
       );
 
       if (resp.statusCode != 200) {

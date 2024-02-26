@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/message.dart';
@@ -39,10 +38,12 @@ class MessageService extends ChangeNotifier {
 
   Future<void> fetchMessages(int recipientId) async {
     final userId = getIt.get<AuthModel>().getUserId();
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
+
     try {
       final resp = await http.get(
         Uri.parse(
-          '$backendServer/v1/messages/conversations?from=$userId&to=$recipientId',
+          '$serverAddr/v1/messages/conversations?from=$userId&to=$recipientId',
         ),
       );
 

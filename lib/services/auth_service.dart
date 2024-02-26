@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/user_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:nearby_assist/services/feature_flag_service.dart';
@@ -73,9 +74,11 @@ class AuthService {
   }
 
   static Future<void> _registerUser(UserInfo user) async {
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
+
     try {
       final resp = await http.post(
-        Uri.parse('$backendServer/v1/register'),
+        Uri.parse('$serverAddr/v1/register'),
         headers: {
           'Content-Type': 'application/json',
         },

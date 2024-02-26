@@ -34,7 +34,7 @@ class _Chat extends State<Chat> {
         children: [
           Expanded(
             child: FutureBuilder(
-              future: getIt.get<MessageService>().fetchMessages(1),
+              future: getIt.get<MessageService>().fetchMessages(widget.userId),
               builder: (context, snapshot) {
                 final messages = getIt.get<MessageService>().getMessages();
 
