@@ -43,6 +43,11 @@ class _CustomDrawer extends State<CustomDrawer> {
       'dist': 'my-services',
       'icon': Icons.hardware_outlined,
     },
+    {
+      'title': 'settings',
+      'dist': 'settings',
+      'icon': Icons.settings_outlined,
+    },
   ];
 
   @override

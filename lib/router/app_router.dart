@@ -11,6 +11,7 @@ import 'package:nearby_assist/screens/conversations.dart';
 import 'package:nearby_assist/screens/map_page.dart';
 import 'package:nearby_assist/screens/my_services.dart';
 import 'package:nearby_assist/screens/new_message.dart';
+import 'package:nearby_assist/screens/settings.dart';
 import 'package:nearby_assist/screens/vendor.dart';
 
 class AppRouter {
@@ -85,6 +86,12 @@ class AppRouter {
           name: 'my-services',
           builder: (context, state) {
             return const MyServices();
+          }),
+      GoRoute(
+          path: '/settings',
+          name: 'settings',
+          builder: (context, state) {
+            return const Settings();
           }),
       GoRoute(
           path: '/login',

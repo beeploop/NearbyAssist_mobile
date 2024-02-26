@@ -6,6 +6,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:http/http.dart' as http;
+import 'package:nearby_assist/model/settings_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageService extends ChangeNotifier {
@@ -13,9 +14,11 @@ class MessageService extends ChangeNotifier {
   WebSocketChannel? _channel;
 
   void connectWebsocket() {
+    final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
+
     try {
       _channel = WebSocketChannel.connect(
-        Uri.parse('ws://192.168.186.87:8080/v1/messages/chat'),
+        Uri.parse('$websocketAddr/v1/messages/chat'),
       );
 
       if (_channel != null) {
