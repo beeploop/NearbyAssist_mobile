@@ -6,16 +6,33 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageService extends ChangeNotifier {
   final List<Message> _messages = [];
+  WebSocketChannel? _channel;
+
+  void connectWebsocket() {
+    try {
+      _channel = WebSocketChannel.connect(
+        Uri.parse('ws://192.168.186.87:8080/v1/messages/chat'),
+      );
+
+      if (_channel != null) {
+        debugPrint('Connected to websocket channel');
+      }
+    } catch (e) {
+      debugPrint('Error connecting to websocket: $e');
+    }
+  }
 
   Future<void> fetchMessages(int recipientId) async {
     final userId = getIt.get<AuthModel>().getUserId();
     try {
       final resp = await http.get(
         Uri.parse(
-            '$backendServer/v1/messages/conversations?from=$userId&to=$recipientId'),
+          '$backendServer/v1/messages/conversations?from=$userId&to=$recipientId',
+        ),
       );
 
       _messages.clear();
@@ -49,7 +66,14 @@ class MessageService extends ChangeNotifier {
       content: text,
     );
 
+    if (_channel == null) {
+      debugPrint('Cannot send message because _channel is not connected');
+      return;
+    }
+
+    _channel!.sink.add(jsonEncode(message));
     _messages.add(message);
+
     notifyListeners();
   }
 }
