@@ -13,6 +13,14 @@ class MessageService extends ChangeNotifier {
   final List<Message> _messages = [];
   WebSocketChannel? _channel;
 
+  bool isWebsocketConnected() {
+    if (_channel == null) {
+      return false;
+    }
+
+    return true;
+  }
+
   void connectWebsocket() {
     final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
 

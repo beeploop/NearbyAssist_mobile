@@ -18,7 +18,9 @@ class _Conversations extends State<Conversations> {
   @override
   void initState() {
     super.initState();
-    getIt.get<MessageService>().connectWebsocket();
+    if (getIt.get<MessageService>().isWebsocketConnected() == false) {
+      getIt.get<MessageService>().connectWebsocket();
+    }
   }
 
   @override
