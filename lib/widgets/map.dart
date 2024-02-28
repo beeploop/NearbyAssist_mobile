@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/service_model.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
@@ -16,7 +17,6 @@ class CustomMap extends StatefulWidget {
 
 class _CustomMap extends State<CustomMap> {
   final currentLocation = getIt.get<LocationService>().getLocation();
-  final serviceLocations = getIt.get<SearchingService>().getServiceLocations();
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +33,9 @@ class _CustomMap extends State<CustomMap> {
         ListenableBuilder(
           listenable: getIt.get<SearchingService>(),
           builder: (context, child) {
+            final serviceLocations =
+                getIt.get<SearchingService>().getServiceLocations();
+
             return MarkerLayer(
               markers: [
                 Marker(
@@ -41,7 +44,7 @@ class _CustomMap extends State<CustomMap> {
                       Icons.pin_drop,
                       color: Colors.red,
                     )),
-                ..._markerBuilder(),
+                ..._markerBuilder(serviceLocations),
               ],
             );
           },
@@ -67,7 +70,7 @@ class _CustomMap extends State<CustomMap> {
     );
   }
 
-  List<Marker> _markerBuilder() {
+  List<Marker> _markerBuilder(List<Service> serviceLocations) {
     List<Marker> markers = [];
 
     for (var service in serviceLocations) {

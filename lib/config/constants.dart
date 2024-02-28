@@ -20,19 +20,25 @@ final List<Conversation> mockConversations = [
 
 final mockLocations = [
   Service(
-    address: 'Hugo Bistro',
+    title: 'Hugo Bistro',
+    description: 'pizza house',
+    rate: 200,
     latitude: 7.424373,
     longitude: 125.829315,
     ownerId: 1,
   ),
   Service(
-    address: '11:11 Cafe',
+    title: '11:11 Cafe',
+    description: 'cafe',
+    rate: 100,
     latitude: 7.422427,
     longitude: 125.824767,
     ownerId: 1,
   ),
   Service(
-    address: 'Cyan\'s Frozen foods',
+    title: 'Cyan\'s Frozen foods',
+    description: 'frozen foods',
+    rate: 300,
     latitude: 7.419195,
     longitude: 125.824142,
     ownerId: 1,

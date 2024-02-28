@@ -1,11 +1,15 @@
 class Service {
-  String address;
+  String title;
+  String description;
+  int rate;
   double latitude;
   double longitude;
   int ownerId;
 
   Service({
-    required this.address,
+    required this.title,
+    required this.description,
+    required this.rate,
     required this.latitude,
     required this.longitude,
     required this.ownerId,
@@ -13,16 +17,20 @@ class Service {
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
-      address: json['Address'],
+      title: json['Title'],
+      description: json['Description'],
+      rate: json['Rate'],
       latitude: json['Latitude'] as double,
       longitude: json['Longitude'] as double,
-      ownerId: json['OwnerId'],
+      ownerId: json['Vendor'] as int,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'address': address,
+      'title': title,
+      'description': description,
+      'rate': rate,
       'latitude': latitude,
       'longitude': longitude,
       'ownerId': ownerId,

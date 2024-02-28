@@ -25,7 +25,12 @@ class _RadiusSlider extends State<RadiusSlider> {
             getIt.get<SearchingService>().setRadius(val);
           });
         },
+        onChangeEnd: (_) {
+          getIt.get<SearchingService>().updateSearch(context);
+        },
       ),
     );
   }
+
+  void handleRadiusChange(double val) {}
 }

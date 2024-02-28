@@ -34,6 +34,27 @@ class SearchingService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateSearch(BuildContext context) async {
+    // Get the user's location if not yet gotten
+    final hasLocationPermission =
+        await getIt.get<LocationService>().checkPermissions(context);
+    if (hasLocationPermission == false) {
+      return;
+    }
+
+    _toggleSearching(true);
+
+    await getIt.get<LocationService>().getCurrentLocation();
+
+    if (getIt.get<FeatureFlagService>().backendConnection) {
+      await _fetchServices();
+    } else {
+      _serviceLocations = mockLocations;
+    }
+
+    _toggleSearching(false);
+  }
+
   Future<void> searchService(BuildContext context, String search) async {
     if (search.isEmpty) return;
     _searchTerm = search;
