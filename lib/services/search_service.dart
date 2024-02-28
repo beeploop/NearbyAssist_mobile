@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
@@ -50,6 +51,8 @@ class SearchingService extends ChangeNotifier {
 
     if (getIt.get<FeatureFlagService>().backendConnection) {
       await _fetchServices();
+    } else {
+      _serviceLocations = mockLocations;
     }
 
     _toggleSearching(false);
