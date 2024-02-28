@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/message.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/widgets/chat_input.dart';
 
@@ -14,6 +15,15 @@ class Chat extends StatefulWidget {
 
 class _Chat extends State<Chat> {
   final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (getIt.get<MessageService>().isWebsocketConnected() == false) {
+      getIt.get<MessageService>().connectWebsocket();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,25 +43,40 @@ class _Chat extends State<Chat> {
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder(
-              future: getIt.get<MessageService>().fetchMessages(widget.userId),
+            child: StreamBuilder(
+              stream: getIt
+                  .get<MessageService>()
+                  .stream()
+                  .map((event) => Message.fromJson(event)),
               builder: (context, snapshot) {
-                final messages = getIt.get<MessageService>().getMessages();
+                if (snapshot.hasData) {
+                  final message = snapshot.data!;
+                  getIt.get<MessageService>().addMessage(message);
+                }
 
-                return ListenableBuilder(
-                  listenable: getIt.get<MessageService>(),
-                  builder: (context, child) {
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(6),
-                      controller: _scrollController,
-                      shrinkWrap: true,
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.all(6),
-                          padding: const EdgeInsets.all(10),
-                          color: Colors.lightGreen,
-                          child: Text(messages[index].content),
+                return FutureBuilder(
+                  future:
+                      getIt.get<MessageService>().fetchMessages(widget.userId),
+                  builder: (context, _) {
+                    return ListenableBuilder(
+                      listenable: getIt.get<MessageService>(),
+                      builder: (context, _) {
+                        final messages =
+                            getIt.get<MessageService>().getMessages();
+
+                        return ListView.builder(
+                          padding: const EdgeInsets.all(6),
+                          controller: _scrollController,
+                          shrinkWrap: true,
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.all(6),
+                              padding: const EdgeInsets.all(10),
+                              color: Colors.lightGreen,
+                              child: Text(messages[index].content),
+                            );
+                          },
                         );
                       },
                     );
@@ -72,5 +97,11 @@ class _Chat extends State<Chat> {
       duration: const Duration(milliseconds: 500),
       curve: Curves.fastOutSlowIn,
     );
+  }
+
+  @override
+  void dispose() {
+    getIt.get<MessageService>().closeWebsocket();
+    super.dispose();
   }
 }

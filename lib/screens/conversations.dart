@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class Conversations extends StatefulWidget {
@@ -14,14 +12,6 @@ class Conversations extends StatefulWidget {
 
 class _Conversations extends State<Conversations> {
   final contacts = mockConversations;
-
-  @override
-  void initState() {
-    super.initState();
-    if (getIt.get<MessageService>().isWebsocketConnected() == false) {
-      getIt.get<MessageService>().connectWebsocket();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

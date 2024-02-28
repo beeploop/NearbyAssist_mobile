@@ -22,10 +22,11 @@ class MessageService extends ChangeNotifier {
 
   void connectWebsocket() {
     final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
+    final userId = getIt.get<AuthModel>().getUserId();
 
     try {
       _channel = WebSocketChannel.connect(
-        Uri.parse('$websocketAddr/v1/messages/chat'),
+        Uri.parse('$websocketAddr/v1/messages/chat?userId=$userId'),
       );
 
       if (_channel != null) {
@@ -33,6 +34,13 @@ class MessageService extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error connecting to websocket: $e');
+    }
+  }
+
+  void closeWebsocket() {
+    if (_channel != null) {
+      _channel!.sink.close(1000);
+      _channel = null;
     }
   }
 
@@ -84,8 +92,14 @@ class MessageService extends ChangeNotifier {
     }
 
     _channel!.sink.add(jsonEncode(message));
-    _messages.add(message);
+  }
 
+  void addMessage(Message message) {
+    _messages.add(message);
     notifyListeners();
+  }
+
+  Stream<dynamic> stream() {
+    return _channel!.stream;
   }
 }

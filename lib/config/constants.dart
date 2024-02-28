@@ -13,6 +13,6 @@ final mockUser = UserInfo(
 
 final List<Conversation> mockConversations = [
   Conversation(name: 'Firstname Lastname', userId: '1'),
-  Conversation(name: 'Firstname Lastname', userId: '1236'),
+  Conversation(name: 'Firstname Lastname', userId: '2'),
   Conversation(name: 'Firstname Lastname', userId: '1237'),
 ];
