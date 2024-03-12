@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/vendor_header.dart';
 import 'package:nearby_assist/widgets/vendor_photos.dart';
@@ -14,6 +15,15 @@ class Vendor extends StatefulWidget {
 }
 
 class _Vendor extends State<Vendor> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (getIt.get<FeatureFlagService>().backendConnection) {
+      getIt.get<VendorService>().getVendor(widget.vendorId);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +75,6 @@ class _Vendor extends State<Vendor> {
                             ),
                             LinearProgressIndicator(
                               value: 3,
-                              minHeight: 10,
                               color: Colors.green,
                               borderRadius: BorderRadius.circular(3),
                             ),
