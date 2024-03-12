@@ -44,6 +44,7 @@ dependencies:
   http: ^1.2.0
   web_socket_channel: ^2.4.4
   flutter_rating_bar: ^4.0.1
+  insta_image_viewer: ^1.0.2
 
 dev_dependencies:
   flutter_test:
