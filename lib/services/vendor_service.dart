@@ -1,13 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:nearby_assist/model/vendor_model.dart';
 
 class VendorService extends ChangeNotifier {
   bool _loading = false;
-  String _vendor = '';
+  VendorModel? _vendor;
 
   bool isLoading() => _loading;
 
@@ -16,10 +17,9 @@ class VendorService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _fetchVendor(String id) async {
+  Future<void> fetchVendor(String id) async {
     _toggleLoading(true);
 
-    _vendor = 'test vendor data';
     final server = getIt.get<SettingsModel>().getServerAddr();
     try {
       final resp = await http.get(Uri.parse('$server/v1/vendors/$id'));
@@ -30,17 +30,42 @@ class VendorService extends ChangeNotifier {
         );
       }
 
-      debugPrint('response: ${resp.body}');
+      final response = jsonDecode(resp.body);
+      VendorModel vendor = VendorModel.fromJson(response);
+      final reviewCountString = vendor.reviewCount.toString();
+      final reviewCountMap = parseReviewCount(reviewCountString);
+      vendor.reviewCountMap = reviewCountMap;
+
+      _vendor = vendor;
     } catch (e) {
-      debugPrint('$e');
+      debugPrint('error fetching vendor data: $e');
+      _vendor = null;
     }
 
     _toggleLoading(false);
     notifyListeners();
   }
 
-  Future<String> getVendor(String vendorId) async {
-    await _fetchVendor(vendorId);
+  VendorModel? getVendor() {
     return _vendor;
+  }
+
+  Map<int, int> parseReviewCount(String reviewCount) {
+    reviewCount = reviewCount.replaceAll('{', '').replaceAll('}', '');
+
+    final reviewCountMap = <int, int>{};
+    final reviewCountList = reviewCount.split(',');
+
+    for (String pair in reviewCountList) {
+      pair.trim();
+      List<String> valuePair = pair.split(':');
+
+      int key = int.parse(valuePair[0].trim());
+      int value = int.parse(valuePair[1].trim());
+
+      reviewCountMap[key] = value;
+    }
+
+    return reviewCountMap;
   }
 }

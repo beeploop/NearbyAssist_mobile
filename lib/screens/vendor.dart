@@ -21,7 +21,7 @@ class _Vendor extends State<Vendor> {
     super.initState();
 
     if (getIt.get<FeatureFlagService>().backendConnection) {
-      getIt.get<VendorService>().getVendor(widget.vendorId);
+      getIt.get<VendorService>().fetchVendor(widget.vendorId);
     }
   }
 

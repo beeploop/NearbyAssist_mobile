@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/vendor_service.dart';
 
 class VendorHeader extends StatefulWidget {
   const VendorHeader({super.key, required this.vendorId});
@@ -12,6 +14,8 @@ class VendorHeader extends StatefulWidget {
 }
 
 class _VendorHeader extends State<VendorHeader> {
+  final vendorData = getIt.get<VendorService>().getVendor();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -32,9 +36,9 @@ class _VendorHeader extends State<VendorHeader> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Firstname Lastname'),
+                  Text(vendorData!.name),
                   RatingBar.builder(
-                    initialRating: 3,
+                    initialRating: vendorData!.rating,
                     allowHalfRating: true,
                     itemSize: 20,
                     itemBuilder: (context, _) => const Icon(
@@ -42,7 +46,7 @@ class _VendorHeader extends State<VendorHeader> {
                       color: Colors.yellow,
                     ),
                     onRatingUpdate: (_) {
-                      debugPrint('rating updated');
+                      debugPrint('rating update not allowed');
                     },
                     ignoreGestures: true,
                   ),
