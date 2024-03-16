@@ -7,9 +7,9 @@ import 'package:nearby_assist/widgets/vendor_header.dart';
 import 'package:nearby_assist/widgets/vendor_photos.dart';
 
 class Vendor extends StatefulWidget {
-  const Vendor({super.key, required this.vendorId});
+  const Vendor({super.key, required this.serviceId});
 
-  final String vendorId;
+  final String serviceId;
 
   @override
   State<Vendor> createState() => _Vendor();
@@ -21,7 +21,7 @@ class _Vendor extends State<Vendor> {
     super.initState();
 
     if (getIt.get<FeatureFlagService>().backendConnection) {
-      getIt.get<VendorService>().fetchVendor(widget.vendorId);
+      getIt.get<VendorService>().fetchServiceInfo(widget.serviceId);
     }
   }
 
@@ -37,6 +37,7 @@ class _Vendor extends State<Vendor> {
               listenable: getIt.get<VendorService>(),
               builder: (context, child) {
                 final isVisible = !getIt.get<VendorService>().isLoading();
+                final serviceData = getIt.get<VendorService>().getServiceInfo();
 
                 return Visibility(
                   replacement: const CircularProgressIndicator(),
@@ -46,8 +47,12 @@ class _Vendor extends State<Vendor> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        VendorHeader(vendorId: widget.vendorId),
-                        VendorPhotos(vendorId: widget.vendorId),
+                        VendorHeader(
+                          vendorId: serviceData != null ? serviceData.id : 1,
+                        ),
+                        VendorPhotos(
+                          vendorId: serviceData != null ? serviceData.id : 1,
+                        ),
                         const SizedBox(height: 20),
                         const Wrap(
                           children: [

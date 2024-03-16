@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/service_detail_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:nearby_assist/model/vendor_model.dart';
@@ -9,6 +10,7 @@ import 'package:nearby_assist/model/vendor_model.dart';
 class VendorService extends ChangeNotifier {
   bool _loading = false;
   VendorModel? _vendor;
+  ServiceDetailModel? _serviceInfo;
 
   bool isLoading() => _loading;
 
@@ -17,12 +19,12 @@ class VendorService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchVendor(String id) async {
+  Future<void> fetchServiceInfo(String id) async {
     _toggleLoading(true);
 
     final server = getIt.get<SettingsModel>().getServerAddr();
     try {
-      final resp = await http.get(Uri.parse('$server/v1/vendors/$id'));
+      final resp = await http.get(Uri.parse('$server/v1/services/$id'));
 
       if (resp.statusCode != 200) {
         throw HttpException(
@@ -31,15 +33,15 @@ class VendorService extends ChangeNotifier {
       }
 
       final response = jsonDecode(resp.body);
-      VendorModel vendor = VendorModel.fromJson(response);
-      final reviewCountString = vendor.reviewCount.toString();
+      ServiceDetailModel serviceInfo = ServiceDetailModel.fromJson(response);
+      final reviewCountString = serviceInfo.reviewCountMap.toString();
       final reviewCountMap = parseReviewCount(reviewCountString);
-      vendor.reviewCountMap = reviewCountMap;
+      serviceInfo.reviewCountMap = reviewCountMap;
 
-      _vendor = vendor;
+      _serviceInfo = serviceInfo;
     } catch (e) {
       debugPrint('error fetching vendor data: $e');
-      _vendor = null;
+      _serviceInfo = null;
     }
 
     _toggleLoading(false);
@@ -48,6 +50,10 @@ class VendorService extends ChangeNotifier {
 
   VendorModel? getVendor() {
     return _vendor;
+  }
+
+  ServiceDetailModel? getServiceInfo() {
+    return _serviceInfo;
   }
 
   Map<int, int> parseReviewCount(String reviewCount) {

@@ -4,7 +4,7 @@ import 'package:insta_image_viewer/insta_image_viewer.dart';
 class VendorPhotos extends StatefulWidget {
   const VendorPhotos({super.key, required this.vendorId});
 
-  final String vendorId;
+  final int vendorId;
 
   @override
   State<VendorPhotos> createState() => _VendorPhotos();

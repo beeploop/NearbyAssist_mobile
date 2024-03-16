@@ -1,4 +1,5 @@
 class Service {
+  int id;
   String title;
   String description;
   int rate;
@@ -7,6 +8,7 @@ class Service {
   int ownerId;
 
   Service({
+    required this.id,
     required this.title,
     required this.description,
     required this.rate,
@@ -17,6 +19,7 @@ class Service {
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
+      id: json['Id'],
       title: json['Title'],
       description: json['Description'],
       rate: json['Rate'],
@@ -28,6 +31,7 @@ class Service {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'title': title,
       'description': description,
       'rate': rate,

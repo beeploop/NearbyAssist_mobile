@@ -35,8 +35,8 @@ class AppRouter {
                   path: ':vendor',
                   name: 'vendor',
                   builder: (context, state) {
-                    final vendorId = state.pathParameters['vendor']!;
-                    return Vendor(vendorId: vendorId);
+                    final serviceId = state.pathParameters['vendor']!;
+                    return Vendor(serviceId: serviceId);
                   }),
             ],
           ),

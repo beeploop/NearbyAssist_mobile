@@ -20,6 +20,7 @@ final List<Conversation> mockConversations = [
 
 final mockLocations = [
   Service(
+    id: 1,
     title: 'Hugo Bistro',
     description: 'pizza house',
     rate: 200,
@@ -28,6 +29,7 @@ final mockLocations = [
     ownerId: 1,
   ),
   Service(
+    id: 2,
     title: '11:11 Cafe',
     description: 'cafe',
     rate: 100,
@@ -36,6 +38,7 @@ final mockLocations = [
     ownerId: 1,
   ),
   Service(
+    id: 3,
     title: 'Cyan\'s Frozen foods',
     description: 'frozen foods',
     rate: 300,

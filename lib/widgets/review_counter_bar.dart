@@ -10,7 +10,7 @@ class ReviewCounterBar extends StatefulWidget {
 }
 
 class _ReviewCounterBar extends State<ReviewCounterBar> {
-  final vendorData = getIt.get<VendorService>().getVendor();
+  final serviceData = getIt.get<VendorService>().getServiceInfo();
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,8 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('5')),
             Expanded(
               child: LinearProgressIndicator(
-                value: vendorData != null
-                    ? computeEquivalence(vendorData!.reviewCountMap[5]!)
+                value: serviceData != null
+                    ? computeEquivalence(serviceData!.reviewCountMap[5]!)
                     : 0,
                 minHeight: 8,
               ),
@@ -34,8 +34,8 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('4')),
             Expanded(
               child: LinearProgressIndicator(
-                value: vendorData != null
-                    ? computeEquivalence(vendorData!.reviewCountMap[4]!)
+                value: serviceData != null
+                    ? computeEquivalence(serviceData!.reviewCountMap[4]!)
                     : 0,
                 minHeight: 8,
               ),
@@ -47,8 +47,8 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('3')),
             Expanded(
               child: LinearProgressIndicator(
-                value: vendorData != null
-                    ? computeEquivalence(vendorData!.reviewCountMap[3]!)
+                value: serviceData != null
+                    ? computeEquivalence(serviceData!.reviewCountMap[3]!)
                     : 0,
                 minHeight: 8,
               ),
@@ -60,8 +60,8 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('2')),
             Expanded(
               child: LinearProgressIndicator(
-                value: vendorData != null
-                    ? computeEquivalence(vendorData!.reviewCountMap[2]!)
+                value: serviceData != null
+                    ? computeEquivalence(serviceData!.reviewCountMap[2]!)
                     : 0,
                 minHeight: 8,
               ),
@@ -73,8 +73,8 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('1')),
             Expanded(
               child: LinearProgressIndicator(
-                value: vendorData != null
-                    ? computeEquivalence(vendorData!.reviewCountMap[1]!)
+                value: serviceData != null
+                    ? computeEquivalence(serviceData!.reviewCountMap[1]!)
                     : 0,
                 minHeight: 8,
               ),

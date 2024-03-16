@@ -7,14 +7,14 @@ import 'package:nearby_assist/services/vendor_service.dart';
 class VendorHeader extends StatefulWidget {
   const VendorHeader({super.key, required this.vendorId});
 
-  final String vendorId;
+  final int vendorId;
 
   @override
   State<VendorHeader> createState() => _VendorHeader();
 }
 
 class _VendorHeader extends State<VendorHeader> {
-  final vendorData = getIt.get<VendorService>().getVendor();
+  final serviceData = getIt.get<VendorService>().getServiceInfo();
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +37,17 @@ class _VendorHeader extends State<VendorHeader> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    vendorData != null ? vendorData!.name : 'Vendor Name',
+                    serviceData != null
+                        ? serviceData!.vendorName
+                        : 'Vendor Name',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
                   ),
                   RatingBar.builder(
-                    initialRating: vendorData != null ? vendorData!.rating : 0,
+                    initialRating:
+                        serviceData != null ? serviceData!.rating : 0,
                     allowHalfRating: true,
                     itemSize: 20,
                     itemBuilder: (context, _) => const Icon(
@@ -57,8 +60,8 @@ class _VendorHeader extends State<VendorHeader> {
                     ignoreGestures: true,
                   ),
                   Text(
-                    vendorData != null
-                        ? '${vendorData!.reviewCount} reviews'
+                    serviceData != null
+                        ? '${totalReviews(serviceData!.reviewCountMap)} reviews'
                         : '0 reviews',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -70,7 +73,7 @@ class _VendorHeader extends State<VendorHeader> {
             onPressed: () {
               context.pushNamed(
                 'chat',
-                pathParameters: {'userId': widget.vendorId},
+                pathParameters: {'userId': '${widget.vendorId}'},
               );
             },
             icon: const Icon(
@@ -82,5 +85,13 @@ class _VendorHeader extends State<VendorHeader> {
         ],
       ),
     );
+  }
+
+  int totalReviews(Map<int, int> reviewCountMap) {
+    int total = 0;
+    for (var count in reviewCountMap.values) {
+      total += count;
+    }
+    return total;
   }
 }
