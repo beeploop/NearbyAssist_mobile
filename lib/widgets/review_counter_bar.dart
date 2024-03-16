@@ -21,7 +21,9 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('5')),
             Expanded(
               child: LinearProgressIndicator(
-                value: computeEquivalence(vendorData!.reviewCountMap[5]!),
+                value: vendorData != null
+                    ? computeEquivalence(vendorData!.reviewCountMap[5]!)
+                    : 0,
                 minHeight: 8,
               ),
             )
@@ -32,7 +34,9 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('4')),
             Expanded(
               child: LinearProgressIndicator(
-                value: computeEquivalence(vendorData!.reviewCountMap[4]!),
+                value: vendorData != null
+                    ? computeEquivalence(vendorData!.reviewCountMap[4]!)
+                    : 0,
                 minHeight: 8,
               ),
             )
@@ -43,7 +47,9 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('3')),
             Expanded(
               child: LinearProgressIndicator(
-                value: computeEquivalence(vendorData!.reviewCountMap[3]!),
+                value: vendorData != null
+                    ? computeEquivalence(vendorData!.reviewCountMap[3]!)
+                    : 0,
                 minHeight: 8,
               ),
             )
@@ -54,7 +60,9 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('2')),
             Expanded(
               child: LinearProgressIndicator(
-                value: computeEquivalence(vendorData!.reviewCountMap[2]!),
+                value: vendorData != null
+                    ? computeEquivalence(vendorData!.reviewCountMap[2]!)
+                    : 0,
                 minHeight: 8,
               ),
             )
@@ -65,7 +73,9 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('1')),
             Expanded(
               child: LinearProgressIndicator(
-                value: computeEquivalence(vendorData!.reviewCountMap[1]!),
+                value: vendorData != null
+                    ? computeEquivalence(vendorData!.reviewCountMap[1]!)
+                    : 0,
                 minHeight: 8,
               ),
             )

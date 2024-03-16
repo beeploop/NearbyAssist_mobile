@@ -36,9 +36,15 @@ class _VendorHeader extends State<VendorHeader> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(vendorData!.name),
+                  Text(
+                    vendorData != null ? vendorData!.name : 'Vendor Name',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
                   RatingBar.builder(
-                    initialRating: vendorData!.rating,
+                    initialRating: vendorData != null ? vendorData!.rating : 0,
                     allowHalfRating: true,
                     itemSize: 20,
                     itemBuilder: (context, _) => const Icon(
@@ -51,7 +57,9 @@ class _VendorHeader extends State<VendorHeader> {
                     ignoreGestures: true,
                   ),
                   Text(
-                    vendorData!.role,
+                    vendorData != null
+                        ? '${vendorData!.reviewCount} reviews'
+                        : '0 reviews',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
