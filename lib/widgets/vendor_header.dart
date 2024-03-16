@@ -50,9 +50,9 @@ class _VendorHeader extends State<VendorHeader> {
                     },
                     ignoreGestures: true,
                   ),
-                  const Text(
-                    'Plumber, Electrician',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    vendorData!.role,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
