@@ -26,11 +26,20 @@ class _VendorHeader extends State<VendorHeader> {
         children: [
           Wrap(
             children: [
-              Image.asset(
-                'assets/images/avatar.png',
+              Image.network(
+                serviceData != null
+                    ? serviceData!.vendorImage
+                    : 'https://via.placeholder.com/150',
                 width: 60,
                 height: 60,
-                fit: BoxFit.fill,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
               const SizedBox(width: 20),
               Column(
