@@ -63,8 +63,9 @@ class _VendorHeader extends State<VendorHeader> {
                     ),
                   ),
                   RatingBar.builder(
-                    initialRating:
-                        serviceData != null ? serviceData!.rating : 0,
+                    initialRating: serviceData != null
+                        ? double.parse(serviceData!.rating)
+                        : 0,
                     allowHalfRating: true,
                     itemSize: 20,
                     itemBuilder: (context, _) => const Icon(

@@ -8,7 +8,7 @@ class ServiceDetailModel {
   String vendorName;
   String vendorImage;
   String serviceRate;
-  double rating;
+  String rating;
   String vendorRole;
   List<ServicePhoto> photos;
   dynamic reviewCountMap;
