@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_detail_model.dart';
-import 'package:nearby_assist/model/service_photos.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:nearby_assist/model/vendor_model.dart';
