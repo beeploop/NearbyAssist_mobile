@@ -51,7 +51,7 @@ class _Vendor extends State<Vendor> {
                           vendorId: serviceData != null ? serviceData.id : 1,
                         ),
                         VendorPhotos(
-                          vendorId: serviceData != null ? serviceData.id : 1,
+                          photos: serviceData != null ? serviceData.photos : [],
                         ),
                         const SizedBox(height: 20),
                         const Wrap(

@@ -1,3 +1,5 @@
+import 'package:nearby_assist/model/service_photos.dart';
+
 class ServiceDetailModel {
   int id;
   int vendorId;
@@ -8,6 +10,7 @@ class ServiceDetailModel {
   String serviceRate;
   double rating;
   String vendorRole;
+  List<ServicePhoto> photos;
   dynamic reviewCountMap;
 
   ServiceDetailModel({
@@ -20,6 +23,7 @@ class ServiceDetailModel {
     required this.serviceRate,
     required this.rating,
     required this.vendorRole,
+    required this.photos,
     required this.reviewCountMap,
   });
 
@@ -34,6 +38,9 @@ class ServiceDetailModel {
       serviceRate: json['Rate'],
       rating: json['Rating'],
       vendorRole: json['VendorRole'],
+      photos: (json['Photos'] as List)
+          .map((photo) => ServicePhoto.fromJson(photo))
+          .toList(),
       reviewCountMap: json['ReviewCount'],
     );
   }
