@@ -23,7 +23,7 @@ class _CustomMap extends State<CustomMap> {
     return FlutterMap(
       options: MapOptions(
         initialCenter: currentLocation,
-        initialZoom: 17.0,
+        initialZoom: 16.0,
       ),
       children: [
         TileLayer(
@@ -42,7 +42,7 @@ class _CustomMap extends State<CustomMap> {
                     point: currentLocation,
                     child: const Icon(
                       Icons.pin_drop,
-                      color: Colors.red,
+                      color: Colors.redAccent,
                     )),
                 ..._markerBuilder(serviceLocations),
               ],
@@ -59,7 +59,7 @@ class _CustomMap extends State<CustomMap> {
                 CircleMarker(
                   point: currentLocation,
                   radius: radius,
-                  color: Colors.blue.withOpacity(0.5),
+                  color: Colors.blue.withOpacity(0.3),
                   useRadiusInMeter: true,
                 )
               ],
@@ -84,7 +84,7 @@ class _CustomMap extends State<CustomMap> {
                 pathParameters: {'vendor': '${service.id}'},
               );
             },
-            child: const Icon(Icons.pin_drop),
+            child: const Icon(Icons.pin_drop, color: Colors.red),
           ),
         ),
       );
