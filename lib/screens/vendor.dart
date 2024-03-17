@@ -54,19 +54,20 @@ class _Vendor extends State<Vendor> {
                           photos: serviceData != null ? serviceData.photos : [],
                         ),
                         const SizedBox(height: 20),
-                        const Wrap(
+                        Wrap(
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'About',
+                                const Text(
+                                  'Description',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
-                                Text(
-                                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non placerat sapien, vel dictum ante. Suspendisse nec lectus pretium, tempor nulla quis, varius libero. Quisque porta arcu id feugiat fringilla. Nulla non gravida lacus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.'),
+                                Text(serviceData != null
+                                    ? serviceData.description
+                                    : 'No description'),
                               ],
                             ),
                           ],
