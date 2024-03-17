@@ -50,6 +50,16 @@ class _Vendor extends State<Vendor> {
                         VendorHeader(
                           vendorId: serviceData != null ? serviceData.id : 1,
                         ),
+                        const SizedBox(height: 20),
+                        Text(
+                            serviceData != null
+                                ? serviceData.title
+                                : 'Untitled Service',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            )),
+                        const SizedBox(height: 20),
                         VendorPhotos(
                           photos: serviceData != null ? serviceData.photos : [],
                         ),

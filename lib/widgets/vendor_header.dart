@@ -30,8 +30,8 @@ class _VendorHeader extends State<VendorHeader> {
                 serviceData != null
                     ? serviceData!.vendorImage
                     : 'https://via.placeholder.com/150',
-                width: 60,
-                height: 60,
+                width: 70,
+                height: 70,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) {
                     return child;
@@ -52,6 +52,14 @@ class _VendorHeader extends State<VendorHeader> {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
+                    ),
+                  ),
+                  Text(
+                    serviceData != null
+                        ? serviceData!.vendorRole
+                        : 'Unspecified Role',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   RatingBar.builder(
