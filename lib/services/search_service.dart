@@ -56,6 +56,7 @@ class SearchingService extends ChangeNotifier {
   }
 
   Future<void> searchService(BuildContext context, String search) async {
+    search = search.trim();
     if (search.isEmpty) return;
     _searchTerm = search;
 
