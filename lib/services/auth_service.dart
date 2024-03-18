@@ -84,12 +84,11 @@ class AuthService {
         },
         body: jsonEncode(user),
       );
-      if (resp.statusCode == 201) {
-        debugPrint('user registered');
-        return;
+      if (resp.statusCode != 201) {
+        throw Exception(resp.body);
       }
 
-      throw Exception(resp.body);
+      debugPrint('user registered: ${resp.body}');
     } catch (e) {
       debugPrint('server responded with an error: $e');
     }
