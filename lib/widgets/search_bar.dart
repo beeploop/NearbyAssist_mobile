@@ -22,19 +22,41 @@ class _ServiceSearchBar extends State<ServiceSearchBar> {
         child: Row(
           children: [
             Expanded(
-              child: Form(
-                child: TextFormField(
-                  onTapOutside: (_) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  controller: _searchController,
-                  decoration: const InputDecoration(hintText: 'search service'),
-                ),
+              child: ListenableBuilder(
+                listenable: getIt.get<SearchingService>(),
+                builder: (context, widget) {
+                  final searching = getIt.get<SearchingService>().isSearching();
+
+                  return Form(
+                    child: TextFormField(
+                      onTapOutside: (_) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      },
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'search service',
+                        suffixIcon: searching
+                            ? const Center(
+                                widthFactor: 0,
+                                child: SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
+            const SizedBox(width: 10),
             SizedBox(
-              width: 50,
-              child: IconButton(
+              // width: 50,
+              child: FilledButton(
                 onPressed: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   getIt.get<SearchingService>().searchService(
@@ -42,7 +64,7 @@ class _ServiceSearchBar extends State<ServiceSearchBar> {
                         _searchController.text,
                       );
                 },
-                icon: const Icon(Icons.search),
+                child: const Text('Search'),
               ),
             ),
           ],
