@@ -23,12 +23,6 @@ class _LoginPage extends State<LoginPage> {
                   return const BottomModalSetting();
                 },
               );
-              // showModalBottomSheet(
-              //   context: context,
-              //   builder: (context) {
-              //     return const BottomModalSetting();
-              //   },
-              // );
             },
             icon: const Icon(Icons.info_outlined),
           )
@@ -39,12 +33,8 @@ class _LoginPage extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _customButton(
-              'Login with features',
+              'Login with Facebook',
               () => AuthService.login(context),
-            ),
-            _customButton(
-              'Login without features',
-              () => AuthService.mockLogin(context),
             ),
           ],
         ),
