@@ -102,8 +102,13 @@ class AppRouter {
     ],
     redirect: (context, state) {
       final loginStatus = getIt.get<AuthModel>().getLoginStatus();
+      final token = getIt.get<AuthModel>().getAccessToken();
 
-      if (loginStatus == AuthStatus.unauthenticated) {
+      if (loginStatus == AuthStatus.unauthenticated || token == null) {
+        return '/login';
+      }
+
+      if (token.isExpired) {
         return '/login';
       }
 

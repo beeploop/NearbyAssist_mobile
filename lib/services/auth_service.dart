@@ -33,12 +33,14 @@ class AuthService {
         throw Exception('Facebook login failed');
       }
 
+      getIt.get<AuthModel>().setAccessToken(resp.accessToken!);
+
       final userData = await FacebookAuth.instance.getUserData();
       UserInfo user = UserInfo.fromJson(userData);
 
       getIt.get<AuthModel>().login(user);
 
-      await _registerUser(user);
+      await _loginUser(user);
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -56,8 +58,11 @@ class AuthService {
 
   static logout(BuildContext context) async {
     try {
+      _logoutUser();
+
       await FacebookAuth.instance.logOut();
       getIt.get<AuthModel>().logout();
+      getIt.get<AuthModel>().setAccessToken(null);
 
       if (context.mounted) {
         context.goNamed('login');
@@ -73,12 +78,12 @@ class AuthService {
     }
   }
 
-  static Future<void> _registerUser(UserInfo user) async {
+  static Future<void> _loginUser(UserInfo user) async {
     final serverAddr = getIt.get<SettingsModel>().getServerAddr();
 
     try {
       final resp = await http.post(
-        Uri.parse('$serverAddr/v1/register'),
+        Uri.parse('$serverAddr/v1/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -90,7 +95,30 @@ class AuthService {
 
       debugPrint('user registered: ${resp.body}');
     } catch (e) {
-      debugPrint('server responded with an error: $e');
+      debugPrint('server responded with an error on login: $e');
+    }
+  }
+
+  static Future<void> _logoutUser() async {
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
+    final user = getIt.get<AuthModel>().getUser();
+
+    try {
+      final resp = await http.post(
+        Uri.parse('$serverAddr/v1/auth/logout'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(user),
+      );
+
+      if (resp.statusCode != 200) {
+        throw Exception(resp.body);
+      }
+
+      debugPrint('user logged out: ${resp.body}');
+    } catch (e) {
+      debugPrint('server responded with an error on logout: $e');
     }
   }
 }
