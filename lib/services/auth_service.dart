@@ -40,10 +40,11 @@ class AuthService {
       final userData = await FacebookAuth.instance.getUserData();
       UserInfo user = UserInfo.fromJson(userData);
 
+      final loginResponse = await _loginUser(user);
+      user.userId = loginResponse?.userId;
+
       getIt.get<AuthModel>().login(user);
       getIt.get<DataManagerService>().saveUser(user);
-
-      await _loginUser(user);
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,7 +82,7 @@ class AuthService {
     }
   }
 
-  static Future<void> _loginUser(UserInfo user) async {
+  static Future<LoginResponse?> _loginUser(UserInfo user) async {
     final serverAddr = getIt.get<SettingsModel>().getServerAddr();
 
     try {
@@ -96,9 +97,13 @@ class AuthService {
         throw Exception(resp.body);
       }
 
-      debugPrint('user registered: ${resp.body}');
+      final response = jsonDecode(resp.body);
+      LoginResponse loginResponse = LoginResponse.fromJson(response);
+
+      return loginResponse;
     } catch (e) {
       debugPrint('server responded with an error on login: $e');
+      return null;
     }
   }
 
@@ -123,5 +128,22 @@ class AuthService {
     } catch (e) {
       debugPrint('server responded with an error on logout: $e');
     }
+  }
+}
+
+class LoginResponse {
+  String token;
+  int userId;
+
+  LoginResponse({
+    required this.token,
+    required this.userId,
+  });
+
+  factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    return LoginResponse(
+      token: json['token'],
+      userId: json['userId'],
+    );
   }
 }

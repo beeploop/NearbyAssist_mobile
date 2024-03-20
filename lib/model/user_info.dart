@@ -2,11 +2,13 @@ class UserInfo {
   String name;
   String email;
   String imageUrl;
+  int? userId;
 
   UserInfo({
     required this.name,
     required this.email,
     required this.imageUrl,
+    this.userId,
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class UserInfo {
 
   Map<String, dynamic> toJson() {
     return {
+      'userId': userId,
       'name': name,
       'email': email,
       'imageUrl': imageUrl,

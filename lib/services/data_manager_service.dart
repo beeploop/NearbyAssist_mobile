@@ -26,6 +26,7 @@ class DataManagerService {
     final user = User.fromJson(userJson);
 
     return UserInfo(
+      userId: user.userId,
       name: user.name,
       email: user.email,
       imageUrl: user.imageUrl,
@@ -77,15 +78,18 @@ class User {
   String name;
   String email;
   String imageUrl;
+  int userId;
 
   User({
     required this.name,
     required this.email,
     required this.imageUrl,
+    required this.userId,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      userId: json['userId'],
       name: json['name'],
       email: json['email'],
       imageUrl: json['imageUrl'],
