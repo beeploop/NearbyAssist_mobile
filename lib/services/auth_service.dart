@@ -9,6 +9,7 @@ import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/user_info.dart';
 import 'package:http/http.dart' as http;
+import 'package:nearby_assist/services/data_manager_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 
 enum AuthResult { success, failed }
@@ -34,11 +35,13 @@ class AuthService {
       }
 
       getIt.get<AuthModel>().setAccessToken(resp.accessToken!);
+      getIt.get<DataManagerService>().saveAccessToken(resp.accessToken!);
 
       final userData = await FacebookAuth.instance.getUserData();
       UserInfo user = UserInfo.fromJson(userData);
 
       getIt.get<AuthModel>().login(user);
+      getIt.get<DataManagerService>().saveUser(user);
 
       await _loginUser(user);
     } catch (e) {
@@ -62,7 +65,7 @@ class AuthService {
 
       await FacebookAuth.instance.logOut();
       getIt.get<AuthModel>().logout();
-      getIt.get<AuthModel>().setAccessToken(null);
+      getIt.get<DataManagerService>().clearData();
 
       if (context.mounted) {
         context.goNamed('login');

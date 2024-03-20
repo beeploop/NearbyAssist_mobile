@@ -115,5 +115,6 @@ class AppRouter {
       return null;
     },
     refreshListenable: getIt.get<AuthModel>(),
+    initialLocation: '/',
   );
 }

@@ -12,6 +12,7 @@ class AuthModel extends ChangeNotifier {
 
   void setAccessToken(AccessToken? token) {
     _accessToken = token;
+    notifyListeners();
   }
 
   AccessToken? getAccessToken() {
@@ -38,6 +39,8 @@ class AuthModel extends ChangeNotifier {
   void logout() {
     _userInfo = null;
     _isLoggedIn = AuthStatus.unauthenticated;
+    _accessToken = null;
+
     notifyListeners();
   }
 
