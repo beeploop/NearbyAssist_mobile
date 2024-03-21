@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/message.dart';
-import 'package:nearby_assist/model/vendor_model.dart';
 import 'package:nearby_assist/services/message_service.dart';
-import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/chat_input.dart';
 
 class Chat extends StatefulWidget {
