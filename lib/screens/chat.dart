@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/message.dart';
+import 'package:nearby_assist/model/vendor_model.dart';
 import 'package:nearby_assist/services/message_service.dart';
+import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/chat_input.dart';
 
 class Chat extends StatefulWidget {
-  const Chat({super.key, required this.userId});
+  const Chat({super.key, required this.userId, required this.name});
 
   final int userId;
+  final String name;
 
   @override
   State<Chat> createState() => _Chat();
@@ -37,7 +40,7 @@ class _Chat extends State<Chat> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'User ${widget.userId}',
+          widget.name,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),

@@ -60,7 +60,9 @@ class AppRouter {
                 name: 'chat',
                 builder: (context, state) {
                   final userId = state.pathParameters['userId']!;
-                  return Chat(userId: int.parse(userId));
+                  final vendorName = state.uri.queryParameters['vendorName']!;
+
+                  return Chat(userId: int.parse(userId), name: vendorName);
                 }),
           ]),
       GoRoute(

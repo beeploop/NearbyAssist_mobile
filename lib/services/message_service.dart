@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/conversation.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:http/http.dart' as http;
 import 'package:nearby_assist/model/settings_model.dart';
@@ -101,5 +102,34 @@ class MessageService extends ChangeNotifier {
 
   Stream<dynamic> stream() {
     return _channel!.stream;
+  }
+
+  Future<List<Conversation>> fetchConversations() async {
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
+    final userId = getIt.get<AuthModel>().getUserId();
+    List<Conversation> conversations = [];
+
+    try {
+      final resp = await http.get(
+        Uri.parse(
+          '$serverAddr/v1/messages/acquaintances?userId=$userId',
+        ),
+      );
+
+      if (resp.statusCode != 200) {
+        throw Exception('Failed to fetch conversations');
+      }
+
+      List jsonified = jsonDecode(resp.body);
+      for (var conversation in jsonified) {
+        final conv = Conversation.fromJson(conversation);
+        conversations.add(conv);
+      }
+    } catch (e) {
+      debugPrint('error fetching conversations: $e');
+      conversations.clear();
+    }
+
+    return conversations;
   }
 }
