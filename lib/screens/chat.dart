@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:nearby_assist/services/message_service.dart';
@@ -49,11 +50,6 @@ class _Chat extends State<Chat> {
                   .stream()
                   .map((event) => Message.fromJson(event)),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final message = snapshot.data!;
-                  getIt.get<MessageService>().addMessage(message);
-                }
-
                 return FutureBuilder(
                   future:
                       getIt.get<MessageService>().fetchMessages(widget.userId),
@@ -63,6 +59,10 @@ class _Chat extends State<Chat> {
                       builder: (context, _) {
                         final messages =
                             getIt.get<MessageService>().getMessages();
+
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          _scrollToBottom();
+                        });
 
                         return ListView.builder(
                           padding: const EdgeInsets.all(6),
