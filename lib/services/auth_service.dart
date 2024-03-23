@@ -62,7 +62,10 @@ class AuthService {
 
   static logout(BuildContext context) async {
     try {
-      _logoutUser();
+      final res = await _logoutUser();
+      if (res != null) {
+        throw res;
+      }
 
       await FacebookAuth.instance.logOut();
       getIt.get<AuthModel>().logout();
@@ -107,7 +110,7 @@ class AuthService {
     }
   }
 
-  static Future<void> _logoutUser() async {
+  static Future<Exception?> _logoutUser() async {
     final serverAddr = getIt.get<SettingsModel>().getServerAddr();
     final user = getIt.get<AuthModel>().getUser();
 
@@ -125,8 +128,10 @@ class AuthService {
       }
 
       debugPrint('user logged out: ${resp.body}');
+      return null;
     } catch (e) {
       debugPrint('server responded with an error on logout: $e');
+      return Exception(e);
     }
   }
 }
