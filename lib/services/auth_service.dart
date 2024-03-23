@@ -42,7 +42,10 @@ class AuthService {
       UserInfo user = UserInfo.fromJson(userData);
 
       final loginResponse = await _loginUser(user);
-      user.userId = loginResponse?.userId;
+      if (loginResponse == null) {
+        throw Exception('Login failed');
+      }
+      user.userId = loginResponse.userId;
 
       getIt.get<AuthModel>().login(user);
       getIt.get<DataManagerService>().saveUser(user);
