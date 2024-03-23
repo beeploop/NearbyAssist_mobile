@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/review_counter_bar.dart';
 import 'package:nearby_assist/widgets/vendor_header.dart';
@@ -20,9 +19,7 @@ class _Vendor extends State<Vendor> {
   void initState() {
     super.initState();
 
-    if (getIt.get<FeatureFlagService>().backendConnection) {
-      getIt.get<VendorService>().fetchServiceInfo(widget.serviceId);
-    }
+    getIt.get<VendorService>().fetchServiceInfo(widget.serviceId);
   }
 
   @override

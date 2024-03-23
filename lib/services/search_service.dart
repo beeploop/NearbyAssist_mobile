@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
-import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -46,11 +44,9 @@ class SearchingService extends ChangeNotifier {
 
     await getIt.get<LocationService>().getCurrentLocation();
 
-    if (getIt.get<FeatureFlagService>().backendConnection) {
-      await _fetchServices();
-    } else {
-      _serviceLocations = mockLocations;
-    }
+    final result = await _fetchServices();
+    _serviceLocations = result;
+    notifyListeners();
 
     _toggleSearching(false);
   }
@@ -71,11 +67,9 @@ class SearchingService extends ChangeNotifier {
 
     await getIt.get<LocationService>().getCurrentLocation();
 
-    if (getIt.get<FeatureFlagService>().backendConnection) {
-      await _fetchServices();
-    } else {
-      _serviceLocations = mockLocations;
-    }
+    final result = await _fetchServices();
+    _serviceLocations = result;
+    notifyListeners();
 
     _toggleSearching(false);
 
@@ -86,7 +80,7 @@ class SearchingService extends ChangeNotifier {
 
   String lastSearch() => _searchTerm;
 
-  Future<void> _fetchServices() async {
+  Future<List<Service>> _fetchServices() async {
     final location = getIt.get<LocationService>().getLocation();
     final serverAddr = getIt.get<SettingsModel>().getServerAddr();
 
@@ -101,18 +95,18 @@ class SearchingService extends ChangeNotifier {
             'request responded with status code: ${resp.statusCode}');
       }
 
-      _serviceLocations.clear();
+      List<Service> result = [];
       List services = jsonDecode(resp.body);
       for (var service in services) {
         final s = Service.fromJson(service);
-        _serviceLocations.add(s);
+        result.add(s);
       }
-    } catch (e) {
-      debugPrint('$e');
-      _serviceLocations = [];
-    }
 
-    notifyListeners();
+      return result;
+    } catch (e) {
+      debugPrint('======= error fetching search result: $e');
+      return [];
+    }
   }
 
   List<Service> getServiceLocations() => _serviceLocations;
