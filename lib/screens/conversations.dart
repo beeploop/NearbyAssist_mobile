@@ -32,7 +32,7 @@ class _Conversations extends State<Conversations> {
             if (snapshot.hasData) {
               final conversations = snapshot.data;
 
-              if (conversations == null) {
+              if (conversations == null || conversations.isEmpty) {
                 return const Text('No messages');
               }
 
