@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/login_response.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/user_info.dart';
 import 'package:http/http.dart' as http;
