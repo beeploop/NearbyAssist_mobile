@@ -56,6 +56,10 @@ class MessageService extends ChangeNotifier {
         ),
       );
 
+      if (resp.statusCode != 200) {
+        throw Exception('Failed to fetch messages');
+      }
+
       _messages.clear();
 
       List messages = jsonDecode(resp.body);
