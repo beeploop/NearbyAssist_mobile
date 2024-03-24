@@ -36,29 +36,34 @@ class _Conversations extends State<Conversations> {
                 return const Text('No messages');
               }
 
-              return ListView.builder(
-                itemCount: conversations.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {
-                      context.goNamed(
-                        'chat',
-                        pathParameters: {
-                          'userId': '${conversations[index].userId}'
-                        },
-                        queryParameters: {
-                          'vendorName': conversations[index].name
-                        },
-                      );
-                    },
-                    leading: CircleAvatar(
-                      foregroundImage: NetworkImage(
-                        conversations[index].imageUrl,
-                      ),
-                    ),
-                    title: Text(conversations[index].name),
-                  );
+              return RefreshIndicator(
+                onRefresh: () {
+                  return getIt.get<MessageService>().fetchConversations();
                 },
+                child: ListView.builder(
+                  itemCount: conversations.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      onTap: () {
+                        context.goNamed(
+                          'chat',
+                          pathParameters: {
+                            'userId': '${conversations[index].userId}'
+                          },
+                          queryParameters: {
+                            'vendorName': conversations[index].name
+                          },
+                        );
+                      },
+                      leading: CircleAvatar(
+                        foregroundImage: NetworkImage(
+                          conversations[index].imageUrl,
+                        ),
+                      ),
+                      title: Text(conversations[index].name),
+                    );
+                  },
+                ),
               );
             }
 
