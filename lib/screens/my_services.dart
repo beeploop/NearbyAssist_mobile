@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class MyServices extends StatefulWidget {
@@ -14,8 +17,49 @@ class _MyServices extends State<MyServices> {
     return Scaffold(
       appBar: AppBar(),
       drawer: const CustomDrawer(),
-      body: const Center(
-        child: Text('services'),
+      body: Center(
+        child: FutureBuilder(
+          future: getIt.get<VendorService>().checkVendorStatus(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+
+            if (snapshot.hasError) {
+              final err = snapshot.error.toString();
+              return Text('An error occurred: $err');
+            }
+
+            if (snapshot.hasData && snapshot.data != null) {
+              if (snapshot.data == true) {
+                return const Text(
+                  'You are a vendor! \nThis is an example services page.',
+                  textAlign: TextAlign.center,
+                );
+              }
+
+              return AlertDialog(
+                title: const Text('You are not a vendor yet!'),
+                content: const Text(
+                    'Register as a vendor to start offering services.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text('Register'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.goNamed('home');
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                ],
+              );
+            }
+
+            return const Text('An error occurred');
+          },
+        ),
       ),
     );
   }

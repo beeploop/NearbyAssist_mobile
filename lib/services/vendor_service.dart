@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/service_detail_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:http/http.dart' as http;
@@ -46,6 +47,35 @@ class VendorService extends ChangeNotifier {
 
     _toggleLoading(false);
     notifyListeners();
+  }
+
+  Future<bool?> checkVendorStatus() async {
+    final server = getIt.get<SettingsModel>().getServerAddr();
+    final user = getIt.get<AuthModel>().getUser();
+
+    if (user == null) {
+      return false;
+    }
+
+    try {
+      final resp =
+          await http.get(Uri.parse('$server/v1/vendors/${user.userId}'));
+
+      if (resp.statusCode == 204) {
+        return false;
+      }
+
+      if (resp.statusCode != 200) {
+        throw HttpException(
+          'Server responded with status code: ${resp.statusCode}',
+        );
+      }
+
+      return true;
+    } catch (e) {
+      debugPrint('error fetching vendor data: $e');
+      return null;
+    }
   }
 
   VendorModel? getVendor() {
