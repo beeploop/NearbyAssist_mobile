@@ -49,6 +49,10 @@ class AuthService {
 
       getIt.get<AuthModel>().login(user);
       getIt.get<DataManagerService>().saveUser(user);
+
+      if (context.mounted) {
+        context.goNamed('home');
+      }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -57,10 +61,6 @@ class AuthService {
           ),
         );
       }
-    }
-
-    if (context.mounted) {
-      context.goNamed('home');
     }
   }
 
