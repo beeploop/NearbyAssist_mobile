@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/screens/add_service.dart';
 import 'package:nearby_assist/screens/chat.dart';
 import 'package:nearby_assist/screens/complaints.dart';
 import 'package:nearby_assist/screens/history.dart';
@@ -88,7 +89,15 @@ class AppRouter {
           name: 'my-services',
           builder: (context, state) {
             return const MyServices();
-          }),
+          },
+          routes: [
+            GoRoute(
+                path: 'add-service',
+                name: 'add-service',
+                builder: (context, state) {
+                  return const AddService();
+                }),
+          ]),
       GoRoute(
           path: '/settings',
           name: 'settings',

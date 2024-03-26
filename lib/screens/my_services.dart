@@ -59,6 +59,12 @@ class _MyServices extends State<MyServices> {
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.goNamed('add-service');
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
