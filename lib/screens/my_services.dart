@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
+import 'package:nearby_assist/widgets/my_services_list.dart';
 
 class MyServices extends StatefulWidget {
   const MyServices({super.key});
@@ -32,10 +33,7 @@ class _MyServices extends State<MyServices> {
 
             if (snapshot.hasData && snapshot.data != null) {
               if (snapshot.data == true) {
-                return const Text(
-                  'You are a vendor! \nThis is an example services page.',
-                  textAlign: TextAlign.center,
-                );
+                return const MyServicesList();
               }
 
               return AlertDialog(
