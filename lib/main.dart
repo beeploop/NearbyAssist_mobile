@@ -7,6 +7,7 @@ import 'package:nearby_assist/services/data_manager_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/message_service.dart';
+import 'package:nearby_assist/services/transaction_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
@@ -21,6 +22,7 @@ void main() {
   getIt.registerSingleton<VendorService>(VendorService());
   getIt.registerSingleton<MessageService>(MessageService());
   getIt.registerSingleton<DataManagerService>(DataManagerService());
+  getIt.registerSingleton<TransactionService>(TransactionService());
 
   runApp(
     const MyApp(),
