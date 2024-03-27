@@ -5,6 +5,7 @@ import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/router/app_router.dart';
 import 'package:nearby_assist/services/data_manager_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
+import 'package:nearby_assist/services/history_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/services/transaction_service.dart';
@@ -23,6 +24,7 @@ void main() {
   getIt.registerSingleton<MessageService>(MessageService());
   getIt.registerSingleton<DataManagerService>(DataManagerService());
   getIt.registerSingleton<TransactionService>(TransactionService());
+  getIt.registerSingleton<HistoryService>(HistoryService());
 
   runApp(
     const MyApp(),
