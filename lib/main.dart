@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/router/app_router.dart';
+import 'package:nearby_assist/services/complaint_service.dart';
 import 'package:nearby_assist/services/data_manager_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/history_service.dart';
@@ -25,6 +26,7 @@ void main() {
   getIt.registerSingleton<DataManagerService>(DataManagerService());
   getIt.registerSingleton<TransactionService>(TransactionService());
   getIt.registerSingleton<HistoryService>(HistoryService());
+  getIt.registerSingleton<ComplaintService>(ComplaintService());
 
   runApp(
     const MyApp(),

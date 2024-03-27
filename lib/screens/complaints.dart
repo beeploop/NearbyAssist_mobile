@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/complaint_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class Complaints extends StatelessWidget {
@@ -9,8 +11,48 @@ class Complaints extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       drawer: const CustomDrawer(),
-      body: const Center(
-        child: Text('complaints'),
+      body: Center(
+        child: FutureBuilder(
+          future: getIt.get<ComplaintService>().fetchComplaints(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+
+            if (snapshot.hasError) {
+              final err = snapshot.error.toString();
+              return Text(
+                'Error occurred: $err',
+                textAlign: TextAlign.center,
+              );
+            }
+
+            if (snapshot.hasData) {
+              final complaints = snapshot.data;
+
+              if (complaints == null || complaints.isEmpty) {
+                return const Text('No complaints');
+              }
+
+              return RefreshIndicator(
+                onRefresh: () async {
+                  await getIt.get<ComplaintService>().fetchComplaints();
+                },
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    final complaint = complaints[index];
+
+                    return ListTile(
+                      title: Text(complaint),
+                    );
+                  },
+                ),
+              );
+            }
+
+            return const Text('Something went wrong');
+          },
+        ),
       ),
     );
   }
