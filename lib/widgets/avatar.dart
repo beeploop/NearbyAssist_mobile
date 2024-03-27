@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar({super.key, required this.user});
@@ -7,15 +9,18 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final avatarUrl = getIt.get<AuthModel>().getUser()?.imageUrl;
+
     return Padding(
         padding: const EdgeInsets.only(right: 20),
         child: Row(
           children: [
             Text(user),
             const SizedBox(width: 10),
-            const CircleAvatar(
+            CircleAvatar(
               radius: 16,
-              child: Icon(Icons.person),
+              foregroundImage: NetworkImage(avatarUrl ?? ''),
+              backgroundImage: const AssetImage('assets/images/avatar.png'),
             ),
           ],
         ));

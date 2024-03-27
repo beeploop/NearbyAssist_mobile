@@ -12,6 +12,8 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawer extends State<CustomDrawer> {
+  final avatarUrl = getIt.get<AuthModel>().getUser()?.imageUrl;
+
   List<Map> drawerItems = [
     {
       'title': 'search',
@@ -99,9 +101,10 @@ class _CustomDrawer extends State<CustomDrawer> {
     return DrawerHeader(
       child: Column(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 30,
-            child: Icon(Icons.person),
+            foregroundImage: NetworkImage(avatarUrl ?? ''),
+            backgroundImage: const AssetImage('assets/images/avatar.png'),
           ),
           Text(
             getIt.get<AuthModel>().getUser()!.name,
