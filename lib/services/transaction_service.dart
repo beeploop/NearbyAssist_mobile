@@ -6,6 +6,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:nearby_assist/model/transaction.dart';
 
 class TransactionService extends ChangeNotifier {
   final List<Transaction> _transactions = [];
@@ -42,41 +43,5 @@ class TransactionService extends ChangeNotifier {
 
     notifyListeners();
     return _transactions;
-  }
-}
-
-class Transaction {
-  int id;
-  String client;
-  String vendor;
-  String service;
-  String status;
-
-  Transaction({
-    required this.id,
-    required this.client,
-    required this.vendor,
-    required this.service,
-    required this.status,
-  });
-
-  factory Transaction.fromJson(Map<String, dynamic> json) {
-    return Transaction(
-      id: json['Id'],
-      client: json['Client'],
-      vendor: json['Vendor'],
-      service: json['Service'],
-      status: json['Status'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'client': client,
-      'vendor': vendor,
-      'service': service,
-      'status': status,
-    };
   }
 }
