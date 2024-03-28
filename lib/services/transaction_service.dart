@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,17 +8,19 @@ import 'package:nearby_assist/model/settings_model.dart';
 import 'package:http/http.dart' as http;
 
 class TransactionService extends ChangeNotifier {
-  Future<List<String>> fetchInProgressTransactions() async {
+  final List<Transaction> _transactions = [];
+
+  Future<List<Transaction>> fetchInProgressTransactions() async {
     final server = getIt.get<SettingsModel>().getServerAddr();
     final userId = getIt.get<AuthModel>().getUserId();
 
     if (userId == null) {
-      return [];
+      return _transactions;
     }
 
     try {
       final resp = await http.get(
-        Uri.parse('$server/v1/transactions/progress/$userId'),
+        Uri.parse('$server/v1/transactions/ongoing/vendor/$userId'),
       );
 
       if (resp.statusCode != 200) {
@@ -25,10 +28,55 @@ class TransactionService extends ChangeNotifier {
             'Server responded with status code: ${resp.statusCode}');
       }
 
-      return ['hello', 'world'];
+      List json = jsonDecode(resp.body);
+      _transactions.clear();
+      for (var something in json) {
+        final transaction = Transaction.fromJson(something);
+        _transactions.add(transaction);
+      }
     } catch (e) {
       print('An error occurred: $e');
-      return [];
+
+      _transactions.clear();
     }
+
+    notifyListeners();
+    return _transactions;
+  }
+}
+
+class Transaction {
+  int id;
+  String client;
+  String vendor;
+  String service;
+  String status;
+
+  Transaction({
+    required this.id,
+    required this.client,
+    required this.vendor,
+    required this.service,
+    required this.status,
+  });
+
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      id: json['Id'],
+      client: json['Client'],
+      vendor: json['Vendor'],
+      service: json['Service'],
+      status: json['Status'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'client': client,
+      'vendor': vendor,
+      'service': service,
+      'status': status,
+    };
   }
 }
