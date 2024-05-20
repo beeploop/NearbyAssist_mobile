@@ -15,7 +15,7 @@ import 'package:nearby_assist/services/search_service.dart';
 
 GetIt getIt = GetIt.instance;
 
-void main() {
+Future<void> main() async {
   getIt.registerSingleton<FeatureFlagService>(FeatureFlagService());
   getIt.registerSingleton<AuthModel>(AuthModel());
   getIt.registerSingleton<SettingsModel>(SettingsModel());
@@ -27,6 +27,9 @@ void main() {
   getIt.registerSingleton<TransactionService>(TransactionService());
   getIt.registerSingleton<HistoryService>(HistoryService());
   getIt.registerSingleton<ComplaintService>(ComplaintService());
+
+  // Load settings
+  getIt.get<SettingsModel>().loadSettings();
 
   runApp(
     const MyApp(),

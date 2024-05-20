@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SettingsModel extends ChangeNotifier {
-  String _serverAddr = 'http://192.168.186.87:8080';
-  String _websocketAddr = 'ws://192.168.186.87:8080';
+  String? _serverAddr;
+  String? _websocketAddr;
+
+  Future<void> loadSettings() async {
+    await dotenv.load(fileName: ".env");
+
+    try {
+      final url = dotenv.get('BACKEND_URL');
+      _serverAddr = 'http://$url';
+      _websocketAddr = 'ws://$url';
+    } catch (e) {
+      _serverAddr = null;
+      _websocketAddr = null;
+    }
+  }
 
   void setServer(String addr) {
     _serverAddr = addr;
@@ -14,6 +28,6 @@ class SettingsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getServerAddr() => _serverAddr;
-  String getWebsocketAddr() => _websocketAddr;
+  String getServerAddr() => _serverAddr == null ? '' : _serverAddr!;
+  String getWebsocketAddr() => _websocketAddr == null ? '' : _websocketAddr!;
 }
