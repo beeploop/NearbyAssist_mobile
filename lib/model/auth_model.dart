@@ -27,7 +27,7 @@ class AuthModel extends ChangeNotifier {
       userId: user.userId,
       name: user.name,
       email: user.email,
-      imageUrl: user.imageUrl,
+      image: user.image,
     );
 
     _isLoggedIn = AuthStatus.authenticated;

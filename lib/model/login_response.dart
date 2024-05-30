@@ -1,15 +1,18 @@
 class LoginResponse {
-  String token;
+  String accessToken;
+  String refreshToken;
   int userId;
 
   LoginResponse({
-    required this.token,
+    required this.accessToken,
+    required this.refreshToken,
     required this.userId,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     return LoginResponse(
-      token: json['token'],
+      accessToken: json['accessToken'],
+      refreshToken: json['refreshToken'],
       userId: json['userId'],
     );
   }

@@ -8,7 +8,7 @@ const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 final mockUser = UserInfo(
   name: 'Juan Dela Cruz',
   email: 'mockUser@email.com',
-  imageUrl: 'https://dummyimage.com/300',
+  image: 'https://dummyimage.com/300',
 );
 
 final mockLocations = [

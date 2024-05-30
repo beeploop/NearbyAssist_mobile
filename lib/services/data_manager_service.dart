@@ -29,7 +29,7 @@ class DataManagerService {
       userId: user.userId,
       name: user.name,
       email: user.email,
-      imageUrl: user.imageUrl,
+      image: user.image,
     );
   }
 
@@ -77,13 +77,13 @@ class DataManagerService {
 class User {
   String name;
   String email;
-  String imageUrl;
+  String image;
   int userId;
 
   User({
     required this.name,
     required this.email,
-    required this.imageUrl,
+    required this.image,
     required this.userId,
   });
 
@@ -92,7 +92,7 @@ class User {
       userId: json['userId'],
       name: json['name'],
       email: json['email'],
-      imageUrl: json['imageUrl'],
+      image: json['image'],
     );
   }
 }

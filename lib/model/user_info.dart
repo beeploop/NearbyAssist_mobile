@@ -1,13 +1,13 @@
 class UserInfo {
   String name;
   String email;
-  String imageUrl;
+  String image;
   int? userId;
 
   UserInfo({
     required this.name,
     required this.email,
-    required this.imageUrl,
+    required this.image,
     this.userId,
   });
 
@@ -15,7 +15,7 @@ class UserInfo {
     return UserInfo(
       email: json['email'],
       name: json['name'],
-      imageUrl: json['picture']['data']['url'],
+      image: json['picture']['data']['url'],
     );
   }
 
@@ -24,7 +24,7 @@ class UserInfo {
       'userId': userId,
       'name': name,
       'email': email,
-      'imageUrl': imageUrl,
+      'image': image,
     };
   }
 }

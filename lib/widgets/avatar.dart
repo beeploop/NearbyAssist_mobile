@@ -9,7 +9,7 @@ class Avatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final avatarUrl = getIt.get<AuthModel>().getUser()?.imageUrl;
+    final avatarUrl = getIt.get<AuthModel>().getUser()?.image;
 
     return Padding(
         padding: const EdgeInsets.only(right: 20),

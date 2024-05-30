@@ -9,9 +9,8 @@ class SettingsModel extends ChangeNotifier {
     await dotenv.load(fileName: ".env");
 
     try {
-      final url = dotenv.get('BACKEND_URL');
-      _serverAddr = 'http://$url';
-      _websocketAddr = 'ws://$url';
+      _serverAddr  = dotenv.get('BACKEND_URL');
+      _websocketAddr = dotenv.get('WEBSOCKET_URL');
     } catch (e) {
       _serverAddr = null;
       _websocketAddr = null;

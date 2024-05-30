@@ -94,7 +94,7 @@ class AuthService {
 
     try {
       final resp = await http.post(
-        Uri.parse('$serverAddr/v1/auth/login'),
+        Uri.parse('$serverAddr/backend/auth/client/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -120,7 +120,7 @@ class AuthService {
 
     try {
       final resp = await http.post(
-        Uri.parse('$serverAddr/v1/auth/logout'),
+        Uri.parse('$serverAddr/backend/auth/logout'),
         headers: {
           'Content-Type': 'application/json',
         },
