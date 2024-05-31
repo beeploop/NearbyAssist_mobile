@@ -7,14 +7,14 @@ import 'package:nearby_assist/widgets/avatar.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/search_bar.dart';
 
-class Homapage extends StatefulWidget {
-  const Homapage({super.key});
+class Homepage extends StatefulWidget {
+  const Homepage({super.key});
 
   @override
-  State<Homapage> createState() => _Homepage();
+  State<Homepage> createState() => _Homepage();
 }
 
-class _Homepage extends State<Homapage> {
+class _Homepage extends State<Homepage> {
   final userInfo = getIt.get<AuthModel>().getUser();
 
   @override

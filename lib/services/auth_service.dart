@@ -3,31 +3,21 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
-import 'package:nearby_assist/model/login_response.dart';
+import 'package:nearby_assist/model/request/backend_login_response.dart';
+import 'package:nearby_assist/model/request/logout_request.dart';
+import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/model/settings_model.dart';
-import 'package:nearby_assist/model/user_info.dart';
+import 'package:nearby_assist/model/request/facebook_login_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:nearby_assist/model/user_info.dart';
 import 'package:nearby_assist/services/data_manager_service.dart';
-import 'package:nearby_assist/services/feature_flag_service.dart';
 
 enum AuthResult { success, failed }
 
 class AuthService {
-  static void mockLogin(BuildContext context) async {
-    getIt.get<FeatureFlagService>().backendConnection = false;
-    getIt.get<AuthModel>().login(mockUser);
-
-    if (context.mounted) {
-      context.goNamed('home');
-    }
-  }
-
-  static Future<void> login(BuildContext context) async {
-    getIt.get<FeatureFlagService>().backendConnection = true;
-
+  static Future<void> loginToFacebook(BuildContext context) async {
     try {
       final resp = await FacebookAuth.instance.login();
 
@@ -35,20 +25,31 @@ class AuthService {
         throw Exception('Facebook login failed');
       }
 
-      getIt.get<AuthModel>().setAccessToken(resp.accessToken!);
-      getIt.get<DataManagerService>().saveAccessToken(resp.accessToken!);
+      final facebookUserData = await FacebookAuth.instance.getUserData();
+      final user = FacebookLoginResponse.fromJson(facebookUserData);
 
-      final userData = await FacebookAuth.instance.getUserData();
-      UserInfo user = UserInfo.fromJson(userData);
-
-      final loginResponse = await _loginUser(user);
+      final loginResponse = await _loginToBackend(user);
       if (loginResponse == null) {
         throw Exception('Login failed');
       }
-      user.userId = loginResponse.userId;
 
-      getIt.get<AuthModel>().login(user);
-      getIt.get<DataManagerService>().saveUser(user);
+      final completeUserData = UserInfo(
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        userId: loginResponse.userId,
+      );
+
+      final tokens = Token(
+        accessToken: loginResponse.accessToken,
+        refreshToken: loginResponse.refreshToken,
+      );
+
+      await getIt.get<DataManagerService>().saveUser(completeUserData);
+      await getIt.get<DataManagerService>().saveTokens(tokens);
+
+      getIt.get<AuthModel>().saveUser(completeUserData);
+      getIt.get<AuthModel>().setUserTokens(tokens);
 
       if (context.mounted) {
         context.goNamed('home');
@@ -66,14 +67,19 @@ class AuthService {
 
   static logout(BuildContext context) async {
     try {
-      final res = await _logoutUser();
-      if (res != null) {
-        throw res;
+      final logoutResponse = await _logoutToBackend();
+      if (logoutResponse != null) {
+        throw logoutResponse;
       }
 
       await FacebookAuth.instance.logOut();
+
       getIt.get<AuthModel>().logout();
-      getIt.get<DataManagerService>().clearData();
+      final clearDataResponse =
+          await getIt.get<DataManagerService>().clearData();
+      if (clearDataResponse != null) {
+        throw clearDataResponse;
+      }
 
       if (context.mounted) {
         context.goNamed('login');
@@ -89,7 +95,8 @@ class AuthService {
     }
   }
 
-  static Future<LoginResponse?> _loginUser(UserInfo user) async {
+  static Future<BackendLoginResponse?> _loginToBackend(
+      FacebookLoginResponse user) async {
     final serverAddr = getIt.get<SettingsModel>().getServerAddr();
 
     try {
@@ -105,7 +112,7 @@ class AuthService {
       }
 
       final response = jsonDecode(resp.body);
-      LoginResponse loginResponse = LoginResponse.fromJson(response);
+      final loginResponse = BackendLoginResponse.fromJson(response);
 
       return loginResponse;
     } catch (e) {
@@ -114,9 +121,15 @@ class AuthService {
     }
   }
 
-  static Future<Exception?> _logoutUser() async {
+  static Future<Exception?> _logoutToBackend() async {
     final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-    final user = getIt.get<AuthModel>().getUser();
+    final tokens = getIt.get<AuthModel>().getUserTokens();
+
+    if (tokens == null) {
+      return Exception('User not logged in');
+    }
+
+    final logoutRequest = LogoutRequest(token: tokens.refreshToken);
 
     try {
       final resp = await http.post(
@@ -124,14 +137,13 @@ class AuthService {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(user),
+        body: jsonEncode(logoutRequest),
       );
 
       if (resp.statusCode != 200) {
         throw Exception(resp.body);
       }
 
-      debugPrint('user logged out: ${resp.body}');
       return null;
     } catch (e) {
       debugPrint('server responded with an error on logout: $e');

@@ -22,7 +22,7 @@ class AppRouter {
         path: '/',
         name: 'home',
         builder: (context, state) {
-          return const Homapage();
+          return const Homepage();
         },
         routes: [
           GoRoute(
@@ -113,15 +113,16 @@ class AppRouter {
     ],
     redirect: (context, state) {
       final loginStatus = getIt.get<AuthModel>().getLoginStatus();
-      final token = getIt.get<AuthModel>().getAccessToken();
+      final token = getIt.get<AuthModel>().getUserTokens();
 
-      if (loginStatus == AuthStatus.unauthenticated || token == null) {
+      if (token == null || loginStatus == AuthStatus.unauthenticated) {
         return '/login';
       }
 
-      if (token.isExpired) {
-        return '/login';
-      }
+      // TODO: verify if the token is expired
+      // if (token.isExpired) {
+      //   return '/login';
+      // }
 
       return null;
     },

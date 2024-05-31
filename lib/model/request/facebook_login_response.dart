@@ -1,28 +1,24 @@
-class UserInfo {
+class FacebookLoginResponse {
   String name;
   String email;
   String image;
-  int userId;
 
-  UserInfo({
+  FacebookLoginResponse({
     required this.name,
     required this.email,
     required this.image,
-    required this.userId,
   });
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) {
-    return UserInfo(
-      email: json['email'],
+  factory FacebookLoginResponse.fromJson(Map<String, dynamic> json) {
+    return FacebookLoginResponse(
       name: json['name'],
-      image: json['image'],
-      userId: json['userId'],
+      email: json['email'],
+      image: json['picture']['data']['url'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
       'name': name,
       'email': email,
       'image': image,

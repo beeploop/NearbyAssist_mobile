@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/model/user_info.dart';
 
 enum AuthStatus { unauthenticated, authenticated }
@@ -7,22 +7,22 @@ enum AuthStatus { unauthenticated, authenticated }
 class AuthModel extends ChangeNotifier {
   AuthStatus _isLoggedIn = AuthStatus.unauthenticated;
   UserInfo? _userInfo;
-  AccessToken? _accessToken;
+  Token? _userTokens;
 
-  void setAccessToken(AccessToken? token) {
-    _accessToken = token;
+  void setUserTokens(Token token) {
+    _userTokens = token;
     notifyListeners();
   }
 
-  AccessToken? getAccessToken() {
-    return _accessToken;
+  Token? getUserTokens() {
+    return _userTokens;
   }
 
   AuthStatus getLoginStatus() {
     return _isLoggedIn;
   }
 
-  void login(UserInfo user) {
+  void saveUser(UserInfo user) {
     _userInfo = UserInfo(
       userId: user.userId,
       name: user.name,
@@ -37,7 +37,7 @@ class AuthModel extends ChangeNotifier {
   void logout() {
     _userInfo = null;
     _isLoggedIn = AuthStatus.unauthenticated;
-    _accessToken = null;
+    _userTokens = null;
 
     notifyListeners();
   }

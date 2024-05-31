@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/model/user_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +23,7 @@ class DataManagerService {
     }
 
     final userJson = jsonDecode(userString);
-    final user = User.fromJson(userJson);
+    final user = UserInfo.fromJson(userJson);
 
     return UserInfo(
       userId: user.userId,
@@ -33,66 +33,49 @@ class DataManagerService {
     );
   }
 
-  Future<void> saveAccessToken(AccessToken token) async {
+  Future<void> saveTokens(Token token) async {
     final tokenJson = jsonEncode(token);
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('accessToken', tokenJson);
+    await prefs.setString('tokens', tokenJson);
   }
 
-  Future<AccessToken?> retrieveAccessToken() async {
+  Future<Token?> retrieveTokens() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final tokenString = prefs.getString('accessToken');
-    if (tokenString == null) {
+    final savedTokens = prefs.getString('tokens');
+    if (savedTokens == null) {
       return null;
     }
 
-    final accessToken = jsonDecode(tokenString);
-    final token = AccessToken.fromJson(accessToken);
+    final tokenJson = jsonDecode(savedTokens);
+    final tokens = Token.fromJson(tokenJson);
 
-    return token;
+    return tokens;
   }
 
   Future<void> loadData() async {
     final user = await retrieveUser();
     if (user != null) {
-      getIt.get<AuthModel>().login(user);
+      getIt.get<AuthModel>().saveUser(user);
     }
 
-    final token = await retrieveAccessToken();
-    if (token != null) {
-      getIt.get<AuthModel>().setAccessToken(token);
+    final savedTokens = await retrieveTokens();
+    if (savedTokens != null) {
+      getIt.get<AuthModel>().setUserTokens(savedTokens);
     }
   }
 
-  Future<void> clearData() async {
+  Future<Exception?> clearData() async {
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.remove('userInfo');
-    await prefs.remove('accessToken');
-  }
-}
+    final isUserRemoved = await prefs.remove('userInfo');
+    final isTokensRemoved = await prefs.remove('tokens');
 
-class User {
-  String name;
-  String email;
-  String image;
-  int userId;
+    if (isUserRemoved != true || isTokensRemoved != true) {
+      return Exception("failed to clear user data");
+    }
 
-  User({
-    required this.name,
-    required this.email,
-    required this.image,
-    required this.userId,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      userId: json['userId'],
-      name: json['name'],
-      email: json['email'],
-      image: json['image'],
-    );
+    return null;
   }
 }

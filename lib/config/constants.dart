@@ -1,15 +1,8 @@
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/model/service_model.dart';
-import 'package:nearby_assist/model/user_info.dart';
 
 const defaultLocation = LatLng(7.422365, 125.825984);
 const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-
-final mockUser = UserInfo(
-  name: 'Juan Dela Cruz',
-  email: 'mockUser@email.com',
-  image: 'https://dummyimage.com/300',
-);
 
 final mockLocations = [
   Service(

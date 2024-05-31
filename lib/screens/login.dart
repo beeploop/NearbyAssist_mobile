@@ -34,7 +34,7 @@ class _LoginPage extends State<LoginPage> {
           children: [
             _customButton(
               'Login with Facebook',
-              () => AuthService.login(context),
+              () => AuthService.loginToFacebook(context),
             ),
           ],
         ),
