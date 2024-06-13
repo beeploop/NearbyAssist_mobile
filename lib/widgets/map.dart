@@ -39,11 +39,11 @@ class _CustomMap extends State<CustomMap> {
             return MarkerLayer(
               markers: [
                 Marker(
-                    point: currentLocation,
-                    child: const Icon(
-                      Icons.pin_drop,
-                      color: Colors.redAccent,
-                    )),
+                  rotate: true,
+                  point: currentLocation,
+                  child: const Icon(Icons.location_pin,
+                      size: 40, color: Color.fromARGB(80, 255, 0, 0)),
+                ),
                 ..._markerBuilder(serviceLocations),
               ],
             );
@@ -76,6 +76,9 @@ class _CustomMap extends State<CustomMap> {
     for (var service in serviceLocations) {
       markers.add(
         Marker(
+          height: 80,
+          width: 60,
+          rotate: true,
           point: LatLng(service.latitude, service.longitude),
           child: GestureDetector(
             onTap: () {
@@ -84,7 +87,35 @@ class _CustomMap extends State<CustomMap> {
                 pathParameters: {'vendor': '${service.id}'},
               );
             },
-            child: const Icon(Icons.pin_drop, color: Colors.red),
+            // child: const Icon(Icons.pin_drop, color: Colors.red),
+            // child: SizedBox(
+            //   height: 50,
+            //   child: Column(
+            //     children: [
+            //       const Icon(Icons.pin_drop, color: Colors.red),
+            //       Text(service.vendor),
+            //     ],
+            //   ),
+            // ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.location_pin, size: 40, color: Colors.red),
+                Container(
+                  color: Colors.red,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  child: Text(
+                    '${service.rank}',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
