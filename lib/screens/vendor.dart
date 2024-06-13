@@ -50,7 +50,10 @@ class _Vendor extends State<Vendor> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        VendorHeader(vendorInfo: serviceData.vendorInfo),
+                        VendorHeader(
+                          vendorInfo: serviceData.vendorInfo,
+                          serviceId: serviceData.serviceInfo.serviceId,
+                        ),
                         const SizedBox(height: 20),
                         VendorPhotos(
                           photos: serviceData.serviceImages,

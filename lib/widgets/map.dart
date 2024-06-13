@@ -84,7 +84,7 @@ class _CustomMap extends State<CustomMap> {
             onTap: () {
               context.goNamed(
                 'vendor',
-                pathParameters: {'vendor': '${service.id}'},
+                queryParameters: {'serviceId': '${service.id}'},
               );
             },
             // child: const Icon(Icons.pin_drop, color: Colors.red),

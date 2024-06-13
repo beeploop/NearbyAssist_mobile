@@ -4,6 +4,7 @@ import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/screens/add_service.dart';
 import 'package:nearby_assist/screens/chat.dart';
 import 'package:nearby_assist/screens/complaints.dart';
+import 'package:nearby_assist/screens/destination_route.dart';
 import 'package:nearby_assist/screens/history.dart';
 import 'package:nearby_assist/screens/home.dart';
 import 'package:nearby_assist/screens/in_progress.dart';
@@ -33,12 +34,23 @@ class AppRouter {
             },
             routes: [
               GoRoute(
-                  path: ':vendor',
-                  name: 'vendor',
-                  builder: (context, state) {
-                    final serviceId = state.pathParameters['vendor']!;
-                    return Vendor(serviceId: serviceId);
-                  }),
+                path: 'vendor',
+                name: 'vendor',
+                builder: (context, state) {
+                  final serviceId = state.uri.queryParameters['serviceId']!;
+                  return Vendor(serviceId: serviceId);
+                },
+                routes: [
+                  GoRoute(
+                    path: 'route',
+                    name: 'route',
+                    builder: (context, state) {
+                      final serviceId = state.uri.queryParameters['serviceId']!;
+                      return DestinationRoute(serviceId: int.parse(serviceId));
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ],

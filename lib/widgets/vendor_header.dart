@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
+import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/services/request/authenticated_request.dart';
 
 class VendorHeader extends StatefulWidget {
-  const VendorHeader({super.key, required this.vendorInfo});
+  const VendorHeader(
+      {super.key, required this.vendorInfo, required this.serviceId});
 
   final VendorInfoModel vendorInfo;
+  final int serviceId;
 
   @override
   State<VendorHeader> createState() => _VendorHeader();
@@ -47,19 +54,36 @@ class _VendorHeader extends State<VendorHeader> {
               ),
             ],
           ),
-          IconButton(
-            onPressed: () {
-              context.pushNamed(
-                'chat',
-                pathParameters: {'userId': '${widget.vendorInfo.vendorId}'},
-                queryParameters: {'vendorName': widget.vendorInfo.vendor},
-              );
-            },
-            icon: const Icon(
-              Icons.message,
-              size: 40,
-              color: Colors.green,
-            ),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  context.goNamed(
+                    'route',
+                    queryParameters: {'serviceId': '${widget.serviceId}'},
+                  );
+                },
+                icon: const Icon(
+                  Icons.map_outlined,
+                  size: 30,
+                  color: Colors.green,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  context.pushNamed(
+                    'chat',
+                    pathParameters: {'userId': '${widget.vendorInfo.vendorId}'},
+                    queryParameters: {'vendorName': widget.vendorInfo.vendor},
+                  );
+                },
+                icon: const Icon(
+                  Icons.message,
+                  size: 30,
+                  color: Colors.green,
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -9,6 +9,7 @@ import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/history_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/message_service.dart';
+import 'package:nearby_assist/services/routing_service.dart';
 import 'package:nearby_assist/services/transaction_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
   getIt.registerSingleton<TransactionService>(TransactionService());
   getIt.registerSingleton<HistoryService>(HistoryService());
   getIt.registerSingleton<ComplaintService>(ComplaintService());
+  getIt.registerSingleton<RoutingService>(RoutingService());
 
   // Load settings
   getIt.get<SettingsModel>().loadSettings();
