@@ -12,7 +12,7 @@ class TransactionService extends ChangeNotifier {
   final List<Transaction> _transactions = [];
 
   Future<List<Transaction>> fetchInProgressTransactions() async {
-    final server = getIt.get<SettingsModel>().getServerAddr();
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
     final userId = getIt.get<AuthModel>().getUserId();
 
     if (userId == null) {
@@ -21,7 +21,7 @@ class TransactionService extends ChangeNotifier {
 
     try {
       final resp = await http.get(
-        Uri.parse('$server/v1/transactions/ongoing/vendor/$userId'),
+        Uri.parse('$serverAddr/backend/v1/transactions/ongoing/vendor/$userId'),
       );
 
       if (resp.statusCode != 200) {

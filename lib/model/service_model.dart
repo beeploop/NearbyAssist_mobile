@@ -1,43 +1,39 @@
 class Service {
   int id;
-  String title;
-  String description;
-  int rate;
+  double suggestability;
+  int rank;
+  String vendor;
   double latitude;
   double longitude;
-  int ownerId;
 
   Service({
     required this.id,
-    required this.title,
-    required this.description,
-    required this.rate,
+    required this.suggestability,
+    required this.rank,
+    required this.vendor,
     required this.latitude,
     required this.longitude,
-    required this.ownerId,
   });
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
-      id: json['Id'],
-      title: json['Title'],
-      description: json['Description'],
-      rate: json['Rate'],
-      latitude: json['Latitude'] as double,
-      longitude: json['Longitude'] as double,
-      ownerId: json['Vendor'] as int,
+      id: json['id'],
+      suggestability: json['suggestability'],
+      rank: json['rank'],
+      vendor: json['vendor'],
+      latitude: json['latitude'],
+      longitude: json['longitude'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'title': title,
-      'description': description,
-      'rate': rate,
+      'title': suggestability,
+      'rank': rank,
+      'vendor': vendor,
       'latitude': latitude,
       'longitude': longitude,
-      'ownerId': ownerId,
     };
   }
 }

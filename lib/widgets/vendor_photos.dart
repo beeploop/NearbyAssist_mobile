@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
-import 'package:nearby_assist/model/service_photos.dart';
+import 'package:nearby_assist/model/service_image_model.dart';
 
 class VendorPhotos extends StatefulWidget {
   const VendorPhotos({super.key, required this.photos});
 
-  final List<ServicePhoto> photos;
+  final List<ServiceImageModel> photos;
 
   @override
   State<VendorPhotos> createState() => _VendorPhotos();
@@ -38,7 +38,7 @@ class _VendorPhotos extends State<VendorPhotos> {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: InstaImageViewer(
                         child: Image.network(
-                          widget.photos[index].url,
+                          widget.photos[index].imageUrl,
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) {
                               return child;

@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class ComplaintService extends ChangeNotifier {
   Future<List> fetchComplaints() async {
-    final server = getIt.get<SettingsModel>().getServerAddr();
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
     final userId = getIt.get<AuthModel>().getUserId();
 
     if (userId == null) {
@@ -16,7 +16,7 @@ class ComplaintService extends ChangeNotifier {
     }
 
     try {
-      final resp = await http.get(Uri.parse('$server/v1/complaints/$userId'));
+      final resp = await http.get(Uri.parse('$serverAddr/backend/v1/complaints/$userId'));
 
       if (resp.statusCode != 200) {
         throw HttpException(

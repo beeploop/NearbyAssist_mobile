@@ -1,13 +1,15 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/count_per_rating_model.dart';
 import 'package:nearby_assist/model/my_service.dart';
 import 'package:nearby_assist/model/service_detail_model.dart';
+import 'package:nearby_assist/model/service_image_model.dart';
+import 'package:nearby_assist/model/service_info_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
-import 'package:http/http.dart' as http;
+import 'package:nearby_assist/model/vendor_info_model.dart';
 import 'package:nearby_assist/model/vendor_model.dart';
+import 'package:nearby_assist/services/request/authenticated_request.dart';
 
 class VendorService extends ChangeNotifier {
   bool _loading = false;
@@ -22,7 +24,6 @@ class VendorService extends ChangeNotifier {
   }
 
   Future<List<MyService>> fetchVendorServices() async {
-    final server = getIt.get<SettingsModel>().getServerAddr();
     final user = getIt.get<AuthModel>().getUser();
 
     if (user == null) {
@@ -30,19 +31,19 @@ class VendorService extends ChangeNotifier {
     }
 
     try {
-      final resp = await http.get(
-        Uri.parse('$server/v1/services/owner/${user.userId}'),
-      );
-
-      if (resp.statusCode != 200) {
-        throw HttpException(
-          'Server responded with status code: ${resp.statusCode}',
-        );
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('Error fetching user tokens');
       }
 
+      final endpoint = '/backend/v1/public/services/vendor/${user.userId}';
+      final request = AuthenticatedRequest<Map<String, dynamic>>(
+        accessToken: tokens.accessToken,
+      );
+      final response = await request.getRequest(endpoint);
+
       List<MyService> services = [];
-      List json = jsonDecode(resp.body);
-      for (var service in json) {
+      for (var service in response['services']) {
         final s = MyService.fromJson(service);
         services.add(s);
       }
@@ -56,23 +57,37 @@ class VendorService extends ChangeNotifier {
   Future<void> fetchServiceInfo(String id) async {
     _toggleLoading(true);
 
-    final server = getIt.get<SettingsModel>().getServerAddr();
     try {
-      final resp = await http.get(Uri.parse('$server/v1/services/$id'));
-
-      if (resp.statusCode != 200) {
-        throw HttpException(
-          'Server responded with status code: ${resp.statusCode}',
-        );
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('Error fetching user tokens');
       }
 
-      final response = jsonDecode(resp.body);
-      ServiceDetailModel serviceInfo = ServiceDetailModel.fromJson(response);
-      final reviewCountString = serviceInfo.reviewCountMap.toString();
-      final reviewCountMap = parseReviewCount(reviewCountString);
-      serviceInfo.reviewCountMap = reviewCountMap;
+      final endpoint = '/backend/v1/public/services/$id';
+      final request = AuthenticatedRequest<Map<String, dynamic>>(
+        accessToken: tokens.accessToken,
+      );
+      final response = await request.getRequest(endpoint);
 
-      _serviceInfo = serviceInfo;
+      final countPerRating =
+          CountPerRatingModel.fromJson(response['countPerRating']);
+      final serviceInfo = ServiceInfoModel.fromJson(response['serviceInfo']);
+      final vendorInfo = VendorInfoModel.fromJson(response['vendorInfo']);
+
+      List<ServiceImageModel> serviceImages = [];
+      for (var image in response['serviceImages']) {
+        final s = ServiceImageModel.fromJson(image);
+        serviceImages.add(s);
+      }
+
+      final serviceDetails = ServiceDetailModel(
+        countPerRating: countPerRating,
+        serviceInfo: serviceInfo,
+        vendorInfo: vendorInfo,
+        serviceImages: serviceImages,
+      );
+
+      _serviceInfo = serviceDetails;
     } catch (e) {
       debugPrint('error fetching vendor data: $e');
       _serviceInfo = null;
@@ -83,7 +98,6 @@ class VendorService extends ChangeNotifier {
   }
 
   Future<bool?> checkVendorStatus() async {
-    final server = getIt.get<SettingsModel>().getServerAddr();
     final user = getIt.get<AuthModel>().getUser();
 
     if (user == null) {
@@ -91,23 +105,22 @@ class VendorService extends ChangeNotifier {
     }
 
     try {
-      final resp =
-          await http.get(Uri.parse('$server/v1/vendors/${user.userId}'));
-
-      if (resp.statusCode == 204) {
-        return false;
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('Error fetching user tokens');
       }
 
-      if (resp.statusCode != 200) {
-        throw HttpException(
-          'Server responded with status code: ${resp.statusCode}',
-        );
+      final endpoint = '/backend/v1/public/vendors/${user.userId}';
+      final request = AuthenticatedRequest(accessToken: tokens.accessToken);
+      final response = await request.getRequest(endpoint);
+      if (response == null) {
+        throw Exception('Error fetching vendor status');
       }
 
       return true;
     } catch (e) {
       debugPrint('error fetching vendor data: $e');
-      return null;
+      return false;
     }
   }
 
@@ -138,4 +151,3 @@ class VendorService extends ChangeNotifier {
     return reviewCountMap;
   }
 }
-

@@ -1,12 +1,10 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/service_model.dart';
-import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/services/location_service.dart';
-import 'package:http/http.dart' as http;
+import 'package:nearby_assist/services/request/authenticated_request.dart';
 
 class SearchingService extends ChangeNotifier {
   bool _searching = false;
@@ -82,29 +80,30 @@ class SearchingService extends ChangeNotifier {
 
   Future<List<Service>> _fetchServices() async {
     final location = getIt.get<LocationService>().getLocation();
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
 
     try {
-      final resp = await http.get(
-        Uri.parse(
-            '$serverAddr/v1/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius'),
-      );
-
-      if (resp.statusCode != 200) {
-        throw HttpException(
-            'request responded with status code: ${resp.statusCode}');
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('error retrieving user token');
       }
 
+      final endpoint =
+          '/backend/v1/public/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
+
+      final request = AuthenticatedRequest<Map<String, dynamic>>(
+        accessToken: tokens.accessToken,
+      );
+      final response = await request.getRequest(endpoint);
+
       List<Service> result = [];
-      List services = jsonDecode(resp.body);
-      for (var service in services) {
+      for (var service in response['services']) {
         final s = Service.fromJson(service);
         result.add(s);
       }
 
       return result;
     } catch (e) {
-      debugPrint('======= error fetching search result: $e');
+      debugPrint('Error fetching service: $e');
       return [];
     }
   }

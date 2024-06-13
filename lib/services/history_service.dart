@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 class HistoryService extends ChangeNotifier {
   Future<List> fetchHistory() async {
-    final server = getIt.get<SettingsModel>().getServerAddr();
+    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
     final userId = getIt.get<AuthModel>().getUserId();
 
     if (userId == null) {
@@ -17,7 +17,7 @@ class HistoryService extends ChangeNotifier {
     }
 
     try {
-      final resp = await http.get(Uri.parse('$server/v1/history/$userId'));
+      final resp = await http.get(Uri.parse('$serverAddr/backend/v1/history/$userId'));
 
       if (resp.statusCode != 200) {
         throw HttpException(

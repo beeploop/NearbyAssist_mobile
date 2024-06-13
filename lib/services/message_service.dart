@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/conversation.dart';
 import 'package:nearby_assist/model/message.dart';
-import 'package:http/http.dart' as http;
 import 'package:nearby_assist/model/settings_model.dart';
+import 'package:nearby_assist/services/request/authenticated_request.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageService extends ChangeNotifier {
@@ -23,11 +22,10 @@ class MessageService extends ChangeNotifier {
 
   void connectWebsocket() {
     final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
-    final userId = getIt.get<AuthModel>().getUserId();
 
     try {
       _channel = WebSocketChannel.connect(
-        Uri.parse('$websocketAddr/v1/messages/chat?userId=$userId'),
+        Uri.parse('$websocketAddr/backend/v1/public/chat/ws'),
       );
 
       if (_channel != null) {
@@ -46,24 +44,20 @@ class MessageService extends ChangeNotifier {
   }
 
   Future<void> fetchMessages(int recipientId) async {
-    final userId = getIt.get<AuthModel>().getUserId();
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-
     try {
-      final resp = await http.get(
-        Uri.parse(
-          '$serverAddr/v1/messages/conversations?from=$userId&to=$recipientId',
-        ),
-      );
-
-      if (resp.statusCode != 200) {
-        throw Exception('Failed to fetch messages');
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('error retrieving user token');
       }
+
+      final endpoint = '/backend/v1/public/chat/messages/$recipientId';
+      final request = AuthenticatedRequest<Map<String, dynamic>>(
+          accessToken: tokens.accessToken);
+      final response = await request.getRequest(endpoint);
 
       _messages.clear();
 
-      List messages = jsonDecode(resp.body);
-      for (var message in messages) {
+      for (var message in response['messages']) {
         final msg = Message.fromJson(message);
         _messages.add(msg);
       }
@@ -109,23 +103,23 @@ class MessageService extends ChangeNotifier {
   }
 
   Future<List<Conversation>> fetchConversations() async {
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-    final userId = getIt.get<AuthModel>().getUserId();
     List<Conversation> conversations = [];
 
     try {
-      final resp = await http.get(
-        Uri.parse(
-          '$serverAddr/v1/messages/acquaintances?userId=$userId',
-        ),
-      );
-
-      if (resp.statusCode != 200) {
-        throw Exception('Failed to fetch conversations');
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('error retrieving user token');
       }
 
-      List jsonified = jsonDecode(resp.body);
-      for (var conversation in jsonified) {
+      final request = AuthenticatedRequest<Map<String, dynamic>>(
+        accessToken: tokens.accessToken,
+      );
+
+      final response = await request.getRequest(
+        '/backend/v1/public/chat/conversations',
+      );
+
+      for (var conversation in response['conversations']) {
         final conv = Conversation.fromJson(conversation);
         conversations.add(conv);
       }

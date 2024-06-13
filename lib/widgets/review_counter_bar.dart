@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/services/vendor_service.dart';
+import 'package:nearby_assist/model/count_per_rating_model.dart';
 
 class ReviewCounterBar extends StatefulWidget {
-  const ReviewCounterBar({super.key});
+  const ReviewCounterBar({super.key, required this.countPerRating});
+
+  final CountPerRatingModel countPerRating;
 
   @override
   State<ReviewCounterBar> createState() => _ReviewCounterBar();
 }
 
 class _ReviewCounterBar extends State<ReviewCounterBar> {
-  final serviceData = getIt.get<VendorService>().getServiceInfo();
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -21,9 +20,7 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('5')),
             Expanded(
               child: LinearProgressIndicator(
-                value: serviceData != null
-                    ? computeEquivalence(serviceData!.reviewCountMap[5]!)
-                    : 0,
+                value: computeEquivalence(widget.countPerRating.five),
                 minHeight: 8,
               ),
             )
@@ -34,9 +31,7 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('4')),
             Expanded(
               child: LinearProgressIndicator(
-                value: serviceData != null
-                    ? computeEquivalence(serviceData!.reviewCountMap[4]!)
-                    : 0,
+                value: computeEquivalence(widget.countPerRating.four),
                 minHeight: 8,
               ),
             )
@@ -47,9 +42,7 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('3')),
             Expanded(
               child: LinearProgressIndicator(
-                value: serviceData != null
-                    ? computeEquivalence(serviceData!.reviewCountMap[3]!)
-                    : 0,
+                value: computeEquivalence(widget.countPerRating.three),
                 minHeight: 8,
               ),
             )
@@ -60,9 +53,7 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('2')),
             Expanded(
               child: LinearProgressIndicator(
-                value: serviceData != null
-                    ? computeEquivalence(serviceData!.reviewCountMap[2]!)
-                    : 0,
+                value: computeEquivalence(widget.countPerRating.two),
                 minHeight: 8,
               ),
             )
@@ -73,9 +64,7 @@ class _ReviewCounterBar extends State<ReviewCounterBar> {
             const SizedBox(width: 20, child: Text('1')),
             Expanded(
               child: LinearProgressIndicator(
-                value: serviceData != null
-                    ? computeEquivalence(serviceData!.reviewCountMap[1]!)
-                    : 0,
+                value: computeEquivalence(widget.countPerRating.one),
                 minHeight: 8,
               ),
             )
