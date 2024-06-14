@@ -33,16 +33,6 @@ class _DestinationRoute extends State<DestinationRoute> {
               urlTemplate: tileMapProvider,
               userAgentPackageName: 'com.example.app',
             ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  rotate: true,
-                  point: currentLocation,
-                  child: const Icon(Icons.location_pin,
-                      size: 40, color: Color.fromARGB(80, 255, 0, 0)),
-                ),
-              ],
-            ),
             FutureBuilder(
               future: getIt.get<RoutingService>().findRoute(widget.serviceId),
               builder: (context, snapshot) {
@@ -68,6 +58,19 @@ class _DestinationRoute extends State<DestinationRoute> {
                   ],
                 );
               },
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  rotate: true,
+                  point: currentLocation,
+                  child: const Icon(
+                    Icons.person_pin,
+                    size: 30.0,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
