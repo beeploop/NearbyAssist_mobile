@@ -108,8 +108,8 @@ class VendorService extends ChangeNotifier {
       final endpoint = '/backend/v1/public/vendors/${user.userId}';
       final request = AuthenticatedRequest<Map<String, dynamic>>();
       final response = await request.request(endpoint, "GET");
-      if (response == null) {
-        throw Exception('Error fetching vendor status');
+      if (response.containsKey('vendor') == false) {
+        return false;
       }
 
       return true;
