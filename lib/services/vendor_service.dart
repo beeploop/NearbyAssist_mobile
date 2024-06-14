@@ -46,7 +46,7 @@ class VendorService extends ChangeNotifier {
       }
       return services;
     } catch (e) {
-      print('error fetching vendor services: $e');
+      debugPrint('error fetching vendor services: $e');
       return [];
     }
   }

@@ -50,20 +50,19 @@ class _MyServicesList extends State<MyServicesList> {
                 final service = services[index];
 
                 return ListTile(
-                  title: Text(service.title),
-                  subtitle: Text(service.description),
+                  title: Text(service.description),
                   trailing: PopupMenuButton(itemBuilder: (context) {
                     return [
                       PopupMenuItem(
                         onTap: () {
-                          print('clicked edit ${service.title}');
+                          print('clicked edit ${service.id}');
                         },
                         value: 'edit',
                         child: const Text('Edit'),
                       ),
                       PopupMenuItem(
                         onTap: () {
-                          print('clicked delete ${service.title}');
+                          print('clicked delete ${service.id}');
                         },
                         value: 'delete',
                         child: const Text('Delete'),
