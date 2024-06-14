@@ -90,10 +90,8 @@ class SearchingService extends ChangeNotifier {
       final endpoint =
           '/backend/v1/public/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
 
-      final request = AuthenticatedRequest<Map<String, dynamic>>(
-        accessToken: tokens.accessToken,
-      );
-      final response = await request.getRequest(endpoint);
+      final request = AuthenticatedRequest<Map<String, dynamic>>();
+      final response = await request.request(endpoint, "GET");
 
       List<Service> result = [];
       for (var service in response['services']) {

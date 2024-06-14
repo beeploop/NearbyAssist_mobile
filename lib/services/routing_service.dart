@@ -15,12 +15,10 @@ class RoutingService extends ChangeNotifier {
 
       final location = getIt.get<LocationService>().getLocation();
 
-      final request = AuthenticatedRequest<Map<String, dynamic>>(
-        accessToken: tokens.accessToken,
-      );
+      final request = AuthenticatedRequest<Map<String, dynamic>>();
       final endpoint =
           '/backend/v1/public/services/route/$serviceId?origin=${location.latitude},${location.longitude}';
-      final response = await request.getRequest(endpoint);
+      final response = await request.request(endpoint, "GET");
 
       final polyline = decodePolyline(response['polyline']);
       return polyline;

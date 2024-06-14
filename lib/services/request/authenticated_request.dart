@@ -1,72 +1,54 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/services/request/request.dart';
 
 class AuthenticatedRequest<T extends Object> extends Request {
-  String accessToken;
-  int retryCount = 0;
-  int maxRetries = 5;
-
-  AuthenticatedRequest({required this.accessToken});
-
   @override
-  Future<T> getRequest(String endpoint) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$serverAddr/$endpoint'),
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
+  Future<T> request(String endpoint, String method,
+      {Map<String, dynamic>? body}) async {
+    http.Response response = await makeRequest(endpoint, method, body: body);
 
-      if (response.statusCode != 200) {
-        throw Exception(response.body);
-      }
-
-      T data = jsonDecode(response.body);
-
-      return data;
-    } catch (e) {
-      debugPrint('endpoint responded with error: $e');
-      rethrow;
+    if (response.statusCode == 401) {
+      await _refreshToken();
+      response = await makeRequest(endpoint, method, body: body);
     }
+
+    T data = jsonDecode(response.body);
+    return data;
   }
 
-  @override
-  Future postRequest(String endpoint, body) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$serverAddr/$endpoint'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
-        },
-        body: jsonEncode(body),
-      );
-
-      if (response.statusCode != 200) {
-        return HttpException(response.body);
-      }
-
-      T data = jsonDecode(response.body);
-      return data;
-    } catch (e) {
-      debugPrint('endpoint responded with error: $e');
-      rethrow;
-    }
-  }
-
-  void updateAccessToken() {
+  Future<void> _refreshToken() async {
     final tokens = getIt.get<AuthModel>().getUserTokens();
     if (tokens == null) {
-      debugPrint('cannot retrieve access token');
-      return;
+      throw Exception('No tokens found');
     }
 
-    this.accessToken = tokens.accessToken;
+    final url = Uri.parse('$serverAddr/backend/auth/refresh');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${tokens.accessToken}',
+    };
+
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: jsonEncode({
+        'token': tokens.refreshToken,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to refresh token');
+    }
+
+    final updatedTokens = Token(
+      accessToken: jsonDecode(response.body)['accessToken'],
+      refreshToken: tokens.refreshToken,
+    );
+
+    getIt.get<AuthModel>().setUserTokens(updatedTokens);
   }
 }

@@ -6,7 +6,6 @@ import 'package:nearby_assist/model/my_service.dart';
 import 'package:nearby_assist/model/service_detail_model.dart';
 import 'package:nearby_assist/model/service_image_model.dart';
 import 'package:nearby_assist/model/service_info_model.dart';
-import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
 import 'package:nearby_assist/model/vendor_model.dart';
 import 'package:nearby_assist/services/request/authenticated_request.dart';
@@ -37,10 +36,8 @@ class VendorService extends ChangeNotifier {
       }
 
       final endpoint = '/backend/v1/public/services/vendor/${user.userId}';
-      final request = AuthenticatedRequest<Map<String, dynamic>>(
-        accessToken: tokens.accessToken,
-      );
-      final response = await request.getRequest(endpoint);
+      final request = AuthenticatedRequest<Map<String, dynamic>>();
+      final response = await request.request(endpoint, "GET");
 
       List<MyService> services = [];
       for (var service in response['services']) {
@@ -64,10 +61,8 @@ class VendorService extends ChangeNotifier {
       }
 
       final endpoint = '/backend/v1/public/services/$id';
-      final request = AuthenticatedRequest<Map<String, dynamic>>(
-        accessToken: tokens.accessToken,
-      );
-      final response = await request.getRequest(endpoint);
+      final request = AuthenticatedRequest<Map<String, dynamic>>();
+      final response = await request.request(endpoint, "GET");
 
       final countPerRating =
           CountPerRatingModel.fromJson(response['countPerRating']);
@@ -111,8 +106,8 @@ class VendorService extends ChangeNotifier {
       }
 
       final endpoint = '/backend/v1/public/vendors/${user.userId}';
-      final request = AuthenticatedRequest(accessToken: tokens.accessToken);
-      final response = await request.getRequest(endpoint);
+      final request = AuthenticatedRequest<Map<String, dynamic>>();
+      final response = await request.request(endpoint, "GET");
       if (response == null) {
         throw Exception('Error fetching vendor status');
       }

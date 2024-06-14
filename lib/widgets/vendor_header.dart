@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
-import 'package:nearby_assist/services/location_service.dart';
-import 'package:nearby_assist/services/request/authenticated_request.dart';
 
 class VendorHeader extends StatefulWidget {
   const VendorHeader(
