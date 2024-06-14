@@ -40,9 +40,10 @@ class _CustomMap extends State<CustomMap> {
               markers: [
                 Marker(
                   rotate: true,
+                  alignment: Alignment.topCenter,
                   point: currentLocation,
                   child: const Icon(Icons.location_pin,
-                      size: 40, color: Color.fromARGB(80, 255, 0, 0)),
+                      size: 40, color: Color.fromARGB(70, 255, 0, 0)),
                 ),
                 ..._markerBuilder(serviceLocations),
               ],
@@ -79,6 +80,7 @@ class _CustomMap extends State<CustomMap> {
           height: 80,
           width: 60,
           rotate: true,
+          alignment: Alignment.topCenter,
           point: LatLng(service.latitude, service.longitude),
           child: GestureDetector(
             onTap: () {
@@ -87,20 +89,9 @@ class _CustomMap extends State<CustomMap> {
                 queryParameters: {'serviceId': '${service.id}'},
               );
             },
-            // child: const Icon(Icons.pin_drop, color: Colors.red),
-            // child: SizedBox(
-            //   height: 50,
-            //   child: Column(
-            //     children: [
-            //       const Icon(Icons.pin_drop, color: Colors.red),
-            //       Text(service.vendor),
-            //     ],
-            //   ),
-            // ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.location_pin, size: 40, color: Colors.red),
                 Container(
                   color: Colors.red,
                   padding:
@@ -114,6 +105,7 @@ class _CustomMap extends State<CustomMap> {
                     ),
                   ),
                 ),
+                const Icon(Icons.location_pin, size: 40, color: Colors.red),
               ],
             ),
           ),
