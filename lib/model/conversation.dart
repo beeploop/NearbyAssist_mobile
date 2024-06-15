@@ -1,27 +1,31 @@
 class Conversation {
-  String name;
-  String image;
   int userId;
+  String name;
+  String email;
+  String imageUrl;
 
   Conversation({
     required this.name,
-    required this.image,
+    required this.imageUrl,
+    required this.email,
     required this.userId,
   });
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     return Conversation(
-      name: json['Name'],
-      image: json['Image'],
-      userId: json['Id'],
+      userId: json['id'],
+      name: json['name'],
+      email: json['email'],
+      imageUrl: json['imageUrl'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'image': image,
       'userId': userId,
+      'name': name,
+      'email': email,
+      'image': imageUrl,
     };
   }
 }

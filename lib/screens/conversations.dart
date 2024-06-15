@@ -57,7 +57,7 @@ class _Conversations extends State<Conversations> {
                       },
                       leading: CircleAvatar(
                         foregroundImage: NetworkImage(
-                          conversations[index].image,
+                          conversations[index].imageUrl,
                         ),
                       ),
                       title: Text(conversations[index].name),
