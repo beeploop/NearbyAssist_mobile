@@ -1,26 +1,26 @@
 class Message {
-  int fromId;
-  int toId;
+  int sender;
+  int receiver;
   String content;
 
   Message({
-    required this.fromId,
-    required this.toId,
+    required this.sender,
+    required this.receiver,
     required this.content,
   });
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
-      fromId: json['Sender'],
-      toId: json['Reciever'],
-      content: json['Content'],
+      sender: json['sender'],
+      receiver: json['receiver'],
+      content: json['content'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'sender': fromId,
-      'reciever': toId,
+      'sender': sender,
+      'receiver': receiver,
       'content': content,
     };
   }

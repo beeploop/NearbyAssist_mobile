@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:nearby_assist/main.dart';
@@ -43,43 +44,93 @@ class _Chat extends State<Chat> {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder(
-              stream: getIt
-                  .get<MessageService>()
-                  .stream()
-                  .map((event) => Message.fromJson(event)),
+            child: FutureBuilder(
+              future: getIt.get<MessageService>().fetchMessages(widget.userId),
               builder: (context, snapshot) {
-                return FutureBuilder(
-                  future:
-                      getIt.get<MessageService>().fetchMessages(widget.userId),
-                  builder: (context, _) {
-                    return ListenableBuilder(
-                      listenable: getIt.get<MessageService>(),
-                      builder: (context, _) {
-                        final messages =
-                            getIt.get<MessageService>().getMessages();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-                        SchedulerBinding.instance.addPostFrameCallback((_) {
-                          _scrollToBottom();
-                        });
+                if (snapshot.hasError) {
+                  final error = snapshot.error;
+
+                  return Center(
+                    child: Text('An error occurred: $error'),
+                  );
+                }
+
+                if (snapshot.hasData) {
+                  final initialMessages = snapshot.data;
+
+                  if (initialMessages == null) {
+                    return const Center(
+                      child: Text(
+                        'Something went wrong. Please try again later.',
+                      ),
+                    );
+                  }
+
+                  SchedulerBinding.instance.addPostFrameCallback((_) {
+                    _scrollToBottom();
+                  });
+
+                  return StreamBuilder(
+                    stream: getIt.get<MessageService>().stream().map((event) {
+                      debugPrint('====== event: $event');
+                      final message = jsonDecode(event);
+                      return Message.fromJson(message);
+                    }),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        final error = snapshot.error;
+
+                        return Center(
+                          child: Text('An error occurred: $error'),
+                        );
+                      }
+
+                      if (snapshot.hasData) {
+                        final data = snapshot.data!;
+                        initialMessages.add(data);
 
                         return ListView.builder(
                           padding: const EdgeInsets.all(6),
                           controller: _scrollController,
                           shrinkWrap: true,
-                          itemCount: messages.length,
+                          itemCount: initialMessages.length,
                           itemBuilder: (context, index) {
                             return Container(
                               margin: const EdgeInsets.all(6),
                               padding: const EdgeInsets.all(10),
                               color: Colors.lightGreen,
-                              child: Text(messages[index].content),
+                              child: Text(initialMessages[index].content),
                             );
                           },
                         );
-                      },
-                    );
-                  },
+                      }
+
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(6),
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        itemCount: initialMessages.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(10),
+                            color: Colors.lightGreen,
+                            child: Text(initialMessages[index].content),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+
+                return const Center(
+                  child: Text('Something went wrong. Please try again later.'),
                 );
               },
             ),

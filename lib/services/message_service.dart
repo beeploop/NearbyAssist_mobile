@@ -24,8 +24,13 @@ class MessageService extends ChangeNotifier {
     final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
 
     try {
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('error retrieving user token');
+      }
+
       _channel = WebSocketChannel.connect(
-        Uri.parse('$websocketAddr/backend/v1/public/chat/ws'),
+        Uri.parse('$websocketAddr/backend/chat/ws?token=${tokens.accessToken}'),
       );
 
       if (_channel != null) {
@@ -43,7 +48,7 @@ class MessageService extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchMessages(int recipientId) async {
+  Future<List<Message>> fetchMessages(int recipientId) async {
     try {
       final tokens = getIt.get<AuthModel>().getUserTokens();
       if (tokens == null) {
@@ -60,12 +65,14 @@ class MessageService extends ChangeNotifier {
         final msg = Message.fromJson(message);
         _messages.add(msg);
       }
+
+      return _messages;
     } catch (e) {
       _messages.clear();
       debugPrint('error fetching messages: $e');
-    }
 
-    notifyListeners();
+      return [];
+    }
   }
 
   List<Message> getMessages() => _messages;
@@ -79,8 +86,8 @@ class MessageService extends ChangeNotifier {
     }
 
     final message = Message(
-      fromId: userId,
-      toId: toId,
+      sender: userId,
+      receiver: toId,
       content: text,
     );
 
