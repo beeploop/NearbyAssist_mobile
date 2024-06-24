@@ -13,6 +13,7 @@ import 'package:nearby_assist/screens/conversations.dart';
 import 'package:nearby_assist/screens/map_page.dart';
 import 'package:nearby_assist/screens/my_services.dart';
 import 'package:nearby_assist/screens/new_message.dart';
+import 'package:nearby_assist/screens/report_issue.dart';
 import 'package:nearby_assist/screens/settings.dart';
 import 'package:nearby_assist/screens/vendor.dart';
 
@@ -97,6 +98,12 @@ class AppRouter {
             return const Complaints();
           }),
       GoRoute(
+          path: '/report',
+          name: 'report',
+          builder: (context, state) {
+            return const ReportIssue();
+          }),
+      GoRoute(
           path: '/my-services',
           name: 'my-services',
           builder: (context, state) {
@@ -121,6 +128,12 @@ class AppRouter {
           name: 'login',
           builder: (context, state) {
             return const LoginPage();
+          }),
+      GoRoute(
+          path: '/report-issue',
+          name: 'report-issue',
+          builder: (context, state) {
+            return const ReportIssue();
           }),
     ],
     redirect: (context, state) {

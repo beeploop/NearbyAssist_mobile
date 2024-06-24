@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
@@ -16,7 +15,8 @@ class ComplaintService extends ChangeNotifier {
     }
 
     try {
-      final resp = await http.get(Uri.parse('$serverAddr/backend/v1/complaints/$userId'));
+      final resp = await http
+          .get(Uri.parse('$serverAddr/backend/v1/complaints/$userId'));
 
       if (resp.statusCode != 200) {
         throw HttpException(

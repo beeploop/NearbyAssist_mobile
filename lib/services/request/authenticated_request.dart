@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/services/request/request.dart';
+import 'package:nearby_assist/services/system_complaint_service.dart';
 
 class AuthenticatedRequest<T extends Object> extends Request {
   @override
@@ -18,6 +20,44 @@ class AuthenticatedRequest<T extends Object> extends Request {
 
     T data = jsonDecode(response.body);
     return data;
+  }
+
+  Future<T> multipartRequest(String endpoint, List<File> files,
+      List<SystemComplaintFormData> data) async {
+    http.StreamedResponse streamResponse =
+        await _makeMultipartRequest(endpoint, files, data);
+
+    if (streamResponse.statusCode == 401) {
+      await _refreshToken();
+      streamResponse = await _makeMultipartRequest(endpoint, files, data);
+    }
+
+    final response = await http.Response.fromStream(streamResponse);
+    T responseData = jsonDecode(response.body);
+
+    return responseData;
+  }
+
+  Future<http.StreamedResponse> _makeMultipartRequest(String endpoint,
+      List<File> files, List<SystemComplaintFormData> data) async {
+    final tokens = getIt.get<AuthModel>().getUserTokens();
+    if (tokens == null) {
+      throw Exception('No tokens found');
+    }
+
+    final url = Uri.parse('$serverAddr/$endpoint');
+    final request = http.MultipartRequest("POST", url);
+    request.headers['Authorization'] = 'Bearer ${tokens.accessToken}';
+
+    for (var file in files) {
+      request.files.add(await http.MultipartFile.fromPath('files', file.path));
+    }
+
+    for (var item in data) {
+      request.fields[item.key] = item.value;
+    }
+
+    return await request.send();
   }
 
   Future<void> _refreshToken() async {
