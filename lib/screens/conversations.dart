@@ -71,13 +71,6 @@ class _Conversations extends State<Conversations> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.goNamed('new-message');
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('New Message'),
-      ),
     );
   }
 }
