@@ -1,9 +1,11 @@
 class Message {
+  int id;
   int sender;
   int receiver;
   String content;
 
   Message({
+    required this.id,
     required this.sender,
     required this.receiver,
     required this.content,
@@ -11,6 +13,7 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(
+      id: json['id'],
       sender: json['sender'],
       receiver: json['receiver'],
       content: json['content'],
@@ -19,6 +22,7 @@ class Message {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'sender': sender,
       'receiver': receiver,
       'content': content,
