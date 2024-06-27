@@ -9,7 +9,7 @@ import 'package:nearby_assist/services/request/authenticated_request.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageService extends ChangeNotifier {
-  final List<Message> _messages = [];
+  List<Message> _messages = [];
   WebSocketChannel? _channel;
 
   bool isWebsocketConnected() {
@@ -18,6 +18,16 @@ class MessageService extends ChangeNotifier {
     }
 
     return true;
+  }
+
+  void setInitialMessages(List<Message> messages) {
+    _messages = messages;
+    notifyListeners();
+  }
+
+  void appendMessage(Message message) {
+    _messages.add(message);
+    notifyListeners();
   }
 
   void connectWebsocket() {
@@ -86,6 +96,7 @@ class MessageService extends ChangeNotifier {
     }
 
     final message = Message(
+      id: 0,
       sender: userId,
       receiver: toId,
       content: text,
@@ -99,10 +110,10 @@ class MessageService extends ChangeNotifier {
     _channel!.sink.add(jsonEncode(message));
   }
 
-  void addMessage(Message message) {
-    _messages.add(message);
-    notifyListeners();
-  }
+  // void addMessage(Message message) {
+  //   _messages.add(message);
+  //   notifyListeners();
+  // }
 
   Stream<dynamic> stream() {
     return _channel!.stream;

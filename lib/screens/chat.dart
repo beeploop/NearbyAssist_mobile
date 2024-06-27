@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:nearby_assist/services/message_service.dart';
-import 'package:nearby_assist/widgets/chat_input.dart';
+import 'package:nearby_assist/widgets/chat_component.dart';
 
 class Chat extends StatefulWidget {
-  const Chat({super.key, required this.userId, required this.name});
+  const Chat({super.key, required this.recipientId, required this.name});
 
-  final int userId;
+  final int recipientId;
   final String name;
 
   @override
@@ -17,8 +17,6 @@ class Chat extends StatefulWidget {
 }
 
 class _Chat extends State<Chat> {
-  final ScrollController _scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
@@ -30,9 +28,7 @@ class _Chat extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+    final userId = getIt.get<AuthModel>().getUserId()!;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,114 +37,56 @@ class _Chat extends State<Chat> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: FutureBuilder(
-              future: getIt.get<MessageService>().fetchMessages(widget.userId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+      body: FutureBuilder(
+        future: getIt.get<MessageService>().fetchMessages(widget.recipientId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-                if (snapshot.hasError) {
-                  final error = snapshot.error;
+          if (snapshot.hasError) {
+            final error = snapshot.error;
 
-                  return Center(
-                    child: Text('An error occurred: $error'),
-                  );
-                }
+            return Center(
+              child: Text('An error occurred: $error'),
+            );
+          }
 
-                if (snapshot.hasData) {
-                  final initialMessages = snapshot.data;
+          if (snapshot.hasData) {
+            final data = snapshot.data!;
+            getIt.get<MessageService>().setInitialMessages(data);
+          }
 
-                  if (initialMessages == null) {
-                    return const Center(
-                      child: Text(
-                        'Something went wrong. Please try again later.',
-                      ),
-                    );
-                  }
+          return StreamBuilder(
+            stream: getIt.get<MessageService>().stream().map((event) {
+              final decoded = jsonDecode(event);
+              return Message.fromJson(decoded);
+            }),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                final error = snapshot.error;
 
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    _scrollToBottom();
-                  });
-
-                  return StreamBuilder(
-                    stream: getIt.get<MessageService>().stream().map((event) {
-                      debugPrint('====== event: $event');
-                      final message = jsonDecode(event);
-                      return Message.fromJson(message);
-                    }),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        final error = snapshot.error;
-
-                        return Center(
-                          child: Text('An error occurred: $error'),
-                        );
-                      }
-
-                      if (snapshot.hasData) {
-                        final data = snapshot.data!;
-                        initialMessages.add(data);
-
-                        return ListView.builder(
-                          padding: const EdgeInsets.all(6),
-                          controller: _scrollController,
-                          shrinkWrap: true,
-                          itemCount: initialMessages.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.all(6),
-                              padding: const EdgeInsets.all(10),
-                              color: Colors.lightGreen,
-                              child: Text(initialMessages[index].content),
-                            );
-                          },
-                        );
-                      }
-
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(6),
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        itemCount: initialMessages.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.all(6),
-                            padding: const EdgeInsets.all(10),
-                            color: Colors.lightGreen,
-                            child: Text(initialMessages[index].content),
-                          );
-                        },
-                      );
-                    },
-                  );
-                }
-
-                return const Center(
-                  child: Text('Something went wrong. Please try again later.'),
+                return Center(
+                  child: Text('An error occurred: $error'),
                 );
-              },
-            ),
-          ),
-          ChatInput(scrollToBottom: _scrollToBottom, toId: widget.userId),
-        ],
+              }
+
+              if (snapshot.hasData) {
+                final data = snapshot.data!;
+                getIt.get<MessageService>().appendMessage(data);
+              }
+
+              return ChatComponent(
+                recipientId: widget.recipientId,
+                userId: userId,
+              );
+            },
+          );
+        },
       ),
     );
-  }
-
-  void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.fastOutSlowIn,
-      );
-    }
   }
 
   @override
