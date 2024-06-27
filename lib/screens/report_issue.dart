@@ -3,7 +3,9 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/custom_file_picker.dart';
 import 'package:nearby_assist/services/system_complaint_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
+import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
+import 'package:nearby_assist/widgets/text_heading.dart';
 
 class ReportIssue extends StatefulWidget {
   const ReportIssue({super.key});
@@ -25,24 +27,9 @@ class _ReportIssue extends State<ReportIssue> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text(
-              'Report System Issue',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
+            const TextHeading(title: 'Report System Issue'),
             const Divider(),
-            Form(
-              child: TextFormField(
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                controller: _titleController,
-                decoration: const InputDecoration(
-                  hintText: 'Report title',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
+            InputBox(controller: _titleController, hintText: 'Report title'),
             ListenableBuilder(
               listenable: getIt.get<SystemComplaintService>(),
               builder: (context, _) {
@@ -75,18 +62,10 @@ class _ReportIssue extends State<ReportIssue> {
               onPressed: () => _pickFiles(),
               child: const Text('Select Image'),
             ),
-            Form(
-              child: TextFormField(
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                controller: _commentController,
-                decoration: const InputDecoration(
-                  hintText: 'Describe the issue in more detail',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 10,
-              ),
+            InputBox(
+              controller: _commentController,
+              hintText: 'Describe the issue in more detail',
+              lines: 10,
             ),
             ListenableLoadingButton(
               listenable: getIt.get<SystemComplaintService>(),
