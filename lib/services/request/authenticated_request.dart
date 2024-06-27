@@ -5,7 +5,6 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/services/request/request.dart';
-import 'package:nearby_assist/services/system_complaint_service.dart';
 
 class AuthenticatedRequest<T extends Object> extends Request {
   @override
@@ -22,8 +21,8 @@ class AuthenticatedRequest<T extends Object> extends Request {
     return data;
   }
 
-  Future<T> multipartRequest(String endpoint, List<File> files,
-      List<SystemComplaintFormData> data) async {
+  Future<T> multipartRequest(
+      String endpoint, List<File> files, List<MultipartFormData> data) async {
     http.StreamedResponse streamResponse =
         await _makeMultipartRequest(endpoint, files, data);
 
@@ -39,7 +38,7 @@ class AuthenticatedRequest<T extends Object> extends Request {
   }
 
   Future<http.StreamedResponse> _makeMultipartRequest(String endpoint,
-      List<File> files, List<SystemComplaintFormData> data) async {
+      List<File> files, List<MultipartFormData> data) async {
     final tokens = getIt.get<AuthModel>().getUserTokens();
     if (tokens == null) {
       throw Exception('No tokens found');
@@ -91,4 +90,11 @@ class AuthenticatedRequest<T extends Object> extends Request {
 
     getIt.get<AuthModel>().setUserTokens(updatedTokens);
   }
+}
+
+class MultipartFormData {
+  final String key;
+  final String value;
+
+  MultipartFormData({required this.key, required this.value});
 }

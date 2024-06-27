@@ -36,8 +36,8 @@ class SystemComplaintService extends ChangeNotifier {
         "/backend/v1/public/complaints/system",
         _systemComplaintImages,
         [
-          SystemComplaintFormData(key: "title", value: complaint.title),
-          SystemComplaintFormData(key: "detail", value: complaint.detail),
+          MultipartFormData(key: "title", value: complaint.title),
+          MultipartFormData(key: "detail", value: complaint.detail),
         ],
       );
 
@@ -60,13 +60,6 @@ class SystemComplaintModel {
     required this.title,
     required this.detail,
   });
-}
-
-class SystemComplaintFormData {
-  final String key;
-  final String value;
-
-  SystemComplaintFormData({required this.key, required this.value});
 }
 
 class SystemComplaintResult {

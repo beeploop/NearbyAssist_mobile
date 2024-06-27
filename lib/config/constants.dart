@@ -31,3 +31,10 @@ final mockLocations = [
     longitude: 125.824142,
   ),
 ];
+
+final validId = [
+  "Driver's License",
+  "UMID",
+  "Postal ID",
+  "PhilSys ID",
+];

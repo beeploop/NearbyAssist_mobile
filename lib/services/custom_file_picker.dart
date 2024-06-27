@@ -14,4 +14,14 @@ class CustomFilePicker {
 
     return files.paths.map((file) => File(file!)).toList();
   }
+
+  Future<File?> pickFile() async {
+    FilePickerResult? file = await FilePicker.platform.pickFiles();
+
+    if (file == null) {
+      return null;
+    }
+
+    return File(file.paths[0]!);
+  }
 }

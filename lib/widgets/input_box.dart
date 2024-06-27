@@ -5,15 +5,21 @@ class InputBox extends StatelessWidget {
     super.key,
     this.hintText,
     required this.controller,
+    this.initialValue,
     this.lines,
   });
 
+  final String? initialValue;
   final String? hintText;
   final TextEditingController controller;
   final int? lines;
 
   @override
   Widget build(BuildContext context) {
+    if (initialValue != null) {
+      controller.text = initialValue!;
+    }
+
     return Form(
       child: TextFormField(
         onTapOutside: (event) {

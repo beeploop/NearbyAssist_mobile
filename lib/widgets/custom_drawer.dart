@@ -46,6 +46,11 @@ class _CustomDrawer extends State<CustomDrawer> {
       'icon': Icons.feedback_outlined,
     },
     {
+      'title': 'verify identity',
+      'dist': 'verify-identity',
+      'icon': Icons.perm_identity_outlined,
+    },
+    {
       'title': 'offer a service',
       'dist': 'my-services',
       'icon': Icons.hardware_outlined,

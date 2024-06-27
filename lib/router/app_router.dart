@@ -16,6 +16,7 @@ import 'package:nearby_assist/screens/new_message.dart';
 import 'package:nearby_assist/screens/report_issue.dart';
 import 'package:nearby_assist/screens/settings.dart';
 import 'package:nearby_assist/screens/vendor.dart';
+import 'package:nearby_assist/screens/verify_identity.dart';
 
 class AppRouter {
   final router = GoRouter(
@@ -134,6 +135,12 @@ class AppRouter {
           name: 'report-issue',
           builder: (context, state) {
             return const ReportIssue();
+          }),
+      GoRoute(
+          path: '/verify-identity',
+          name: 'verify-identity',
+          builder: (context, state) {
+            return const VerifyIdentity();
           }),
     ],
     redirect: (context, state) {
