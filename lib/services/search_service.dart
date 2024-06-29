@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/service_model.dart';
+import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/location_service.dart';
-import 'package:nearby_assist/services/request/authenticated_request.dart';
 
 class SearchingService extends ChangeNotifier {
   bool _searching = false;
@@ -87,19 +87,16 @@ class SearchingService extends ChangeNotifier {
         throw Exception('error retrieving user token');
       }
 
-      final endpoint =
+      final url =
           '/backend/v1/public/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
 
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
-      final response = await request.request(endpoint, "GET");
+      final request = DioRequest();
+      final response = await request.get(url);
 
-      List<Service> result = [];
-      for (var service in response['services']) {
-        final s = Service.fromJson(service);
-        result.add(s);
-      }
-
-      return result;
+      List data = response.data['services'];
+      return data.map((service) {
+        return Service.fromJson(service);
+      }).toList();
     } catch (e) {
       debugPrint('Error fetching service: $e');
       return [];

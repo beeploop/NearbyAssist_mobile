@@ -60,6 +60,11 @@ class _CustomDrawer extends State<CustomDrawer> {
       'dist': 'settings',
       'icon': Icons.settings_outlined,
     },
+    {
+      'title': 'example',
+      'dist': 'example',
+      'icon': Icons.question_mark_outlined,
+    },
   ];
 
   @override
@@ -114,6 +119,9 @@ class _CustomDrawer extends State<CustomDrawer> {
           CircleAvatar(
             radius: 30,
             foregroundImage: NetworkImage(avatarUrl ?? ''),
+            onForegroundImageError: (object, stacktrace) {
+              debugPrint('Error loading network image for custom drawer');
+            },
             backgroundImage: const AssetImage('assets/images/avatar.png'),
           ),
           Text(

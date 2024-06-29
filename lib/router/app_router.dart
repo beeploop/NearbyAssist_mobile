@@ -5,6 +5,7 @@ import 'package:nearby_assist/screens/add_service.dart';
 import 'package:nearby_assist/screens/chat.dart';
 import 'package:nearby_assist/screens/complaints.dart';
 import 'package:nearby_assist/screens/destination_route.dart';
+import 'package:nearby_assist/screens/example_page.dart';
 import 'package:nearby_assist/screens/history.dart';
 import 'package:nearby_assist/screens/home.dart';
 import 'package:nearby_assist/screens/in_progress.dart';
@@ -141,6 +142,12 @@ class AppRouter {
           name: 'verify-identity',
           builder: (context, state) {
             return const VerifyIdentity();
+          }),
+      GoRoute(
+          path: '/example',
+          name: 'example',
+          builder: (context, state) {
+            return const ExamplePage();
           }),
     ],
     redirect: (context, state) {

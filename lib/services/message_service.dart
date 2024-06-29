@@ -5,7 +5,7 @@ import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/conversation.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:nearby_assist/model/settings_model.dart';
-import 'package:nearby_assist/services/request/authenticated_request.dart';
+import 'package:nearby_assist/request/dio_request.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageService extends ChangeNotifier {
@@ -65,13 +65,14 @@ class MessageService extends ChangeNotifier {
         throw Exception('error retrieving user token');
       }
 
-      final endpoint = '/backend/v1/public/chat/messages/$recipientId';
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
-      final response = await request.request(endpoint, "GET");
+      final url = '/backend/v1/public/chat/messages/$recipientId';
+
+      final request = DioRequest();
+      final response = await request.get(url);
 
       _messages.clear();
 
-      for (var message in response['messages']) {
+      for (var message in response.data['messages']) {
         final msg = Message.fromJson(message);
         _messages.add(msg);
       }
@@ -110,11 +111,6 @@ class MessageService extends ChangeNotifier {
     _channel!.sink.add(jsonEncode(message));
   }
 
-  // void addMessage(Message message) {
-  //   _messages.add(message);
-  //   notifyListeners();
-  // }
-
   Stream<dynamic> stream() {
     return _channel!.stream;
   }
@@ -128,17 +124,15 @@ class MessageService extends ChangeNotifier {
         throw Exception('error retrieving user token');
       }
 
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
+      const url = "/backend/v1/public/chat/conversations";
 
-      final response = await request.request(
-        '/backend/v1/public/chat/conversations',
-        "GET",
-      );
+      final request = DioRequest();
+      final response = await request.get(url);
 
-      for (var conversation in response['conversations']) {
-        final conv = Conversation.fromJson(conversation);
-        conversations.add(conv);
-      }
+      List data = response.data['conversations'];
+      return data.map((conversation) {
+        return Conversation.fromJson(conversation);
+      }).toList();
     } catch (e) {
       debugPrint('error fetching conversations: $e');
       conversations.clear();

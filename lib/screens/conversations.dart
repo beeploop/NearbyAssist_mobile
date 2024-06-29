@@ -59,6 +59,14 @@ class _Conversations extends State<Conversations> {
                         foregroundImage: NetworkImage(
                           conversations[index].imageUrl,
                         ),
+                        onForegroundImageError: (object, stacktrace) {
+                          debugPrint(
+                            'Error loading network image for: ${conversations[index].name}',
+                          );
+                        },
+                        backgroundImage: const AssetImage(
+                          'assets/images/avatar.png',
+                        ),
                       ),
                       title: Text(conversations[index].name),
                     );

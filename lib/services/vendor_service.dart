@@ -8,7 +8,7 @@ import 'package:nearby_assist/model/service_image_model.dart';
 import 'package:nearby_assist/model/service_info_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
 import 'package:nearby_assist/model/vendor_model.dart';
-import 'package:nearby_assist/services/request/authenticated_request.dart';
+import 'package:nearby_assist/request/dio_request.dart';
 
 class VendorService extends ChangeNotifier {
   bool _loading = false;
@@ -35,16 +35,15 @@ class VendorService extends ChangeNotifier {
         throw Exception('Error fetching user tokens');
       }
 
-      final endpoint = '/backend/v1/public/services/vendor/${user.userId}';
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
-      final response = await request.request(endpoint, "GET");
+      final url = '/backend/v1/public/services/vendor/${user.userId}';
 
-      List<MyService> services = [];
-      for (var service in response['services']) {
-        final s = MyService.fromJson(service);
-        services.add(s);
-      }
-      return services;
+      final request = DioRequest();
+      final response = await request.get(url);
+
+      List data = response.data['services'];
+      return data.map((service) {
+        return MyService.fromJson(service);
+      }).toList();
     } catch (e) {
       debugPrint('error fetching vendor services: $e');
       return [];
@@ -60,20 +59,26 @@ class VendorService extends ChangeNotifier {
         throw Exception('Error fetching user tokens');
       }
 
-      final endpoint = '/backend/v1/public/services/$id';
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
-      final response = await request.request(endpoint, "GET");
+      final url = '/backend/v1/public/services/$id';
 
-      final countPerRating =
-          CountPerRatingModel.fromJson(response['countPerRating']);
-      final serviceInfo = ServiceInfoModel.fromJson(response['serviceInfo']);
-      final vendorInfo = VendorInfoModel.fromJson(response['vendorInfo']);
+      final request = DioRequest();
+      final response = await request.get(url);
 
-      List<ServiceImageModel> serviceImages = [];
-      for (var image in response['serviceImages']) {
-        final s = ServiceImageModel.fromJson(image);
-        serviceImages.add(s);
-      }
+      final countPerRating = CountPerRatingModel.fromJson(
+        response.data['countPerRating'],
+      );
+      final serviceInfo = ServiceInfoModel.fromJson(
+        response.data['serviceInfo'],
+      );
+      final vendorInfo = VendorInfoModel.fromJson(
+        response.data['vendorInfo'],
+      );
+
+      List<ServiceImageModel> serviceImages = [
+        ...response.data['serviceImages'].map((image) {
+          return ServiceImageModel.fromJson(image);
+        })
+      ];
 
       final serviceDetails = ServiceDetailModel(
         countPerRating: countPerRating,
@@ -105,10 +110,12 @@ class VendorService extends ChangeNotifier {
         throw Exception('Error fetching user tokens');
       }
 
-      final endpoint = '/backend/v1/public/vendors/${user.userId}';
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
-      final response = await request.request(endpoint, "GET");
-      if (response.containsKey('vendor') == false) {
+      final url = '/backend/v1/public/vendors/${user.userId}';
+
+      final request = DioRequest();
+      final response = await request.get(url);
+
+      if (response.data.containsKey('vendor') == false) {
         return false;
       }
 

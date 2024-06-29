@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/router/app_router.dart';
+import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/services/complaint_service.dart';
 import 'package:nearby_assist/services/data_manager_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
@@ -22,6 +23,7 @@ Future<void> main() async {
   getIt.registerSingleton<FeatureFlagService>(FeatureFlagService());
   getIt.registerSingleton<AuthModel>(AuthModel());
   getIt.registerSingleton<SettingsModel>(SettingsModel());
+  getIt.registerSingleton<AuthService>(AuthService());
   getIt.registerSingleton<SearchingService>(SearchingService());
   getIt.registerSingleton<LocationService>(LocationService());
   getIt.registerSingleton<VendorService>(VendorService());

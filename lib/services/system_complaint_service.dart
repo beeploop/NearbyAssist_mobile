@@ -1,7 +1,10 @@
 import 'dart:io';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/services/request/authenticated_request.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/request/dio_request.dart';
+import 'package:http_parser/http_parser.dart';
 
 class SystemComplaintService extends ChangeNotifier {
   List<File> _systemComplaintImages = [];
@@ -31,17 +34,48 @@ class SystemComplaintService extends ChangeNotifier {
       SystemComplaintModel complaint) async {
     try {
       toggleLoading();
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
-      final response = await request.multipartRequest(
-        "/backend/v1/public/complaints/system",
-        _systemComplaintImages,
-        [
-          MultipartFormData(key: "title", value: complaint.title),
-          MultipartFormData(key: "detail", value: complaint.detail),
-        ],
+
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('User not logged in');
+      }
+
+      final formData = FormData.fromMap({
+        'title': complaint.title,
+        'detail': complaint.detail,
+        'files': [
+          ..._systemComplaintImages.map((image) {
+            final file = image.path.split('/').last.split('.').last;
+
+            return MultipartFile.fromBytes(
+              image.readAsBytesSync(),
+              filename: 'image',
+              contentType: MediaType('image', file),
+            );
+          }).toList(),
+        ]
+      });
+
+      const url = "/backend/v1/public/complaints/system";
+
+      final request = DioRequest();
+      final response = await request.multipart(
+        url,
+        formData,
+        (int send, int total) {
+          print('=== send: $send, total: $total');
+        },
+        expectedStatus: HttpStatus.created,
       );
 
-      return SystemComplaintResult(message: response['message'], success: true);
+      if (response.statusCode != HttpStatus.created) {
+        throw Exception(response.data);
+      }
+
+      return SystemComplaintResult(
+        message: response.data['message'],
+        success: true,
+      );
     } catch (e) {
       return SystemComplaintResult(message: '$e', success: false);
     } finally {

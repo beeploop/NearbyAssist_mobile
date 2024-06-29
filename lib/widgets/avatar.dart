@@ -20,6 +20,9 @@ class Avatar extends StatelessWidget {
             CircleAvatar(
               radius: 16,
               foregroundImage: NetworkImage(avatarUrl ?? ''),
+              onForegroundImageError: (object, stacktrace) {
+                debugPrint('Error loading network image for user avatar');
+              },
               backgroundImage: const AssetImage('assets/images/avatar.png'),
             ),
           ],

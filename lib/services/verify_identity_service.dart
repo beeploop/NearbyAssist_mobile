@@ -1,6 +1,9 @@
 import 'dart:io';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/request/dio_request.dart';
 
 class VerifyIdentityService extends ChangeNotifier {
   bool _isLoading = false;
@@ -25,7 +28,49 @@ class VerifyIdentityService extends ChangeNotifier {
   }) async {
     try {
       toggleLoading();
-      throw Exception('Not implemented');
+
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('User not logged in');
+      }
+
+      final formData = FormData.fromMap({
+        'name': name,
+        'address': address,
+        'idType': idType,
+        'idNumber': idNumber,
+        'files': [
+          MultipartFile.fromBytes(
+            frontId.readAsBytesSync(),
+            filename: 'frontId',
+          ),
+          MultipartFile.fromBytes(
+            backId.readAsBytesSync(),
+            filename: 'backId',
+          ),
+          MultipartFile.fromBytes(
+            face.readAsBytesSync(),
+            filename: 'face',
+          ),
+        ]
+      });
+
+      const url = "/backend/v1/public/verification/identity";
+
+      final request = DioRequest();
+      final response = await request.multipart(
+        url,
+        formData,
+        (int send, int total) {
+          print('=== send: $send, total: $total');
+        },
+        expectedStatus: HttpStatus.created,
+      );
+
+      return VerifyIdentityResult(
+        success: true,
+        message: response.data['message'],
+      );
     } catch (e) {
       debugPrint('Error verifying identity: $e');
       return VerifyIdentityResult(success: false, message: '$e');

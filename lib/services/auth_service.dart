@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:go_router/go_router.dart';
@@ -8,10 +8,9 @@ import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/request/backend_login_response.dart';
 import 'package:nearby_assist/model/request/logout_request.dart';
 import 'package:nearby_assist/model/request/token.dart';
-import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/request/facebook_login_response.dart';
-import 'package:http/http.dart' as http;
 import 'package:nearby_assist/model/user_info.dart';
+import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/data_manager_service.dart';
 
 enum AuthResult { success, failed }
@@ -65,12 +64,29 @@ class AuthService {
     }
   }
 
+  static Future<BackendLoginResponse?> _loginToBackend(
+      FacebookLoginResponse user) async {
+    try {
+      final request = DioRequest();
+      final response = await request.post(
+        "/backend/auth/client/login",
+        jsonEncode(user),
+        requireAuth: false,
+        expectedStatus: HttpStatus.created,
+      );
+
+      final loginResponse = BackendLoginResponse.fromJson(response.data);
+
+      return loginResponse;
+    } catch (e) {
+      debugPrint('server responded with an error on login: $e');
+      return null;
+    }
+  }
+
   static logout(BuildContext context) async {
     try {
-      final logoutResponse = await _logoutToBackend();
-      if (logoutResponse != null) {
-        throw logoutResponse;
-      }
+      await _logoutToBackend();
 
       await FacebookAuth.instance.logOut();
 
@@ -95,59 +111,25 @@ class AuthService {
     }
   }
 
-  static Future<BackendLoginResponse?> _loginToBackend(
-      FacebookLoginResponse user) async {
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-
+  static Future<void> _logoutToBackend() async {
     try {
-      final resp = await http.post(
-        Uri.parse('$serverAddr/backend/auth/client/login'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(user),
-      );
-      if (resp.statusCode != 201) {
-        throw Exception(resp.body);
+      final tokens = getIt.get<AuthModel>().getUserTokens();
+      if (tokens == null) {
+        throw Exception('User not logged in');
       }
 
-      final response = jsonDecode(resp.body);
-      final loginResponse = BackendLoginResponse.fromJson(response);
+      final logoutRequest = LogoutRequest(token: tokens.refreshToken);
 
-      return loginResponse;
-    } catch (e) {
-      debugPrint('server responded with an error on login: $e');
-      return null;
-    }
-  }
-
-  static Future<Exception?> _logoutToBackend() async {
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-    final tokens = getIt.get<AuthModel>().getUserTokens();
-
-    if (tokens == null) {
-      return Exception('User not logged in');
-    }
-
-    final logoutRequest = LogoutRequest(token: tokens.refreshToken);
-
-    try {
-      final resp = await http.post(
-        Uri.parse('$serverAddr/backend/auth/logout'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(logoutRequest),
+      final request = DioRequest();
+      final response = await request.post(
+        "/backend/auth/logout",
+        jsonEncode(logoutRequest),
       );
 
-      if (resp.statusCode != 200) {
-        throw Exception(resp.body);
-      }
-
-      return null;
+      print(response.data);
     } catch (e) {
       debugPrint('server responded with an error on logout: $e');
-      return Exception(e);
+      rethrow;
     }
   }
 }

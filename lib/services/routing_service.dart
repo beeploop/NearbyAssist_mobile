@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/location_service.dart';
-import 'package:nearby_assist/services/request/authenticated_request.dart';
 
 class RoutingService extends ChangeNotifier {
   Future<List<List<num>>> findRoute(int serviceId) async {
@@ -15,13 +15,13 @@ class RoutingService extends ChangeNotifier {
 
       final location = getIt.get<LocationService>().getLocation();
 
-      final request = AuthenticatedRequest<Map<String, dynamic>>();
-      final endpoint =
+      final url =
           '/backend/v1/public/services/route/$serviceId?origin=${location.latitude},${location.longitude}';
-      final response = await request.request(endpoint, "GET");
 
-      final polyline = decodePolyline(response['polyline']);
-      return polyline;
+      final request = DioRequest();
+      final response = await request.get(url);
+
+      return decodePolyline(response.data['polyline']);
     } catch (e) {
       debugPrint('Error: $e');
       return [];
