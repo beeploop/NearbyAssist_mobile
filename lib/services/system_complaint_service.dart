@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -35,11 +33,6 @@ class SystemComplaintService extends ChangeNotifier {
     try {
       toggleLoading();
 
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('User not logged in');
-      }
-
       final formData = FormData.fromMap({
         'title': complaint.title,
         'detail': complaint.detail,
@@ -63,7 +56,7 @@ class SystemComplaintService extends ChangeNotifier {
         url,
         formData,
         (int send, int total) {
-          print('=== send: $send, total: $total');
+          debugPrint('=== send: $send, total: $total');
         },
         expectedStatus: HttpStatus.created,
       );

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/conversation.dart';
@@ -34,10 +34,7 @@ class MessageService extends ChangeNotifier {
     final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
 
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('error retrieving user token');
-      }
+      final tokens = getIt.get<AuthModel>().getTokens();
 
       _channel = WebSocketChannel.connect(
         Uri.parse('$websocketAddr/backend/chat/ws?token=${tokens.accessToken}'),
@@ -60,11 +57,6 @@ class MessageService extends ChangeNotifier {
 
   Future<List<Message>> fetchMessages(int recipientId) async {
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('error retrieving user token');
-      }
-
       final url = '/backend/v1/public/chat/messages/$recipientId';
 
       final request = DioRequest();
@@ -91,24 +83,27 @@ class MessageService extends ChangeNotifier {
   Future<void> newMessage(String text, int toId) async {
     if (text.isEmpty) return;
 
-    final userId = getIt.get<AuthModel>().getUserId();
-    if (userId == null) {
-      return;
+    try {
+      final userId = getIt.get<AuthModel>().getUserId();
+
+      final message = Message(
+        id: 0,
+        sender: userId,
+        receiver: toId,
+        content: text,
+      );
+
+      if (_channel == null) {
+        throw Exception("Websocket not connected");
+      }
+
+      _channel!.sink.add(jsonEncode(message));
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      rethrow;
     }
-
-    final message = Message(
-      id: 0,
-      sender: userId,
-      receiver: toId,
-      content: text,
-    );
-
-    if (_channel == null) {
-      debugPrint('Cannot send message because _channel is not connected');
-      return;
-    }
-
-    _channel!.sink.add(jsonEncode(message));
   }
 
   Stream<dynamic> stream() {
@@ -119,11 +114,6 @@ class MessageService extends ChangeNotifier {
     List<Conversation> conversations = [];
 
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('error retrieving user token');
-      }
-
       const url = "/backend/v1/public/chat/conversations";
 
       final request = DioRequest();

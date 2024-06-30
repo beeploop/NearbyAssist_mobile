@@ -11,7 +11,6 @@ import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/model/request/facebook_login_response.dart';
 import 'package:nearby_assist/model/user_info.dart';
 import 'package:nearby_assist/request/dio_request.dart';
-import 'package:nearby_assist/services/data_manager_service.dart';
 
 enum AuthResult { success, failed }
 
@@ -28,9 +27,6 @@ class AuthService {
       final user = FacebookLoginResponse.fromJson(facebookUserData);
 
       final loginResponse = await _loginToBackend(user);
-      if (loginResponse == null) {
-        throw Exception('Login failed');
-      }
 
       final completeUserData = UserInfo(
         name: user.name,
@@ -44,11 +40,8 @@ class AuthService {
         refreshToken: loginResponse.refreshToken,
       );
 
-      await getIt.get<DataManagerService>().saveUser(completeUserData);
-      await getIt.get<DataManagerService>().saveTokens(tokens);
-
-      getIt.get<AuthModel>().saveUser(completeUserData);
-      getIt.get<AuthModel>().setUserTokens(tokens);
+      await getIt.get<AuthModel>().saveUser(completeUserData);
+      await getIt.get<AuthModel>().saveTokens(tokens);
 
       if (context.mounted) {
         context.goNamed('home');
@@ -64,7 +57,7 @@ class AuthService {
     }
   }
 
-  static Future<BackendLoginResponse?> _loginToBackend(
+  static Future<BackendLoginResponse> _loginToBackend(
       FacebookLoginResponse user) async {
     try {
       final request = DioRequest();
@@ -79,8 +72,8 @@ class AuthService {
 
       return loginResponse;
     } catch (e) {
-      debugPrint('server responded with an error on login: $e');
-      return null;
+      debugPrint('error login to backend: $e');
+      rethrow;
     }
   }
 
@@ -89,13 +82,7 @@ class AuthService {
       await _logoutToBackend();
 
       await FacebookAuth.instance.logOut();
-
-      getIt.get<AuthModel>().logout();
-      final clearDataResponse =
-          await getIt.get<DataManagerService>().clearData();
-      if (clearDataResponse != null) {
-        throw clearDataResponse;
-      }
+      await getIt.get<AuthModel>().logout();
 
       if (context.mounted) {
         context.goNamed('login');
@@ -103,8 +90,8 @@ class AuthService {
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Cannot logout at the moment'),
+          SnackBar(
+            content: Text(e.toString()),
           ),
         );
       }
@@ -113,22 +100,20 @@ class AuthService {
 
   static Future<void> _logoutToBackend() async {
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('User not logged in');
-      }
-
-      final logoutRequest = LogoutRequest(token: tokens.refreshToken);
+      final tokens = getIt.get<AuthModel>().getTokens();
+      debugPrint('logging out with token: ${tokens.refreshToken}');
 
       final request = DioRequest();
       final response = await request.post(
         "/backend/auth/logout",
-        jsonEncode(logoutRequest),
+        jsonEncode(LogoutRequest(
+          token: tokens.refreshToken,
+        )),
       );
 
-      print(response.data);
+      debugPrint(response.data["message"]);
     } catch (e) {
-      debugPrint('server responded with an error on logout: $e');
+      debugPrint('Error on logout: $e');
       rethrow;
     }
   }

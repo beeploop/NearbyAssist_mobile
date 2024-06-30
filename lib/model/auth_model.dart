@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/model/user_info.dart';
+import 'package:nearby_assist/services/storage_service.dart';
 
 enum AuthStatus { unauthenticated, authenticated }
 
@@ -9,44 +11,56 @@ class AuthModel extends ChangeNotifier {
   UserInfo? _userInfo;
   Token? _userTokens;
 
-  void setUserTokens(Token token) {
+  Future<void> saveTokens(Token token) async {
     _userTokens = token;
+    await getIt.get<StorageService>().saveTokens(token);
     notifyListeners();
   }
 
-  Token? getUserTokens() {
-    return _userTokens;
+  Token getTokens() {
+    if (_userTokens == null) {
+      throw Exception("No token to retrieve");
+    }
+
+    return _userTokens!;
+  }
+
+  UserInfo getUser() {
+    if (_userInfo == null) {
+      throw Exception("No user to retrieve");
+    }
+
+    return _userInfo!;
+  }
+
+  int getUserId() {
+    if (_userInfo == null) {
+      throw Exception("Cannot retrieve user id because no user is saved");
+    }
+
+    return _userInfo!.userId;
   }
 
   AuthStatus getLoginStatus() {
     return _isLoggedIn;
   }
 
-  void saveUser(UserInfo user) {
-    _userInfo = UserInfo(
-      userId: user.userId,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-    );
-
+  Future<void> saveUser(UserInfo user) async {
+    _userInfo = user;
     _isLoggedIn = AuthStatus.authenticated;
+
+    await getIt.get<StorageService>().saveUser(user);
+
     notifyListeners();
   }
 
-  void logout() {
+  Future<void> logout() async {
     _userInfo = null;
     _isLoggedIn = AuthStatus.unauthenticated;
     _userTokens = null;
 
+    await getIt.get<StorageService>().clearData();
+
     notifyListeners();
-  }
-
-  UserInfo? getUser() {
-    return _userInfo;
-  }
-
-  int? getUserId() {
-    return _userInfo?.userId;
   }
 }

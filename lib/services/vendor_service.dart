@@ -23,18 +23,8 @@ class VendorService extends ChangeNotifier {
   }
 
   Future<List<MyService>> fetchVendorServices() async {
-    final user = getIt.get<AuthModel>().getUser();
-
-    if (user == null) {
-      return [];
-    }
-
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('Error fetching user tokens');
-      }
-
+      final user = getIt.get<AuthModel>().getUser();
       final url = '/backend/v1/public/services/vendor/${user.userId}';
 
       final request = DioRequest();
@@ -54,11 +44,6 @@ class VendorService extends ChangeNotifier {
     _toggleLoading(true);
 
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('Error fetching user tokens');
-      }
-
       final url = '/backend/v1/public/services/$id';
 
       final request = DioRequest();
@@ -97,19 +82,9 @@ class VendorService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool?> checkVendorStatus() async {
-    final user = getIt.get<AuthModel>().getUser();
-
-    if (user == null) {
-      return false;
-    }
-
+  Future<bool> checkVendorStatus() async {
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('Error fetching user tokens');
-      }
-
+      final user = getIt.get<AuthModel>().getUser();
       final url = '/backend/v1/public/vendors/${user.userId}';
 
       final request = DioRequest();

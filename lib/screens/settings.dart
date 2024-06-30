@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
@@ -81,7 +82,21 @@ class _Settings extends State<Settings> {
                 );
               },
               child: const Text('Save'),
-            )
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red),
+                foregroundColor: MaterialStateProperty.all(Colors.white),
+              ),
+              onPressed: () async {
+                try {
+                  await getIt.get<AuthModel>().logout();
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+              },
+              child: const Text('Clear data'),
+            ),
           ],
         ),
       ),

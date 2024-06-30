@@ -28,7 +28,8 @@ class _Chat extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
-    final userId = getIt.get<AuthModel>().getUserId()!;
+    // NOTE: this could return an exception, handle this please
+    final userId = getIt.get<AuthModel>().getUserId();
 
     return Scaffold(
       appBar: AppBar(

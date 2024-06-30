@@ -33,10 +33,10 @@ class _ExamplePageState extends State<ExamplePage> {
                     _response = jsonEncode(response.data);
                   });
                 } catch (e) {
-                  print(e);
+                  debugPrint(e.toString());
                 }
               },
-              child: const Text('click'),
+              child: const Text('backend health check'),
             ),
           ],
         ),

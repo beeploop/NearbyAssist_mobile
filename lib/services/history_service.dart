@@ -1,37 +1,20 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
-import 'package:nearby_assist/model/settings_model.dart';
-import 'package:http/http.dart' as http;
+import 'package:nearby_assist/request/dio_request.dart';
 
 class HistoryService extends ChangeNotifier {
   Future<List> fetchHistory() async {
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-    final userId = getIt.get<AuthModel>().getUserId();
-
-    if (userId == null) {
-      return [];
-    }
-
     try {
-      final resp = await http.get(Uri.parse('$serverAddr/backend/v1/history/$userId'));
+      final userId = getIt.get<AuthModel>().getUserId();
 
-      if (resp.statusCode != 200) {
-        throw HttpException(
-            'Server responded with status code ${resp.statusCode}');
-      }
+      final url = "/backend/v1/history/$userId";
+      final request = DioRequest();
+      final response = await request.get(url);
 
-      List history = [];
-      final json = jsonDecode(resp.body);
-      for (var item in json) {
-        history.add(item);
-      }
-      return history;
+      return response.data["history"];
     } catch (e) {
-      print('Error fetching history: $e');
+      debugPrint('Error fetching history: $e');
       return [];
     }
   }

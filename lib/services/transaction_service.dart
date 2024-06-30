@@ -1,47 +1,38 @@
-import 'dart:convert';
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
-import 'package:nearby_assist/model/settings_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:nearby_assist/model/transaction.dart';
+import 'package:nearby_assist/request/dio_request.dart';
 
 class TransactionService extends ChangeNotifier {
   final List<Transaction> _transactions = [];
 
   Future<List<Transaction>> fetchInProgressTransactions() async {
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-    final userId = getIt.get<AuthModel>().getUserId();
-
-    if (userId == null) {
-      return _transactions;
-    }
-
     try {
-      final resp = await http.get(
-        Uri.parse('$serverAddr/backend/v1/transactions/ongoing/vendor/$userId'),
-      );
+      final userId = getIt.get<AuthModel>().getUserId();
 
-      if (resp.statusCode != 200) {
-        throw HttpException(
-            'Server responded with status code: ${resp.statusCode}');
-      }
+      final url = "/backend/v1/transactions/ongoing/vendor/$userId";
+      final request = DioRequest();
+      final response = await request.get(url);
 
-      List json = jsonDecode(resp.body);
       _transactions.clear();
-      for (var something in json) {
-        final transaction = Transaction.fromJson(something);
-        _transactions.add(transaction);
-      }
+
+      List data = response.data["transactions"];
+
+      final transactions = data.map((transaction) {
+        return Transaction.fromJson(transaction);
+      }).toList();
+
+      _transactions.addAll([...transactions]);
+      return _transactions;
     } catch (e) {
-      print('An error occurred: $e');
+      debugPrint('An error occurred: $e');
 
       _transactions.clear();
+      return _transactions;
+    } finally {
+      notifyListeners();
     }
-
-    notifyListeners();
-    return _transactions;
   }
 }

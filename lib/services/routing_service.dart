@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/location_service.dart';
 
 class RoutingService extends ChangeNotifier {
   Future<List<List<num>>> findRoute(int serviceId) async {
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('No tokens found');
-      }
-
       final location = getIt.get<LocationService>().getLocation();
 
       final url =

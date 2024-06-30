@@ -30,9 +30,11 @@ class _VerifyIdentity extends State<VerifyIdentity> {
 
   @override
   void initState() {
-    final user = getIt.get<AuthModel>().getUser();
-    if (user != null) {
+    try {
+      final user = getIt.get<AuthModel>().getUser();
       _nameController.text = user.name;
+    } catch (e) {
+      _nameController.text = '';
     }
 
     super.initState();

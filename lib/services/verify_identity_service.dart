@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 
 class VerifyIdentityService extends ChangeNotifier {
@@ -28,11 +26,6 @@ class VerifyIdentityService extends ChangeNotifier {
   }) async {
     try {
       toggleLoading();
-
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('User not logged in');
-      }
 
       final formData = FormData.fromMap({
         'name': name,
@@ -62,7 +55,7 @@ class VerifyIdentityService extends ChangeNotifier {
         url,
         formData,
         (int send, int total) {
-          print('=== send: $send, total: $total');
+          debugPrint('=== send: $send, total: $total');
         },
         expectedStatus: HttpStatus.created,
       );

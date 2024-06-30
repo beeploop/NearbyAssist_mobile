@@ -55,14 +55,14 @@ class _MyServicesList extends State<MyServicesList> {
                     return [
                       PopupMenuItem(
                         onTap: () {
-                          print('clicked edit ${service.id}');
+                          debugPrint('clicked edit ${service.id}');
                         },
                         value: 'edit',
                         child: const Text('Edit'),
                       ),
                       PopupMenuItem(
                         onTap: () {
-                          print('clicked delete ${service.id}');
+                          debugPrint('clicked delete ${service.id}');
                         },
                         value: 'delete',
                         child: const Text('Delete'),

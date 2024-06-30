@@ -12,7 +12,7 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawer extends State<CustomDrawer> {
-  final avatarUrl = getIt.get<AuthModel>().getUser()?.image;
+  final avatarUrl = getIt.get<AuthModel>().getUser().image;
 
   List<Map> drawerItems = [
     {
@@ -118,14 +118,14 @@ class _CustomDrawer extends State<CustomDrawer> {
         children: [
           CircleAvatar(
             radius: 30,
-            foregroundImage: NetworkImage(avatarUrl ?? ''),
+            foregroundImage: NetworkImage(avatarUrl),
             onForegroundImageError: (object, stacktrace) {
               debugPrint('Error loading network image for custom drawer');
             },
             backgroundImage: const AssetImage('assets/images/avatar.png'),
           ),
           Text(
-            getIt.get<AuthModel>().getUser()!.name,
+            getIt.get<AuthModel>().getUser().name,
             style: const TextStyle(fontSize: 20),
           )
         ],

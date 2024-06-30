@@ -47,7 +47,7 @@ class InProgress extends StatelessWidget {
 
                     return ListTile(
                       onTap: () {
-                        print('Transaction ID: ${transaction.id}');
+                        debugPrint('Transaction ID: ${transaction.id}');
                       },
                       title: Text('Client: ${transaction.client}'),
                       subtitle: Text(

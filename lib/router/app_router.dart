@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
@@ -151,19 +152,20 @@ class AppRouter {
           }),
     ],
     redirect: (context, state) {
-      final loginStatus = getIt.get<AuthModel>().getLoginStatus();
-      final token = getIt.get<AuthModel>().getUserTokens();
+      try {
+        final loginStatus = getIt.get<AuthModel>().getLoginStatus();
+        getIt.get<AuthModel>().getTokens();
 
-      if (token == null || loginStatus == AuthStatus.unauthenticated) {
+        if (loginStatus == AuthStatus.unauthenticated) {
+          throw Exception('User is not authenticated');
+        }
+        return null;
+      } catch (e) {
+        if (kDebugMode) {
+          print('Redirecting to login due to error: $e');
+        }
         return '/login';
       }
-
-      // TODO: verify if the token is expired
-      // if (token.isExpired) {
-      //   return '/login';
-      // }
-
-      return null;
     },
     refreshListenable: getIt.get<AuthModel>(),
     initialLocation: '/',

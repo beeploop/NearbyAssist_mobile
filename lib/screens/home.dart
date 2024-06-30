@@ -48,7 +48,7 @@ class _Homepage extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [Avatar(user: userInfo!.name)],
+        actions: const [Avatar()],
       ),
       drawer: const CustomDrawer(),
       body: Center(

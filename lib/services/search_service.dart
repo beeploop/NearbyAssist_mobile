@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/service_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/location_service.dart';
@@ -82,11 +81,6 @@ class SearchingService extends ChangeNotifier {
     final location = getIt.get<LocationService>().getLocation();
 
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('error retrieving user token');
-      }
-
       final url =
           '/backend/v1/public/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
 

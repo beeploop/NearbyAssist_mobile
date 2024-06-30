@@ -5,7 +5,7 @@ import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/router/app_router.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/services/complaint_service.dart';
-import 'package:nearby_assist/services/data_manager_service.dart';
+import 'package:nearby_assist/services/storage_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/history_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
@@ -28,7 +28,7 @@ Future<void> main() async {
   getIt.registerSingleton<LocationService>(LocationService());
   getIt.registerSingleton<VendorService>(VendorService());
   getIt.registerSingleton<MessageService>(MessageService());
-  getIt.registerSingleton<DataManagerService>(DataManagerService());
+  getIt.registerSingleton<StorageService>(StorageService());
   getIt.registerSingleton<TransactionService>(TransactionService());
   getIt.registerSingleton<HistoryService>(HistoryService());
   getIt.registerSingleton<ComplaintService>(ComplaintService());
@@ -38,6 +38,7 @@ Future<void> main() async {
 
   // Load settings
   getIt.get<SettingsModel>().loadSettings();
+  await getIt.get<StorageService>().loadData();
 
   runApp(
     const MyApp(),
@@ -54,17 +55,12 @@ class MyApp extends StatefulWidget {
 class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getIt.get<DataManagerService>().loadData(),
-      builder: (context, snapshot) {
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData.from(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-          ),
-          routerConfig: AppRouter().router,
-        );
-      },
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      ),
+      routerConfig: AppRouter().router,
     );
   }
 }

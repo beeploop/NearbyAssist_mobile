@@ -1,34 +1,41 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/model/request/token.dart';
-import 'package:nearby_assist/services/data_manager_service.dart';
+import 'package:nearby_assist/services/storage_service.dart';
 
 class AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (options.headers["requireAuth"] == null ||
-        options.headers["requireAuth"] == false) {
+    try {
+      if (options.headers["requireAuth"] == null ||
+          options.headers["requireAuth"] == false) {
+        options.headers.remove("requireAuth");
+        return handler.next(options);
+      }
+
+      final tokens = getIt.get<AuthModel>().getTokens();
+
+      options.headers["Authorization"] = "Bearer ${tokens.accessToken}";
       options.headers.remove("requireAuth");
       return handler.next(options);
+    } catch (e) {
+      if (kDebugMode) {
+        print('====== Error in auth interceptor: $e');
+      }
+      return handler.reject(
+        DioException(requestOptions: options, error: e),
+        true,
+      );
     }
-
-    final tokens = getIt.get<AuthModel>().getUserTokens();
-    if (tokens == null) {
-      return handler.reject(DioException(requestOptions: options), true);
-    }
-
-    options.headers["Authorization"] = "Bearer ${tokens.accessToken}";
-    options.headers.remove("requireAuth");
-    return handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    print('=== error: ${err.response}');
     if (err.response?.statusCode == HttpStatus.unauthorized) {
       try {
         final newAccessToken = await refreshToken();
@@ -45,19 +52,13 @@ class AuthInterceptor extends Interceptor {
 
   Future<String> refreshToken() async {
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception('User not logged in');
-      }
+      final tokens = getIt.get<AuthModel>().getTokens();
 
       const url = "/backend/auth/refresh";
-
       final request = DioRequest();
       final response = await request.post(
         url,
-        {
-          'token': tokens.refreshToken,
-        },
+        {'token': tokens.refreshToken},
       );
 
       final updatedToken = Token(
@@ -65,8 +66,8 @@ class AuthInterceptor extends Interceptor {
         refreshToken: tokens.refreshToken,
       );
 
-      getIt.get<AuthModel>().setUserTokens(updatedToken);
-      await getIt.get<DataManagerService>().saveTokens(updatedToken);
+      getIt.get<AuthModel>().saveTokens(updatedToken);
+      await getIt.get<StorageService>().saveTokens(updatedToken);
 
       if (response.statusCode != HttpStatus.ok) {
         throw Exception("Failed to refresh token");
@@ -74,17 +75,16 @@ class AuthInterceptor extends Interceptor {
 
       return response.data['accessToken'];
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print('== Error refreshing token: $e');
+      }
       rethrow;
     }
   }
 
   Future<Response> _retry(RequestOptions options) async {
     try {
-      final tokens = getIt.get<AuthModel>().getUserTokens();
-      if (tokens == null) {
-        throw Exception("User not logged in");
-      }
+      final tokens = getIt.get<AuthModel>().getTokens();
 
       final newOptions = Options(
         method: options.method,
@@ -103,7 +103,9 @@ class AuthInterceptor extends Interceptor {
 
       return response;
     } catch (e) {
-      print("Error in retring request: ${e.toString()}");
+      if (kDebugMode) {
+        print("Error in retrying request: ${e.toString()}");
+      }
       rethrow;
     }
   }
