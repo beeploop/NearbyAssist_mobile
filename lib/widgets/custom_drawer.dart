@@ -75,14 +75,14 @@ class _CustomDrawer extends State<CustomDrawer> {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           children: [
             _drawerHeader(),
-            ..._drawerItems(),
+            ..._drawerItems(context),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _drawerItems() {
+  List<Widget> _drawerItems(BuildContext context) {
     List<Widget> items = [];
 
     for (var item in drawerItems) {
@@ -98,8 +98,24 @@ class _CustomDrawer extends State<CustomDrawer> {
     items.add(const Divider());
     items.add(
       ListTile(
-        onTap: () {
-          AuthService.logout(context);
+        onTap: () async {
+          try {
+            await AuthService.logout();
+
+            if (context.mounted) {
+              context.goNamed('login');
+            }
+          } catch (e) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Error logging out. Error: ${e.toString()}',
+                  ),
+                ),
+              );
+            }
+          }
         },
         leading: const Icon(Icons.logout_outlined, size: 20, color: Colors.red),
         title: const Text(

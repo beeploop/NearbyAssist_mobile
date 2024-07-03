@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/request/backend_login_response.dart';
@@ -15,7 +14,7 @@ import 'package:nearby_assist/request/dio_request.dart';
 enum AuthResult { success, failed }
 
 class AuthService {
-  static Future<void> loginToFacebook(BuildContext context) async {
+  static Future<void> loginToFacebook() async {
     try {
       final resp = await FacebookAuth.instance.login();
 
@@ -42,18 +41,9 @@ class AuthService {
 
       await getIt.get<AuthModel>().saveUser(completeUserData);
       await getIt.get<AuthModel>().saveTokens(tokens);
-
-      if (context.mounted) {
-        context.goNamed('home');
-      }
     } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Login Failed'),
-          ),
-        );
-      }
+      debugPrint('error login to facebook: $e');
+      rethrow;
     }
   }
 
@@ -77,24 +67,15 @@ class AuthService {
     }
   }
 
-  static logout(BuildContext context) async {
+  static logout() async {
     try {
       await _logoutToBackend();
 
       await FacebookAuth.instance.logOut();
       await getIt.get<AuthModel>().logout();
-
-      if (context.mounted) {
-        context.goNamed('login');
-      }
     } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-          ),
-        );
-      }
+      debugPrint('error logging out: ${e.toString()}');
+      rethrow;
     }
   }
 
