@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:insta_image_viewer/insta_image_viewer.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_image_model.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 
 class VendorPhotos extends StatefulWidget {
   const VendorPhotos({super.key, required this.photos});
@@ -34,11 +36,13 @@ class _VendorPhotos extends State<VendorPhotos> {
                   scrollDirection: Axis.horizontal,
                   itemCount: widget.photos.length,
                   itemBuilder: (context, index) {
+                    final addr = getIt.get<SettingsModel>().getServerAddr();
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: InstaImageViewer(
                         child: Image.network(
-                          widget.photos[index].imageUrl,
+                          '$addr/backend/resource/${widget.photos[index].imageUrl}',
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) {
                               return child;
@@ -49,7 +53,7 @@ class _VendorPhotos extends State<VendorPhotos> {
                           },
                           errorBuilder: (context, error, stackTrace) {
                             return Center(
-                              child: Image.asset('assets/imagess/avatar.png'),
+                              child: Image.asset('assets/images/avatar.png'),
                             );
                           },
                         ),

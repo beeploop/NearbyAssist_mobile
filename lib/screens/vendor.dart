@@ -16,86 +16,71 @@ class Vendor extends StatefulWidget {
 
 class _Vendor extends State<Vendor> {
   @override
-  void initState() {
-    super.initState();
-
-    getIt.get<VendorService>().fetchServiceInfo(widget.serviceId);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 20),
-        children: [
-          Center(
-            child: ListenableBuilder(
-              listenable: getIt.get<VendorService>(),
-              builder: (context, child) {
-                final isVisible = !getIt.get<VendorService>().isLoading();
-                final serviceData = getIt.get<VendorService>().getServiceInfo();
+      body: FutureBuilder(
+        future: getIt.get<VendorService>().fetchServiceInfo(widget.serviceId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-                if (serviceData == null) {
-                  return const Center(
-                    child: Text('No data available'),
-                  );
-                }
+          if (snapshot.hasError) {
+            final error = snapshot.error!;
 
-                return Visibility(
-                  replacement: const CircularProgressIndicator(),
-                  visible: isVisible,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        VendorHeader(
-                          vendorInfo: serviceData.vendorInfo,
-                          serviceId: serviceData.serviceInfo.serviceId,
-                        ),
-                        const SizedBox(height: 20),
-                        VendorPhotos(
-                          photos: serviceData.serviceImages,
-                        ),
-                        const SizedBox(height: 20),
-                        Wrap(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Description',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                                Text(serviceData.serviceInfo.description),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Wrap(
-                          children: [
-                            const Text(
-                              'Reviews',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                            ReviewCounterBar(
-                              countPerRating: serviceData.countPerRating,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+            return Center(
+              child: Text('Error occurred: $error'),
+            );
+          }
+
+          final data = snapshot.data!;
+
+          return ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              VendorHeader(
+                vendorInfo: data.vendorInfo,
+                serviceId: data.serviceInfo.serviceId,
+              ),
+              const SizedBox(height: 20),
+              const SizedBox(height: 20),
+              VendorPhotos(
+                photos: data.serviceImages,
+              ),
+              const SizedBox(height: 20),
+              Wrap(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Description',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Text(data.serviceInfo.description),
+                    ],
                   ),
-                );
-              },
-            ),
-          ),
-        ],
+                ],
+              ),
+              const SizedBox(height: 20),
+              Wrap(
+                children: [
+                  const Text(
+                    'Reviews',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  ReviewCounterBar(
+                    countPerRating: data.countPerRating,
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

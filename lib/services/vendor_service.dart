@@ -17,8 +17,8 @@ class VendorService extends ChangeNotifier {
 
   bool isLoading() => _loading;
 
-  void _toggleLoading(bool val) {
-    _loading = val;
+  void _toggleLoading() {
+    _loading = !_loading;
     notifyListeners();
   }
 
@@ -40,8 +40,8 @@ class VendorService extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchServiceInfo(String id) async {
-    _toggleLoading(true);
+  Future<ServiceDetailModel> fetchServiceInfo(String id) async {
+    _toggleLoading();
 
     try {
       final url = '/backend/v1/public/services/$id';
@@ -65,21 +65,18 @@ class VendorService extends ChangeNotifier {
         })
       ];
 
-      final serviceDetails = ServiceDetailModel(
+      return ServiceDetailModel(
         countPerRating: countPerRating,
         serviceInfo: serviceInfo,
         vendorInfo: vendorInfo,
         serviceImages: serviceImages,
       );
-
-      _serviceInfo = serviceDetails;
     } catch (e) {
       debugPrint('error fetching vendor data: $e');
-      _serviceInfo = null;
+      rethrow;
+    } finally {
+      _toggleLoading();
     }
-
-    _toggleLoading(false);
-    notifyListeners();
   }
 
   Future<bool> checkVendorStatus() async {
