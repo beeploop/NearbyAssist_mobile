@@ -18,6 +18,7 @@ import 'package:nearby_assist/screens/new_message.dart';
 import 'package:nearby_assist/screens/report_issue.dart';
 import 'package:nearby_assist/screens/settings.dart';
 import 'package:nearby_assist/screens/vendor.dart';
+import 'package:nearby_assist/screens/vendor_register.dart';
 import 'package:nearby_assist/screens/verify_identity.dart';
 
 class AppRouter {
@@ -143,6 +144,12 @@ class AppRouter {
           name: 'verify-identity',
           builder: (context, state) {
             return const VerifyIdentity();
+          }),
+      GoRoute(
+          path: '/vendor-register',
+          name: 'vendor-register',
+          builder: (context, state) {
+            return const VendorRegister();
           }),
       GoRoute(
           path: '/example',

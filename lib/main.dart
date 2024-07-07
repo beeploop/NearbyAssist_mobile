@@ -13,6 +13,7 @@ import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/services/routing_service.dart';
 import 'package:nearby_assist/services/system_complaint_service.dart';
 import 'package:nearby_assist/services/transaction_service.dart';
+import 'package:nearby_assist/services/vendor_register_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/services/verify_identity_service.dart';
@@ -34,6 +35,7 @@ Future<void> main() async {
   getIt.registerSingleton<ComplaintService>(ComplaintService());
   getIt.registerSingleton<SystemComplaintService>(SystemComplaintService());
   getIt.registerSingleton<VerifyIdentityService>(VerifyIdentityService());
+  getIt.registerSingleton<VendorRegisterService>(VendorRegisterService());
   getIt.registerSingleton<RoutingService>(RoutingService());
 
   // Load settings

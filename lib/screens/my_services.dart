@@ -42,7 +42,9 @@ class _MyServices extends State<MyServices> {
                     'Register as a vendor to start offering services.'),
                 actions: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                        context.goNamed('vendor-register');
+                    },
                     child: const Text('Register'),
                   ),
                   TextButton(
