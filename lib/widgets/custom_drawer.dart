@@ -26,8 +26,8 @@ class _CustomDrawer extends State<CustomDrawer> {
       'icon': Icons.message_outlined,
     },
     {
-      'title': 'in-progress',
-      'dist': 'in-progress',
+      'title': 'transaction',
+      'dist': 'transaction',
       'icon': Icons.av_timer_outlined,
     },
     {

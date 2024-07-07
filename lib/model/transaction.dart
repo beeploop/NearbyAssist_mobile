@@ -2,24 +2,24 @@ class Transaction {
   int id;
   String client;
   String vendor;
-  String service;
   String status;
+  String createdAt;
 
   Transaction({
     required this.id,
     required this.client,
     required this.vendor,
-    required this.service,
     required this.status,
+    required this.createdAt,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
-      id: json['Id'],
-      client: json['Client'],
-      vendor: json['Vendor'],
-      service: json['Service'],
-      status: json['Status'],
+      id: json['id'],
+      client: json['client'],
+      vendor: json['vendor'],
+      status: json['status'],
+      createdAt: json['createdAt'],
     );
   }
 
@@ -28,8 +28,8 @@ class Transaction {
       'id': id,
       'client': client,
       'vendor': vendor,
-      'service': service,
       'status': status,
+      'createdAt': createdAt,
     };
   }
 }

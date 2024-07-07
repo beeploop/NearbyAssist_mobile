@@ -2,20 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/config/constants.dart' as constants;
 
 class TextHeading extends StatelessWidget {
-  const TextHeading({super.key, required this.title, this.style});
+  const TextHeading({
+    super.key,
+    required this.title,
+    this.style,
+    this.alignment,
+    this.fontSize,
+  });
 
   final String title;
   final TextStyle? style;
+  final TextAlign? alignment;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       title,
-      textAlign: TextAlign.center,
+      textAlign: alignment ?? TextAlign.center,
       style: style ??
-          const TextStyle(
+          TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: constants.headingFontSize,
+            fontSize: fontSize ?? constants.headingFontSize,
           ),
     );
   }

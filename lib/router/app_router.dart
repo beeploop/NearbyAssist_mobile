@@ -9,7 +9,7 @@ import 'package:nearby_assist/screens/destination_route.dart';
 import 'package:nearby_assist/screens/example_page.dart';
 import 'package:nearby_assist/screens/history.dart';
 import 'package:nearby_assist/screens/home.dart';
-import 'package:nearby_assist/screens/in_progress.dart';
+import 'package:nearby_assist/screens/transactons.dart';
 import 'package:nearby_assist/screens/login.dart';
 import 'package:nearby_assist/screens/conversations.dart';
 import 'package:nearby_assist/screens/map_page.dart';
@@ -17,6 +17,7 @@ import 'package:nearby_assist/screens/my_services.dart';
 import 'package:nearby_assist/screens/new_message.dart';
 import 'package:nearby_assist/screens/report_issue.dart';
 import 'package:nearby_assist/screens/settings.dart';
+import 'package:nearby_assist/screens/transaction_form.dart';
 import 'package:nearby_assist/screens/vendor.dart';
 import 'package:nearby_assist/screens/vendor_register.dart';
 import 'package:nearby_assist/screens/verify_identity.dart';
@@ -84,11 +85,23 @@ class AppRouter {
                 }),
           ]),
       GoRoute(
-          path: '/in-progress',
-          name: 'in-progress',
+          path: '/transaction',
+          name: 'transaction',
           builder: (context, state) {
-            return const InProgress();
-          }),
+            return const Transactions();
+          },
+          routes: [
+            GoRoute(
+                path: 'transaction-form',
+                name: 'transaction-form',
+                builder: (context, state) {
+                  final transactionId =
+                      state.uri.queryParameters['transactionId']!;
+                  return TransactionForm(
+                    transactionId: int.parse(transactionId),
+                  );
+                }),
+          ]),
       GoRoute(
           path: '/history',
           name: 'history',
