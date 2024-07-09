@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/tag_model.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/widgets/avatar.dart';
@@ -16,6 +17,7 @@ class Homepage extends StatefulWidget {
 
 class _Homepage extends State<Homepage> {
   final userInfo = getIt.get<AuthModel>().getUser();
+  List<TagModel> tags = [];
 
   @override
   void initState() {

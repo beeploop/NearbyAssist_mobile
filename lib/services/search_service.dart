@@ -8,8 +8,9 @@ import 'package:nearby_assist/services/location_service.dart';
 class SearchingService extends ChangeNotifier {
   bool _searching = false;
   List<Service> _serviceLocations = [];
-  String _searchTerm = '';
   double _radius = 200;
+  List<String> _tags = [];
+  List<String> _selectedTags = [];
 
   void _toggleSearching(bool val) {
     _searching = val;
@@ -28,6 +29,20 @@ class SearchingService extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void setTags(List<String> tags) {
+    _tags = tags;
+    notifyListeners();
+  }
+
+  List<String> getTags() => _tags;
+
+  void addSelectedTag(List<String>? tags) {
+    _selectedTags = tags ?? [];
+    notifyListeners();
+  }
+
+  List<String> getSelectedTags() => _selectedTags;
 
   void updateSearch(BuildContext context) async {
     // Get the user's location if not yet gotten
@@ -48,11 +63,7 @@ class SearchingService extends ChangeNotifier {
     _toggleSearching(false);
   }
 
-  Future<void> searchService(BuildContext context, String search) async {
-    search = search.trim();
-    if (search.isEmpty) return;
-    _searchTerm = search;
-
+  Future<void> searchService(BuildContext context) async {
     // Get the user's location if not yet gotten
     final hasLocationPermission =
         await getIt.get<LocationService>().checkPermissions(context);
@@ -75,14 +86,17 @@ class SearchingService extends ChangeNotifier {
     }
   }
 
-  String lastSearch() => _searchTerm;
-
   Future<List<Service>> _fetchServices() async {
     final location = getIt.get<LocationService>().getLocation();
 
     try {
+      if (_selectedTags.isEmpty) {
+        throw Exception('No tags selected');
+      }
+      final tags = _selectedTags.map((e) => e.replaceAll(' ', '_')).join(',');
+
       final url =
-          '/backend/v1/public/services/search?q=$_searchTerm&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
+          '/backend/v1/public/services/search?q=$tags&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
 
       final request = DioRequest();
       final response = await request.get(url);

@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/search_service.dart';
@@ -10,12 +11,8 @@ class ServiceSearchBar extends StatefulWidget {
 }
 
 class _ServiceSearchBar extends State<ServiceSearchBar> {
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    _searchController.text = getIt.get<SearchingService>().lastSearch();
-
     return Container(
         color: Colors.white.withOpacity(0.8),
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -25,47 +22,53 @@ class _ServiceSearchBar extends State<ServiceSearchBar> {
               child: ListenableBuilder(
                 listenable: getIt.get<SearchingService>(),
                 builder: (context, widget) {
-                  final searching = getIt.get<SearchingService>().isSearching();
+                  final tags = getIt.get<SearchingService>().getTags();
 
                   return Form(
-                    child: TextFormField(
-                      onTapOutside: (_) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                      },
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: 'search service',
-                        suffixIcon: searching
-                            ? const Center(
-                                widthFactor: 0,
-                                child: SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              )
-                            : null,
+                    child: DropdownSearch<String>.multiSelection(
+                      dropdownDecoratorProps: const DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          hintText: 'search service tag',
+                        ),
                       ),
+                      items: [...tags],
+                      onChanged: getIt.get<SearchingService>().addSelectedTag,
+                      selectedItems: [
+                        ...getIt.get<SearchingService>().getSelectedTags()
+                      ],
                     ),
                   );
                 },
               ),
             ),
             const SizedBox(width: 10),
-            SizedBox(
-              // width: 50,
-              child: FilledButton(
-                onPressed: () {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  getIt.get<SearchingService>().searchService(
-                        context,
-                        _searchController.text,
-                      );
-                },
-                child: const Text('Search'),
-              ),
+            ListenableBuilder(
+              listenable: getIt.get<SearchingService>(),
+              builder: (context, _) {
+                final searching = getIt.get<SearchingService>().isSearching();
+
+                return SizedBox(
+                  child: FilledButton(
+                    onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      getIt.get<SearchingService>().searchService(context);
+                    },
+                    child: searching
+                        ? const Center(
+                            widthFactor: 0,
+                            child: SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            ),
+                          )
+                        : const Text('Search'),
+                  ),
+                );
+              },
             ),
           ],
         ));

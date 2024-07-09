@@ -1,7 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/tag_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/storage_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class ExamplePage extends StatefulWidget {
@@ -28,15 +31,33 @@ class _ExamplePageState extends State<ExamplePage> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  final response = await request.get("/backend/health");
+                  final response =
+                      await request.get("/backend/v1/public/example");
                   setState(() {
-                    _response = jsonEncode(response.data);
+                    _response = response.data;
                   });
                 } catch (e) {
                   debugPrint(e.toString());
                 }
               },
               child: const Text('backend health check'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  final response = await request.get("/backend/v1/public/tags");
+                  List data = response.data['tags'];
+                  final tags = data.map((element) {
+                    return TagModel.fromJson(element);
+                  }).toList();
+
+                  getIt.get<StorageService>().saveTags(tags);
+                  getIt.get<StorageService>().loadData();
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+              },
+              child: const Text('update tags'),
             ),
           ],
         ),
