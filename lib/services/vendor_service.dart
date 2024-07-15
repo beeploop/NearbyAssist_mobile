@@ -88,7 +88,7 @@ class VendorService extends ChangeNotifier {
       final response = await request.get(url);
 
       if (response.data.containsKey('vendor') == false) {
-        return false;
+        throw Exception("vendor not found");
       }
 
       return true;

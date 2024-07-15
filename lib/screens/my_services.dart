@@ -4,6 +4,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/my_services_list.dart';
+import 'package:nearby_assist/widgets/popup.dart';
 
 class MyServices extends StatefulWidget {
   const MyServices({super.key});
@@ -36,14 +37,13 @@ class _MyServices extends State<MyServices> {
                 return const MyServicesList();
               }
 
-              return AlertDialog(
-                title: const Text('You are not a vendor yet!'),
-                content: const Text(
-                    'Register as a vendor to start offering services.'),
+              return PopUp(
+                title: 'You are not a vendor yet!',
+                subtitle: 'Register as a vendor to start offering services.',
                 actions: [
                   TextButton(
                     onPressed: () {
-                        context.goNamed('vendor-register');
+                      context.goNamed('vendor-register');
                     },
                     child: const Text('Register'),
                   ),
