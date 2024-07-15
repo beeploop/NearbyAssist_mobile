@@ -100,7 +100,7 @@ class _CustomDrawer extends State<CustomDrawer> {
       ListTile(
         onTap: () async {
           try {
-            await AuthService.logout();
+            await getIt.get<AuthService>().logout();
 
             if (context.mounted) {
               context.goNamed('login');

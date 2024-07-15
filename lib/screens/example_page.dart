@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/tag_model.dart';

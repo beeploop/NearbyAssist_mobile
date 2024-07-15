@@ -13,8 +13,19 @@ import 'package:nearby_assist/request/dio_request.dart';
 
 enum AuthResult { success, failed }
 
-class AuthService {
-  static Future<void> loginToFacebook() async {
+class AuthService extends ChangeNotifier {
+  bool _loading = false;
+
+  bool isLoading() => _loading;
+
+  void _toggleLoading() {
+    _loading = !_loading;
+    notifyListeners();
+  }
+
+  Future<void> loginToFacebook() async {
+    _toggleLoading();
+
     try {
       final resp = await FacebookAuth.instance.login();
 
@@ -44,10 +55,12 @@ class AuthService {
     } catch (e) {
       debugPrint('error login to facebook: $e');
       rethrow;
+    } finally {
+      _toggleLoading();
     }
   }
 
-  static Future<BackendLoginResponse> _loginToBackend(
+  Future<BackendLoginResponse> _loginToBackend(
       FacebookLoginResponse user) async {
     try {
       final request = DioRequest();
@@ -67,7 +80,7 @@ class AuthService {
     }
   }
 
-  static logout() async {
+  logout() async {
     try {
       await _logoutToBackend();
 
@@ -79,7 +92,7 @@ class AuthService {
     }
   }
 
-  static Future<void> _logoutToBackend() async {
+  Future<void> _logoutToBackend() async {
     try {
       final tokens = getIt.get<AuthModel>().getTokens();
       debugPrint('logging out with token: ${tokens.refreshToken}');
