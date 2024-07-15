@@ -25,7 +25,24 @@ class _VendorHeader extends State<VendorHeader> {
         children: [
           Wrap(
             children: [
-              Image.network(widget.vendorInfo.imageUrl),
+              Image.network(
+                widget.vendorInfo.imageUrl,
+                fit: BoxFit.fill,
+                width: 100,
+                height: 100,
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  return child;
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
               const SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
