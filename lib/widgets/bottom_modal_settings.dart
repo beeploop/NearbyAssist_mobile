@@ -11,17 +11,12 @@ class BottomModalSetting extends StatefulWidget {
 }
 
 class _BottomModalSetting extends State<BottomModalSetting> {
-  final TextEditingController _serverController = TextEditingController();
-  final TextEditingController _websocketController = TextEditingController();
+  final TextEditingController _addrController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    final serverAddr = getIt.get<SettingsModel>().getServerAddr();
-    final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
-
-    _serverController.text = serverAddr;
-    _websocketController.text = websocketAddr;
+    _addrController.text = getIt.get<SettingsModel>().getBackendUrl();
   }
 
   @override
@@ -33,29 +28,34 @@ class _BottomModalSetting extends State<BottomModalSetting> {
           children: [
             Form(
               child: TextFormField(
-                controller: _serverController,
-                decoration: const InputDecoration(labelText: 'Server Address'),
-              ),
-            ),
-            Form(
-              child: TextFormField(
-                controller: _websocketController,
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                controller: _addrController,
                 decoration:
-                    const InputDecoration(labelText: 'Websocket Address'),
+                    const InputDecoration(labelText: 'Backend Hostname'),
               ),
             ),
             const SizedBox(height: 20),
             FilledButton(
-              onPressed: () {
-                if (_serverController.text.isEmpty ||
-                    _websocketController.text.isEmpty) {
+              onPressed: () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+
+                if (_addrController.text.isEmpty) {
                   return;
                 }
 
-                getIt.get<SettingsModel>().setServer(_serverController.text);
-                getIt
+                await getIt
                     .get<SettingsModel>()
-                    .setWebsocket(_websocketController.text);
+                    .updateBackendUrl(_addrController.text);
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Backend URL updated'),
+                    ),
+                  );
+                }
               },
               child: const Text('Save'),
             ),

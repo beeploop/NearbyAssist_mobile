@@ -94,6 +94,30 @@ class StorageService {
     }
   }
 
+  Future<String> getStringData(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    try {
+      final data = prefs.getString(key);
+      if (data == null) {
+        throw Exception("No data saved");
+      }
+
+      return data;
+    } catch (e) {
+      if (kDebugMode) {
+        print('$e');
+      }
+      rethrow;
+    }
+  }
+
+  Future saveStringData(String key, String data) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(key, data);
+  }
+
   Future<void> loadData() async {
     try {
       final user = await getUser();
@@ -108,9 +132,8 @@ class StorageService {
           );
     } catch (e) {
       if (kDebugMode) {
-        print('$e');
+        print('Error loading saved data: $e');
       }
-      // rethrow;
     }
   }
 

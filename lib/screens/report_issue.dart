@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/custom_file_picker.dart';
 import 'package:nearby_assist/services/system_complaint_service.dart';
-import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
 import 'package:nearby_assist/widgets/text_heading.dart';
@@ -22,7 +21,6 @@ class _ReportIssue extends State<ReportIssue> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: const CustomDrawer(),
       body: Center(
         child: ListView(
           padding: const EdgeInsets.all(20),

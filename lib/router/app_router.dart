@@ -115,12 +115,6 @@ class AppRouter {
             return const Complaints();
           }),
       GoRoute(
-          path: '/report',
-          name: 'report',
-          builder: (context, state) {
-            return const ReportIssue();
-          }),
-      GoRoute(
           path: '/my-services',
           name: 'my-services',
           builder: (context, state) {
@@ -139,18 +133,26 @@ class AppRouter {
           name: 'settings',
           builder: (context, state) {
             return const Settings();
-          }),
+          },
+          routes: [
+            GoRoute(
+                path: 'report-issue',
+                name: 'report-issue',
+                builder: (context, state) {
+                  return const ReportIssue();
+                }),
+            GoRoute(
+                path: 'example',
+                name: 'example',
+                builder: (context, state) {
+                  return const ExamplePage();
+                }),
+          ]),
       GoRoute(
           path: '/login',
           name: 'login',
           builder: (context, state) {
             return const LoginPage();
-          }),
-      GoRoute(
-          path: '/report-issue',
-          name: 'report-issue',
-          builder: (context, state) {
-            return const ReportIssue();
           }),
       GoRoute(
           path: '/verify-identity',
@@ -163,12 +165,6 @@ class AppRouter {
           name: 'vendor-register',
           builder: (context, state) {
             return const VendorRegister();
-          }),
-      GoRoute(
-          path: '/example',
-          name: 'example',
-          builder: (context, state) {
-            return const ExamplePage();
           }),
     ],
     redirect: (context, state) {

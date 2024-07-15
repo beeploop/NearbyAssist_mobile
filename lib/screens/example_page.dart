@@ -1,9 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/tag_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
-import 'package:nearby_assist/services/storage_service.dart';
-import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class ExamplePage extends StatefulWidget {
   const ExamplePage({super.key});
@@ -20,46 +18,36 @@ class _ExamplePageState extends State<ExamplePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: const CustomDrawer(),
       body: Center(
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            Text(_response, style: const TextStyle(fontSize: 20)),
-            ElevatedButton(
+            FilledButton(
               onPressed: () async {
                 try {
-                  final response =
-                      await request.get("/backend/v1/public/example");
+                  final response = await request.get("/backend/v1/health");
                   setState(() {
-                    _response = response.data;
+                    _response = getPrettyJSONString(response.data);
                   });
                 } catch (e) {
                   debugPrint(e.toString());
                 }
               },
-              child: const Text('backend health check'),
+              child: const Text('Backend Connection Check'),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  final response = await request.get("/backend/v1/public/tags");
-                  List data = response.data['tags'];
-                  final tags = data.map((element) {
-                    return TagModel.fromJson(element);
-                  }).toList();
-
-                  getIt.get<StorageService>().saveTags(tags);
-                  getIt.get<StorageService>().loadData();
-                } catch (e) {
-                  debugPrint(e.toString());
-                }
-              },
-              child: const Text('update tags'),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+              child: Text(_response),
             ),
           ],
         ),
       ),
     );
+  }
+
+  String getPrettyJSONString(jsonObject) {
+    var encoder = const JsonEncoder.withIndent("     ");
+    return encoder.convert(jsonObject);
   }
 }

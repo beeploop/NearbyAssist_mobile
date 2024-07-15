@@ -41,11 +41,6 @@ class _CustomDrawer extends State<CustomDrawer> {
       'icon': Icons.feedback_outlined,
     },
     {
-      'title': 'report',
-      'dist': 'report',
-      'icon': Icons.feedback_outlined,
-    },
-    {
       'title': 'verify identity',
       'dist': 'verify-identity',
       'icon': Icons.perm_identity_outlined,
@@ -59,11 +54,6 @@ class _CustomDrawer extends State<CustomDrawer> {
       'title': 'settings',
       'dist': 'settings',
       'icon': Icons.settings_outlined,
-    },
-    {
-      'title': 'example',
-      'dist': 'example',
-      'icon': Icons.question_mark_outlined,
     },
   ];
 
