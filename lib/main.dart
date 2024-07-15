@@ -39,8 +39,8 @@ Future<void> main() async {
   getIt.registerSingleton<RoutingService>(RoutingService());
 
   // Load settings
-  getIt.get<SettingsModel>().loadSettings();
-  await getIt.get<StorageService>().loadData();
+  // getIt.get<SettingsModel>().loadSettings();
+  // await getIt.get<StorageService>().loadData();
 
   runApp(
     const MyApp(),
@@ -57,12 +57,27 @@ class MyApp extends StatefulWidget {
 class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.from(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      ),
-      routerConfig: AppRouter().router,
+    return FutureBuilder(
+      future: getIt.get<SettingsModel>().loadSettings(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.from(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+          ),
+          routerConfig: AppRouter().router,
+        );
+      },
     );
   }
 }
