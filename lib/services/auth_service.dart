@@ -8,7 +8,6 @@ import 'package:nearby_assist/model/request/backend_login_response.dart';
 import 'package:nearby_assist/model/request/logout_request.dart';
 import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/model/request/facebook_login_response.dart';
-import 'package:nearby_assist/model/user_info.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 
 enum AuthResult { success, failed }
@@ -35,22 +34,14 @@ class AuthService extends ChangeNotifier {
 
       final facebookUserData = await FacebookAuth.instance.getUserData();
       final user = FacebookLoginResponse.fromJson(facebookUserData);
-
       final loginResponse = await _loginToBackend(user);
-
-      final completeUserData = UserInfo(
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        userId: loginResponse.userId,
-      );
 
       final tokens = Token(
         accessToken: loginResponse.accessToken,
         refreshToken: loginResponse.refreshToken,
       );
 
-      await getIt.get<AuthModel>().saveUser(completeUserData);
+      await getIt.get<AuthModel>().saveUser(loginResponse.user);
       await getIt.get<AuthModel>().saveTokens(tokens);
     } catch (e) {
       debugPrint('error login to facebook: $e');
@@ -71,9 +62,7 @@ class AuthService extends ChangeNotifier {
         expectedStatus: HttpStatus.created,
       );
 
-      final loginResponse = BackendLoginResponse.fromJson(response.data);
-
-      return loginResponse;
+      return BackendLoginResponse.fromJson(response.data);
     } catch (e) {
       debugPrint('error login to backend: $e');
       rethrow;

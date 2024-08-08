@@ -1,19 +1,21 @@
+import 'package:nearby_assist/model/user_info.dart';
+
 class BackendLoginResponse {
   String accessToken;
   String refreshToken;
-  int userId;
+  UserInfo user;
 
   BackendLoginResponse({
     required this.accessToken,
     required this.refreshToken,
-    required this.userId,
+    required this.user,
   });
 
   factory BackendLoginResponse.fromJson(Map<String, dynamic> json) {
     return BackendLoginResponse(
       accessToken: json['accessToken'],
       refreshToken: json['refreshToken'],
-      userId: json['userId'],
+      user: UserInfo.fromJson(json['user']),
     );
   }
 
@@ -21,7 +23,7 @@ class BackendLoginResponse {
     return {
       'accessToken': accessToken,
       'refreshToken': refreshToken,
-      'userId': userId,
+      'user': user.toJson(),
     };
   }
 }

@@ -41,6 +41,14 @@ class AuthModel extends ChangeNotifier {
     return _userInfo!.userId;
   }
 
+  bool isUserVerified() {
+    if (_userInfo == null) {
+      throw Exception("Cannot retrieve user verification status because no user is saved");
+    }
+
+    return _userInfo!.verified;
+  }
+
   AuthStatus getLoginStatus() {
     return _isLoggedIn;
   }
