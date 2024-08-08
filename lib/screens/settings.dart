@@ -1,13 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
-import 'package:nearby_assist/model/tag_model.dart';
-import 'package:nearby_assist/request/dio_request.dart';
-import 'package:nearby_assist/services/storage_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class Settings extends StatefulWidget {
@@ -35,6 +31,12 @@ class _Settings extends State<Settings> {
       drawer: const CustomDrawer(),
       body: ListView(
         children: [
+          ListTile(
+            dense: true,
+            leading: const Icon(Icons.person_outline),
+            title: Text('User ID: ${getIt.get<AuthModel>().getUserId()}'),
+            subtitle: const Text('User ID assigned by the backend'),
+          ),
           ListTile(
             dense: true,
             leading: const Icon(Icons.computer_outlined),
@@ -82,20 +84,40 @@ class _Settings extends State<Settings> {
           ),
           ListTile(
             dense: true,
+            leading: const Icon(Icons.edit_note_outlined),
+            title: const Text('Update Info'),
+            subtitle: const Text('Update saved user information'),
+            onTap: () async {
+              try {
+                await getIt.get<SettingsModel>().updateUserInformation();
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('User information updated'),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'Error updating user information: ${e.toString()}'),
+                    ),
+                  );
+                }
+              }
+            },
+          ),
+          ListTile(
+            dense: true,
             leading: const Icon(Icons.update_outlined),
             title: const Text('Update service tags'),
             subtitle: const Text('Force update service tags'),
             onTap: () async {
               try {
-                final request = DioRequest();
-                final response = await request.get("/backend/v1/public/tags");
-                List data = response.data['tags'];
-                final tags = data.map((element) {
-                  return TagModel.fromJson(element);
-                }).toList();
-
-                await getIt.get<StorageService>().saveTags(tags);
-                await getIt.get<StorageService>().loadData();
+                await getIt.get<SettingsModel>().updateSavedTags();
 
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
