@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 
 class BottomModalSetting extends StatefulWidget {
@@ -64,6 +65,16 @@ class _BottomModalSetting extends State<BottomModalSetting> {
                 context.pop();
               },
               child: const Text('Close'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                try {
+                  await getIt.get<AuthModel>().logout();
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+              },
+              child: const Text('Clear Data'),
             ),
           ],
         ),
