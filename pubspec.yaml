@@ -54,6 +54,7 @@ dependencies:
   flutter_chat_types: ^3.6.2
   dio: ^5.4.3+1
   dropdown_search: ^5.0.6
+  flutter_native_splash: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -108,3 +109,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  #

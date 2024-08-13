@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
@@ -38,9 +40,8 @@ Future<void> main() async {
   getIt.registerSingleton<VendorRegisterService>(VendorRegisterService());
   getIt.registerSingleton<RoutingService>(RoutingService());
 
-  // Load settings
-  // getIt.get<SettingsModel>().loadSettings();
-  // await getIt.get<StorageService>().loadData();
+  WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: binding);
 
   runApp(
     const MyApp(),
@@ -55,21 +56,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyApp extends State<MyApp> {
+  Future<void> initialization() async {
+    try {
+      await getIt.get<SettingsModel>().loadSettings();
+      if (kDebugMode) {
+        print('settings loaded successfully');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    } finally {
+      FlutterNativeSplash.remove();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getIt.get<SettingsModel>().loadSettings(),
+      future: initialization(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const MaterialApp(
-            home: Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
-        }
-
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           theme: ThemeData.from(
