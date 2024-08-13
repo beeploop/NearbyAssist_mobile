@@ -12,7 +12,7 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawer extends State<CustomDrawer> {
-  final avatarUrl = getIt.get<AuthModel>().getUser().image;
+  final avatarUrl = getIt.get<AuthModel>().getUser().imageUrl;
 
   List<Map> drawerItems = [
     {

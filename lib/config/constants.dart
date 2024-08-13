@@ -1,5 +1,6 @@
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/model/service_model.dart';
+import 'package:nearby_assist/model/tag_model.dart';
 
 const defaultLocation = LatLng(7.422365, 125.825984);
 const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -37,4 +38,10 @@ final validId = [
   "UMID",
   "Postal ID",
   "PhilSys ID",
+];
+
+final initialTags = [
+  TagModel(title: "computer repair"),
+  TagModel(title: "electric"),
+  TagModel(title: "plumbing"),
 ];

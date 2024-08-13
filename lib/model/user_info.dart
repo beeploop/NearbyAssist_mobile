@@ -1,15 +1,15 @@
 class UserInfo {
   String name;
   String email;
-  String image;
-  int userId;
+  String imageUrl;
+  int id;
   bool verified;
 
   UserInfo({
     required this.name,
     required this.email,
-    required this.image,
-    required this.userId,
+    required this.imageUrl,
+    required this.id,
     required this.verified,
   });
 
@@ -17,18 +17,18 @@ class UserInfo {
     return UserInfo(
       email: json['email'],
       name: json['name'],
-      image: json['imageUrl'],
-      userId: json['id'],
+      imageUrl: json['imageUrl'],
+      id: json['id'],
       verified: json['verified'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
+      'id': id,
       'name': name,
       'email': email,
-      'image': image,
+      'imageUrl': imageUrl,
       'verified': verified,
     };
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/request/token.dart';
@@ -88,9 +89,10 @@ class StorageService {
       }).toList();
     } catch (e) {
       if (kDebugMode) {
-        print('$e');
+        print('$e, loading initial tags instead');
       }
-      rethrow;
+
+      return initialTags;
     }
   }
 

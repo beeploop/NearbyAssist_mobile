@@ -38,7 +38,7 @@ class AuthModel extends ChangeNotifier {
       throw Exception("Cannot retrieve user id because no user is saved");
     }
 
-    return _userInfo!.userId;
+    return _userInfo!.id;
   }
 
   bool isUserVerified() {

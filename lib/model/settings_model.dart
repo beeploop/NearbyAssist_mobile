@@ -18,6 +18,10 @@ class SettingsModel extends ChangeNotifier {
   String getBackendUrl() => _backendUrl;
 
   Future<void> loadSettings() async {
+    if (kDebugMode) {
+      print('Loading settings');
+    }
+
     try {
       await getIt.get<StorageService>().loadData();
       await loadBackendAddr();
@@ -79,7 +83,7 @@ class SettingsModel extends ChangeNotifier {
   Future<void> updateSavedTags() async {
     try {
       final request = DioRequest();
-      final response = await request.get("/backend/v1/public/tags");
+      final response = await request.get("/backend/tags", requireAuth: false);
       List data = response.data['tags'];
       final tags = data.map((element) {
         return TagModel.fromJson(element);
