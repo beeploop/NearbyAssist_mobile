@@ -1,8 +1,11 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/services/custom_file_picker.dart';
+import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/services/vendor_register_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
@@ -17,29 +20,24 @@ class VendorRegister extends StatefulWidget {
 }
 
 class _VendorRegisterState extends State<VendorRegister> {
-  bool _isChecked = false;
+  final TextEditingController _jobController = TextEditingController();
+  bool _isTermsAndConditionsChecked = false;
+  final _filepicker = CustomFilePicker();
+  File? _policeClearance;
+  File? _serviceCertificate;
+  final _serviceTags = getIt.get<SearchingService>().getTags();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       drawer: const CustomDrawer(),
-      body: FutureBuilder(
-        future: _checkVerification(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: ListenableBuilder(
+        listenable: getIt.get<AuthModel>(),
+        builder: (context, child) {
+          final isVerified = getIt.get<AuthModel>().isUserVerified();
 
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('An error occurred. Try again later.'),
-            );
-          }
-
-          final verified = snapshot.data!;
-
-          if (!verified) {
+          if (!isVerified) {
             return PopUp(
               title: "Account not verified",
               subtitle:
@@ -66,21 +64,105 @@ class _VendorRegisterState extends State<VendorRegister> {
             children: [
               const TextHeading(title: "Vendor Registration"),
               const Divider(),
-              const Text('Form goes here'),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final file = await _filepicker.pickFile();
+
+                      if (file == null) {
+                        return;
+                      }
+
+                      setState(() {
+                        _policeClearance = file;
+                      });
+                    },
+                    child: const Text('Police Clearance'),
+                  ),
+                  Text(
+                    _policeClearance.toString().split('/').last,
+                    overflow: TextOverflow.fade,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              DropdownMenu(
+                label: const Text('Select service to offer'),
+                dropdownMenuEntries: generateDropdownEntries(),
+                controller: _jobController,
+                expandedInsets: EdgeInsets.zero,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final file = await _filepicker.pickFile();
+
+                      if (file == null) {
+                        return;
+                      }
+
+                      setState(() {
+                        _serviceCertificate = file;
+                      });
+                    },
+                    child: const Text('Service Certificate'),
+                  ),
+                  Text(
+                    _serviceCertificate.toString().split('/').last,
+                    overflow: TextOverflow.fade,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
               Flex(
                 direction: Axis.horizontal,
                 children: [
                   Checkbox(
-                    value: _isChecked,
+                    value: _isTermsAndConditionsChecked,
                     onChanged: (bool? value) =>
-                        setState(() => _isChecked = value!),
+                        setState(() => _isTermsAndConditionsChecked = value!),
                   ),
                   const Text('I agree to the terms and conditions.'),
                 ],
               ),
+              const SizedBox(height: 20),
               ListenableLoadingButton(
                 listenable: getIt.get<VendorRegisterService>(),
-                onPressed: () {},
+                onPressed: () {
+                  if (_policeClearance == null ||
+                      _serviceCertificate == null ||
+                      _jobController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please fill out all fields',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (_isTermsAndConditionsChecked == false) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'You must agree to the terms and conditions',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  if (kDebugMode) {
+                    print('police clearance: $_policeClearance');
+                    print('service certificate: $_serviceCertificate');
+                    print('job: ${_jobController.text}');
+                  }
+                },
                 isLoadingFunction: () =>
                     getIt.get<VendorRegisterService>().isLoading(),
               ),
@@ -91,22 +173,9 @@ class _VendorRegisterState extends State<VendorRegister> {
     );
   }
 
-  Future<bool> _checkVerification() async {
-    try {
-      const url = "/backend/v1/public/users";
-
-      final request = DioRequest();
-      final response = await request.get(url);
-      if (kDebugMode) {
-        print(response.data);
-      }
-
-      return response.data['verified'];
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      rethrow;
-    }
+  List<DropdownMenuEntry> generateDropdownEntries() {
+    return _serviceTags.map((job) {
+      return DropdownMenuEntry(value: job, label: job);
+    }).toList();
   }
 }
