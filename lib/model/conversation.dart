@@ -1,21 +1,18 @@
 class Conversation {
   int userId;
   String name;
-  String email;
   String imageUrl;
 
   Conversation({
     required this.name,
     required this.imageUrl,
-    required this.email,
     required this.userId,
   });
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     return Conversation(
-      userId: json['id'],
+      userId: json['userId'],
       name: json['name'],
-      email: json['email'],
       imageUrl: json['imageUrl'],
     );
   }
@@ -24,8 +21,7 @@ class Conversation {
     return {
       'userId': userId,
       'name': name,
-      'email': email,
-      'image': imageUrl,
+      'imageUrl': imageUrl,
     };
   }
 }
