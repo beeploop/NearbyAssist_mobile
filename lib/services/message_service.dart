@@ -55,7 +55,7 @@ class MessageService extends ChangeNotifier {
     }
   }
 
-  Future<List<Message>> fetchMessages(int recipientId) async {
+  Future<List<Message>> fetchMessages(String recipientId) async {
     try {
       final url = '/backend/v1/public/chat/messages/$recipientId';
 
@@ -80,14 +80,14 @@ class MessageService extends ChangeNotifier {
 
   List<Message> getMessages() => _messages;
 
-  Future<void> newMessage(String text, int toId) async {
+  Future<void> newMessage(String text, String toId) async {
     if (text.isEmpty) return;
 
     try {
       final userId = getIt.get<AuthModel>().getUserId();
 
       final message = Message(
-        id: 0,
+        id: "0",
         sender: userId,
         receiver: toId,
         content: text,

@@ -1,5 +1,5 @@
 class VendorInfoModel {
-  int vendorId;
+  String vendorId;
   String vendor;
   String imageUrl;
   double rating;

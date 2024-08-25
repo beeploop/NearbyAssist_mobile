@@ -8,7 +8,7 @@ class VendorHeader extends StatefulWidget {
       {super.key, required this.vendorInfo, required this.serviceId});
 
   final VendorInfoModel vendorInfo;
-  final int serviceId;
+  final String serviceId;
 
   @override
   State<VendorHeader> createState() => _VendorHeader();
@@ -72,7 +72,7 @@ class _VendorHeader extends State<VendorHeader> {
                 onPressed: () {
                   context.goNamed(
                     'route',
-                    queryParameters: {'serviceId': '${widget.serviceId}'},
+                    queryParameters: {'serviceId': widget.serviceId},
                   );
                 },
                 icon: const Icon(
@@ -85,7 +85,7 @@ class _VendorHeader extends State<VendorHeader> {
                 onPressed: () {
                   context.pushNamed(
                     'chat',
-                    pathParameters: {'userId': '${widget.vendorInfo.vendorId}'},
+                    pathParameters: {'userId': widget.vendorInfo.vendorId},
                     queryParameters: {'vendorName': widget.vendorInfo.vendor},
                   );
                 },

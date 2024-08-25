@@ -1,6 +1,6 @@
 class ServicePhoto {
-  int serviceId;
-  int vendorId;
+  String serviceId;
+  String vendorId;
   String url;
 
   ServicePhoto({

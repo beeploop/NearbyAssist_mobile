@@ -1,5 +1,5 @@
 class VendorModel {
-  int id;
+  String id;
   String name;
   String role;
   double rating;

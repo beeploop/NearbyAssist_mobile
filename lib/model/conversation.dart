@@ -1,5 +1,5 @@
 class Conversation {
-  int userId;
+  String userId;
   String name;
   String imageUrl;
 

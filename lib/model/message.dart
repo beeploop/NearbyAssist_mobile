@@ -1,7 +1,7 @@
 class Message {
-  int id;
-  int sender;
-  int receiver;
+  String id;
+  String sender;
+  String receiver;
   String content;
 
   Message({

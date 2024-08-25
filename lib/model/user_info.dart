@@ -2,7 +2,7 @@ class UserInfo {
   String name;
   String email;
   String imageUrl;
-  int id;
+  String id;
   bool verified;
 
   UserInfo({

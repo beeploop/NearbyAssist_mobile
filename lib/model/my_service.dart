@@ -1,6 +1,6 @@
 class MyService {
-  int id;
-  int vendorId;
+  String id;
+  String vendorId;
   String description;
   double rate;
   double latitude;

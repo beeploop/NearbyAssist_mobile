@@ -1,5 +1,5 @@
 class Service {
-  int id;
+  String id;
   double suggestability;
   int rank;
   String vendor;

@@ -1,5 +1,5 @@
 class Transaction {
-  int id;
+  String id;
   String client;
   String vendor;
   String status;

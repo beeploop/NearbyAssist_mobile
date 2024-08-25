@@ -86,7 +86,7 @@ class _CustomMap extends State<CustomMap> {
             onTap: () {
               context.goNamed(
                 'vendor',
-                queryParameters: {'serviceId': '${service.id}'},
+                queryParameters: {'serviceId': service.id},
               );
             },
             child: Column(

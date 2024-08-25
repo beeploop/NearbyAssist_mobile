@@ -48,7 +48,7 @@ class _Conversations extends State<Conversations> {
                         context.goNamed(
                           'chat',
                           pathParameters: {
-                            'userId': '${conversations[index].userId}'
+                            'userId': conversations[index].userId
                           },
                           queryParameters: {
                             'vendorName': conversations[index].name

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class VendorRegisterService extends ChangeNotifier {
   bool _loading = false;
@@ -10,13 +11,19 @@ class VendorRegisterService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> registerVendor() async {
+  Future<void> registerVendor({
+    required String job,
+    required File policeClearance,
+    required File serviceCertificate,
+  }) async {
     _toggleLoading();
 
     try {
       throw Exception('Unimplemented');
     } catch (e) {
-      rethrow;
+      if (kDebugMode) {
+        print('===== Error: $e');
+      }
     } finally {
       _toggleLoading();
     }

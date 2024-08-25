@@ -1,5 +1,5 @@
 class ServiceImageModel {
-  int imageId;
+  String imageId;
   String imageUrl;
 
   ServiceImageModel({

@@ -10,7 +10,7 @@ class ChatInput extends StatefulWidget {
   });
 
   final Function scrollToBottom;
-  final int toId;
+  final String toId;
 
   @override
   State<ChatInput> createState() => _ChatInput();

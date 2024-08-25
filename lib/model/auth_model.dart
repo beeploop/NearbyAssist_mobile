@@ -33,7 +33,7 @@ class AuthModel extends ChangeNotifier {
     return _userInfo!;
   }
 
-  int getUserId() {
+  String getUserId() {
     if (_userInfo == null) {
       throw Exception("Cannot retrieve user id because no user is saved");
     }

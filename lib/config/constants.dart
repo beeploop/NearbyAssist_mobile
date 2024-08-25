@@ -8,7 +8,7 @@ const headingFontSize = 20.0;
 
 final mockLocations = [
   Service(
-    id: 1,
+    id: "1",
     suggestability: 0.0,
     rank: 200,
     vendor: 'Hugo',
@@ -16,7 +16,7 @@ final mockLocations = [
     longitude: 125.829315,
   ),
   Service(
-    id: 2,
+    id: "2",
     suggestability: 0.0,
     rank: 100,
     vendor: '11:11',
@@ -24,7 +24,7 @@ final mockLocations = [
     longitude: 125.824767,
   ),
   Service(
-    id: 3,
+    id: "3",
     suggestability: 0.0,
     rank: 300,
     vendor: 'Cyan',

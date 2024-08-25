@@ -9,7 +9,7 @@ import 'package:nearby_assist/widgets/chat_component.dart';
 class Chat extends StatefulWidget {
   const Chat({super.key, required this.recipientId, required this.name});
 
-  final int recipientId;
+  final String recipientId;
   final String name;
 
   @override

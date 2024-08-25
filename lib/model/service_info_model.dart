@@ -1,5 +1,5 @@
 class ServiceInfoModel {
-  int serviceId;
+  String serviceId;
   String description;
   double rate;
   double latitude;

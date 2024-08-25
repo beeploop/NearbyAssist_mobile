@@ -11,8 +11,8 @@ class ChatComponent extends StatefulWidget {
     required this.userId,
   });
 
-  final int recipientId;
-  final int userId;
+  final String recipientId;
+  final String userId;
 
   @override
   State<ChatComponent> createState() => _ChatComponent();
