@@ -37,12 +37,15 @@ class _VendorPhotos extends State<VendorPhotos> {
                   itemCount: widget.photos.length,
                   itemBuilder: (context, index) {
                     final addr = getIt.get<SettingsModel>().getServerAddr();
+                    final photo = widget.photos[index];
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: InstaImageViewer(
                         child: Image.network(
-                          '$addr/resource/${widget.photos[index].url}',
+                          photo.url.startsWith("http")
+                              ? photo.url
+                              : '$addr/resource/${photo.url}',
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) {
                               return child;
