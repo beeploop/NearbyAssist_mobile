@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/widgets/bottom_modal_settings.dart';
 
@@ -45,7 +49,33 @@ class _LoginPage extends State<LoginPage> {
                       'Login with Facebook',
                       () async {
                         try {
-                          await getIt.get<AuthService>().loginToFacebook();
+                          if (kDebugMode) {
+                            final data = await getIt
+                                .get<AuthService>()
+                                .backendLogin(fakeUser);
+                            final tokens = Token(
+                              accessToken: data.accessToken,
+                              refreshToken: data.refreshToken,
+                            );
+
+                            await getIt.get<AuthModel>().saveUser(data.user);
+                            await getIt.get<AuthModel>().saveTokens(tokens);
+
+                          } else {
+                            final user =
+                                await getIt.get<AuthService>().facebookLogin();
+                            final data = await getIt
+                                .get<AuthService>()
+                                .backendLogin(user);
+                            final tokens = Token(
+                              accessToken: data.accessToken,
+                              refreshToken: data.refreshToken,
+                            );
+
+                            await getIt.get<AuthModel>().saveUser(data.user);
+                            await getIt.get<AuthModel>().saveTokens(tokens);
+
+                          }
 
                           if (context.mounted) {
                             context.goNamed('home');

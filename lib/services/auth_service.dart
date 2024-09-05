@@ -6,7 +6,6 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/request/backend_login_response.dart';
 import 'package:nearby_assist/model/request/logout_request.dart';
-import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/model/request/facebook_login_response.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 
@@ -22,7 +21,7 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loginToFacebook() async {
+  Future<FacebookLoginResponse> facebookLogin() async {
     _toggleLoading();
 
     try {
@@ -33,16 +32,7 @@ class AuthService extends ChangeNotifier {
       }
 
       final facebookUserData = await FacebookAuth.instance.getUserData();
-      final user = FacebookLoginResponse.fromJson(facebookUserData);
-      final loginResponse = await _loginToBackend(user);
-
-      final tokens = Token(
-        accessToken: loginResponse.accessToken,
-        refreshToken: loginResponse.refreshToken,
-      );
-
-      await getIt.get<AuthModel>().saveUser(loginResponse.user);
-      await getIt.get<AuthModel>().saveTokens(tokens);
+      return FacebookLoginResponse.fromJson(facebookUserData);
     } catch (e) {
       debugPrint('error login to facebook: $e');
       rethrow;
@@ -51,12 +41,11 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<BackendLoginResponse> _loginToBackend(
-      FacebookLoginResponse user) async {
+  Future<BackendLoginResponse> backendLogin(FacebookLoginResponse user) async {
     try {
       final request = DioRequest();
       final response = await request.post(
-        "/backend/auth/client/login",
+        "/auth/client/login",
         jsonEncode(user),
         requireAuth: false,
         expectedStatus: HttpStatus.created,
@@ -71,7 +60,7 @@ class AuthService extends ChangeNotifier {
 
   logout() async {
     try {
-      await _logoutToBackend();
+      await backendLogout();
 
       await FacebookAuth.instance.logOut();
       await getIt.get<AuthModel>().logout();
@@ -81,14 +70,14 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<void> _logoutToBackend() async {
+  Future<void> backendLogout() async {
     try {
       final tokens = getIt.get<AuthModel>().getTokens();
       debugPrint('logging out with token: ${tokens.refreshToken}');
 
       final request = DioRequest();
       final response = await request.post(
-        "/backend/auth/logout",
+        "/auth/logout",
         jsonEncode(LogoutRequest(
           token: tokens.refreshToken,
         )),
