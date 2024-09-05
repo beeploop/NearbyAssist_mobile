@@ -81,11 +81,11 @@ class _VendorRegisterState extends State<VendorRegister> {
                     },
                     child: const Text('Police Clearance'),
                   ),
-                  Text(
-                    _policeClearance.toString().split('/').last,
-                    overflow: TextOverflow.fade,
-                  ),
                 ],
+              ),
+              Text(
+                _policeClearance.toString().split('/').last,
+                overflow: TextOverflow.fade,
               ),
               const SizedBox(height: 20),
               DropdownMenu(
@@ -111,11 +111,11 @@ class _VendorRegisterState extends State<VendorRegister> {
                     },
                     child: const Text('Service Certificate'),
                   ),
-                  Text(
-                    _serviceCertificate.toString().split('/').last,
-                    overflow: TextOverflow.fade,
-                  ),
                 ],
+              ),
+              Text(
+                _serviceCertificate.toString().split('/').last,
+                overflow: TextOverflow.fade,
               ),
               const SizedBox(height: 20),
               Flex(
@@ -162,6 +162,12 @@ class _VendorRegisterState extends State<VendorRegister> {
                     print('service certificate: $_serviceCertificate');
                     print('job: ${_jobController.text}');
                   }
+
+                  getIt.get<VendorRegisterService>().registerVendor(
+                        job: _jobController.text,
+                        policeClearance: _policeClearance!,
+                        supportingDocument: _serviceCertificate!,
+                      );
                 },
                 isLoadingFunction: () =>
                     getIt.get<VendorRegisterService>().isLoading(),

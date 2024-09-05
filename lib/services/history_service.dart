@@ -8,7 +8,7 @@ class HistoryService extends ChangeNotifier {
     try {
       final userId = getIt.get<AuthModel>().getUserId();
 
-      final url = "/backend/v1/history/$userId";
+      final url = "/v1/history/$userId";
       final request = DioRequest();
       final response = await request.get(url);
 

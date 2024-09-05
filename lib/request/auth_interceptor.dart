@@ -54,7 +54,7 @@ class AuthInterceptor extends Interceptor {
     try {
       final tokens = getIt.get<AuthModel>().getTokens();
 
-      const url = "/backend/auth/refresh";
+      const url = "/auth/refresh";
       final request = DioRequest();
       final response = await request.post(
         url,

@@ -8,7 +8,7 @@ class ComplaintService extends ChangeNotifier {
     try {
       final userId = getIt.get<AuthModel>().getUserId();
 
-      final url = "/backend/v1/complaints/$userId";
+      final url = "/v1/complaints/$userId";
       final request = DioRequest();
       final response = await request.get(url);
 

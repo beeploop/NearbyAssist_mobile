@@ -10,7 +10,7 @@ class RoutingService extends ChangeNotifier {
       final location = getIt.get<LocationService>().getLocation();
 
       final url =
-          '/backend/v1/public/services/route/$serviceId?origin=${location.latitude},${location.longitude}';
+          '/v1/public/services/route/$serviceId?origin=${location.latitude},${location.longitude}';
 
       final request = DioRequest();
       final response = await request.get(url);

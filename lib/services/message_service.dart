@@ -37,7 +37,7 @@ class MessageService extends ChangeNotifier {
       final tokens = getIt.get<AuthModel>().getTokens();
 
       _channel = WebSocketChannel.connect(
-        Uri.parse('$websocketAddr/backend/chat/ws?token=${tokens.accessToken}'),
+        Uri.parse('$websocketAddr/chat/ws?token=${tokens.accessToken}'),
       );
 
       if (_channel != null) {
@@ -57,7 +57,7 @@ class MessageService extends ChangeNotifier {
 
   Future<List<Message>> fetchMessages(String recipientId) async {
     try {
-      final url = '/backend/v1/public/chat/messages/$recipientId';
+      final url = '/v1/public/chat/messages/$recipientId';
 
       final request = DioRequest();
       final response = await request.get(url);
@@ -114,7 +114,7 @@ class MessageService extends ChangeNotifier {
     List<Conversation> conversations = [];
 
     try {
-      const url = "/backend/v1/public/chat/conversations";
+      const url = "/v1/public/chat/conversations";
 
       final request = DioRequest();
       final response = await request.get(url);

@@ -25,7 +25,7 @@ class VendorService extends ChangeNotifier {
   Future<List<MyService>> fetchVendorServices() async {
     try {
       final user = getIt.get<AuthModel>().getUser();
-      final url = '/backend/v1/public/services/vendor/${user.id}';
+      final url = '/v1/public/services/vendor/${user.id}';
 
       final request = DioRequest();
       final response = await request.get(url);
@@ -44,7 +44,7 @@ class VendorService extends ChangeNotifier {
     _toggleLoading();
 
     try {
-      final url = '/backend/v1/public/services/$id';
+      final url = '/v1/public/services/$id';
 
       final request = DioRequest();
       final response = await request.get(url);
@@ -82,7 +82,7 @@ class VendorService extends ChangeNotifier {
   Future<bool> checkVendorStatus() async {
     try {
       final user = getIt.get<AuthModel>().getUser();
-      final url = '/backend/v1/public/vendors/${user.id}';
+      final url = '/v1/public/vendors/${user.id}';
 
       final request = DioRequest();
       final response = await request.get(url);

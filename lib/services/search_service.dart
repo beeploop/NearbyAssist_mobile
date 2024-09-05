@@ -96,7 +96,7 @@ class SearchingService extends ChangeNotifier {
       final tags = _selectedTags.map((e) => e.replaceAll(' ', '_')).join(',');
 
       final url =
-          '/backend/v1/public/services/search?q=$tags&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
+          '/v1/public/services/search?q=$tags&lat=${location.latitude}&long=${location.longitude}&radius=$_radius';
 
       final request = DioRequest();
       final response = await request.get(url);

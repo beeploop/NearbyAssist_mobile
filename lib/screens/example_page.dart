@@ -25,7 +25,7 @@ class _ExamplePageState extends State<ExamplePage> {
             FilledButton(
               onPressed: () async {
                 try {
-                  final response = await request.get("/backend/v1/health");
+                  final response = await request.get("/health");
                   setState(() {
                     _response = getPrettyJSONString(response.data);
                   });
