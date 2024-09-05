@@ -1,5 +1,5 @@
 class ServiceInfoModel {
-  String serviceId;
+  String id;
   String description;
   double rate;
   double latitude;
@@ -7,7 +7,7 @@ class ServiceInfoModel {
   List<String> tags;
 
   ServiceInfoModel({
-    required this.serviceId,
+    required this.id,
     required this.description,
     required this.rate,
     required this.latitude,
@@ -17,7 +17,7 @@ class ServiceInfoModel {
 
   factory ServiceInfoModel.fromJson(Map<String, dynamic> json) {
     return ServiceInfoModel(
-      serviceId: json['serviceId'],
+      id: json['id'],
       description: json['description'],
       rate: double.parse(json['rate']),
       latitude: json['latitude'],
@@ -28,7 +28,7 @@ class ServiceInfoModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'serviceId': serviceId,
+      'id': id,
       'description': description,
       'rate': rate,
       'latitude': latitude,

@@ -1,23 +1,23 @@
 class ServiceImageModel {
-  String imageId;
-  String imageUrl;
+  String id;
+  String url;
 
   ServiceImageModel({
-    required this.imageId,
-    required this.imageUrl,
+    required this.id,
+    required this.url,
   });
 
   factory ServiceImageModel.fromJson(Map<String, dynamic> json) {
     return ServiceImageModel(
-      imageId: json['imageId'],
-      imageUrl: json['imageUrl'],
+      id: json['id'],
+      url: json['url'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'imageId': imageId,
-      'imageUrl': imageUrl,
+      'id': id,
+      'url': url,
     };
   }
 }

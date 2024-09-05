@@ -42,7 +42,7 @@ class _VendorPhotos extends State<VendorPhotos> {
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: InstaImageViewer(
                         child: Image.network(
-                          '$addr/resource/${widget.photos[index].imageUrl}',
+                          '$addr/resource/${widget.photos[index].url}',
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) {
                               return child;

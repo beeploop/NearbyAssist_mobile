@@ -43,7 +43,7 @@ class _Vendor extends State<Vendor> {
             children: [
               VendorHeader(
                 vendorInfo: data.vendorInfo,
-                serviceId: data.serviceInfo.serviceId,
+                serviceId: data.serviceInfo.id,
               ),
               const SizedBox(height: 20),
               const SizedBox(height: 20),

@@ -45,7 +45,6 @@ class VendorService extends ChangeNotifier {
 
     try {
       final url = '/v1/public/services/$id';
-
       final request = DioRequest();
       final response = await request.get(url);
 
