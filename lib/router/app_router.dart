@@ -52,7 +52,7 @@ class AppRouter {
                     name: 'route',
                     builder: (context, state) {
                       final serviceId = state.uri.queryParameters['serviceId']!;
-                      return DestinationRoute(serviceId: int.parse(serviceId));
+                      return DestinationRoute(serviceId: serviceId);
                     },
                   ),
                 ],

@@ -8,7 +8,7 @@ import 'package:nearby_assist/services/routing_service.dart';
 class DestinationRoute extends StatefulWidget {
   const DestinationRoute({super.key, required this.serviceId});
 
-  final int serviceId;
+  final String serviceId;
 
   @override
   State<StatefulWidget> createState() => _DestinationRoute();
@@ -31,7 +31,7 @@ class _DestinationRoute extends State<DestinationRoute> {
 
               final route = snapshot.data;
 
-              if (route == null) {
+              if (route == null || route.isEmpty) {
                 return const Center(
                   child: Text('No route found'),
                 );
