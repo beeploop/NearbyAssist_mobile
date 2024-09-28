@@ -10,13 +10,13 @@ class RoutingService extends ChangeNotifier {
       final location = getIt.get<LocationService>().getLocation();
 
       final url =
-          '/v1/public/services/route/$serviceId?origin=${location.latitude},${location.longitude}';
+          '/api/v1/services/route/$serviceId?origin=${location.latitude},${location.longitude}';
       final request = DioRequest();
       final response = await request.get(url);
 
       return decodePolyline(response.data['polyline']);
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('====== Error: $e');
       return [];
     }
   }
