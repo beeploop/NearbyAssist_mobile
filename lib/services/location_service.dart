@@ -16,7 +16,7 @@ class LocationService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> checkPermissions(BuildContext context) async {
+  Future<bool> checkPermissions() async {
     bool serviceEnabled;
     PermissionStatus permissionGranted;
 

@@ -60,7 +60,6 @@ class _LoginPage extends State<LoginPage> {
 
                             await getIt.get<AuthModel>().saveUser(data.user);
                             await getIt.get<AuthModel>().saveTokens(tokens);
-
                           } else {
                             final user =
                                 await getIt.get<AuthService>().facebookLogin();
@@ -74,7 +73,6 @@ class _LoginPage extends State<LoginPage> {
 
                             await getIt.get<AuthModel>().saveUser(data.user);
                             await getIt.get<AuthModel>().saveTokens(tokens);
-
                           }
 
                           if (context.mounted) {
@@ -122,7 +120,7 @@ class _LoginPage extends State<LoginPage> {
         color: Colors.white,
       ),
       style: const ButtonStyle(
-        backgroundColor: MaterialStatePropertyAll(Colors.blue),
+        backgroundColor: WidgetStatePropertyAll(Colors.blue),
       ),
       label: Text(
         text,

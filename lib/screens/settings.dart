@@ -68,11 +68,13 @@ class _Settings extends State<Settings> {
 
                         getIt.get<SettingsModel>().updateBackendUrl(value).then(
                           (_) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Backend URL updated'),
-                              ),
-                            );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Backend URL updated'),
+                                ),
+                              );
+                            }
                           },
                         );
                       });

@@ -47,7 +47,7 @@ class SearchingService extends ChangeNotifier {
   void updateSearch(BuildContext context) async {
     // Get the user's location if not yet gotten
     final hasLocationPermission =
-        await getIt.get<LocationService>().checkPermissions(context);
+        await getIt.get<LocationService>().checkPermissions();
     if (hasLocationPermission == false) {
       return;
     }
@@ -66,7 +66,7 @@ class SearchingService extends ChangeNotifier {
   Future<void> searchService(BuildContext context) async {
     // Get the user's location if not yet gotten
     final hasLocationPermission =
-        await getIt.get<LocationService>().checkPermissions(context);
+        await getIt.get<LocationService>().checkPermissions();
     if (hasLocationPermission == false) {
       return;
     }
