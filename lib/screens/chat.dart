@@ -76,7 +76,10 @@ class _Chat extends State<Chat> {
 
               if (snapshot.hasData) {
                 final data = snapshot.data!;
-                getIt.get<MessageService>().appendMessage(data);
+                getIt.get<MessageService>().appendMessage(
+                      data,
+                      widget.recipientId,
+                    );
               }
 
               return ChatComponent(

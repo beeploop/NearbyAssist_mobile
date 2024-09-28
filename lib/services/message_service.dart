@@ -6,6 +6,8 @@ import 'package:nearby_assist/model/conversation.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/diffie_hellman.dart';
+import 'package:nearby_assist/services/encryption.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageService extends ChangeNotifier {
@@ -25,8 +27,20 @@ class MessageService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void appendMessage(Message message) {
-    _messages.add(message);
+  Future<void> appendMessage(Message message, String otherUser) async {
+    final dh = DiffieHellman();
+    final otherUserPublicKey = await dh.getPublicKey(otherUser);
+    final sharedSecret = await dh.computeSharedSecret(otherUserPublicKey);
+
+    final aes = Encryption.fromBigInt(sharedSecret);
+    final decrypted = aes.decrypt(message.content);
+
+    _messages.add(Message(
+      id: message.id,
+      sender: message.sender,
+      receiver: message.receiver,
+      content: decrypted,
+    ));
     notifyListeners();
   }
 
@@ -85,12 +99,18 @@ class MessageService extends ChangeNotifier {
 
     try {
       final userId = getIt.get<AuthModel>().getUserId();
+      final dh = DiffieHellman();
+      final recipientPublicKey = await dh.getPublicKey(toId);
+      final sharedSecret = await dh.computeSharedSecret(recipientPublicKey);
+
+      final aes = Encryption.fromBigInt(sharedSecret);
+      final encrypted = aes.encrypt(text);
 
       final message = Message(
         id: "0",
         sender: userId,
         receiver: toId,
-        content: text,
+        content: encrypted,
       );
 
       if (_channel == null) {
