@@ -54,11 +54,11 @@ class AuthInterceptor extends Interceptor {
     try {
       final tokens = getIt.get<AuthModel>().getTokens();
 
-      const url = "/auth/refresh";
+      const url = "/api/v1/user/refresh";
       final request = DioRequest();
       final response = await request.post(
         url,
-        {'token': tokens.refreshToken},
+        {'refreshToken': tokens.refreshToken},
       );
 
       final updatedToken = Token(

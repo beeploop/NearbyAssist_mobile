@@ -10,7 +10,7 @@ class TransactionService extends ChangeNotifier {
 
   Future<void> fetchTransactions() async {
     try {
-      const url = "/v1/public/transactions";
+      const url = "/api/v1/transactions/mine";
       final request = DioRequest();
       final response = await request.get(url);
 

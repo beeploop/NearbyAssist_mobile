@@ -69,7 +69,7 @@ class SettingsModel extends ChangeNotifier {
   Future<void> updateUserInformation() async {
     try {
       final request = DioRequest();
-      final response = await request.get("/v1/public/users/me");
+      final response = await request.get("/api/v1/user/protected/me");
       final user = UserInfo.fromJson(response.data['user']);
       getIt.get<AuthModel>().saveUser(user);
     } catch (e) {
@@ -83,7 +83,7 @@ class SettingsModel extends ChangeNotifier {
   Future<void> updateSavedTags() async {
     try {
       final request = DioRequest();
-      final response = await request.get("/tags", requireAuth: false);
+      final response = await request.get("/api/v1/tags", requireAuth: false);
       List data = response.data['tags'];
       final tags = data.map((element) {
         return TagModel.fromJson(element);

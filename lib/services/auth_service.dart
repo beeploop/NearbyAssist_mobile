@@ -45,7 +45,7 @@ class AuthService extends ChangeNotifier {
     try {
       final request = DioRequest();
       final response = await request.post(
-        "/auth/client/login",
+        "/api/v1/user/login",
         jsonEncode(user),
         requireAuth: false,
         expectedStatus: HttpStatus.created,
@@ -77,7 +77,7 @@ class AuthService extends ChangeNotifier {
 
       final request = DioRequest();
       final response = await request.post(
-        "/auth/logout",
+        "/api/v1/user/logout",
         jsonEncode(LogoutRequest(
           token: tokens.refreshToken,
         )),

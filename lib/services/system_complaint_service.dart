@@ -49,8 +49,7 @@ class SystemComplaintService extends ChangeNotifier {
         ]
       });
 
-      const url = "/v1/public/complaints/system";
-
+      const url = "/api/v1/complaints/system";
       final request = DioRequest();
       final response = await request.multipart(
         url,

@@ -114,7 +114,7 @@ class MessageService extends ChangeNotifier {
     List<Conversation> conversations = [];
 
     try {
-      const url = "/v1/public/chat/conversations";
+      const url = "/api/v1/chat/conversations";
 
       final request = DioRequest();
       final response = await request.get(url);

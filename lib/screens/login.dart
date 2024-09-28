@@ -6,6 +6,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/request/token.dart';
 import 'package:nearby_assist/services/auth_service.dart';
+import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/widgets/bottom_modal_settings.dart';
 
 class LoginPage extends StatefulWidget {
@@ -74,6 +75,9 @@ class _LoginPage extends State<LoginPage> {
                             await getIt.get<AuthModel>().saveUser(data.user);
                             await getIt.get<AuthModel>().saveTokens(tokens);
                           }
+
+                          final dh = DiffieHellman();
+                          await dh.register();
 
                           if (context.mounted) {
                             context.goNamed('home');

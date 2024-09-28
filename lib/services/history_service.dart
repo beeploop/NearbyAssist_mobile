@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 
 class HistoryService extends ChangeNotifier {
   Future<List> fetchHistory() async {
     try {
-      final userId = getIt.get<AuthModel>().getUserId();
-
-      final url = "/v1/history/$userId";
+      const url = "/api/v1/transactions/history";
       final request = DioRequest();
       final response = await request.get(url);
 

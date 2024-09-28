@@ -14,6 +14,9 @@ class StorageService {
   static const String _userKey = 'user';
   static const String _tokenKey = 'tokens';
   static const String _tagsKey = 'tags';
+  static const String _privatePemKey = 'privatePem';
+  static const String _publicPemKey = 'publicPem';
+  final String noSavedPemError = "NoSavedPemError";
 
   Future<void> saveUser(UserInfo user) async {
     final userJson = jsonEncode(user);
@@ -93,6 +96,44 @@ class StorageService {
       }
 
       return initialTags;
+    }
+  }
+
+  Future<void> savePrivatePem(String pem) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_privatePemKey, pem);
+  }
+
+  Future<String> getPrivatePem() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final pem = prefs.getString(_privatePemKey);
+      if (pem == null) {
+        throw Exception(noSavedPemError);
+      }
+
+      return pem;
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<void> savePublicPem(String pem) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_publicPemKey, pem);
+  }
+
+  Future<String> getPublicPem() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final pem = prefs.getString(_publicPemKey);
+      if (pem == null) {
+        throw Exception(noSavedPemError);
+      }
+
+      return pem;
+    } catch (err) {
+      rethrow;
     }
   }
 

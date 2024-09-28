@@ -54,6 +54,7 @@ dependencies:
   dio: ^5.4.3+1
   dropdown_search: ^5.0.6
   flutter_native_splash: ^2.4.0
+  diffie_hellman: ^1.2.0
 
 dev_dependencies:
   flutter_test:

@@ -48,7 +48,7 @@ class VerifyIdentityService extends ChangeNotifier {
         ]
       });
 
-      const url = "/v1/public/verification/identity";
+      const url = "/api/v1/verification/identity";
 
       final request = DioRequest();
       final response = await request.multipart(
