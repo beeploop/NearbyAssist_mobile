@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/request/dio_request.dart';
-import 'package:nearby_assist/services/diffie_hellman.dart';
 
 class ExamplePage extends StatefulWidget {
   const ExamplePage({super.key});
@@ -25,13 +24,11 @@ class _ExamplePageState extends State<ExamplePage> {
             FilledButton(
               onPressed: () async {
                 try {
-                  //final response = await request.get("/api/v1/health/protected");
-                  final dh = DiffieHellman();
-                  final pubKey = await dh.getPublicKey("uGVlglh3uiISb4y_HgdER");
-                  final secret = await dh.computeSharedSecret(pubKey);
+                  final response =
+                      await request.get("/api/v1/health/protected");
+
                   setState(() {
-                    //_response = getPrettyJSONString(response.data);
-                    _response = secret.toString();
+                    _response = getPrettyJSONString(response.data);
                   });
                 } catch (e) {
                   debugPrint(e.toString());

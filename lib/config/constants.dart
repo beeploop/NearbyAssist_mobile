@@ -8,8 +8,8 @@ const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const headingFontSize = 20.0;
 
 final fakeUser = FacebookLoginResponse(
-  name: "John Doe",
-  email: "jdoe@gmail.com",
+  name: "John Loyd Mulit",
+  email: "jlmulit68@gmail.com",
   image: "https://graph.facebook.com/10219118101307344/picture",
 );
 
