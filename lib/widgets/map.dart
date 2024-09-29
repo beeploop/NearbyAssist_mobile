@@ -17,58 +17,66 @@ class CustomMap extends StatefulWidget {
 
 class _CustomMap extends State<CustomMap> {
   final currentLocation = getIt.get<LocationService>().getLocation();
+  final _mapController = MapController();
+
+  void _zoomToFit(List<Service> services) {
+    final coordinates = services.map((service) {
+      return LatLng(service.latitude, service.longitude);
+    }).toList();
+    coordinates.add(currentLocation);
+    final bounds = LatLngBounds.fromPoints(coordinates);
+
+    if (bounds.northEast == bounds.southWest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController.move(currentLocation, 16.0);
+      });
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mapController.fitCamera(CameraFit.bounds(
+        bounds: bounds,
+        padding: const EdgeInsets.fromLTRB(80, 150, 80, 80),
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      options: MapOptions(
-        initialCenter: currentLocation,
-        initialZoom: 16.0,
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: tileMapProvider,
-          userAgentPackageName: 'com.example.app',
-        ),
-        ListenableBuilder(
-          listenable: getIt.get<SearchingService>(),
-          builder: (context, child) {
-            final serviceLocations =
-                getIt.get<SearchingService>().getServiceLocations();
+    return ListenableBuilder(
+        listenable: getIt.get<SearchingService>(),
+        builder: (context, child) {
+          final updated = getIt.get<SearchingService>().getServiceLocations();
+          _zoomToFit(updated);
 
-            return MarkerLayer(
-              markers: [
-                Marker(
-                  rotate: true,
-                  alignment: Alignment.topCenter,
-                  point: currentLocation,
-                  child: const Icon(Icons.location_pin,
-                      size: 40, color: Color.fromARGB(70, 255, 0, 0)),
-                ),
-                ..._markerBuilder(serviceLocations),
-              ],
-            );
-          },
-        ),
-        ListenableBuilder(
-          listenable: getIt.get<SearchingService>(),
-          builder: (context, child) {
-            final radius = getIt.get<SearchingService>().getRadius();
-
-            return CircleLayer(
-              circles: [
-                CircleMarker(
-                  point: currentLocation,
-                  radius: radius,
-                  color: Colors.blue.withOpacity(0.3),
-                  useRadiusInMeter: true,
-                )
-              ],
-            );
-          },
-        ),
-      ],
-    );
+          return FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+                initialCenter: currentLocation,
+                initialZoom: 16.0,
+                onMapReady: () {
+                  _zoomToFit(updated);
+                }),
+            children: [
+              TileLayer(
+                urlTemplate: tileMapProvider,
+                userAgentPackageName: 'com.example.app',
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    rotate: true,
+                    alignment: Alignment.topCenter,
+                    point: currentLocation,
+                    child: const Icon(Icons.account_circle,
+                        size: 40, color: Color.fromARGB(90, 255, 0, 0)),
+                  ),
+                  ..._markerBuilder(updated),
+                ],
+              ),
+            ],
+          );
+        });
   }
 
   List<Marker> _markerBuilder(List<Service> serviceLocations) {

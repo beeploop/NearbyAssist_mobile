@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
@@ -49,9 +50,22 @@ class _ServiceSearchBar extends State<ServiceSearchBar> {
 
                 return SizedBox(
                   child: FilledButton(
-                    onPressed: () {
+                    onPressed: () async {
                       FocusManager.instance.primaryFocus?.unfocus();
-                      getIt.get<SearchingService>().searchService(context);
+                      try {
+                        await getIt.get<SearchingService>().searchService();
+                        if (context.mounted) {
+                          context.goNamed('map');
+                        }
+                      } catch (err) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(err.toString()),
+                            ),
+                          );
+                        }
+                      }
                     },
                     child: searching
                         ? const Center(

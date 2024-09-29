@@ -15,6 +15,8 @@ class DestinationRoute extends StatefulWidget {
 }
 
 class _DestinationRoute extends State<DestinationRoute> {
+  final _mapController = MapController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,13 +39,26 @@ class _DestinationRoute extends State<DestinationRoute> {
                 );
               }
 
+              final coords = route.map((coord) {
+                return LatLng(coord[0].toDouble(), coord[1].toDouble());
+              }).toList();
+
               return FlutterMap(
+                mapController: _mapController,
                 options: MapOptions(
                   initialCenter: LatLng(
                     route[0][0].toDouble(),
                     route[0][1].toDouble(),
                   ),
                   initialZoom: 15.0,
+                  onMapReady: () {
+                    _mapController.fitCamera(
+                      CameraFit.coordinates(
+                        coordinates: coords,
+                        padding: const EdgeInsets.all(50),
+                      ),
+                    );
+                  },
                 ),
                 children: [
                   TileLayer(
@@ -53,9 +68,9 @@ class _DestinationRoute extends State<DestinationRoute> {
                   PolylineLayer(
                     polylines: [
                       Polyline(
-                        points: [..._constructPolylineRoute(route)],
-                        color: Colors.blue,
-                        strokeWidth: 4.0,
+                        points: coords,
+                        color: Colors.orange,
+                        strokeWidth: 6.0,
                       ),
                     ],
                   ),
@@ -81,15 +96,5 @@ class _DestinationRoute extends State<DestinationRoute> {
             }),
       ),
     );
-  }
-
-  List<LatLng> _constructPolylineRoute(List<List<num>> route) {
-    List<LatLng> coords = [];
-
-    for (var coordinates in route) {
-      coords.add(LatLng(coordinates[0].toDouble(), coordinates[1].toDouble()));
-    }
-
-    return coords;
   }
 }

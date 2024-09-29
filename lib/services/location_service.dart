@@ -41,9 +41,14 @@ class LocationService extends ChangeNotifier {
   Future<void> getCurrentLocation() async {
     try {
       final locationData = await location.getLocation();
+      if (locationData.latitude == null || locationData.longitude == null) {
+        throw Exception('Location data is null');
+      }
+
       _setLocation(locationData.latitude!, locationData.longitude!);
     } catch (e) {
       debugPrint('=== error getting location: $e');
+      rethrow;
     }
   }
 }

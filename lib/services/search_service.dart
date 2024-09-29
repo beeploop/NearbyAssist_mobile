@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
@@ -8,7 +7,6 @@ import 'package:nearby_assist/services/location_service.dart';
 class SearchingService extends ChangeNotifier {
   bool _searching = false;
   List<Service> _serviceLocations = [];
-  double _radius = 200;
   List<String> _tags = [];
   List<String> _selectedTags = [];
 
@@ -18,17 +16,6 @@ class SearchingService extends ChangeNotifier {
   }
 
   bool isSearching() => _searching;
-
-  double getRadius() => _radius;
-
-  void setRadius(double val) {
-    if (val <= 100) {
-      _radius = 100;
-    } else {
-      _radius = val;
-    }
-    notifyListeners();
-  }
 
   void setTags(List<String> tags) {
     _tags = tags;
@@ -63,26 +50,26 @@ class SearchingService extends ChangeNotifier {
     _toggleSearching(false);
   }
 
-  Future<void> searchService(BuildContext context) async {
-    // Get the user's location if not yet gotten
-    final hasLocationPermission =
-        await getIt.get<LocationService>().checkPermissions();
-    if (hasLocationPermission == false) {
-      return;
-    }
+  Future<void> searchService() async {
+    try {
+      _toggleSearching(true);
 
-    _toggleSearching(true);
+      // Get the user's location if not yet gotten
+      final hasLocationPermission =
+          await getIt.get<LocationService>().checkPermissions();
+      if (hasLocationPermission == false) {
+        //throw Exception("Location permission not granted");
+        getIt.get<LocationService>().getCurrentLocation();
+      }
 
-    await getIt.get<LocationService>().getCurrentLocation();
-
-    final result = await _fetchServices();
-    _serviceLocations = result;
-    notifyListeners();
-
-    _toggleSearching(false);
-
-    if (context.mounted) {
-      context.goNamed('map');
+      final result = await _fetchServices();
+      _serviceLocations = result;
+    } catch (err) {
+      _serviceLocations.clear();
+      rethrow;
+    } finally {
+      _toggleSearching(false);
+      notifyListeners();
     }
   }
 
@@ -96,7 +83,7 @@ class SearchingService extends ChangeNotifier {
       final tags = _selectedTags.map((e) => e.replaceAll(' ', '_')).join(',');
 
       final url =
-          '/api/v1/services/search?q=$tags&l=${location.latitude},${location.longitude}&r=$_radius';
+          '/api/v1/services/search?q=$tags&l=${location.latitude},${location.longitude}';
 
       final request = DioRequest();
       final response = await request.get(url);
@@ -105,9 +92,8 @@ class SearchingService extends ChangeNotifier {
       return data.map((service) {
         return Service.fromJson(service);
       }).toList();
-    } catch (e) {
-      debugPrint('Error fetching service: $e');
-      return [];
+    } catch (err) {
+      rethrow;
     }
   }
 
