@@ -1,6 +1,6 @@
 class Service {
   String id;
-  double suggestability;
+  double score;
   int rank;
   String vendor;
   double latitude;
@@ -8,7 +8,7 @@ class Service {
 
   Service({
     required this.id,
-    required this.suggestability,
+    required this.score,
     required this.rank,
     required this.vendor,
     required this.latitude,
@@ -18,7 +18,7 @@ class Service {
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
       id: json['id'],
-      suggestability: json['suggestability'],
+      score: json['score'],
       rank: json['rank'],
       vendor: json['vendor'],
       latitude: json['latitude'],
@@ -29,7 +29,7 @@ class Service {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'title': suggestability,
+      'title': score,
       'rank': rank,
       'vendor': vendor,
       'latitude': latitude,
