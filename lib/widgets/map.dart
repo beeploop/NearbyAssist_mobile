@@ -69,7 +69,7 @@ class _CustomMap extends State<CustomMap> {
                     alignment: Alignment.topCenter,
                     point: currentLocation,
                     child: const Icon(Icons.account_circle,
-                        size: 40, color: Color.fromARGB(90, 255, 0, 0)),
+                        size: 40, color: Color.fromARGB(100, 255, 0, 0)),
                   ),
                   ..._markerBuilder(updated),
                 ],

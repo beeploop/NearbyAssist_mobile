@@ -16,7 +16,7 @@ final fakeUser = FacebookLoginResponse(
 final mockLocations = [
   Service(
     id: "1",
-    suggestability: 0.0,
+    score: 0.0,
     rank: 200,
     vendor: 'Hugo',
     latitude: 7.424373,
@@ -24,7 +24,7 @@ final mockLocations = [
   ),
   Service(
     id: "2",
-    suggestability: 0.0,
+    score: 0.0,
     rank: 100,
     vendor: '11:11',
     latitude: 7.422427,
@@ -32,7 +32,7 @@ final mockLocations = [
   ),
   Service(
     id: "3",
-    suggestability: 0.0,
+    score: 0.0,
     rank: 300,
     vendor: 'Cyan',
     latitude: 7.419195,
