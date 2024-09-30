@@ -20,7 +20,7 @@ class _Vendor extends State<Vendor> {
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder(
-        future: getIt.get<VendorService>().fetchServiceInfo(widget.serviceId),
+        future: getIt.get<VendorService>().getServiceInfo(widget.serviceId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/count_per_rating_model.dart';
@@ -13,13 +13,35 @@ import 'package:nearby_assist/request/dio_request.dart';
 class VendorService extends ChangeNotifier {
   bool _loading = false;
   VendorModel? _vendor;
-  ServiceDetailModel? _serviceInfo;
+  final Map<String, ServiceDetailModel> _serviceInfoCache = {};
 
   bool isLoading() => _loading;
 
   void _toggleLoading() {
     _loading = !_loading;
     notifyListeners();
+  }
+
+  Future<ServiceDetailModel> getServiceInfo(String id) async {
+    try {
+      if (!_serviceInfoCache.containsKey(id)) {
+        if (kDebugMode) {
+          print("Service info cache miss");
+        }
+
+        final response = await _fetchServiceInfo(id);
+        _serviceInfoCache[id] = response;
+
+        return response;
+      }
+
+      if (kDebugMode) {
+        print("Service info cache hit");
+      }
+      return _serviceInfoCache[id]!;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   Future<List<MyService>> fetchVendorServices() async {
@@ -40,7 +62,7 @@ class VendorService extends ChangeNotifier {
     }
   }
 
-  Future<ServiceDetailModel> fetchServiceInfo(String id) async {
+  Future<ServiceDetailModel> _fetchServiceInfo(String id) async {
     _toggleLoading();
 
     try {
@@ -99,10 +121,6 @@ class VendorService extends ChangeNotifier {
 
   VendorModel? getVendor() {
     return _vendor;
-  }
-
-  ServiceDetailModel? getServiceInfo() {
-    return _serviceInfo;
   }
 
   Map<int, int> parseReviewCount(String reviewCount) {

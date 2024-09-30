@@ -23,7 +23,7 @@ class _DestinationRoute extends State<DestinationRoute> {
       appBar: AppBar(),
       body: SafeArea(
         child: FutureBuilder(
-            future: getIt.get<RoutingService>().findRoute(widget.serviceId),
+            future: getIt.get<RoutingService>().getRoute(widget.serviceId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
