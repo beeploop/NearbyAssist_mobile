@@ -131,23 +131,23 @@ class MessageService extends ChangeNotifier {
   }
 
   Future<List<Conversation>> fetchConversations() async {
-    List<Conversation> conversations = [];
-
     try {
       const url = "/api/v1/chat/conversations";
 
       final request = DioRequest();
       final response = await request.get(url);
 
-      List data = response.data['conversations'];
-      return data.map((conversation) {
+      final conversations = response.data['conversations'];
+      if (conversations == null) {
+        return [];
+      }
+
+      final conversationList = conversations as List;
+      return conversationList.map((conversation) {
         return Conversation.fromJson(conversation);
       }).toList();
     } catch (e) {
-      debugPrint('error fetching conversations: $e');
-      conversations.clear();
+      rethrow;
     }
-
-    return conversations;
   }
 }

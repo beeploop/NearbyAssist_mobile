@@ -33,53 +33,53 @@ class _Conversations extends State<Conversations> {
               return Text('Error: ${snapshot.error}');
             }
 
-            if (snapshot.hasData) {
-              final conversations = snapshot.data;
-
-              if (conversations == null || conversations.isEmpty) {
-                return const Text('No messages');
-              }
-
-              return RefreshIndicator(
-                onRefresh: () {
-                  return getIt.get<MessageService>().fetchConversations();
-                },
-                child: ListView.builder(
-                  itemCount: conversations.length,
-                  itemBuilder: (context, index) {
-                    final user = conversations[index];
-
-                    return ListTile(
-                      onTap: () {
-                        context.goNamed(
-                          'chat',
-                          pathParameters: {'userId': user.userId},
-                          queryParameters: {'vendorName': user.name},
-                        );
-                      },
-                      leading: CircleAvatar(
-                        foregroundImage: CachedNetworkImageProvider(
-                          user.imageUrl.startsWith("http")
-                              ? user.imageUrl
-                              : '$addr/resource/${user.imageUrl}',
-                        ),
-                        onForegroundImageError: (object, stacktrace) {
-                          debugPrint(
-                            'Error loading network image for: ${conversations[index].name}',
-                          );
-                        },
-                        backgroundImage: const AssetImage(
-                          'assets/images/avatar.png',
-                        ),
-                      ),
-                      title: Text(conversations[index].name),
-                    );
-                  },
-                ),
-              );
+            if (!snapshot.hasData) {
+              return const Text('messages has no data');
             }
 
-            return const Text('No messages');
+            final conversations = snapshot.data;
+
+            if (conversations == null || conversations.isEmpty) {
+              return const Text('No messages');
+            }
+
+            return RefreshIndicator(
+              onRefresh: () {
+                return getIt.get<MessageService>().fetchConversations();
+              },
+              child: ListView.builder(
+                itemCount: conversations.length,
+                itemBuilder: (context, index) {
+                  final user = conversations[index];
+
+                  return ListTile(
+                    onTap: () {
+                      context.goNamed(
+                        'chat',
+                        pathParameters: {'userId': user.userId},
+                        queryParameters: {'vendorName': user.name},
+                      );
+                    },
+                    leading: CircleAvatar(
+                      foregroundImage: CachedNetworkImageProvider(
+                        user.imageUrl.startsWith("http")
+                            ? user.imageUrl
+                            : '$addr/resource/${user.imageUrl}',
+                      ),
+                      onForegroundImageError: (object, stacktrace) {
+                        debugPrint(
+                          'Error loading network image for: ${conversations[index].name}',
+                        );
+                      },
+                      backgroundImage: const AssetImage(
+                        'assets/images/avatar.png',
+                      ),
+                    ),
+                    title: Text(conversations[index].name),
+                  );
+                },
+              ),
+            );
           },
         ),
       ),
