@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -13,6 +15,7 @@ class CustomDrawer extends StatefulWidget {
 
 class _CustomDrawer extends State<CustomDrawer> {
   final avatarUrl = getIt.get<AuthModel>().getUser().imageUrl;
+  final addr = getIt.get<SettingsModel>().getServerAddr();
 
   List<Map> drawerItems = [
     {
@@ -124,7 +127,11 @@ class _CustomDrawer extends State<CustomDrawer> {
         children: [
           CircleAvatar(
             radius: 30,
-            foregroundImage: NetworkImage(avatarUrl),
+            foregroundImage: CachedNetworkImageProvider(
+              avatarUrl.startsWith("http")
+                  ? avatarUrl
+                  : '$addr/resource/$avatarUrl',
+            ),
             onForegroundImageError: (object, stacktrace) {
               debugPrint('Error loading network image for custom drawer');
             },

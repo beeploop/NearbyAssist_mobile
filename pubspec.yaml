@@ -56,6 +56,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
   diffie_hellman: ^1.2.0
   encrypt: ^5.0.3
+  cached_network_image: ^3.4.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
@@ -12,6 +14,8 @@ class Conversations extends StatefulWidget {
 }
 
 class _Conversations extends State<Conversations> {
+  final addr = getIt.get<SettingsModel>().getServerAddr();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,21 +47,21 @@ class _Conversations extends State<Conversations> {
                 child: ListView.builder(
                   itemCount: conversations.length,
                   itemBuilder: (context, index) {
+                    final user = conversations[index];
+
                     return ListTile(
                       onTap: () {
                         context.goNamed(
                           'chat',
-                          pathParameters: {
-                            'userId': conversations[index].userId
-                          },
-                          queryParameters: {
-                            'vendorName': conversations[index].name
-                          },
+                          pathParameters: {'userId': user.userId},
+                          queryParameters: {'vendorName': user.name},
                         );
                       },
                       leading: CircleAvatar(
-                        foregroundImage: NetworkImage(
-                          conversations[index].imageUrl,
+                        foregroundImage: CachedNetworkImageProvider(
+                          user.imageUrl.startsWith("http")
+                              ? user.imageUrl
+                              : '$addr/resource/${user.imageUrl}',
                         ),
                         onForegroundImageError: (object, stacktrace) {
                           debugPrint(

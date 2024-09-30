@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class VendorHeader extends StatefulWidget {
   const VendorHeader(
@@ -15,6 +18,8 @@ class VendorHeader extends StatefulWidget {
 }
 
 class _VendorHeader extends State<VendorHeader> {
+  final addr = getIt.get<SettingsModel>().getServerAddr();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -25,23 +30,20 @@ class _VendorHeader extends State<VendorHeader> {
         children: [
           Wrap(
             children: [
-              Image.network(
-                widget.vendorInfo.imageUrl,
-                fit: BoxFit.fill,
-                width: 100,
-                height: 100,
-                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                  return child;
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
+              CachedNetworkImage(
+                imageUrl: widget.vendorInfo.imageUrl.startsWith("http")
+                    ? widget.vendorInfo.imageUrl
+                    : '$addr/resource/${widget.vendorInfo.imageUrl}',
+                progressIndicatorBuilder: (_, url, download) {
+                  if (download.progress != null) {
+                    final percent = download.progress! * 100;
+                    return Text('$percent% done loading');
                   }
 
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Text('Loaded $url');
                 },
+                width: 100,
+                height: 100,
               ),
               const SizedBox(width: 20),
               Column(

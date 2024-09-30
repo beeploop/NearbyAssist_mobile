@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar({super.key});
@@ -8,6 +10,7 @@ class Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = getIt.get<AuthModel>().getUser();
+    final addr = getIt.get<SettingsModel>().getServerAddr();
 
     return Padding(
         padding: const EdgeInsets.only(right: 20),
@@ -17,7 +20,11 @@ class Avatar extends StatelessWidget {
             const SizedBox(width: 10),
             CircleAvatar(
               radius: 16,
-              foregroundImage: NetworkImage(user.imageUrl),
+              foregroundImage: CachedNetworkImageProvider(
+                user.imageUrl.startsWith("http")
+                    ? user.imageUrl
+                    : '$addr/resource/${user.imageUrl}',
+              ),
               onForegroundImageError: (object, stacktrace) {
                 debugPrint('Error loading network image for user avatar');
               },

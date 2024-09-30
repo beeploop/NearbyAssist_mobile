@@ -3,6 +3,7 @@ import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/service_image_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class VendorPhotos extends StatefulWidget {
   const VendorPhotos({super.key, required this.photos});
@@ -42,22 +43,17 @@ class _VendorPhotos extends State<VendorPhotos> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: InstaImageViewer(
-                        child: Image.network(
-                          photo.url.startsWith("http")
+                        child: CachedNetworkImage(
+                          imageUrl: photo.url.startsWith("http")
                               ? photo.url
                               : '$addr/resource/${photo.url}',
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) {
-                              return child;
+                          progressIndicatorBuilder: (_, url, download) {
+                            if (download.progress != null) {
+                              final percent = download.progress! * 100;
+                              return Text('$percent% done loading');
                             }
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            return Center(
-                              child: Image.asset('assets/images/avatar.png'),
-                            );
+
+                            return Text('Loaded $url');
                           },
                         ),
                       ),
