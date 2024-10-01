@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:diffie_hellman/diffie_hellman.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
@@ -13,6 +14,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class MessageService extends ChangeNotifier {
   List<Message> _messages = [];
   WebSocketChannel? _channel;
+  final Map<String, DhPublicKey> _publicKeyCache = {};
 
   bool isWebsocketConnected() {
     if (_channel == null) {
@@ -22,18 +24,46 @@ class MessageService extends ChangeNotifier {
     return true;
   }
 
+  void closeWebsocket() {
+    if (_channel != null) {
+      _channel!.sink.close(1000);
+      _channel = null;
+    }
+  }
+
+  Stream<dynamic> stream() {
+    return _channel!.stream;
+  }
+
+  void connectWebsocket() {
+    try {
+      final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
+      final tokens = getIt.get<AuthModel>().getTokens();
+
+      _channel = WebSocketChannel.connect(
+        Uri.parse('$websocketAddr/api/v1/chat/ws?token=${tokens.accessToken}'),
+      );
+
+      if (_channel != null) {
+        debugPrint('Connected to websocket channel');
+      }
+    } catch (e) {
+      debugPrint('Error connecting to websocket: $e');
+      rethrow;
+    }
+  }
+
   void setInitialMessages(List<Message> messages) {
     _messages = messages;
     notifyListeners();
   }
 
-  Future<void> appendMessage(Message message, String otherUser) async {
-    final dh = DiffieHellman();
-    final otherUserPublicKey = await dh.getPublicKey(otherUser);
-    final sharedSecret = await dh.computeSharedSecret(otherUserPublicKey);
+  Future<void> appendMessage(Message? message, String otherUser) async {
+    if (message == null) {
+      return;
+    }
 
-    final aes = Encryption.fromBigInt(sharedSecret);
-    final decrypted = aes.decrypt(message.content);
+    final decrypted = await _decryptMessage(message.content, otherUser);
 
     _messages.add(Message(
       id: message.id,
@@ -44,51 +74,34 @@ class MessageService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void connectWebsocket() {
-    final websocketAddr = getIt.get<SettingsModel>().getWebsocketAddr();
-
-    try {
-      final tokens = getIt.get<AuthModel>().getTokens();
-
-      _channel = WebSocketChannel.connect(
-        Uri.parse('$websocketAddr/chat/ws?token=${tokens.accessToken}'),
-      );
-
-      if (_channel != null) {
-        debugPrint('Connected to websocket channel');
-      }
-    } catch (e) {
-      debugPrint('Error connecting to websocket: $e');
-    }
-  }
-
-  void closeWebsocket() {
-    if (_channel != null) {
-      _channel!.sink.close(1000);
-      _channel = null;
-    }
-  }
-
   Future<List<Message>> fetchMessages(String recipientId) async {
     try {
-      final url = '/v1/public/chat/messages/$recipientId';
-
+      final url = '/api/v1/chat/messages/$recipientId';
       final request = DioRequest();
       final response = await request.get(url);
 
-      _messages.clear();
-
-      for (var message in response.data['messages']) {
-        final msg = Message.fromJson(message);
-        _messages.add(msg);
+      final messages = response.data["messages"];
+      if (messages == null) {
+        return [];
       }
 
-      return _messages;
-    } catch (e) {
-      _messages.clear();
-      debugPrint('error fetching messages: $e');
+      final messageList = (messages as List).map((message) {
+        return Message.fromJson(message);
+      }).toList();
 
-      return [];
+      // decrypt messages
+      for (var i = 0; i < messageList.length; i++) {
+        final decrypted = await _decryptMessage(
+          messageList[i].content,
+          recipientId,
+        );
+        messageList[i].content = decrypted;
+      }
+
+      return messageList;
+    } catch (e) {
+      debugPrint('error fetching messages: $e');
+      rethrow;
     }
   }
 
@@ -99,12 +112,7 @@ class MessageService extends ChangeNotifier {
 
     try {
       final userId = getIt.get<AuthModel>().getUserId();
-      final dh = DiffieHellman();
-      final recipientPublicKey = await dh.getPublicKey(toId);
-      final sharedSecret = await dh.computeSharedSecret(recipientPublicKey);
-
-      final aes = Encryption.fromBigInt(sharedSecret);
-      final encrypted = aes.encrypt(text);
+      final encrypted = await _encryptMessage(text, toId);
 
       final message = Message(
         id: "0",
@@ -126,10 +134,6 @@ class MessageService extends ChangeNotifier {
     }
   }
 
-  Stream<dynamic> stream() {
-    return _channel!.stream;
-  }
-
   Future<List<Conversation>> fetchConversations() async {
     try {
       const url = "/api/v1/chat/conversations";
@@ -147,6 +151,60 @@ class MessageService extends ChangeNotifier {
         return Conversation.fromJson(conversation);
       }).toList();
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String> _decryptMessage(String message, String otherUserId) async {
+    try {
+      final dh = DiffieHellman();
+      DhPublicKey? publicKey;
+
+      if (!_publicKeyCache.containsKey(otherUserId)) {
+        if (kDebugMode) {
+          print("Public key cache miss");
+        }
+        publicKey = await dh.getPublicKey(otherUserId);
+        _publicKeyCache[otherUserId] = publicKey;
+      } else {
+        if (kDebugMode) {
+          print("Public key cache hit");
+        }
+        publicKey = _publicKeyCache[otherUserId]!;
+      }
+
+      final sharedSecret = await dh.computeSharedSecret(publicKey);
+
+      final aes = Encryption.fromBigInt(sharedSecret);
+      return aes.decrypt(message);
+    } catch (err) {
+      rethrow;
+    }
+  }
+
+  Future<String> _encryptMessage(String message, String otherUserId) async {
+    try {
+      final dh = DiffieHellman();
+      DhPublicKey? publicKey;
+
+      if (!_publicKeyCache.containsKey(otherUserId)) {
+        if (kDebugMode) {
+          print("Public key cache miss");
+        }
+        publicKey = await dh.getPublicKey(otherUserId);
+        _publicKeyCache[otherUserId] = publicKey;
+      } else {
+        if (kDebugMode) {
+          print("Public key cache hit");
+        }
+        publicKey = _publicKeyCache[otherUserId]!;
+      }
+
+      final sharedSecret = await dh.computeSharedSecret(publicKey);
+
+      final aes = Encryption.fromBigInt(sharedSecret);
+      return aes.encrypt(message);
+    } catch (err) {
       rethrow;
     }
   }

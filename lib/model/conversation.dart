@@ -11,7 +11,7 @@ class Conversation {
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     return Conversation(
-      userId: json['userId'],
+      userId: json['id'],
       name: json['name'],
       imageUrl: json['imageUrl'],
     );
@@ -19,7 +19,7 @@ class Conversation {
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
+      'id': userId,
       'name': name,
       'imageUrl': imageUrl,
     };

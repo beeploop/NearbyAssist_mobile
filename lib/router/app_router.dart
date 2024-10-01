@@ -14,7 +14,6 @@ import 'package:nearby_assist/screens/login.dart';
 import 'package:nearby_assist/screens/conversations.dart';
 import 'package:nearby_assist/screens/map_page.dart';
 import 'package:nearby_assist/screens/my_services.dart';
-import 'package:nearby_assist/screens/new_message.dart';
 import 'package:nearby_assist/screens/report_issue.dart';
 import 'package:nearby_assist/screens/settings.dart';
 import 'package:nearby_assist/screens/transaction_form.dart';
@@ -62,28 +61,23 @@ class AppRouter {
         ],
       ),
       GoRoute(
-          path: '/messages',
-          name: 'messages',
-          builder: (context, state) {
-            return const Conversations();
-          },
-          routes: [
-            GoRoute(
-                path: 'new-message',
-                name: 'new-message',
-                builder: (context, state) {
-                  return const NewMessage();
-                }),
-            GoRoute(
-                path: ':userId',
-                name: 'chat',
-                builder: (context, state) {
-                  final userId = state.pathParameters['userId']!;
-                  final vendorName = state.uri.queryParameters['vendorName']!;
+        path: '/messages',
+        name: 'messages',
+        builder: (context, state) {
+          return const Conversations();
+        },
+        routes: [
+          GoRoute(
+              path: 'chat',
+              name: 'chat',
+              builder: (context, state) {
+                final userId = state.uri.queryParameters['userId']!;
+                final vendorName = state.uri.queryParameters['vendorName']!;
 
-                  return Chat(recipientId: userId, name: vendorName);
-                }),
-          ]),
+                return Chat(recipientId: userId, name: vendorName);
+              }),
+        ],
+      ),
       GoRoute(
           path: '/transaction',
           name: 'transaction',

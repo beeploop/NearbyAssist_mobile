@@ -87,8 +87,10 @@ class _VendorHeader extends State<VendorHeader> {
                 onPressed: () {
                   context.pushNamed(
                     'chat',
-                    pathParameters: {'userId': widget.vendorInfo.vendorId},
-                    queryParameters: {'vendorName': widget.vendorInfo.vendor},
+                    queryParameters: {
+                      'vendorName': widget.vendorInfo.vendor,
+                      'userId': widget.vendorInfo.vendorId,
+                    },
                   );
                 },
                 icon: const Icon(

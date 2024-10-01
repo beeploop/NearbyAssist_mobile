@@ -56,8 +56,10 @@ class _Conversations extends State<Conversations> {
                     onTap: () {
                       context.goNamed(
                         'chat',
-                        pathParameters: {'userId': user.userId},
-                        queryParameters: {'vendorName': user.name},
+                        queryParameters: {
+                          'vendorName': user.name,
+                          'userId': user.userId,
+                        },
                       );
                     },
                     leading: CircleAvatar(
