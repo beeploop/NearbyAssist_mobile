@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/widgets/chat_component.dart';
@@ -24,13 +23,22 @@ class _Chat extends State<Chat> {
     if (getIt.get<MessageService>().isWebsocketConnected() == false) {
       getIt.get<MessageService>().connectWebsocket();
     }
+
+    _fetchMessages();
+  }
+
+  void _fetchMessages() async {
+    try {
+      final messages =
+          await getIt.get<MessageService>().fetchMessages(widget.recipientId);
+      getIt.get<MessageService>().setInitialMessages(messages);
+    } catch (e) {
+      debugPrint('Error fetching messages: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // NOTE: this could return an exception, handle this please
-    final userId = getIt.get<AuthModel>().getUserId();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -38,15 +46,12 @@ class _Chat extends State<Chat> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: FutureBuilder(
-        future: getIt.get<MessageService>().fetchMessages(widget.recipientId),
+      body: StreamBuilder(
+        stream: getIt.get<MessageService>().stream().map((event) {
+          final decoded = jsonDecode(event);
+          return Message.fromJson(decoded);
+        }),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
           if (snapshot.hasError) {
             final error = snapshot.error;
 
@@ -57,37 +62,13 @@ class _Chat extends State<Chat> {
 
           if (snapshot.hasData) {
             final data = snapshot.data!;
-            getIt.get<MessageService>().setInitialMessages(data);
+            getIt.get<MessageService>().appendMessage(
+                  data,
+                  widget.recipientId,
+                );
           }
 
-          return StreamBuilder(
-            stream: getIt.get<MessageService>().stream().map((event) {
-              final decoded = jsonDecode(event);
-              return Message.fromJson(decoded);
-            }),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                final error = snapshot.error;
-
-                return Center(
-                  child: Text('An error occurred: $error'),
-                );
-              }
-
-              if (snapshot.hasData) {
-                final data = snapshot.data!;
-                getIt.get<MessageService>().appendMessage(
-                      data,
-                      widget.recipientId,
-                    );
-              }
-
-              return ChatComponent(
-                recipientId: widget.recipientId,
-                userId: userId,
-              );
-            },
-          );
+          return ChatComponent(recipientId: widget.recipientId);
         },
       ),
     );

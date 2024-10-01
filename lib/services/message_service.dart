@@ -58,6 +58,8 @@ class MessageService extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<Message> getMessages() => _messages;
+
   Future<void> appendMessage(Message? message, String otherUser) async {
     if (message == null) {
       return;
@@ -105,8 +107,6 @@ class MessageService extends ChangeNotifier {
     }
   }
 
-  List<Message> getMessages() => _messages;
-
   Future<void> newMessage(String text, String toId) async {
     if (text.isEmpty) return;
 
@@ -137,7 +137,6 @@ class MessageService extends ChangeNotifier {
   Future<List<Conversation>> fetchConversations() async {
     try {
       const url = "/api/v1/chat/conversations";
-
       final request = DioRequest();
       final response = await request.get(url);
 

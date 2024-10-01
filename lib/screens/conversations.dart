@@ -19,7 +19,12 @@ class _Conversations extends State<Conversations> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text(
+          'Messages',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(
