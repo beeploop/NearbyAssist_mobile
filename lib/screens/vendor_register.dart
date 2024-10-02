@@ -10,7 +10,6 @@ import 'package:nearby_assist/services/vendor_register_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
 import 'package:nearby_assist/widgets/popup.dart';
-import 'package:nearby_assist/widgets/text_heading.dart';
 
 class VendorRegister extends StatefulWidget {
   const VendorRegister({super.key});
@@ -67,9 +66,6 @@ class _VendorRegisterState extends State<VendorRegister> {
           return ListView(
             padding: const EdgeInsets.all(20),
             children: [
-              const TextHeading(title: "Vendor Registration"),
-              const Divider(),
-              const SizedBox(height: 20),
               Row(
                 children: [
                   ElevatedButton(

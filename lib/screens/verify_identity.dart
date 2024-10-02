@@ -7,7 +7,6 @@ import 'package:nearby_assist/services/verify_identity_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
-import 'package:nearby_assist/widgets/text_heading.dart';
 import 'package:nearby_assist/config/constants.dart' as constants;
 
 class VerifyIdentity extends StatefulWidget {
@@ -43,13 +42,16 @@ class _VerifyIdentity extends State<VerifyIdentity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text(
+          'Identity Verification',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       drawer: const CustomDrawer(),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const TextHeading(title: 'Verify Identity'),
-          const Divider(),
           InputBox(
             controller: _nameController,
             hintText: 'Full name',

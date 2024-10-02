@@ -114,6 +114,17 @@ class _Settings extends State<Settings> {
           ),
           ListTile(
             dense: true,
+            leading: const Icon(Icons.perm_identity_outlined),
+            title: const Text('Verify Identity'),
+            subtitle: const Text(
+              'Verify your user information to unlock more features',
+            ),
+            onTap: () {
+              context.goNamed('verify-identity');
+            },
+          ),
+          ListTile(
+            dense: true,
             leading: const Icon(Icons.update_outlined),
             title: const Text('Update service tags'),
             subtitle: const Text('Force update service tags'),
