@@ -56,9 +56,8 @@ class VendorService extends ChangeNotifier {
       return data.map((service) {
         return MyService.fromJson(service);
       }).toList();
-    } catch (e) {
-      debugPrint('error fetching vendor services: $e');
-      return [];
+    } catch (err) {
+      rethrow;
     }
   }
 
@@ -108,14 +107,17 @@ class VendorService extends ChangeNotifier {
       final request = DioRequest();
       final response = await request.get(url);
 
+      if (response.data["vendor"] == null) {
+        return false;
+      }
+
       if (response.data.containsKey('vendor') == false) {
-        throw Exception("vendor not found");
+        return false;
       }
 
       return true;
-    } catch (e) {
-      debugPrint('error fetching vendor data: $e');
-      return false;
+    } catch (err) {
+      rethrow;
     }
   }
 

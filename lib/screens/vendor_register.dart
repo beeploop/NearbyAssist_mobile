@@ -30,7 +30,12 @@ class _VendorRegisterState extends State<VendorRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text(
+          'Vendor Registration',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       drawer: const CustomDrawer(),
       body: ListenableBuilder(
         listenable: getIt.get<AuthModel>(),

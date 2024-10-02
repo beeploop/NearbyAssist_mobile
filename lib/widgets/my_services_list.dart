@@ -31,54 +31,53 @@ class _MyServicesList extends State<MyServicesList> {
           );
         }
 
-        if (snapshot.hasData) {
-          final services = snapshot.data;
-
-          if (services == null || services.isEmpty) {
-            return const Center(
-              child: Text('No services found!'),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: () {
-              return Future.delayed(const Duration(seconds: 2));
-            },
-            child: ListView.builder(
-              itemCount: services.length,
-              itemBuilder: (context, index) {
-                final service = services[index];
-
-                return ListTile(
-                  title: Text(service.description),
-                  trailing: PopupMenuButton(itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        onTap: () {
-                          debugPrint('clicked edit ${service.id}');
-                        },
-                        value: 'edit',
-                        child: const Text('Edit'),
-                      ),
-                      PopupMenuItem(
-                        onTap: () {
-                          debugPrint('clicked delete ${service.id}');
-                        },
-                        value: 'delete',
-                        child: const Text('Delete'),
-                      ),
-                    ];
-                  }),
-                );
-              },
+        if (!snapshot.hasData) {
+          return const Center(
+            child: Text(
+              'Unexpected behavior, no error but has no data',
+              textAlign: TextAlign.center,
             ),
           );
         }
 
-        return const Center(
-          child: Text(
-            'For some reason, we could not fetch your services! Please try again later.',
-            textAlign: TextAlign.center,
+        final services = snapshot.data;
+        if (services == null || services.isEmpty) {
+          return const Center(
+            child: Text('No services found!'),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () {
+            return Future.delayed(const Duration(seconds: 2));
+          },
+          child: ListView.builder(
+            itemCount: services.length,
+            itemBuilder: (context, index) {
+              final service = services[index];
+
+              return ListTile(
+                title: Text(service.description),
+                trailing: PopupMenuButton(itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      onTap: () {
+                        debugPrint('clicked edit ${service.id}');
+                      },
+                      value: 'edit',
+                      child: const Text('Edit'),
+                    ),
+                    PopupMenuItem(
+                      onTap: () {
+                        debugPrint('clicked delete ${service.id}');
+                      },
+                      value: 'delete',
+                      child: const Text('Delete'),
+                    ),
+                  ];
+                }),
+              );
+            },
           ),
         );
       },

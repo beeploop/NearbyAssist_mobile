@@ -17,7 +17,12 @@ class _MyServices extends State<MyServices> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text(
+          'My Services',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(
@@ -32,11 +37,14 @@ class _MyServices extends State<MyServices> {
               return Text('An error occurred: $err');
             }
 
-            if (snapshot.hasData && snapshot.data != null) {
-              if (snapshot.data == true) {
-                return const MyServicesList();
-              }
+            if (!snapshot.hasData) {
+              return const Center(
+                child: Text('Unexpected behavior, no error but has no data'),
+              );
+            }
 
+            final isVendor = snapshot.data!;
+            if (!isVendor) {
               return PopUp(
                 title: 'You are not a vendor yet!',
                 subtitle: 'Register as a vendor to start offering services.',
@@ -57,7 +65,7 @@ class _MyServices extends State<MyServices> {
               );
             }
 
-            return const Text('An error occurred');
+            return const MyServicesList();
           },
         ),
       ),
