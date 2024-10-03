@@ -20,8 +20,8 @@ class SettingsModel extends ChangeNotifier {
 
   Future<void> loadSettings() async {
     try {
-      await getIt.get<StorageService>().loadData();
       await loadBackendAddr();
+      await getIt.get<StorageService>().loadData();
     } catch (e) {
       ConsoleLogger().log('Error loading settings: $e');
       rethrow;

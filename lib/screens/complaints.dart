@@ -9,7 +9,12 @@ class Complaints extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text(
+          'Complaints',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(
@@ -21,10 +26,7 @@ class Complaints extends StatelessWidget {
 
             if (snapshot.hasError) {
               final err = snapshot.error.toString();
-              return Text(
-                'Error occurred: $err',
-                textAlign: TextAlign.center,
-              );
+              return Text(err, textAlign: TextAlign.center);
             }
 
             if (snapshot.hasData) {

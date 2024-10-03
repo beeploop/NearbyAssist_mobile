@@ -9,7 +9,12 @@ class History extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text(
+          'History',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(

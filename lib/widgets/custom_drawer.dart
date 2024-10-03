@@ -40,11 +40,6 @@ class _CustomDrawer extends State<CustomDrawer> {
       'icon': Icons.history,
     },
     {
-      'title': 'complaints',
-      'dist': 'complaints',
-      'icon': Icons.feedback_outlined,
-    },
-    {
       'title': 'offer a service',
       'dist': 'my-services',
       'icon': Icons.hardware_outlined,

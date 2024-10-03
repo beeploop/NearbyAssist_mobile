@@ -31,6 +31,12 @@ class _TransactionFormState extends State<TransactionForm> {
             return Center(child: Text('Error occurred: $error'));
           }
 
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text('Unexpected behavior, no error but has no data'),
+            );
+          }
+
           // final data = snapshot.data!;
 
           return ListView(
@@ -40,7 +46,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 title: 'Transaction ID: ${widget.transactionId}',
                 alignment: TextAlign.start,
                 fontSize: 16,
-              )
+              ),
             ],
           );
         },

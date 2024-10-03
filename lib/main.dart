@@ -61,7 +61,7 @@ class _MyApp extends State<MyApp> {
       await getIt.get<SettingsModel>().loadSettings();
       ConsoleLogger().log('settings loaded successfully');
     } catch (err) {
-      ConsoleLogger().log(err.toString());
+      ConsoleLogger().log('Error loading settings: $err');
     } finally {
       FlutterNativeSplash.remove();
     }

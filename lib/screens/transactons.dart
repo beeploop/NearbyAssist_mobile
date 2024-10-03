@@ -10,11 +10,16 @@ class Transactions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text(
+          'Transactions',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(
-          future: getIt.get<TransactionService>().fetchTransactions(),
+          future: getIt.get<TransactionService>().getTransactions(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
@@ -29,15 +34,22 @@ class Transactions extends StatelessWidget {
               );
             }
 
+            if (!snapshot.hasData) {
+              return const Center(
+                child: Text('Unexpected behavior, no error but has no data'),
+              );
+            }
+
+            final transactions = snapshot.data!;
+
             return ListenableBuilder(
               listenable: getIt.get<TransactionService>(),
               builder: (context, _) {
-                final transactions =
-                    getIt.get<TransactionService>().getTransactions();
-
                 return RefreshIndicator(
                   onRefresh: () async {
-                    await getIt.get<TransactionService>().fetchTransactions();
+                    await getIt
+                        .get<TransactionService>()
+                        .getTransactions(forceRefresh: true);
                   },
                   child: ListView.builder(
                     itemCount: transactions.length,
@@ -46,9 +58,12 @@ class Transactions extends StatelessWidget {
 
                       return ListTile(
                         onTap: () {
-                          context.goNamed('transaction-form', queryParameters: {
-                            'transactionId': transaction.id.toString()
-                          });
+                          context.goNamed(
+                            'transaction-form',
+                            queryParameters: {
+                              'transactionId': transaction.id.toString()
+                            },
+                          );
                         },
                         title: Text('Client: ${transaction.client}'),
                         subtitle: Text(
