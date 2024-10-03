@@ -22,7 +22,7 @@ class VendorRegisterService extends ChangeNotifier {
     _toggleLoading();
 
     try {
-      const url = '/v1/public/application';
+      const url = '/api/v1/applications';
 
       final formData = FormData.fromMap({
         'job': job,
@@ -39,15 +39,16 @@ class VendorRegisterService extends ChangeNotifier {
       });
 
       final request = DioRequest();
-      request.multipart(
+      await request.multipart(
         url,
         formData,
         (int send, int total) {
           ConsoleLogger().log('=== send: $send, total: $total');
         },
+        expectedStatus: HttpStatus.created,
       );
     } catch (e) {
-        rethrow;
+      rethrow;
     } finally {
       _toggleLoading();
     }

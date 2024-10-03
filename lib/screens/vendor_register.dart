@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/services/custom_file_picker.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/services/vendor_register_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
@@ -132,7 +133,7 @@ class _VendorRegisterState extends State<VendorRegister> {
               const SizedBox(height: 20),
               ListenableLoadingButton(
                 listenable: getIt.get<VendorRegisterService>(),
-                onPressed: () {
+                onPressed: () async {
                   if (_policeClearance == null ||
                       _serviceCertificate == null ||
                       _jobController.text.isEmpty) {
@@ -157,11 +158,33 @@ class _VendorRegisterState extends State<VendorRegister> {
                     return;
                   }
 
-                  getIt.get<VendorRegisterService>().registerVendor(
-                        job: _jobController.text,
-                        policeClearance: _policeClearance!,
-                        supportingDocument: _serviceCertificate!,
+                  try {
+                    await getIt.get<VendorRegisterService>().registerVendor(
+                          job: _jobController.text,
+                          policeClearance: _policeClearance!,
+                          supportingDocument: _serviceCertificate!,
+                        );
+                  } catch (err) {
+                    ConsoleLogger().log('Error registering vendor: $err');
+                    if (err.toString().contains('400')) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'You alread submitted an application. Please wait for approval'),
+                          ),
+                        );
+
+                        return;
+                      }
+                    }
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(err.toString())),
                       );
+                    }
+                  }
                 },
                 isLoadingFunction: () =>
                     getIt.get<VendorRegisterService>().isLoading(),
