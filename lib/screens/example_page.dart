@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class ExamplePage extends StatefulWidget {
   const ExamplePage({super.key});
@@ -31,7 +32,7 @@ class _ExamplePageState extends State<ExamplePage> {
                     _response = getPrettyJSONString(response.data);
                   });
                 } catch (e) {
-                  debugPrint(e.toString());
+                  ConsoleLogger().log(e.toString());
                 }
               },
               child: const Text('Run'),

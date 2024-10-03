@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class Settings extends StatefulWidget {
@@ -138,7 +139,6 @@ class _Settings extends State<Settings> {
                   );
                 }
               } catch (e) {
-                debugPrint(e.toString());
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -176,8 +176,8 @@ class _Settings extends State<Settings> {
             onTap: () async {
               try {
                 await getIt.get<AuthModel>().logout();
-              } catch (e) {
-                debugPrint(e.toString());
+              } catch (err) {
+                ConsoleLogger().log(err);
               }
             },
             title: const Text('Clear Data'),

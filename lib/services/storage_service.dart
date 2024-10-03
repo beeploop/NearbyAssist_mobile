@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
@@ -36,9 +34,6 @@ class StorageService {
       final userJson = jsonDecode(userString);
       return UserInfo.fromJson(userJson);
     } catch (e) {
-      if (kDebugMode) {
-        print('$e');
-      }
       rethrow;
     }
   }
@@ -62,9 +57,6 @@ class StorageService {
       final tokenJson = jsonDecode(savedTokens);
       return Token.fromJson(tokenJson);
     } catch (e) {
-      if (kDebugMode) {
-        print('$e');
-      }
       rethrow;
     }
   }
@@ -91,10 +83,6 @@ class StorageService {
         return TagModel.fromJson(tag);
       }).toList();
     } catch (e) {
-      if (kDebugMode) {
-        print('$e, loading initial tags instead');
-      }
-
       return initialTags;
     }
   }
@@ -148,9 +136,6 @@ class StorageService {
 
       return data;
     } catch (e) {
-      if (kDebugMode) {
-        print('$e');
-      }
       rethrow;
     }
   }
@@ -174,9 +159,7 @@ class StorageService {
             savedTags.map((tag) => tag.title).toList(),
           );
     } catch (e) {
-      if (kDebugMode) {
-        print('Error loading saved data: $e');
-      }
+      rethrow;
     }
   }
 

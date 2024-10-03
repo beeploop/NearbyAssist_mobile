@@ -1,10 +1,9 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/request/auth_interceptor.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class DioRequest {
   BaseOptions options = BaseOptions(
@@ -37,9 +36,7 @@ class DioRequest {
         url,
         cancelToken: _cancelToken,
         onReceiveProgress: (int receive, int total) {
-          if (kDebugMode) {
-            print('receive: $receive, total: $total');
-          }
+          ConsoleLogger().log('receive: $receive, total: $total');
         },
       );
 
@@ -49,9 +46,6 @@ class DioRequest {
 
       return response;
     } catch (e) {
-      if (kDebugMode) {
-        print('get request errored: $e');
-      }
       rethrow;
     }
   }
@@ -70,14 +64,10 @@ class DioRequest {
         data: data,
         cancelToken: _cancelToken,
         onSendProgress: (int sent, int total) {
-          if (kDebugMode) {
-            print('sent: $sent, total: $total');
-          }
+          ConsoleLogger().log('sent: $sent, total: $total');
         },
         onReceiveProgress: (int receive, int total) {
-          if (kDebugMode) {
-            print('receive: $receive, total: $total');
-          }
+          ConsoleLogger().log('receive: $receive, total: $total');
         },
       );
 
@@ -87,9 +77,6 @@ class DioRequest {
 
       return response;
     } catch (e) {
-      if (kDebugMode) {
-        print('post request errored: $e');
-      }
       rethrow;
     }
   }
@@ -116,16 +103,7 @@ class DioRequest {
       }
 
       return response;
-    } on DioException catch (e) {
-      if (kDebugMode) {
-        print('== error: ${e.response?.data}');
-        print('== message: ${e.message}');
-      }
-      rethrow;
     } catch (e) {
-      if (kDebugMode) {
-        print('== error on multipart: ${e.toString()}');
-      }
       rethrow;
     }
   }
@@ -159,9 +137,6 @@ class DioRequest {
 
       return response;
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
       rethrow;
     }
   }

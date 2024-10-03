@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class SystemComplaintService extends ChangeNotifier {
   List<File> _systemComplaintImages = [];
@@ -56,7 +57,7 @@ class SystemComplaintService extends ChangeNotifier {
         url,
         formData,
         (int send, int total) {
-          debugPrint('=== send: $send, total: $total');
+          ConsoleLogger().log('=== send: $send, total: $total');
         },
         expectedStatus: HttpStatus.created,
       );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class LocationService extends ChangeNotifier {
   Location location = Location();
@@ -47,7 +48,7 @@ class LocationService extends ChangeNotifier {
 
       _setLocation(locationData.latitude!, locationData.longitude!);
     } catch (e) {
-      debugPrint('=== error getting location: $e');
+      ConsoleLogger().log('Error getting location: $e');
       rethrow;
     }
   }

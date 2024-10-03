@@ -5,6 +5,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class VendorHeader extends StatefulWidget {
   const VendorHeader(
@@ -60,7 +61,7 @@ class _VendorHeader extends State<VendorHeader> {
                       color: Colors.yellow,
                     ),
                     onRatingUpdate: (_) {
-                      debugPrint('rating update not allowed');
+                      ConsoleLogger().log('Rating update not allowed');
                     },
                     ignoreGestures: true,
                   ),

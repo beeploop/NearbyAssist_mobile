@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
@@ -156,12 +155,6 @@ class _VendorRegisterState extends State<VendorRegister> {
                       ),
                     );
                     return;
-                  }
-
-                  if (kDebugMode) {
-                    print('police clearance: $_policeClearance');
-                    print('service certificate: $_serviceCertificate');
-                    print('job: ${_jobController.text}');
                   }
 
                   getIt.get<VendorRegisterService>().registerVendor(

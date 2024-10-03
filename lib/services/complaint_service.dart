@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class ComplaintService extends ChangeNotifier {
   Future<List> fetchComplaints() async {
@@ -10,8 +11,8 @@ class ComplaintService extends ChangeNotifier {
 
       return response.data["complaints"];
     } catch (e) {
-      debugPrint('Error fetching complaints: $e');
-      return [];
+      ConsoleLogger().log('Error fetching complaints: $e');
+      rethrow;
     }
   }
 }

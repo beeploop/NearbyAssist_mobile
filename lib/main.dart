@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
@@ -7,6 +6,7 @@ import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/router/app_router.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/services/complaint_service.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/storage_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/history_service.dart';
@@ -59,13 +59,9 @@ class _MyApp extends State<MyApp> {
   Future<void> initialization() async {
     try {
       await getIt.get<SettingsModel>().loadSettings();
-      if (kDebugMode) {
-        print('settings loaded successfully');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print(e.toString());
-      }
+      ConsoleLogger().log('settings loaded successfully');
+    } catch (err) {
+      ConsoleLogger().log(err.toString());
     } finally {
       FlutterNativeSplash.remove();
     }

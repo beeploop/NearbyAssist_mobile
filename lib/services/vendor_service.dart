@@ -9,6 +9,7 @@ import 'package:nearby_assist/model/service_info_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
 import 'package:nearby_assist/model/vendor_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class VendorService extends ChangeNotifier {
   bool _loading = false;
@@ -25,9 +26,7 @@ class VendorService extends ChangeNotifier {
   Future<ServiceDetailModel> getServiceInfo(String id) async {
     try {
       if (!_serviceInfoCache.containsKey(id)) {
-        if (kDebugMode) {
-          print("Service info cache miss");
-        }
+        ConsoleLogger().log("Service info cache miss");
 
         final response = await _fetchServiceInfo(id);
         _serviceInfoCache[id] = response;
@@ -35,9 +34,7 @@ class VendorService extends ChangeNotifier {
         return response;
       }
 
-      if (kDebugMode) {
-        print("Service info cache hit");
-      }
+      ConsoleLogger().log("Service info cache hit");
       return _serviceInfoCache[id]!;
     } catch (err) {
       rethrow;
@@ -92,7 +89,7 @@ class VendorService extends ChangeNotifier {
         serviceImages: serviceImages,
       );
     } catch (e) {
-      debugPrint('error fetching vendor data: $e');
+      ConsoleLogger().log('error fetching vendor data: $e');
       rethrow;
     } finally {
       _toggleLoading();

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/message.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/widgets/chat_component.dart';
 
@@ -33,7 +34,7 @@ class _Chat extends State<Chat> {
           await getIt.get<MessageService>().fetchMessages(widget.recipientId);
       getIt.get<MessageService>().setInitialMessages(messages);
     } catch (e) {
-      debugPrint('Error fetching messages: $e');
+      ConsoleLogger().log("Error fetcing messages: $e");
     }
   }
 

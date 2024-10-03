@@ -3,6 +3,7 @@ import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class RoutingService extends ChangeNotifier {
   final Map<String, List<List<num>>> _routeCache = {};
@@ -10,9 +11,7 @@ class RoutingService extends ChangeNotifier {
   Future<List<List<num>>> getRoute(String serviceId) async {
     try {
       if (!_routeCache.containsKey(serviceId)) {
-        if (kDebugMode) {
-          print("Routing service cache miss");
-        }
+        ConsoleLogger().log("Routing service cache miss");
 
         final route = await _findRoute(serviceId);
         _routeCache[serviceId] = route;
@@ -20,9 +19,7 @@ class RoutingService extends ChangeNotifier {
         return route;
       }
 
-      if (kDebugMode) {
-        print("Routing service cache hit");
-      }
+      ConsoleLogger().log("Routing service cache hit");
       return _routeCache[serviceId]!;
     } catch (err) {
       rethrow;

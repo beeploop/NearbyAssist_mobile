@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
@@ -20,6 +19,7 @@ import 'package:nearby_assist/screens/transaction_form.dart';
 import 'package:nearby_assist/screens/vendor.dart';
 import 'package:nearby_assist/screens/vendor_register.dart';
 import 'package:nearby_assist/screens/verify_identity.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class AppRouter {
   final router = GoRouter(
@@ -171,9 +171,7 @@ class AppRouter {
         }
         return null;
       } catch (e) {
-        if (kDebugMode) {
-          print('Redirecting to login due to error: $e');
-        }
+        ConsoleLogger().log('Redirecting to login due to error: $e');
         return '/login';
       }
     },

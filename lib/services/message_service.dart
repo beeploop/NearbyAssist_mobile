@@ -9,6 +9,7 @@ import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/encryption.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageService extends ChangeNotifier {
@@ -45,10 +46,9 @@ class MessageService extends ChangeNotifier {
       );
 
       if (_channel != null) {
-        debugPrint('Connected to websocket channel');
+        ConsoleLogger().log('Connected to websocket channel');
       }
     } catch (e) {
-      debugPrint('Error connecting to websocket: $e');
       rethrow;
     }
   }
@@ -102,7 +102,6 @@ class MessageService extends ChangeNotifier {
 
       return messageList;
     } catch (e) {
-      debugPrint('error fetching messages: $e');
       rethrow;
     }
   }
@@ -127,9 +126,6 @@ class MessageService extends ChangeNotifier {
 
       _channel!.sink.add(jsonEncode(message));
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
       rethrow;
     }
   }
@@ -160,15 +156,11 @@ class MessageService extends ChangeNotifier {
       DhPublicKey? publicKey;
 
       if (!_publicKeyCache.containsKey(otherUserId)) {
-        if (kDebugMode) {
-          print("Public key cache miss");
-        }
+        ConsoleLogger().log("Public key cache miss");
         publicKey = await dh.getPublicKey(otherUserId);
         _publicKeyCache[otherUserId] = publicKey;
       } else {
-        if (kDebugMode) {
-          print("Public key cache hit");
-        }
+        ConsoleLogger().log("Public key cache hit");
         publicKey = _publicKeyCache[otherUserId]!;
       }
 
@@ -187,15 +179,11 @@ class MessageService extends ChangeNotifier {
       DhPublicKey? publicKey;
 
       if (!_publicKeyCache.containsKey(otherUserId)) {
-        if (kDebugMode) {
-          print("Public key cache miss");
-        }
+        ConsoleLogger().log("Public key cache miss");
         publicKey = await dh.getPublicKey(otherUserId);
         _publicKeyCache[otherUserId] = publicKey;
       } else {
-        if (kDebugMode) {
-          print("Public key cache hit");
-        }
+        ConsoleLogger().log("Public key cache hit");
         publicKey = _publicKeyCache[otherUserId]!;
       }
 

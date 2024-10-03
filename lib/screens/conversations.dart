@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/settings_model.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 
@@ -74,8 +75,8 @@ class _Conversations extends State<Conversations> {
                             : '$addr/resource/${user.imageUrl}',
                       ),
                       onForegroundImageError: (object, stacktrace) {
-                        debugPrint(
-                          'Error loading network image for: ${conversations[index].name}',
+                        ConsoleLogger().log(
+                          "Error loading network image for: ${conversations[index].name}",
                         );
                       },
                       backgroundImage: const AssetImage(

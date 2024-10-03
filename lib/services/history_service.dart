@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class HistoryService extends ChangeNotifier {
   Future<List> fetchHistory() async {
@@ -10,8 +11,8 @@ class HistoryService extends ChangeNotifier {
 
       return response.data["history"];
     } catch (e) {
-      debugPrint('Error fetching history: $e');
-      return [];
+      ConsoleLogger().log('Error fetching history: $e');
+      rethrow;
     }
   }
 }

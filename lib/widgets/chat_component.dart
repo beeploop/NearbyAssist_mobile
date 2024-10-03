@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/message_service.dart';
 
 class ChatComponent extends StatefulWidget {
@@ -27,9 +27,7 @@ class _ChatComponent extends State<ChatComponent> {
     try {
       userId = getIt.get<AuthModel>().getUserId();
     } catch (err) {
-      if (kDebugMode) {
-        print("Error getting user id: $err");
-      }
+      ConsoleLogger().log("Error getting user id: $err");
     }
   }
 

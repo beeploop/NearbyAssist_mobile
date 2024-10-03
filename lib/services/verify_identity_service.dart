@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class VerifyIdentityService extends ChangeNotifier {
   bool _isLoading = false;
@@ -55,7 +56,7 @@ class VerifyIdentityService extends ChangeNotifier {
         url,
         formData,
         (int send, int total) {
-          debugPrint('=== send: $send, total: $total');
+          ConsoleLogger().log('=== send: $send, total: $total');
         },
         expectedStatus: HttpStatus.created,
       );
@@ -65,7 +66,7 @@ class VerifyIdentityService extends ChangeNotifier {
         message: response.data['message'],
       );
     } catch (e) {
-      debugPrint('Error verifying identity: $e');
+      ConsoleLogger().log('Error verifying identity: $e');
       return VerifyIdentityResult(success: false, message: '$e');
     } finally {
       toggleLoading();

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class Avatar extends StatelessWidget {
   const Avatar({super.key});
@@ -26,7 +27,9 @@ class Avatar extends StatelessWidget {
                     : '$addr/resource/${user.imageUrl}',
               ),
               onForegroundImageError: (object, stacktrace) {
-                debugPrint('Error loading network image for user avatar');
+                ConsoleLogger().log(
+                  'Error loading network image for user avatar',
+                );
               },
               backgroundImage: const AssetImage('assets/images/avatar.png'),
             ),

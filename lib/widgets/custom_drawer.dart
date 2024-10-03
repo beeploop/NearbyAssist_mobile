@@ -5,6 +5,7 @@ import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -128,7 +129,9 @@ class _CustomDrawer extends State<CustomDrawer> {
                   : '$addr/resource/$avatarUrl',
             ),
             onForegroundImageError: (object, stacktrace) {
-              debugPrint('Error loading network image for custom drawer');
+              ConsoleLogger().log(
+                'Error loading network image for custom drawer',
+              );
             },
             backgroundImage: const AssetImage('assets/images/avatar.png'),
           ),

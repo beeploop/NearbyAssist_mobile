@@ -1,7 +1,5 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
@@ -24,9 +22,6 @@ class AuthInterceptor extends Interceptor {
       options.headers.remove("requireAuth");
       return handler.next(options);
     } catch (e) {
-      if (kDebugMode) {
-        print('====== Error in auth interceptor: $e');
-      }
       return handler.reject(
         DioException(requestOptions: options, error: e),
         true,
@@ -75,9 +70,6 @@ class AuthInterceptor extends Interceptor {
 
       return response.data['accessToken'];
     } catch (e) {
-      if (kDebugMode) {
-        print('== Error refreshing token: $e');
-      }
       rethrow;
     }
   }
@@ -103,9 +95,6 @@ class AuthInterceptor extends Interceptor {
 
       return response;
     } catch (e) {
-      if (kDebugMode) {
-        print("Error in retrying request: ${e.toString()}");
-      }
       rethrow;
     }
   }

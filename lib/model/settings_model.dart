@@ -5,6 +5,7 @@ import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/tag_model.dart';
 import 'package:nearby_assist/model/user_info.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/storage_service.dart';
 
 class SettingsModel extends ChangeNotifier {
@@ -18,17 +19,12 @@ class SettingsModel extends ChangeNotifier {
   String getBackendUrl() => _backendUrl;
 
   Future<void> loadSettings() async {
-    if (kDebugMode) {
-      print('Loading settings');
-    }
-
     try {
       await getIt.get<StorageService>().loadData();
       await loadBackendAddr();
     } catch (e) {
-      if (kDebugMode) {
-        print('Error loading settings');
-      }
+      ConsoleLogger().log('Error loading settings: $e');
+      rethrow;
     }
   }
 
@@ -39,10 +35,6 @@ class SettingsModel extends ChangeNotifier {
       _serverAddr = 'http://$_backendUrl';
       _websocketAddr = 'ws://$_backendUrl';
     } catch (e) {
-      if (kDebugMode) {
-        print('Error loading settings from storage. Loading from env instead');
-      }
-
       await dotenv.load(fileName: ".env");
       _backendUrl = dotenv.get('BACKEND_URL');
       _serverAddr = 'http://$_backendUrl';
@@ -73,9 +65,6 @@ class SettingsModel extends ChangeNotifier {
       final user = UserInfo.fromJson(response.data['user']);
       getIt.get<AuthModel>().saveUser(user);
     } catch (e) {
-      if (kDebugMode) {
-        print('Error updating user information: $e');
-      }
       rethrow;
     }
   }
@@ -92,9 +81,6 @@ class SettingsModel extends ChangeNotifier {
       await getIt.get<StorageService>().saveTags(tags);
       await getIt.get<StorageService>().loadData();
     } catch (e) {
-      if (kDebugMode) {
-        print('Error updating saved tags: $e');
-      }
       rethrow;
     }
   }

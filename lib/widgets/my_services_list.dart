@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 
 class MyServicesList extends StatefulWidget {
@@ -62,14 +63,14 @@ class _MyServicesList extends State<MyServicesList> {
                   return [
                     PopupMenuItem(
                       onTap: () {
-                        debugPrint('clicked edit ${service.id}');
+                        ConsoleLogger().log('clicked edit ${service.id}');
                       },
                       value: 'edit',
                       child: const Text('Edit'),
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        debugPrint('clicked delete ${service.id}');
+                        ConsoleLogger().log('clicked delete ${service.id}');
                       },
                       value: 'delete',
                       child: const Text('Delete'),

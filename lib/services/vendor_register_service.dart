@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/request/dio_request.dart';
+import 'package:nearby_assist/services/logger_service.dart';
 
 class VendorRegisterService extends ChangeNotifier {
   bool _loading = false;
@@ -38,17 +39,15 @@ class VendorRegisterService extends ChangeNotifier {
       });
 
       final request = DioRequest();
-      final response = request.multipart(
+      request.multipart(
         url,
         formData,
         (int send, int total) {
-          debugPrint('=== send: $send, total: $total');
+          ConsoleLogger().log('=== send: $send, total: $total');
         },
       );
     } catch (e) {
-      if (kDebugMode) {
-        print('===== Error: $e');
-      }
+        rethrow;
     } finally {
       _toggleLoading();
     }
