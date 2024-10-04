@@ -16,7 +16,7 @@ class VerifyIdentityService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<VerifyIdentityResult> verifyIdentity({
+  Future<void> verifyIdentity({
     required String name,
     required String address,
     required String idType,
@@ -52,7 +52,7 @@ class VerifyIdentityService extends ChangeNotifier {
       const url = "/api/v1/verification/identity";
 
       final request = DioRequest();
-      final response = await request.multipart(
+      await request.multipart(
         url,
         formData,
         (int send, int total) {
@@ -60,14 +60,9 @@ class VerifyIdentityService extends ChangeNotifier {
         },
         expectedStatus: HttpStatus.created,
       );
-
-      return VerifyIdentityResult(
-        success: true,
-        message: response.data['message'],
-      );
     } catch (e) {
       ConsoleLogger().log('Error verifying identity: $e');
-      return VerifyIdentityResult(success: false, message: '$e');
+      rethrow;
     } finally {
       toggleLoading();
     }

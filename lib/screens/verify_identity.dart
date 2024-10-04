@@ -189,21 +189,38 @@ class _VerifyIdentity extends State<VerifyIdentity> {
                 return;
               }
 
-              final response =
-                  await getIt.get<VerifyIdentityService>().verifyIdentity(
-                        name: _nameController.text,
-                        address: _addressController.text,
-                        idType: _idSelectController.text,
-                        idNumber: _idNumberController.text,
-                        frontId: _frontIdImage!,
-                        backId: _backIdImage!,
-                        face: _faceImage!,
-                      );
+              try {
+                await getIt.get<VerifyIdentityService>().verifyIdentity(
+                      name: _nameController.text,
+                      address: _addressController.text,
+                      idType: _idSelectController.text,
+                      idNumber: _idNumberController.text,
+                      frontId: _frontIdImage!,
+                      backId: _backIdImage!,
+                      face: _faceImage!,
+                    );
 
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(response.message)),
-                );
+                _nameController.clear();
+                _addressController.clear();
+                _idSelectController.clear();
+                _idNumberController.clear();
+                _frontIdImage = null;
+                _backIdImage = null;
+                _faceImage = null;
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Submitted verification request'),
+                    ),
+                  );
+                }
+              } catch (err) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(err.toString())),
+                  );
+                }
               }
             },
             isLoadingFunction: () =>
