@@ -141,18 +141,18 @@ class AppRouter {
                 builder: (context, state) {
                   return const ExamplePage();
                 }),
+            GoRoute(
+                path: 'verify-identity',
+                name: 'verify-identity',
+                builder: (context, state) {
+                  return const VerifyIdentity();
+                }),
           ]),
       GoRoute(
           path: '/login',
           name: 'login',
           builder: (context, state) {
             return const LoginPage();
-          }),
-      GoRoute(
-          path: '/verify-identity',
-          name: 'verify-identity',
-          builder: (context, state) {
-            return const VerifyIdentity();
           }),
       GoRoute(
           path: '/vendor-register',

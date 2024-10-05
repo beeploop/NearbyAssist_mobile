@@ -41,9 +41,10 @@ class AuthModel extends ChangeNotifier {
     return _userInfo!.id;
   }
 
-  bool isUserVerified() {
+  Future<bool> isUserVerified() async {
     if (_userInfo == null) {
-      throw Exception("Cannot retrieve user verification status because no user is saved");
+      throw Exception(
+          "Cannot retrieve user verification status because no user is saved");
     }
 
     return _userInfo!.verified;

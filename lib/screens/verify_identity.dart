@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/services/custom_file_picker.dart';
@@ -8,6 +9,7 @@ import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
 import 'package:nearby_assist/config/constants.dart' as constants;
+import 'package:nearby_assist/widgets/popup.dart';
 
 class VerifyIdentity extends StatefulWidget {
   const VerifyIdentity({super.key});
@@ -49,184 +51,221 @@ class _VerifyIdentity extends State<VerifyIdentity> {
         ),
       ),
       drawer: const CustomDrawer(),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          InputBox(
-            controller: _nameController,
-            hintText: 'Full name',
-          ),
-          InputBox(
-            controller: _addressController,
-            hintText: 'Address',
-          ),
-          DropdownMenu(
-            dropdownMenuEntries: [
-              ...createDropDownEntries(constants.validId),
-            ],
-            hintText: 'Select ID',
-            controller: _idSelectController,
-            expandedInsets: EdgeInsets.zero,
-          ),
-          InputBox(
-            controller: _idNumberController,
-            hintText: 'ID Number',
-          ),
-          Column(
+      body: FutureBuilder(
+        future: getIt.get<AuthModel>().isUserVerified(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            final err = snapshot.error.toString();
+            return Center(child: Text(err));
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text('Unexpected behavior, no error but has no data'),
+            );
+          }
+
+          final isVerified = snapshot.data!;
+          if (isVerified) {
+            return PopUp(
+              title: "Account already verified",
+              subtitle: 'Your account has already been verified.',
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+              ],
+            );
+          }
+
+          return ListView(
+            padding: const EdgeInsets.all(20),
             children: [
-              const Text('Upload ID back-to-back'),
-              Row(
+              InputBox(
+                controller: _nameController,
+                hintText: 'Full name',
+              ),
+              InputBox(
+                controller: _addressController,
+                hintText: 'Address',
+              ),
+              DropdownMenu(
+                dropdownMenuEntries: [
+                  ...createDropDownEntries(constants.validId),
+                ],
+                hintText: 'Select ID',
+                controller: _idSelectController,
+                expandedInsets: EdgeInsets.zero,
+              ),
+              InputBox(
+                controller: _idNumberController,
+                hintText: 'ID Number',
+              ),
+              Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      final file = await filePicker.pickFile();
+                  const Text('Upload ID back-to-back'),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final file = await filePicker.pickFile();
 
-                      if (file == null) {
-                        return;
-                      }
+                          if (file == null) {
+                            return;
+                          }
 
-                      setState(() {
-                        _frontIdImage = file;
-                      });
-                    },
-                    child: const Text('Front ID'),
+                          setState(() {
+                            _frontIdImage = file;
+                          });
+                        },
+                        child: const Text('Front ID'),
+                      ),
+                      _frontIdImage == null
+                          ? const SizedBox()
+                          : Image.memory(
+                              _frontIdImage!.readAsBytesSync(),
+                              width: 100,
+                              height: 100,
+                            ),
+                    ],
                   ),
-                  _frontIdImage == null
-                      ? const SizedBox()
-                      : Image.memory(
-                          _frontIdImage!.readAsBytesSync(),
-                          width: 100,
-                          height: 100,
-                        ),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final file = await filePicker.pickFile();
+
+                          if (file == null) {
+                            return;
+                          }
+
+                          setState(() {
+                            _backIdImage = file;
+                          });
+                        },
+                        child: const Text('Back ID'),
+                      ),
+                      _backIdImage == null
+                          ? const SizedBox()
+                          : Image.memory(
+                              _backIdImage!.readAsBytesSync(),
+                              width: 100,
+                              height: 100,
+                            ),
+                    ],
+                  ),
                 ],
               ),
-              Row(
+              Column(
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      final file = await filePicker.pickFile();
+                  const Text('Upload face image'),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final file = await filePicker.pickFile();
 
-                      if (file == null) {
-                        return;
-                      }
+                          if (file == null) {
+                            return;
+                          }
 
-                      setState(() {
-                        _backIdImage = file;
-                      });
-                    },
-                    child: const Text('Back ID'),
+                          setState(() {
+                            _faceImage = file;
+                          });
+                        },
+                        child: const Text('Face Image'),
+                      ),
+                      _faceImage == null
+                          ? const SizedBox()
+                          : Image.memory(
+                              _faceImage!.readAsBytesSync(),
+                              width: 100,
+                              height: 100,
+                            ),
+                    ],
                   ),
-                  _backIdImage == null
-                      ? const SizedBox()
-                      : Image.memory(
-                          _backIdImage!.readAsBytesSync(),
-                          width: 100,
-                          height: 100,
-                        ),
                 ],
               ),
-            ],
-          ),
-          Column(
-            children: [
-              const Text('Upload face image'),
-              Row(
+              Flex(
+                direction: Axis.horizontal,
                 children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      final file = await filePicker.pickFile();
-
-                      if (file == null) {
-                        return;
-                      }
-
-                      setState(() {
-                        _faceImage = file;
-                      });
-                    },
-                    child: const Text('Face Image'),
+                  Checkbox(
+                    value: _isChecked,
+                    onChanged: (bool? value) =>
+                        setState(() => _isChecked = value!),
                   ),
-                  _faceImage == null
-                      ? const SizedBox()
-                      : Image.memory(
-                          _faceImage!.readAsBytesSync(),
-                          width: 100,
-                          height: 100,
-                        ),
+                  const Text('I agree to the terms and conditions.'),
                 ],
               ),
-            ],
-          ),
-          Flex(
-            direction: Axis.horizontal,
-            children: [
-              Checkbox(
-                value: _isChecked,
-                onChanged: (bool? value) => setState(() => _isChecked = value!),
+              ListenableLoadingButton(
+                listenable: getIt.get<VerifyIdentityService>(),
+                onPressed: () async {
+                  if (getIt.get<VerifyIdentityService>().isLoading()) {
+                    return;
+                  }
+
+                  if (_nameController.text.isEmpty ||
+                      _addressController.text.isEmpty ||
+                      _idSelectController.text.isEmpty ||
+                      _idNumberController.text.isEmpty ||
+                      _frontIdImage == null ||
+                      _backIdImage == null ||
+                      _faceImage == null ||
+                      !_isChecked) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text(
+                          'Please fill all fields and agree to the terms and conditions.'),
+                    ));
+                    return;
+                  }
+
+                  try {
+                    await getIt.get<VerifyIdentityService>().verifyIdentity(
+                          name: _nameController.text,
+                          address: _addressController.text,
+                          idType: _idSelectController.text,
+                          idNumber: _idNumberController.text,
+                          frontId: _frontIdImage!,
+                          backId: _backIdImage!,
+                          face: _faceImage!,
+                        );
+
+                    _nameController.clear();
+                    _addressController.clear();
+                    _idSelectController.clear();
+                    _idNumberController.clear();
+                    _frontIdImage = null;
+                    _backIdImage = null;
+                    _faceImage = null;
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Submitted verification request'),
+                        ),
+                      );
+                    }
+                  } catch (err) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(err.toString())),
+                      );
+                    }
+                  }
+                },
+                isLoadingFunction: () =>
+                    getIt.get<VerifyIdentityService>().isLoading(),
               ),
-              const Text('I agree to the terms and conditions.'),
             ],
-          ),
-          ListenableLoadingButton(
-            listenable: getIt.get<VerifyIdentityService>(),
-            onPressed: () async {
-              if (getIt.get<VerifyIdentityService>().isLoading()) {
-                return;
-              }
-
-              if (_nameController.text.isEmpty ||
-                  _addressController.text.isEmpty ||
-                  _idSelectController.text.isEmpty ||
-                  _idNumberController.text.isEmpty ||
-                  _frontIdImage == null ||
-                  _backIdImage == null ||
-                  _faceImage == null ||
-                  !_isChecked) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text(
-                      'Please fill all fields and agree to the terms and conditions.'),
-                ));
-                return;
-              }
-
-              try {
-                await getIt.get<VerifyIdentityService>().verifyIdentity(
-                      name: _nameController.text,
-                      address: _addressController.text,
-                      idType: _idSelectController.text,
-                      idNumber: _idNumberController.text,
-                      frontId: _frontIdImage!,
-                      backId: _backIdImage!,
-                      face: _faceImage!,
-                    );
-
-                _nameController.clear();
-                _addressController.clear();
-                _idSelectController.clear();
-                _idNumberController.clear();
-                _frontIdImage = null;
-                _backIdImage = null;
-                _faceImage = null;
-
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Submitted verification request'),
-                    ),
-                  );
-                }
-              } catch (err) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(err.toString())),
-                  );
-                }
-              }
-            },
-            isLoadingFunction: () =>
-                getIt.get<VerifyIdentityService>().isLoading(),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
