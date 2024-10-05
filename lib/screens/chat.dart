@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/message.dart';
 import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/widgets/chat_component.dart';
+import 'package:nearby_assist/widgets/popup.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key, required this.recipientId, required this.name});
@@ -47,29 +50,74 @@ class _Chat extends State<Chat> {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: StreamBuilder(
-        stream: getIt.get<MessageService>().stream().map((event) {
-          final decoded = jsonDecode(event);
-          return Message.fromJson(decoded);
-        }),
+      body: FutureBuilder(
+        future: getIt.get<AuthModel>().isUserVerified(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            final error = snapshot.error;
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
 
+          if (snapshot.hasError) {
+            final err = snapshot.error!;
             return Center(
-              child: Text('An error occurred: $error'),
+              child: Text(err.toString()),
             );
           }
 
-          if (snapshot.hasData) {
-            final data = snapshot.data!;
-            getIt.get<MessageService>().appendMessage(
-                  data,
-                  widget.recipientId,
-                );
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text("Unexpected behavior, no error but has no data"),
+            );
           }
 
-          return ChatComponent(recipientId: widget.recipientId);
+          final isVerified = snapshot.data!;
+          if (!isVerified) {
+            return PopUp(
+              title: "Account not verified",
+              subtitle:
+                  'You need to verify your account to unlock more features',
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.goNamed('verify-identity');
+                  },
+                  child: const Text('Verify'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('Back'),
+                ),
+              ],
+            );
+          }
+
+          return StreamBuilder(
+            stream: getIt.get<MessageService>().stream().map((event) {
+              final decoded = jsonDecode(event);
+              return Message.fromJson(decoded);
+            }),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                final error = snapshot.error;
+
+                return Center(
+                  child: Text('An error occurred: $error'),
+                );
+              }
+
+              if (snapshot.hasData) {
+                final data = snapshot.data!;
+                getIt.get<MessageService>().appendMessage(
+                      data,
+                      widget.recipientId,
+                    );
+              }
+
+              return ChatComponent(recipientId: widget.recipientId);
+            },
+          );
         },
       ),
     );

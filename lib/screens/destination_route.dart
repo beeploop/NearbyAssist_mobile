@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/routing_service.dart';
+import 'package:nearby_assist/widgets/popup.dart';
 
 class DestinationRoute extends StatefulWidget {
   const DestinationRoute({super.key, required this.serviceId});
@@ -31,8 +33,36 @@ class _DestinationRoute extends State<DestinationRoute> {
                 );
               }
 
-              final route = snapshot.data;
+              if (snapshot.hasError) {
+                final err = snapshot.error!;
+                if (err.toString().contains("Unverified")) {
+                  return PopUp(
+                    title: "Account not verified",
+                    subtitle:
+                        'You need to verify your account to unlock more features',
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          context.goNamed('verify-identity');
+                        },
+                        child: const Text('Verify'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        child: const Text('Back'),
+                      ),
+                    ],
+                  );
+                }
 
+                return Center(
+                  child: Text(err.toString()),
+                );
+              }
+
+              final route = snapshot.data;
               if (route == null || route.isEmpty) {
                 return const Center(
                   child: Text('No route found'),

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/logger_service.dart';
@@ -10,6 +11,11 @@ class RoutingService extends ChangeNotifier {
 
   Future<List<List<num>>> getRoute(String serviceId) async {
     try {
+      final isVerified = await getIt.get<AuthModel>().isUserVerified();
+      if (!isVerified) {
+        throw Exception("Unverified");
+      }
+
       if (!_routeCache.containsKey(serviceId)) {
         ConsoleLogger().log("Routing service cache miss");
 
