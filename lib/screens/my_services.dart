@@ -34,7 +34,7 @@ class _MyServices extends State<MyServices> {
 
             if (snapshot.hasError) {
               final err = snapshot.error.toString();
-              return Text('An error occurred: $err');
+              return Text(err);
             }
 
             if (!snapshot.hasData) {

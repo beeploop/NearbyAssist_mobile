@@ -114,6 +114,10 @@ class VendorService extends ChangeNotifier {
 
       return true;
     } catch (err) {
+      if (err.toString().contains('404')) {
+        return false;
+      }
+
       rethrow;
     }
   }

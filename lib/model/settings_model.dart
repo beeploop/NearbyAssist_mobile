@@ -51,7 +51,7 @@ class SettingsModel extends ChangeNotifier {
       return;
     }
 
-    getIt.get<StorageService>().saveStringData(_backendUrlKey, hostname);
+    await getIt.get<StorageService>().saveStringData(_backendUrlKey, hostname);
     _backendUrl = hostname;
     _serverAddr = 'http://$_backendUrl';
     _websocketAddr = 'ws://$_backendUrl';
