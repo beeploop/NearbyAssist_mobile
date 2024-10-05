@@ -72,7 +72,9 @@ class _CustomDrawer extends State<CustomDrawer> {
     for (var item in drawerItems) {
       items.add(ListTile(
         onTap: () {
-          context.goNamed(item['dist']);
+          ModalRoute.of(context)?.settings.name == item['dist']
+              ? Navigator.of(context).pop()
+              : context.goNamed(item['dist']);
         },
         title: Text(item['title']),
         leading: Icon(item['icon'] as IconData, size: 20),
