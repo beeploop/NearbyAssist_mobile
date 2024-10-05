@@ -79,8 +79,9 @@ class AuthService extends ChangeNotifier {
       await request.post(
         "/api/v1/user/logout",
         jsonEncode(LogoutRequest(
-          token: tokens.refreshToken,
+          refreshToken: tokens.refreshToken,
         )),
+        expectedStatus: HttpStatus.noContent,
       );
     } catch (e) {
       rethrow;

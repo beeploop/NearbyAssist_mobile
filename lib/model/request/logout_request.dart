@@ -1,19 +1,19 @@
 class LogoutRequest {
-  String token;
+  String refreshToken;
 
   LogoutRequest({
-    required this.token,
+    required this.refreshToken,
   });
 
   factory LogoutRequest.fromJson(Map<String, dynamic> json) {
     return LogoutRequest(
-      token: json['token'],
+      refreshToken: json['refreshToken'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'token': token,
+      'refreshToken': refreshToken,
     };
   }
 }
