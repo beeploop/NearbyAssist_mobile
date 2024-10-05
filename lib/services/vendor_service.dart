@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
@@ -7,20 +9,49 @@ import 'package:nearby_assist/model/service_detail_model.dart';
 import 'package:nearby_assist/model/service_image_model.dart';
 import 'package:nearby_assist/model/service_info_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
-import 'package:nearby_assist/model/vendor_model.dart';
 import 'package:nearby_assist/request/dio_request.dart';
 import 'package:nearby_assist/services/logger_service.dart';
 
 class VendorService extends ChangeNotifier {
   bool _loading = false;
-  VendorModel? _vendor;
   final Map<String, ServiceDetailModel> _serviceInfoCache = {};
+  final List<MyService> _myServicesCache = [];
 
   bool isLoading() => _loading;
 
   void _toggleLoading() {
     _loading = !_loading;
     notifyListeners();
+  }
+
+  List<MyService> getMySevices() => _myServicesCache;
+
+  Future<List<MyService>> fetchMyServices({bool forceRefresh = false}) async {
+    try {
+      if (!forceRefresh) {
+        return _myServicesCache;
+      }
+
+      final user = getIt.get<AuthModel>().getUser();
+      final url = '/api/v1/services/vendor/${user.id}';
+
+      final request = DioRequest();
+      final response = await request.get(url);
+
+      ConsoleLogger().log("Service: ${response.data}");
+      List data = response.data['services'];
+      final services = data.map((service) {
+        return MyService.fromJson(service);
+      }).toList();
+
+      _myServicesCache.clear();
+      _myServicesCache.addAll(services);
+
+      notifyListeners();
+      return services;
+    } catch (err) {
+      rethrow;
+    }
   }
 
   Future<ServiceDetailModel> getServiceInfo(String id) async {
@@ -36,23 +67,6 @@ class VendorService extends ChangeNotifier {
 
       ConsoleLogger().log("Service info cache hit");
       return _serviceInfoCache[id]!;
-    } catch (err) {
-      rethrow;
-    }
-  }
-
-  Future<List<MyService>> fetchVendorServices() async {
-    try {
-      final user = getIt.get<AuthModel>().getUser();
-      final url = '/api/v1/services/vendor/${user.id}';
-
-      final request = DioRequest();
-      final response = await request.get(url);
-
-      List data = response.data['services'];
-      return data.map((service) {
-        return MyService.fromJson(service);
-      }).toList();
     } catch (err) {
       rethrow;
     }
@@ -122,8 +136,27 @@ class VendorService extends ChangeNotifier {
     }
   }
 
-  VendorModel? getVendor() {
-    return _vendor;
+  Future<void> addService(MyService service) async {
+    try {
+      _toggleLoading();
+
+      const url = "/api/v1/services";
+      final request = DioRequest();
+      final response = await request.post(
+        url,
+        service.toJson(),
+        expectedStatus: HttpStatus.created,
+      );
+
+      final id = response.data["service"];
+      service.id = id;
+      _myServicesCache.add(service);
+      notifyListeners();
+    } catch (err) {
+      rethrow;
+    } finally {
+      _toggleLoading();
+    }
   }
 
   Map<int, int> parseReviewCount(String reviewCount) {

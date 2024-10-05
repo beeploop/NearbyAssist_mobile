@@ -2,9 +2,10 @@ class MyService {
   String id;
   String vendorId;
   String description;
-  double rate;
-  double latitude;
-  double longitude;
+  String rate;
+  String latitude;
+  String longitude;
+  List<String>? tags;
 
   MyService({
     required this.id,
@@ -13,6 +14,7 @@ class MyService {
     required this.rate,
     required this.latitude,
     required this.longitude,
+    this.tags,
   });
 
   factory MyService.fromJson(Map<String, dynamic> json) {
@@ -20,9 +22,21 @@ class MyService {
       id: json['id'],
       vendorId: json['vendorId'],
       description: json['description'],
-      rate: double.parse(json['rate']),
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      rate: json['rate'] as String,
+      latitude: json['latitude'] as String,
+      longitude: json['longitude'] as String,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'vendorId': vendorId,
+      'description': description,
+      'rate': rate,
+      'latitude': double.parse(latitude),
+      'longitude': double.parse(longitude),
+      'tags': [],
+    };
   }
 }

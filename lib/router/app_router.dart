@@ -8,6 +8,7 @@ import 'package:nearby_assist/screens/destination_route.dart';
 import 'package:nearby_assist/screens/example_page.dart';
 import 'package:nearby_assist/screens/history.dart';
 import 'package:nearby_assist/screens/home.dart';
+import 'package:nearby_assist/screens/location_picker.dart';
 import 'package:nearby_assist/screens/transactons.dart';
 import 'package:nearby_assist/screens/login.dart';
 import 'package:nearby_assist/screens/conversations.dart';
@@ -116,11 +117,20 @@ class AppRouter {
           },
           routes: [
             GoRoute(
-                path: 'add-service',
-                name: 'add-service',
-                builder: (context, state) {
-                  return const AddService();
-                }),
+              path: 'add-service',
+              name: 'add-service',
+              builder: (context, state) {
+                return const AddService();
+              },
+              routes: [
+                GoRoute(
+                    path: 'location-picker',
+                    name: 'location-picker',
+                    builder: (context, state) {
+                      return const LocationPicker();
+                    }),
+              ],
+            ),
           ]),
       GoRoute(
           path: '/settings',

@@ -7,6 +7,7 @@ import 'package:nearby_assist/router/app_router.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/services/complaint_service.dart';
 import 'package:nearby_assist/services/logger_service.dart';
+import 'package:nearby_assist/services/map_location_picker_service.dart';
 import 'package:nearby_assist/services/storage_service.dart';
 import 'package:nearby_assist/services/feature_flag_service.dart';
 import 'package:nearby_assist/services/history_service.dart';
@@ -39,6 +40,7 @@ Future<void> main() async {
   getIt.registerSingleton<VerifyIdentityService>(VerifyIdentityService());
   getIt.registerSingleton<VendorRegisterService>(VendorRegisterService());
   getIt.registerSingleton<RoutingService>(RoutingService());
+  getIt.registerSingleton<MapLocationService>(MapLocationService());
 
   WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: binding);
