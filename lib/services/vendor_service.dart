@@ -152,6 +152,10 @@ class VendorService extends ChangeNotifier {
       _myServicesCache.add(service);
       notifyListeners();
     } catch (err) {
+      if (err.toString().contains("409")) {
+        throw Exception(
+            "Service already added. Refresh service list to see udpated list");
+      }
       rethrow;
     } finally {
       _toggleLoading();
