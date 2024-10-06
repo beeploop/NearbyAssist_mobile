@@ -1,9 +1,11 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/my_service.dart';
 import 'package:nearby_assist/services/map_location_picker_service.dart';
+import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
 import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
@@ -19,6 +21,13 @@ class _AddService extends State<AddService> {
   final TextEditingController _latlongController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final List<String> _selectedTags = [];
+
+  @override
+  void dispose() {
+    super.dispose();
+    getIt.get<MapLocationService>().clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +41,7 @@ class _AddService extends State<AddService> {
       body: ListenableBuilder(
         listenable: getIt.get<MapLocationService>(),
         builder: (context, _) {
+          final tags = getIt.get<SearchingService>().getTags();
           _latlongController.text =
               getIt.get<MapLocationService>().getLatlongString();
 
@@ -39,6 +49,23 @@ class _AddService extends State<AddService> {
             child: ListView(
               padding: const EdgeInsets.all(20),
               children: [
+                Form(
+                  child: DropdownSearch<String>.multiSelection(
+                    dropdownDecoratorProps: const DropDownDecoratorProps(
+                      dropdownSearchDecoration: InputDecoration(
+                        hintText: 'Tags',
+                      ),
+                    ),
+                    items: [...tags],
+                    onChanged: (tags) {
+                      setState(() {
+                        _selectedTags.clear();
+                        _selectedTags.addAll(tags);
+                      });
+                    },
+                    selectedItems: _selectedTags,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 InputBox(
                   controller: _descriptionController,
@@ -71,7 +98,8 @@ class _AddService extends State<AddService> {
                     try {
                       if (_descriptionController.text.isEmpty ||
                           _priceController.text.isEmpty ||
-                          _latlongController.text.isEmpty) {
+                          _latlongController.text.isEmpty ||
+                          _selectedTags.isEmpty) {
                         throw Exception('Please fill all fields');
                       }
 
@@ -89,6 +117,7 @@ class _AddService extends State<AddService> {
                         rate: _priceController.text,
                         latitude: location.latitude.toString(),
                         longitude: location.longitude.toString(),
+                        tags: _selectedTags,
                       );
                       await getIt.get<VendorService>().addService(service);
 

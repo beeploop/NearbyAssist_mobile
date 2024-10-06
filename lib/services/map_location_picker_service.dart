@@ -4,6 +4,11 @@ import 'package:latlong2/latlong.dart';
 class MapLocationService extends ChangeNotifier {
   LatLng? _location;
 
+  void clear() {
+    _location = null;
+    notifyListeners();
+  }
+
   String getLatlongString() {
     if (_location == null) {
       return '';
