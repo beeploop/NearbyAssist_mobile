@@ -44,9 +44,9 @@ class _Vendor extends State<Vendor> {
               VendorHeader(
                 vendorInfo: data.vendorInfo,
                 serviceId: data.serviceInfo.id,
+                price: data.serviceInfo.rate,
               ),
-              const SizedBox(height: 20),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               VendorPhotos(
                 photos: data.serviceImages,
               ),

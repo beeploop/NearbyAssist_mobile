@@ -6,13 +6,19 @@ import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/model/vendor_info_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nearby_assist/services/logger_service.dart';
+import 'package:nearby_assist/widgets/text_heading.dart';
 
 class VendorHeader extends StatefulWidget {
-  const VendorHeader(
-      {super.key, required this.vendorInfo, required this.serviceId});
+  const VendorHeader({
+    super.key,
+    required this.vendorInfo,
+    required this.serviceId,
+    required this.price,
+  });
 
   final VendorInfoModel vendorInfo;
   final String serviceId;
+  final double price;
 
   @override
   State<VendorHeader> createState() => _VendorHeader();
@@ -52,6 +58,9 @@ class _VendorHeader extends State<VendorHeader> {
                 children: [
                   Text(widget.vendorInfo.vendor),
                   Text(widget.vendorInfo.job),
+                  TextHeading(
+                    title: '₱${widget.price}',
+                  ),
                   RatingBar.builder(
                     initialRating: widget.vendorInfo.rating,
                     allowHalfRating: true,
