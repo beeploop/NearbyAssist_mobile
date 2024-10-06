@@ -38,7 +38,6 @@ class VendorService extends ChangeNotifier {
       final request = DioRequest();
       final response = await request.get(url);
 
-      ConsoleLogger().log("Service: ${response.data}");
       List data = response.data['services'];
       final services = data.map((service) {
         return MyService.fromJson(service);

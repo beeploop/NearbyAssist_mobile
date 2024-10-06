@@ -23,9 +23,9 @@ class MyService {
       vendorId: json['vendorId'],
       description: json['description'],
       rate: json['rate'] as String,
-      latitude: json['latitude'] as String,
-      longitude: json['longitude'] as String,
-      tags: List<String>.from(json['tags']),
+      latitude: json['latitude'].toString(),
+      longitude: json['longitude'].toString(),
+      tags: (json['tags'] as List).map((tag) => tag.toString()).toList(),
     );
   }
 
