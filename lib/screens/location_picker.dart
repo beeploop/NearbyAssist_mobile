@@ -15,6 +15,7 @@ class LocationPicker extends StatefulWidget {
 }
 
 class _LocationPicker extends State<LocationPicker> {
+  final MapController _mapController = MapController();
   late LatLng _selectedLocation;
 
   @override
@@ -65,15 +66,24 @@ class _LocationPicker extends State<LocationPicker> {
 
   Widget _osmWidget() {
     return FlutterMap(
+      mapController: _mapController,
       options: MapOptions(
-        initialCenter: _selectedLocation,
-        initialZoom: 17,
-        onTap: (tapLoc, position) {
-          setState(() {
-            _selectedLocation = position;
-          });
-        },
-      ),
+          initialCenter: _selectedLocation,
+          initialZoom: 17,
+          onTap: (tapLoc, position) {
+            setState(() {
+              _selectedLocation = position;
+            });
+          },
+          onMapEvent: (MapEvent event) {
+            if (event is MapEventMove ||
+                event is MapEventScrollWheelZoom ||
+                event is MapEventDoubleTapZoom) {
+              setState(() {
+                _selectedLocation = _mapController.camera.center;
+              });
+            }
+          }),
       children: [
         TileLayer(
           urlTemplate: tileMapProvider,
