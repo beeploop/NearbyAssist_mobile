@@ -104,8 +104,6 @@ class VendorService extends ChangeNotifier {
     } catch (e) {
       ConsoleLogger().log('error fetching vendor data: $e');
       rethrow;
-    } finally {
-      _toggleLoading();
     }
   }
 

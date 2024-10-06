@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
@@ -43,11 +44,21 @@ class _MyServicesList extends State<MyServicesList> {
 
                 return ListTile(
                   title: Text(service.description),
+                  onTap: () {
+                    context.goNamed(
+                      "service-detail",
+                      queryParameters: {'serviceId': service.id},
+                    );
+                  },
                   trailing: PopupMenuButton(itemBuilder: (context) {
                     return [
                       PopupMenuItem(
                         onTap: () {
                           ConsoleLogger().log('clicked edit ${service.id}');
+                          context.goNamed(
+                            'edit-service',
+                            queryParameters: {'serviceId': service.id},
+                          );
                         },
                         value: 'edit',
                         child: const Text('Edit'),

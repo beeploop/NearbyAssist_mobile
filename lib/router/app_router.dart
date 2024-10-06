@@ -5,10 +5,12 @@ import 'package:nearby_assist/screens/add_service.dart';
 import 'package:nearby_assist/screens/chat.dart';
 import 'package:nearby_assist/screens/complaints.dart';
 import 'package:nearby_assist/screens/destination_route.dart';
+import 'package:nearby_assist/screens/edit_service.dart';
 import 'package:nearby_assist/screens/example_page.dart';
 import 'package:nearby_assist/screens/history.dart';
 import 'package:nearby_assist/screens/home.dart';
 import 'package:nearby_assist/screens/location_picker.dart';
+import 'package:nearby_assist/screens/service_detail.dart';
 import 'package:nearby_assist/screens/transactons.dart';
 import 'package:nearby_assist/screens/login.dart';
 import 'package:nearby_assist/screens/conversations.dart';
@@ -131,6 +133,20 @@ class AppRouter {
                     }),
               ],
             ),
+            GoRoute(
+                path: 'service-detail',
+                name: 'service-detail',
+                builder: (context, state) {
+                  final serviceId = state.uri.queryParameters['serviceId']!;
+                  return ServiceDetail(serviceId: serviceId);
+                }),
+            GoRoute(
+                path: 'edit-service',
+                name: 'edit-service',
+                builder: (context, state) {
+                  final serviceId = state.uri.queryParameters['serviceId']!;
+                  return EditService(serviceId: serviceId);
+                }),
           ]),
       GoRoute(
           path: '/settings',
