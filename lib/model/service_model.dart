@@ -18,7 +18,7 @@ class Service {
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
       id: json['id'],
-      score: json['score'],
+      score: double.parse(json['score'].toString()),
       rank: json['rank'],
       vendor: json['vendor'],
       latitude: json['latitude'],
