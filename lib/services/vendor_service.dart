@@ -53,8 +53,15 @@ class VendorService extends ChangeNotifier {
     }
   }
 
-  Future<ServiceDetailModel> getServiceInfo(String id) async {
+  Future<ServiceDetailModel> getServiceInfo(
+    String id, {
+    bool toogleLoading = true,
+  }) async {
     try {
+      if (toogleLoading) {
+        _toggleLoading();
+      }
+
       if (!_serviceInfoCache.containsKey(id)) {
         ConsoleLogger().log("Service info cache miss");
 
@@ -68,12 +75,14 @@ class VendorService extends ChangeNotifier {
       return _serviceInfoCache[id]!;
     } catch (err) {
       rethrow;
+    } finally {
+      if (toogleLoading) {
+        _toggleLoading();
+      }
     }
   }
 
   Future<ServiceDetailModel> _fetchServiceInfo(String id) async {
-    _toggleLoading();
-
     try {
       final url = '/api/v1/services/$id';
       final request = DioRequest();
@@ -148,12 +157,37 @@ class VendorService extends ChangeNotifier {
       final id = response.data["service"];
       service.id = id;
       _myServicesCache.add(service);
+
       notifyListeners();
     } catch (err) {
       if (err.toString().contains("409")) {
         throw Exception(
             "Service already added. Refresh service list to see udpated list");
       }
+      rethrow;
+    } finally {
+      _toggleLoading();
+    }
+  }
+
+  Future<void> updateService(MyService service) async {
+    try {
+      _toggleLoading();
+
+      final url = "/api/v1/services/${service.id}";
+      final request = DioRequest();
+      await request.put(
+        url,
+        service.toJson(),
+        expectedStatus: HttpStatus.noContent,
+      );
+
+      _serviceInfoCache.remove(service.id);
+      _myServicesCache.remove(service.id);
+
+      notifyListeners();
+    } catch (err) {
+      ConsoleLogger().log("Error updating service: $err");
       rethrow;
     } finally {
       _toggleLoading();

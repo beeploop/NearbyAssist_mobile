@@ -146,7 +146,15 @@ class AppRouter {
                 builder: (context, state) {
                   final serviceId = state.uri.queryParameters['serviceId']!;
                   return EditService(serviceId: serviceId);
-                }),
+                },
+                routes: [
+                  GoRoute(
+                      path: 'edit-location',
+                      name: 'edit-location',
+                      builder: (context, state) {
+                        return const LocationPicker();
+                      })
+                ]),
           ]),
       GoRoute(
           path: '/settings',

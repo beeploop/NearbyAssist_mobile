@@ -81,6 +81,37 @@ class DioRequest {
     }
   }
 
+  Future<Response> put(
+    String url,
+    Object data, {
+    int expectedStatus = HttpStatus.ok,
+    bool requireAuth = true,
+  }) async {
+    _dio.options.headers["requireAuth"] = requireAuth;
+
+    try {
+      final response = await _dio.put(
+        url,
+        data: data,
+        cancelToken: _cancelToken,
+        onSendProgress: (int sent, int total) {
+          ConsoleLogger().log('sent: $sent, total: $total');
+        },
+        onReceiveProgress: (int receive, int total) {
+          ConsoleLogger().log('receive: $receive, total: $total');
+        },
+      );
+
+      if (response.statusCode != expectedStatus) {
+        throw Exception(response.data);
+      }
+
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Response> multipart(
     String url,
     FormData data,

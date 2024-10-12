@@ -9,10 +9,11 @@ class MapLocationService extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getLatlongString() {
+  String? getLatlongString() {
     if (_location == null) {
-      return '';
+        return null;
     }
+
     return '${_location!.latitude}, ${_location!.longitude}';
   }
 

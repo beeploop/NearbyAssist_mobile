@@ -54,7 +54,6 @@ class _MyServicesList extends State<MyServicesList> {
                     return [
                       PopupMenuItem(
                         onTap: () {
-                          ConsoleLogger().log('clicked edit ${service.id}');
                           context.goNamed(
                             'edit-service',
                             queryParameters: {'serviceId': service.id},

@@ -43,7 +43,7 @@ class _AddService extends State<AddService> {
         builder: (context, _) {
           final tags = getIt.get<SearchingService>().getTags();
           _latlongController.text =
-              getIt.get<MapLocationService>().getLatlongString();
+              getIt.get<MapLocationService>().getLatlongString() ?? "";
 
           return Center(
             child: ListView(

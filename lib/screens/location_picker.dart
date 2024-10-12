@@ -16,49 +16,42 @@ class LocationPicker extends StatefulWidget {
 
 class _LocationPicker extends State<LocationPicker> {
   final MapController _mapController = MapController();
-  late LatLng _selectedLocation;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedLocation = getIt.get<LocationService>().getLocation();
-  }
-
-  void getlocation() {
-    double latitude = _selectedLocation.latitude;
-    double longitude = _selectedLocation.longitude;
-    getIt.get<MapLocationService>().setLocation(LatLng(latitude, longitude));
-  }
+  LatLng _selectedLocation = getIt.get<MapLocationService>().getLocation() ??
+      getIt.get<LocationService>().getLocation();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      appBar: AppBar(
+        title: const Text(
+          'Pick Location',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: Stack(
         children: [
-          Text("Latitude:${_selectedLocation.latitude}"),
-          Text("Longitude:${_selectedLocation.longitude}"),
-          Flexible(
-            flex: 10,
-            child: _osmWidget(),
-          ),
-          Flexible(
-            flex: 1,
-            child: FilledButton(
-              onPressed: () {
-                double latitude = _selectedLocation.latitude;
-                double longitude = _selectedLocation.longitude;
-                getIt
-                    .get<MapLocationService>()
-                    .setLocation(LatLng(latitude, longitude));
+          _osmWidget(),
+          Column(
+            children: [
+              _buildLatlongIndicator(),
+              Expanded(
+                child: Container(),
+              ),
+              FilledButton(
+                onPressed: () {
+                  double latitude = _selectedLocation.latitude;
+                  double longitude = _selectedLocation.longitude;
+                  getIt
+                      .get<MapLocationService>()
+                      .setLocation(LatLng(latitude, longitude));
 
-                context.pop();
-              },
-              child: const Text('Pick Location'),
-            ),
-          )
+                  context.pop();
+                },
+                child: const Text('Pick Location'),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ],
       ),
     );
@@ -100,6 +93,27 @@ class _LocationPicker extends State<LocationPicker> {
           ),
         ])
       ],
+    );
+  }
+
+  Widget _buildLatlongIndicator() {
+    return Container(
+      color: Colors.white60,
+      alignment: Alignment.topLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Latitude: \t${_selectedLocation.latitude}",
+            style: const TextStyle(fontSize: 14),
+          ),
+          Text(
+            "Longitude: \t${_selectedLocation.longitude}",
+            style: const TextStyle(fontSize: 14),
+          ),
+        ],
+      ),
     );
   }
 }
