@@ -194,6 +194,20 @@ class VendorService extends ChangeNotifier {
     }
   }
 
+  Future<void> deleteService(String serviceId) async {
+    try {
+      final url = "/api/v1/services/$serviceId";
+      final request = DioRequest();
+      await request.delete(url, expectedStatus: HttpStatus.noContent);
+
+      _myServicesCache.remove(serviceId);
+
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Map<int, int> parseReviewCount(String reviewCount) {
     reviewCount = reviewCount.replaceAll('{', '').replaceAll('}', '');
 

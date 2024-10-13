@@ -49,56 +49,65 @@ class _MyServicesList extends State<MyServicesList> {
   }
 
   Widget _buildListView() {
-    return ListView.builder(
-      itemCount: _services.length,
-      itemBuilder: (context, index) {
-        final service = _services[index];
+    return ListenableBuilder(
+        listenable: getIt.get<VendorService>(),
+        builder: (context, widget) {
+          return ListView.builder(
+            itemCount: _services.length,
+            itemBuilder: (context, index) {
+              final service = _services[index];
 
-        return ListTile(
-          title: Text(service.description),
-          onTap: () {
-            context.goNamed(
-              "service-detail",
-              queryParameters: {'serviceId': service.id},
-            );
-          },
-          trailing: PopupMenuButton(itemBuilder: (context) {
-            return [
-              PopupMenuItem(
+              return ListTile(
+                title: Text(service.description),
                 onTap: () {
                   context.goNamed(
-                    'edit-service',
+                    "service-detail",
                     queryParameters: {'serviceId': service.id},
                   );
                 },
-                value: 'edit',
-                child: const Text('Edit'),
-              ),
-              PopupMenuItem(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => _buildAlertDialog(),
-                    barrierDismissible: true,
-                  );
-                },
-                value: 'delete',
-                child: const Text('Delete'),
-              ),
-            ];
-          }),
-        );
-      },
-    );
+                trailing: PopupMenuButton(itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      onTap: () {
+                        context.goNamed(
+                          'edit-service',
+                          queryParameters: {'serviceId': service.id},
+                        );
+                      },
+                      value: 'edit',
+                      child: const Text('Edit'),
+                    ),
+                    PopupMenuItem(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              _buildAlertDialog(context, service.id),
+                          barrierDismissible: true,
+                        );
+                      },
+                      value: 'delete',
+                      child: const Text('Delete'),
+                    ),
+                  ];
+                }),
+              );
+            },
+          );
+        });
   }
 
-  Widget _buildAlertDialog() {
+  Widget _buildAlertDialog(BuildContext context, String serviceId) {
     return AlertDialog(
       title: const Text("Delete service"),
-      content: const Text("This action cannot be undone"),
+      content: const Text(
+          "All data related to this service will be lost. This action cannot be undone."),
       actions: [
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            _handleDelete(context, serviceId);
+            Navigator.pop(context);
+          },
           child: const Text("Continue"),
         ),
         TextButton(
@@ -107,5 +116,27 @@ class _MyServicesList extends State<MyServicesList> {
         ),
       ],
     );
+  }
+
+  Future<void> _handleDelete(BuildContext context, String serviceId) async {
+    try {
+      await getIt.get<VendorService>().deleteService(serviceId);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Successfully deleted the service"),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error deleting service: $e"),
+          ),
+        );
+      }
+    }
   }
 }

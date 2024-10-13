@@ -112,6 +112,26 @@ class DioRequest {
     }
   }
 
+  Future<Response> delete(
+    String url, {
+    int expectedStatus = HttpStatus.ok,
+    bool requireAuth = true,
+  }) async {
+    _dio.options.headers["requireAuth"] = requireAuth;
+
+    try {
+      final response = await _dio.delete(url, cancelToken: _cancelToken);
+
+      if (response.statusCode != expectedStatus) {
+        throw Exception(response.data);
+      }
+
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Response> multipart(
     String url,
     FormData data,
