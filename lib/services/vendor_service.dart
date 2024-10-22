@@ -33,7 +33,7 @@ class VendorService extends ChangeNotifier {
       }
 
       final user = getIt.get<AuthModel>().getUser();
-      final url = '/api/v1/services/vendor/${user.id}';
+      final url = '/api/v1/vendor/services/${user.id}';
 
       final request = DioRequest();
       final response = await request.get(url);
