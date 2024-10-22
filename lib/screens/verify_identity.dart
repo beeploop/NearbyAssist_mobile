@@ -5,6 +5,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/services/custom_file_picker.dart';
 import 'package:nearby_assist/services/verify_identity_service.dart';
+import 'package:nearby_assist/widgets/clickable_text.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
@@ -96,14 +97,7 @@ class _VerifyIdentity extends State<VerifyIdentity> {
                 controller: _addressController,
                 hintText: 'Address',
               ),
-              DropdownMenu(
-                dropdownMenuEntries: [
-                  ...createDropDownEntries(constants.validId),
-                ],
-                hintText: 'Select ID',
-                controller: _idSelectController,
-                expandedInsets: EdgeInsets.zero,
-              ),
+              _buildIdDropdown(),
               InputBox(
                 controller: _idNumberController,
                 hintText: 'ID Number',
@@ -193,73 +187,10 @@ class _VerifyIdentity extends State<VerifyIdentity> {
                   ),
                 ],
               ),
-              Flex(
-                direction: Axis.horizontal,
-                children: [
-                  Checkbox(
-                    value: _isChecked,
-                    onChanged: (bool? value) =>
-                        setState(() => _isChecked = value!),
-                  ),
-                  const Text('I agree to the terms and conditions.'),
-                ],
-              ),
+              _buildTermsAndConditions(),
               ListenableLoadingButton(
                 listenable: getIt.get<VerifyIdentityService>(),
-                onPressed: () async {
-                  if (getIt.get<VerifyIdentityService>().isLoading()) {
-                    return;
-                  }
-
-                  if (_nameController.text.isEmpty ||
-                      _addressController.text.isEmpty ||
-                      _idSelectController.text.isEmpty ||
-                      _idNumberController.text.isEmpty ||
-                      _frontIdImage == null ||
-                      _backIdImage == null ||
-                      _faceImage == null ||
-                      !_isChecked) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text(
-                          'Please fill all fields and agree to the terms and conditions.'),
-                    ));
-                    return;
-                  }
-
-                  try {
-                    await getIt.get<VerifyIdentityService>().verifyIdentity(
-                          name: _nameController.text,
-                          address: _addressController.text,
-                          idType: _idSelectController.text,
-                          idNumber: _idNumberController.text,
-                          frontId: _frontIdImage!,
-                          backId: _backIdImage!,
-                          face: _faceImage!,
-                        );
-
-                    _nameController.clear();
-                    _addressController.clear();
-                    _idSelectController.clear();
-                    _idNumberController.clear();
-                    _frontIdImage = null;
-                    _backIdImage = null;
-                    _faceImage = null;
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Submitted verification request'),
-                        ),
-                      );
-                    }
-                  } catch (err) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(err.toString())),
-                      );
-                    }
-                  }
-                },
+                onPressed: () => _handleSubmit(context),
                 isLoadingFunction: () =>
                     getIt.get<VerifyIdentityService>().isLoading(),
               ),
@@ -270,9 +201,88 @@ class _VerifyIdentity extends State<VerifyIdentity> {
     );
   }
 
+  Widget _buildIdDropdown() {
+    return DropdownMenu(
+      dropdownMenuEntries: [
+        ...createDropDownEntries(constants.validId),
+      ],
+      hintText: 'Select ID',
+      controller: _idSelectController,
+      expandedInsets: EdgeInsets.zero,
+    );
+  }
+
   List<DropdownMenuEntry> createDropDownEntries(List<String> ids) {
     return ids.map((id) {
       return DropdownMenuEntry(value: id, label: id);
     }).toList();
+  }
+
+  Widget _buildTermsAndConditions() {
+    return Flex(
+      direction: Axis.horizontal,
+      children: [
+        Checkbox(
+          value: _isChecked,
+          onChanged: (bool? value) => setState(() => _isChecked = value!),
+        ),
+        ClickableText(url: Uri.parse("https://192.168.122.1:3000")),
+      ],
+    );
+  }
+
+  Future<void> _handleSubmit(BuildContext context) async {
+    if (getIt.get<VerifyIdentityService>().isLoading()) {
+      return;
+    }
+
+    if (_nameController.text.isEmpty ||
+        _addressController.text.isEmpty ||
+        _idSelectController.text.isEmpty ||
+        _idNumberController.text.isEmpty ||
+        _frontIdImage == null ||
+        _backIdImage == null ||
+        _faceImage == null ||
+        !_isChecked) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text(
+            'Please fill all fields and agree to the terms and conditions.'),
+      ));
+      return;
+    }
+
+    try {
+      await getIt.get<VerifyIdentityService>().verifyIdentity(
+            name: _nameController.text,
+            address: _addressController.text,
+            idType: _idSelectController.text,
+            idNumber: _idNumberController.text,
+            frontId: _frontIdImage!,
+            backId: _backIdImage!,
+            face: _faceImage!,
+          );
+
+      _nameController.clear();
+      _addressController.clear();
+      _idSelectController.clear();
+      _idNumberController.clear();
+      _frontIdImage = null;
+      _backIdImage = null;
+      _faceImage = null;
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Submitted verification request'),
+          ),
+        );
+      }
+    } catch (err) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(err.toString())),
+        );
+      }
+    }
   }
 }

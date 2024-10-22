@@ -7,6 +7,7 @@ import 'package:nearby_assist/services/custom_file_picker.dart';
 import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/services/vendor_register_service.dart';
+import 'package:nearby_assist/widgets/clickable_text.dart';
 import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
 import 'package:nearby_assist/widgets/popup.dart';
@@ -136,17 +137,7 @@ class _VendorRegisterState extends State<VendorRegister> {
                     overflow: TextOverflow.fade,
                   ),
                   const SizedBox(height: 20),
-                  Flex(
-                    direction: Axis.horizontal,
-                    children: [
-                      Checkbox(
-                        value: _isTermsAndConditionsChecked,
-                        onChanged: (bool? value) => setState(
-                            () => _isTermsAndConditionsChecked = value!),
-                      ),
-                      const Text('I agree to the terms and conditions.'),
-                    ],
-                  ),
+                  _buildTermsAndConditions(),
                   const SizedBox(height: 20),
                   ListenableLoadingButton(
                     listenable: getIt.get<VendorRegisterService>(),
@@ -212,6 +203,20 @@ class _VendorRegisterState extends State<VendorRegister> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildTermsAndConditions() {
+    return Flex(
+      direction: Axis.horizontal,
+      children: [
+        Checkbox(
+          value: _isTermsAndConditionsChecked,
+          onChanged: (bool? value) =>
+              setState(() => _isTermsAndConditionsChecked = value!),
+        ),
+        ClickableText(url: Uri.parse("https://192.168.122.1:3000")),
+      ],
     );
   }
 
