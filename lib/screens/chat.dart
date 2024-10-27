@@ -49,6 +49,26 @@ class _Chat extends State<Chat> {
           widget.name,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          PopupMenuButton(itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                onTap: () {
+                  ConsoleLogger().log("Hire button clicked");
+                },
+                value: 'hire',
+                child: const Text('Hire'),
+              ),
+              PopupMenuItem(
+                onTap: () {
+                  ConsoleLogger().log("View profile button clicked");
+                },
+                value: 'view-profile',
+                child: const Text('View Profile'),
+              ),
+            ];
+          }),
+        ],
       ),
       body: FutureBuilder(
         future: getIt.get<AuthModel>().isUserVerified(),
