@@ -112,7 +112,7 @@ class _EditService extends State<EditService> {
         InputBox(controller: _latlongController, hintText: 'Latlong'),
         const SizedBox(height: 20),
         FilledButton(
-          onPressed: () => context.pushNamed('edit-location'),
+          onPressed: () => context.pushNamed('editLocation'),
           child: const Text('Update Location'),
         ),
         const SizedBox(height: 20),

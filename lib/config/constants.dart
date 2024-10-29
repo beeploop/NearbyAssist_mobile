@@ -2,6 +2,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/model/request/facebook_login_response.dart';
 import 'package:nearby_assist/model/tag_model.dart';
 
+const appVersion = "v0.5.0-alpha";
+
 const defaultLocation = LatLng(7.422365, 125.825984);
 const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 const headingFontSize = 20.0;

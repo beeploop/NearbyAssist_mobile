@@ -76,8 +76,13 @@ class _MyApp extends State<MyApp> {
       builder: (context, snapshot) {
         return MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData.from(
+          theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+              },
+            ),
           ),
           routerConfig: AppRouter().router,
         );

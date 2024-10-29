@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/widgets/avatar.dart';
 import 'package:nearby_assist/widgets/map.dart';
 import 'package:nearby_assist/widgets/search_bar.dart';
 
@@ -14,9 +13,7 @@ class _MapPage extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: const [Avatar()],
-      ),
+      appBar: AppBar(),
       body: const Stack(
         children: [
           CustomMap(),

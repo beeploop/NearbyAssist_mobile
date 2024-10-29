@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/vendor_service.dart';
-import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/my_services_list.dart';
 import 'package:nearby_assist/widgets/popup.dart';
 
@@ -18,12 +17,12 @@ class _MyServices extends State<MyServices> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
-          'My Services',
+          'Manage Services',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(
           future: getIt.get<VendorService>().checkVendorStatus(),
@@ -33,8 +32,17 @@ class _MyServices extends State<MyServices> {
             }
 
             if (snapshot.hasError) {
-              final err = snapshot.error.toString();
-              return Text(err);
+              return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    size: 50,
+                  ),
+                  SizedBox(height: 10),
+                  Text('An error occurred. Try again later.'),
+                ],
+              );
             }
 
             if (!snapshot.hasData) {
@@ -51,13 +59,13 @@ class _MyServices extends State<MyServices> {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      context.goNamed('vendor-register');
+                      context.pushNamed('registerVendor');
                     },
                     child: const Text('Register'),
                   ),
                   TextButton(
                     onPressed: () {
-                      context.goNamed('home');
+                      context.pop();
                     },
                     child: const Text('Cancel'),
                   ),
@@ -65,15 +73,31 @@ class _MyServices extends State<MyServices> {
               );
             }
 
-            return const MyServicesList();
+            return Stack(
+              children: [
+                const MyServicesList(),
+                Positioned(
+                  bottom: 16,
+                  right: 20,
+                  left: 20,
+                  child: FloatingActionButton.extended(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                    backgroundColor: Colors.green,
+                    onPressed: () {
+                      context.goNamed('addService');
+                    },
+                    label: const Text(
+                      "Add Service",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.goNamed('add-service');
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }

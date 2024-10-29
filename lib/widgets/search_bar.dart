@@ -15,7 +15,6 @@ class _ServiceSearchBar extends State<ServiceSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.white.withOpacity(0.8),
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           children: [

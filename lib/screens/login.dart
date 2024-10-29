@@ -30,14 +30,7 @@ class _LoginPage extends State<LoginPage> {
               appBar: AppBar(
                 actions: [
                   IconButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return const BottomModalSetting();
-                        },
-                      );
-                    },
+                    onPressed: () => _openBottomModal(),
                     icon: const Icon(Icons.info_outlined),
                   )
                 ],
@@ -46,54 +39,11 @@ class _LoginPage extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _customButton(
-                      'Login with Facebook',
-                      () async {
-                        try {
-                          if (kDebugMode) {
-                            final data = await getIt
-                                .get<AuthService>()
-                                .backendLogin(fakeUser);
-                            final tokens = Token(
-                              accessToken: data.accessToken,
-                              refreshToken: data.refreshToken,
-                            );
-
-                            await getIt.get<AuthModel>().saveUser(data.user);
-                            await getIt.get<AuthModel>().saveTokens(tokens);
-                          } else {
-                            final user =
-                                await getIt.get<AuthService>().facebookLogin();
-                            final data = await getIt
-                                .get<AuthService>()
-                                .backendLogin(user);
-                            final tokens = Token(
-                              accessToken: data.accessToken,
-                              refreshToken: data.refreshToken,
-                            );
-
-                            await getIt.get<AuthModel>().saveUser(data.user);
-                            await getIt.get<AuthModel>().saveTokens(tokens);
-                          }
-
-                          final dh = DiffieHellman();
-                          await dh.register();
-
-                          if (context.mounted) {
-                            context.goNamed('home');
-                          }
-                        } catch (e) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Error logging in with Facebook. Error: ${e.toString()}',
-                                ),
-                              ),
-                            );
-                          }
-                        }
-                      },
+                    CustomLoginButton(
+                      text: "Continue with FaceBook",
+                      icon: Icons.facebook_outlined,
+                      color: Colors.blue,
+                      onPress: () => _login(context),
                     ),
                   ],
                 ),
@@ -114,21 +64,95 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 
-  Widget _customButton(String text, Function() controller) {
+  Future<void> _login(BuildContext context) async {
+    try {
+      if (kDebugMode) {
+        final data = await getIt.get<AuthService>().backendLogin(fakeUser);
+        final tokens = Token(
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        );
+
+        await getIt.get<AuthModel>().saveUser(data.user);
+        await getIt.get<AuthModel>().saveTokens(tokens);
+      } else {
+        final user = await getIt.get<AuthService>().facebookLogin();
+        final data = await getIt.get<AuthService>().backendLogin(user);
+        final tokens = Token(
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        );
+
+        await getIt.get<AuthModel>().saveUser(data.user);
+        await getIt.get<AuthModel>().saveTokens(tokens);
+      }
+
+      final dh = DiffieHellman();
+      await dh.register();
+
+      if (context.mounted) {
+        context.goNamed('home');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error logging in with Facebook. Error: ${e.toString()}',
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  void _openBottomModal() {
+    showModalBottomSheet(
+      showDragHandle: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.75,
+        child: const BottomModalSetting(),
+      ),
+    );
+  }
+}
+
+class CustomLoginButton extends StatelessWidget {
+  const CustomLoginButton({
+    super.key,
+    required this.onPress,
+    required this.text,
+    required this.icon,
+    this.color,
+    this.textColor,
+    this.iconColor,
+  });
+
+  final Future<void> Function() onPress;
+  final String text;
+  final IconData icon;
+  final Color? color;
+  final Color? textColor;
+  final Color? iconColor;
+
+  @override
+  Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () async {
-        await controller();
+        await onPress();
       },
-      icon: const Icon(
-        Icons.facebook,
-        color: Colors.white,
+      icon: Icon(
+        icon,
+        color: iconColor ?? Colors.white,
       ),
-      style: const ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(Colors.blue),
+      style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(color ?? Colors.green),
       ),
       label: Text(
         text,
-        style: const TextStyle(color: Colors.white),
+        style: TextStyle(color: textColor ?? Colors.white),
       ),
     );
   }

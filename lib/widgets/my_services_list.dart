@@ -56,41 +56,47 @@ class _MyServicesList extends State<MyServicesList> {
             itemCount: _services.length,
             itemBuilder: (context, index) {
               final service = _services[index];
+              final lastElementPadding = index == _services.length - 1
+                  ? const EdgeInsets.only(bottom: 80)
+                  : const EdgeInsets.only(bottom: 0);
 
-              return ListTile(
-                title: Text(service.description),
-                onTap: () {
-                  context.goNamed(
-                    "service-detail",
-                    queryParameters: {'serviceId': service.id},
-                  );
-                },
-                trailing: PopupMenuButton(itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      onTap: () {
-                        context.goNamed(
-                          'edit-service',
-                          queryParameters: {'serviceId': service.id},
-                        );
-                      },
-                      value: 'edit',
-                      child: const Text('Edit'),
-                    ),
-                    PopupMenuItem(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) =>
-                              _buildAlertDialog(context, service.id),
-                          barrierDismissible: true,
-                        );
-                      },
-                      value: 'delete',
-                      child: const Text('Delete'),
-                    ),
-                  ];
-                }),
+              return Container(
+                padding: lastElementPadding,
+                child: ListTile(
+                  title: Text(service.description),
+                  onTap: () {
+                    context.goNamed(
+                      "detail",
+                      queryParameters: {'serviceId': service.id},
+                    );
+                  },
+                  trailing: PopupMenuButton(itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        onTap: () {
+                          context.goNamed(
+                            'editService',
+                            queryParameters: {'serviceId': service.id},
+                          );
+                        },
+                        value: 'edit',
+                        child: const Text('Edit'),
+                      ),
+                      PopupMenuItem(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                _buildAlertDialog(context, service.id),
+                            barrierDismissible: true,
+                          );
+                        },
+                        value: 'delete',
+                        child: const Text('Delete'),
+                      ),
+                    ];
+                  }),
+                ),
               );
             },
           );

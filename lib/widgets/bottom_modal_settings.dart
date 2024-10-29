@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
 import 'package:nearby_assist/model/settings_model.dart';
@@ -34,52 +33,53 @@ class _BottomModalSetting extends State<BottomModalSetting> {
                   FocusManager.instance.primaryFocus?.unfocus();
                 },
                 controller: _addrController,
-                decoration:
-                    const InputDecoration(labelText: 'Backend Hostname'),
+                decoration: const InputDecoration(labelText: 'Backend'),
               ),
             ),
             const SizedBox(height: 20),
             FilledButton(
-              onPressed: () async {
-                FocusManager.instance.primaryFocus?.unfocus();
-
-                if (_addrController.text.isEmpty) {
-                  return;
-                }
-
-                await getIt
-                    .get<SettingsModel>()
-                    .updateBackendUrl(_addrController.text);
-
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Backend URL updated'),
-                    ),
-                  );
-                }
-              },
+              onPressed: () => _save(context),
+              style: const ButtonStyle(
+                minimumSize: WidgetStatePropertyAll(Size(double.infinity, 40)),
+              ),
               child: const Text('Save'),
             ),
             FilledButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('Close'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                try {
-                  await getIt.get<AuthModel>().logout();
-                } catch (e) {
-                  ConsoleLogger().log(e.toString());
-                }
-              },
+              onPressed: _clearData,
+              style: const ButtonStyle(
+                minimumSize: WidgetStatePropertyAll(Size(double.infinity, 40)),
+              ),
               child: const Text('Clear Data'),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _save(BuildContext context) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    if (_addrController.text.isEmpty) {
+      return;
+    }
+
+    await getIt.get<SettingsModel>().updateBackendUrl(_addrController.text);
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Backend URL updated'),
+        ),
+      );
+    }
+  }
+
+  void _clearData() async {
+    try {
+      await getIt.get<AuthModel>().logout();
+    } catch (e) {
+      ConsoleLogger().log(e.toString());
+    }
   }
 }

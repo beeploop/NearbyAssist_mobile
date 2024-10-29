@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/model/auth_model.dart';
+import 'package:nearby_assist/model/settings_model.dart';
 import 'package:nearby_assist/services/custom_file_picker.dart';
 import 'package:nearby_assist/services/verify_identity_service.dart';
 import 'package:nearby_assist/widgets/clickable_text.dart';
-import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
 import 'package:nearby_assist/config/constants.dart' as constants;
@@ -20,6 +20,7 @@ class VerifyIdentity extends StatefulWidget {
 }
 
 class _VerifyIdentity extends State<VerifyIdentity> {
+  final addr = getIt.get<SettingsModel>().getServerAddr();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _idSelectController = TextEditingController();
@@ -46,12 +47,12 @@ class _VerifyIdentity extends State<VerifyIdentity> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'Identity Verification',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: const CustomDrawer(),
       body: FutureBuilder(
         future: getIt.get<AuthModel>().isUserVerified(),
         builder: (context, snapshot) {
@@ -226,7 +227,7 @@ class _VerifyIdentity extends State<VerifyIdentity> {
           value: _isChecked,
           onChanged: (bool? value) => setState(() => _isChecked = value!),
         ),
-        ClickableText(url: Uri.parse("https://192.168.122.1:3000")),
+        ClickableText(url: Uri.parse("$addr/terms_and_conditions")),
       ],
     );
   }

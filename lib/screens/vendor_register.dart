@@ -8,7 +8,6 @@ import 'package:nearby_assist/services/logger_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/services/vendor_register_service.dart';
 import 'package:nearby_assist/widgets/clickable_text.dart';
-import 'package:nearby_assist/widgets/custom_drawer.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
 import 'package:nearby_assist/widgets/popup.dart';
 
@@ -31,12 +30,12 @@ class _VendorRegisterState extends State<VendorRegister> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           'Vendor Registration',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: const CustomDrawer(),
       body: FutureBuilder(
         future: getIt.get<AuthModel>().isUserVerified(),
         builder: (context, snapshot) {
@@ -64,13 +63,13 @@ class _VendorRegisterState extends State<VendorRegister> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    context.goNamed('verify-identity');
+                    context.pushNamed('verifyIdentity');
                   },
                   child: const Text('Verify'),
                 ),
                 TextButton(
                   onPressed: () {
-                    context.goNamed('home');
+                    context.pop();
                   },
                   child: const Text('Cancel'),
                 ),

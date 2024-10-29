@@ -82,7 +82,7 @@ class _VendorHeader extends State<VendorHeader> {
             children: [
               IconButton(
                 onPressed: () {
-                  context.goNamed(
+                  context.pushNamed(
                     'route',
                     queryParameters: {'serviceId': widget.serviceId},
                   );

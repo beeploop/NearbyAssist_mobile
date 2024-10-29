@@ -99,7 +99,7 @@ class _Chat extends State<Chat> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    context.goNamed('verify-identity');
+                    context.pushNamed('verifyIdentity');
                   },
                   child: const Text('Verify'),
                 ),

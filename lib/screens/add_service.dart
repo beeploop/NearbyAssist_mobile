@@ -85,7 +85,7 @@ class _AddService extends State<AddService> {
                 const SizedBox(height: 20),
                 FilledButton(
                   onPressed: () {
-                    context.goNamed('location-picker');
+                    context.goNamed('locationPicker');
                   },
                   child: const Text('Pick Location'),
                 ),

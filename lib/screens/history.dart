@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/history_service.dart';
-import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class History extends StatelessWidget {
   const History({super.key});
@@ -15,7 +14,6 @@ class History extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(
           future: getIt.get<HistoryService>().fetchHistory(),

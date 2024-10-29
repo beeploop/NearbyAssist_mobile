@@ -4,7 +4,6 @@ import 'package:nearby_assist/services/custom_file_picker.dart';
 import 'package:nearby_assist/services/system_complaint_service.dart';
 import 'package:nearby_assist/widgets/input_box.dart';
 import 'package:nearby_assist/widgets/listenable_loading_button.dart';
-import 'package:nearby_assist/widgets/text_heading.dart';
 
 class ReportIssue extends StatefulWidget {
   const ReportIssue({super.key});
@@ -20,13 +19,17 @@ class _ReportIssue extends State<ReportIssue> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Report Issue',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       body: Center(
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const TextHeading(title: 'Report System Issue'),
-            const Divider(),
             InputBox(controller: _titleController, hintText: 'Report title'),
             ListenableBuilder(
               listenable: getIt.get<SystemComplaintService>(),

@@ -43,7 +43,7 @@ class _DestinationRoute extends State<DestinationRoute> {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          context.goNamed('verify-identity');
+                          context.pushNamed('verifyIdentity');
                         },
                         child: const Text('Verify'),
                       ),

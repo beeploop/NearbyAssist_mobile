@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/transaction_service.dart';
-import 'package:nearby_assist/widgets/custom_drawer.dart';
 
 class Transactions extends StatelessWidget {
   const Transactions({super.key});
@@ -16,7 +15,6 @@ class Transactions extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      drawer: const CustomDrawer(),
       body: Center(
         child: FutureBuilder(
           future: getIt.get<TransactionService>().getTransactions(),
