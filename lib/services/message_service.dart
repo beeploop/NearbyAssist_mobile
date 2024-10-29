@@ -141,10 +141,20 @@ class MessageService extends ChangeNotifier {
         return [];
       }
 
-      final conversationList = conversations as List;
-      return conversationList.map((conversation) {
+      final conversationList = (conversations as List).map((conversation) {
         return Conversation.fromJson(conversation);
       }).toList();
+
+      // decrypt last message messages
+      for (var i = 0; i < conversationList.length; i++) {
+        final decrypted = await _decryptMessage(
+          conversationList[i].lastMessage,
+          conversationList[i].userId,
+        );
+        conversationList[i].lastMessage = decrypted;
+      }
+
+      return conversationList;
     } catch (e) {
       rethrow;
     }

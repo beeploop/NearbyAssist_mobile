@@ -1,3 +1,5 @@
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -38,22 +40,25 @@ class _Conversations extends State<Conversations> {
             }
 
             if (snapshot.hasError) {
-              return const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    size: 50,
-                  ),
-                  SizedBox(height: 10),
-                  Text('An error occurred. Try again later.'),
-                ],
+              return RefreshIndicator(
+                onRefresh: () =>
+                    getIt.get<MessageService>().fetchConversations(),
+                child: ListView(
+                  children: const [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 50,
+                    ),
+                    SizedBox(height: 10),
+                    Center(child: Text('An error occurred. Try again later.')),
+                  ],
+                ),
               );
             }
 
             if (!snapshot.hasData) {
               return const Center(
-                child: Text('messages has no data'),
+                child: Text('Unexpected behavior, no error but has no data'),
               );
             }
 
@@ -65,39 +70,47 @@ class _Conversations extends State<Conversations> {
               );
             }
 
-            return RefreshIndicator(
-              onRefresh: () {
-                return getIt.get<MessageService>().fetchConversations();
-              },
-              child: ListView.builder(
-                itemCount: conversations.length,
-                itemBuilder: (context, index) {
-                  final user = conversations[index];
-
-                  return ListTile(
-                    onTap: () => _openConversation(user),
-                    leading: _conversationAvatar(user),
-                    title: Text(user.name),
-                  );
-                },
-              ),
-            );
+            return _buildConversationList(conversations);
           },
         ),
       ),
     );
   }
 
-  Widget _conversationAvatar(Conversation user) {
+  Widget _buildConversationList(List<Conversation> conversations) {
+    return RefreshIndicator(
+      onRefresh: () => getIt.get<MessageService>().fetchConversations(),
+      child: ListView.builder(
+        itemCount: conversations.length,
+        itemBuilder: (context, index) {
+          final conversation = conversations[index];
+          final date = DateTime.parse(conversation.lastMessageDate);
+
+          return ListTile(
+            onTap: () => _openConversation(conversation),
+            leading: _conversationAvatar(conversation),
+            title: Text(
+              conversation.name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(conversation.lastMessage),
+            trailing: Text(DateFormat().format(date)),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _conversationAvatar(Conversation conversation) {
     return CircleAvatar(
       foregroundImage: CachedNetworkImageProvider(
-        user.imageUrl.startsWith("http")
-            ? user.imageUrl
-            : '$addr/resource/${user.imageUrl}',
+        conversation.imageUrl.startsWith("http")
+            ? conversation.imageUrl
+            : '$addr/resource/${conversation.imageUrl}',
       ),
       onForegroundImageError: (object, stacktrace) {
         ConsoleLogger().log(
-          "Error loading network image for: ${user.name}",
+          "Error loading network image for: ${conversation.name}",
         );
       },
       backgroundImage: const AssetImage(
@@ -106,12 +119,12 @@ class _Conversations extends State<Conversations> {
     );
   }
 
-  void _openConversation(Conversation user) {
-    context.goNamed(
+  void _openConversation(Conversation conversation) {
+    context.pushNamed(
       'chat',
       queryParameters: {
-        'vendorName': user.name,
-        'userId': user.userId,
+        'vendorName': conversation.name,
+        'userId': conversation.userId,
       },
     );
   }

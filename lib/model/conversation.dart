@@ -2,18 +2,24 @@ class Conversation {
   String userId;
   String name;
   String imageUrl;
+  String lastMessage;
+  String lastMessageDate;
 
   Conversation({
     required this.name,
     required this.imageUrl,
     required this.userId,
+    required this.lastMessage,
+    required this.lastMessageDate,
   });
 
   factory Conversation.fromJson(Map<String, dynamic> json) {
     return Conversation(
-      userId: json['id'],
+      userId: json['userId'],
       name: json['name'],
       imageUrl: json['imageUrl'],
+      lastMessage: json['lastMessage'],
+      lastMessageDate: json['lastMessageDate'],
     );
   }
 
@@ -22,6 +28,8 @@ class Conversation {
       'id': userId,
       'name': name,
       'imageUrl': imageUrl,
+      'lastMessage': lastMessage,
+      'lastMessageDate': lastMessageDate,
     };
   }
 }
