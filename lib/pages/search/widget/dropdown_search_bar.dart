@@ -1,11 +1,12 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 
 class DropdownSearchBar extends StatelessWidget {
-  const DropdownSearchBar({super.key});
+  const DropdownSearchBar({super.key, required this.onSearch});
+
+  final void Function() onSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class DropdownSearchBar extends StatelessWidget {
           ),
         ),
         TextButton.icon(
-          onPressed: () => context.pushNamed('map'),
+          onPressed: onSearch,
           style: const ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(Colors.green),
           ),

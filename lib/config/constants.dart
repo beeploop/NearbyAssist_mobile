@@ -1,4 +1,9 @@
+import 'package:latlong2/latlong.dart';
+
 const appVersion = "v0.5.0-alpha";
+
+const defaultLocation = LatLng(7.422365, 125.825984);
+const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 const serviceTags = [
   "category 1",

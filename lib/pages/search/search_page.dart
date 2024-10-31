@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
 
 class SearchPage extends StatefulWidget {
@@ -26,7 +27,9 @@ class _SearchPage extends State<SearchPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            const DropdownSearchBar(),
+            DropdownSearchBar(
+              onSearch: () => context.pushNamed('map'),
+            ),
             Expanded(
               child: Image.asset(
                 'assets/images/visualization.png',
