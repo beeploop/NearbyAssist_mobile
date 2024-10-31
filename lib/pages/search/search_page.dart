@@ -24,7 +24,17 @@ class _SearchPage extends State<SearchPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: _searchBar(),
+        child: Column(
+          children: [
+            _searchBar(),
+            Expanded(
+              child: Image.asset(
+                'assets/images/visualization.png',
+                width: 200,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
