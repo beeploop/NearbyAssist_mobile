@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -26,7 +26,7 @@ class _SearchPage extends State<SearchPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            _searchBar(),
+            const DropdownSearchBar(),
             Expanded(
               child: Image.asset(
                 'assets/images/visualization.png',
@@ -37,25 +37,5 @@ class _SearchPage extends State<SearchPage> {
         ),
       ),
     );
-  }
-
-  Widget _searchBar() {
-    return Row(children: [
-      Expanded(
-        child: TextField(
-          onTapOutside: (event) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          decoration: const InputDecoration(
-            hintText: 'Search',
-            border: OutlineInputBorder(),
-          ),
-        ),
-      ),
-      IconButton(
-        icon: const Icon(CupertinoIcons.search),
-        onPressed: () => context.pushNamed('map'),
-      ),
-    ]);
   }
 }
