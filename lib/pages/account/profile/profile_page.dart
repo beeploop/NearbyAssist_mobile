@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/pages/account/profile/widget/profile_header.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,27 +19,17 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+      body: const Padding(
+        padding: EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Center(
-                child: CircleAvatar(
-                  radius: 70,
-                  foregroundImage: const NetworkImage(""),
-                  backgroundImage: const AssetImage('assets/images/avatar.png'),
-                  backgroundColor: Colors.green[800],
-                ),
-              ),
+            ProfileHeader(
+              name: 'Firstname Lastname',
+              title: 'some arbitrary title',
+              imageUrl: '',
+              isVerified: false,
             ),
-            IconButton(
-              icon: const Icon(CupertinoIcons.checkmark_seal),
-              onPressed: () => context.pushNamed('verifyAccount'),
-            ),
-            const Text("user name"),
           ],
         ),
       ),

@@ -28,7 +28,24 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             children: [
-              Image.asset('assets/images/icon.png'),
+              const SizedBox(height: 60),
+              SizedBox(
+                width: 160,
+                child: Column(
+                  children: [
+                    Image.asset('assets/images/logo.png'),
+                    const Text(
+                      "NearbyAssist",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 60),
               _loginButton(),
               const Spacer(),
               Text(appVersion, style: TextStyle(color: Colors.grey[600])),
@@ -43,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
     return TextButton.icon(
       onPressed: _login,
       style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(Colors.blue[400]),
+        backgroundColor: WidgetStatePropertyAll(Colors.blue[500]),
       ),
       icon: const Icon(
         Icons.facebook_outlined,
