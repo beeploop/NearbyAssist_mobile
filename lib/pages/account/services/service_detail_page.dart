@@ -1,11 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
+import 'package:nearby_assist/pages/account/services/widget/floating_cta.dart';
+import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
+import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
 
 class ServiceDetailPage extends StatefulWidget {
-  const ServiceDetailPage({super.key, required this.serviceId});
+  const ServiceDetailPage({
+    super.key,
+    required this.serviceId,
+    this.edittable = false,
+  });
 
   final String serviceId;
+  final bool edittable;
 
   @override
   State<ServiceDetailPage> createState() => _ServiceDetailPageState();
@@ -21,21 +30,31 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.gear),
-            onPressed: () => context.pushNamed(
-              'editService',
-              queryParameters: {'serviceId': widget.serviceId},
+          if (widget.edittable)
+            IconButton(
+              icon: const Icon(CupertinoIcons.gear),
+              onPressed: () => context.pushNamed(
+                'editService',
+                queryParameters: {'serviceId': widget.serviceId},
+              ),
             ),
-          ),
           const SizedBox(width: 10),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Stack(
           children: [
-            Text("service id: ${widget.serviceId}"),
+            ListView(
+              children: [
+                VendorInfoSection(serviceId: widget.serviceId),
+                const SizedBox(height: 20),
+                const ImageSection(),
+                const SizedBox(height: 20),
+                const DetailTabSection(),
+              ],
+            ),
+            const FloatingCTA(),
           ],
         ),
       ),

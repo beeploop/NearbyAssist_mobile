@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -61,38 +62,38 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _updateInfo(BuildContext context) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("This feature is under development"),
-        duration: Duration(seconds: 1),
-      ),
+    showCustomSnackBar(
+      context,
+      "This feature is under development",
+      duration: const Duration(seconds: 2),
+      backgroundColor: Colors.yellow[300],
     );
   }
 
   void _disableAccount(BuildContext context) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("This feature is under development"),
-        duration: Duration(seconds: 1),
-      ),
+    showCustomSnackBar(
+      context,
+      "This feature is under development",
+      duration: const Duration(seconds: 2),
+      backgroundColor: Colors.yellow[300],
     );
   }
 
   void _updateTags(BuildContext context) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("This feature is under development"),
-        duration: Duration(seconds: 1),
-      ),
+    showCustomSnackBar(
+      context,
+      "This feature is under development",
+      duration: const Duration(seconds: 2),
+      backgroundColor: Colors.yellow[300],
     );
   }
 
   void _clearData() async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("This feature is under development"),
-        duration: Duration(seconds: 1),
-      ),
+    showCustomSnackBar(
+      context,
+      "This feature is under development",
+      duration: const Duration(seconds: 2),
+      backgroundColor: Colors.yellow[300],
     );
   }
 }

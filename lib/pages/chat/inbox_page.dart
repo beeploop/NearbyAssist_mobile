@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/chat/widget/inbox_item.dart';
+import 'package:nearby_assist/pages/widget/notification_bell.dart';
 
 class InboxPage extends StatefulWidget {
   const InboxPage({super.key});
@@ -18,6 +19,10 @@ class _InboxPageState extends State<InboxPage> {
           'Inbox',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: const [
+          NotificationBell(),
+          SizedBox(width: 10),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () => Future.delayed(const Duration(seconds: 1)),

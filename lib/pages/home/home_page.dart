@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/home/promotional_content_widget.dart';
+import 'package:nearby_assist/pages/widget/notification_bell.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,12 +14,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.bell),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 10),
+        actions: const [
+          NotificationBell(),
+          SizedBox(width: 10),
         ],
       ),
       body: Padding(

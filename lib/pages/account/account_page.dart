@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -50,7 +51,14 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _logout(BuildContext context) async {
-    throw UnimplementedError();
+    showCustomSnackBar(
+      context,
+      "Logout",
+      textColor: Colors.white,
+      backgroundColor: Colors.red,
+      duration: const Duration(seconds: 2),
+      closeIconColor: Colors.white,
+    );
   }
 
   Widget _accountSection() {
@@ -116,11 +124,11 @@ class _AccountPageState extends State<AccountPage> {
               title: "Contact Support",
               icon: CupertinoIcons.bubble_left_bubble_right,
               onPress: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('This feature is under development'),
-                    duration: Duration(seconds: 1),
-                  ),
+                showCustomSnackBar(
+                  context,
+                  "This feature is under development",
+                  duration: const Duration(seconds: 2),
+                  backgroundColor: Colors.yellow[300],
                 );
               }),
           AccountTileWidget(

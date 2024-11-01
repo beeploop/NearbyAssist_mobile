@@ -6,7 +6,8 @@ enum RoutPath {
   search(path: "/search"),
   map(path: "map"),
   vendor(path: "vendor"),
-  route(path: "route"),
+
+  route(path: "/route"),
 
   inbox(path: "/inbox"),
   chat(path: "/chat"),

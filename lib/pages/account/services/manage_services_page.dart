@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_item.dart';
@@ -56,7 +54,7 @@ class _ManageServicesState extends State<ManageServices> {
 
           return ServiceItem(
             description: "some description",
-            serviceId: Random().nextInt(100).toString(),
+            serviceId: 'some random id',
             paddingBottom: hasPadding,
           );
         },

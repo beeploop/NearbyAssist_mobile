@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
+import 'package:nearby_assist/pages/widget/notification_bell.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -15,12 +15,9 @@ class _SearchPage extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.bell),
-            onPressed: () {},
-          ),
-          const SizedBox(width: 10),
+        actions: const [
+          NotificationBell(),
+          SizedBox(width: 10),
         ],
       ),
       body: Padding(

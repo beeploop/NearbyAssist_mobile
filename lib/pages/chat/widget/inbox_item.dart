@@ -18,30 +18,33 @@ class InboxItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: getRandomColor(),
-        radius: 30,
-        child: const CircleAvatar(
-          radius: 27,
-          backgroundImage: AssetImage('assets/images/avatar.png'),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: getRandomColor(),
+          radius: 30,
+          child: const CircleAvatar(
+            radius: 27,
+            backgroundImage: AssetImage('assets/images/avatar.png'),
+          ),
         ),
-      ),
-      title: Text(
-        name,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
+        title: Text(
+          name,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
-      ),
-      subtitle: Text(lastMessage),
-      trailing: Text(lastMessageDate),
-      onTap: () => context.pushNamed(
-        'chat',
-        queryParameters: {
-          'recipient': 'foo',
-          'recipientId': '',
-        },
+        subtitle: Text(lastMessage),
+        trailing: Text(lastMessageDate),
+        onTap: () => context.pushNamed(
+          'chat',
+          queryParameters: {
+            'recipient': 'foo',
+            'recipientId': '',
+          },
+        ),
       ),
     );
   }

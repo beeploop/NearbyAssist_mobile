@@ -65,14 +65,6 @@ final router = GoRouter(
                                 state.uri.queryParameters['serviceId']!;
                             return ServiceDetailPage(serviceId: serviceId);
                           }),
-                      GoRoute(
-                          path: RoutPath.route.path,
-                          name: RoutPath.route.name,
-                          builder: (context, state) {
-                            final serviceId =
-                                state.uri.queryParameters['serviceId']!;
-                            return RoutePage(serviceId: serviceId);
-                          }),
                     ]),
               ]),
         ]),
@@ -91,6 +83,13 @@ final router = GoRouter(
         ]),
       ],
     ),
+    GoRoute(
+        path: RoutPath.route.path,
+        name: RoutPath.route.name,
+        builder: (context, state) {
+          final serviceId = state.uri.queryParameters['serviceId']!;
+          return RoutePage(serviceId: serviceId);
+        }),
     GoRoute(
         path: RoutPath.chat.path,
         name: RoutPath.chat.name,
@@ -130,7 +129,7 @@ final router = GoRouter(
               name: RoutPath.detail.name,
               builder: (context, state) {
                 final serviceId = state.uri.queryParameters['serviceId']!;
-                return ServiceDetailPage(serviceId: serviceId);
+                return ServiceDetailPage(serviceId: serviceId, edittable: true);
               }),
           GoRoute(
               path: RoutPath.editService.path,

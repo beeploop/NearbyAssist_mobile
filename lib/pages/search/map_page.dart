@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
+import 'package:nearby_assist/pages/widget/notification_bell.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -13,7 +15,12 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: const [
+          NotificationBell(),
+          SizedBox(width: 10),
+        ],
+      ),
       body: Stack(
         children: [
           const CustomMap(),
@@ -35,8 +42,13 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _handleSearch() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("clicked search")),
+    showCustomSnackBar(
+      context,
+      "clicked search",
+      textColor: Colors.white,
+      backgroundColor: Colors.green[400],
+      closeIconColor: Colors.white,
+      duration: const Duration(seconds: 2),
     );
   }
 }

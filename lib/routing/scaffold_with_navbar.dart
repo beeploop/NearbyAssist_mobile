@@ -38,8 +38,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
               label: 'search',
             ),
             BottomNavigationBarItem(
-              activeIcon: Icon(CupertinoIcons.text_bubble_fill),
-              icon: Icon(CupertinoIcons.text_bubble),
+              activeIcon: Icon(CupertinoIcons.ellipses_bubble_fill),
+              icon: Icon(CupertinoIcons.ellipses_bubble),
               label: 'message',
             ),
             BottomNavigationBarItem(
