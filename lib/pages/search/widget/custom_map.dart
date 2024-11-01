@@ -82,8 +82,8 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
     showCustomSnackBar(
       context,
-      "Map is ready",
-      duration: const Duration(seconds: 2),
+      "There might be some delay in displaying the map depending on your connection",
+      duration: const Duration(seconds: 6),
       backgroundColor: Colors.green[400],
     );
   }

@@ -27,7 +27,7 @@ class _InboxPageState extends State<InboxPage> {
       body: RefreshIndicator(
         onRefresh: () => Future.delayed(const Duration(seconds: 1)),
         child: ListView.builder(
-          itemCount: 20,
+          itemCount: 2,
           itemBuilder: (context, index) => const InboxItem(
             name: "some person's name",
             lastMessage: "last sent message",

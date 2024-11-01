@@ -41,6 +41,7 @@ dependencies:
   flutter_map: ^7.0.2
   flutter_map_animations: ^0.7.1
   flutter_map_cancellable_tile_provider: ^3.0.2
+  flutter_chat_ui: ^1.6.15
 
 dev_dependencies:
   flutter_test:
