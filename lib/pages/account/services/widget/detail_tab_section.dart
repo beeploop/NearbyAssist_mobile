@@ -91,7 +91,6 @@ class DetailTabSection extends StatelessWidget {
               const SizedBox(height: 10),
               ListTile(
                 leading: CircleAvatar(
-                  foregroundImage: const NetworkImage(""),
                   backgroundImage: const AssetImage('assets/images/avatar.png'),
                   backgroundColor: Colors.green[800],
                 ),

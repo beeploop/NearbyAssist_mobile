@@ -45,7 +45,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Stack(
           children: [
-            ListView(
+            Column(
               children: [
                 VendorInfoSection(serviceId: widget.serviceId),
                 const SizedBox(height: 20),
