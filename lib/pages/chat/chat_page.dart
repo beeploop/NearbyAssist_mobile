@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -61,10 +63,12 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _addMessage(types.PartialText message) {
+    final id = Random().nextInt(100).toString();
+
     final text = types.TextMessage.fromPartial(
       partialText: message,
       author: _user,
-      id: _messages.length.toString(),
+      id: id,
       showStatus: true,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       status: types.Status.sending,
@@ -72,6 +76,19 @@ class _ChatPageState extends State<ChatPage> {
 
     setState(() {
       _messages.insert(0, text);
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        _messages.remove(text);
+
+        final newMessage = text.copyWith(
+          status:
+              Random().nextInt(2) == 0 ? types.Status.sent : types.Status.error,
+        );
+
+        _messages.insert(0, newMessage);
+      });
     });
   }
 }
