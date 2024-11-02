@@ -17,3 +17,9 @@ const serviceTags = [
   "category 8",
   "category 9",
 ];
+
+const idTypes = [
+  "Passport",
+  "Driver's License",
+  "UMID",
+];
