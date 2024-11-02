@@ -20,6 +20,7 @@ class _App extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      title: 'NearbyAssist',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         pageTransitionsTheme: const PageTransitionsTheme(
