@@ -49,10 +49,19 @@ class _ChatPageState extends State<ChatPage> {
         theme: DefaultChatTheme(
           primaryColor: Theme.of(context).primaryColor,
           inputBorderRadius: BorderRadius.zero,
-          inputBackgroundColor: Colors.grey[800]!,
-          attachmentButtonIcon: const Icon(
-            CupertinoIcons.paperclip,
-            color: Colors.white,
+          inputBackgroundColor: Colors.transparent,
+          sendButtonIcon: const Icon(
+            CupertinoIcons.paperplane_fill,
+            color: Colors.green,
+          ),
+          inputTextColor: Colors.black,
+          inputTextDecoration: InputDecoration(
+            isDense: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            fillColor: Colors.grey[200],
+            filled: true,
           ),
         ),
         onSendPressed: _addMessage,
