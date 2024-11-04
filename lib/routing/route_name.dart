@@ -3,7 +3,8 @@ enum RoutPath {
 
   search(path: "/search"),
   map(path: "map"),
-  vendor(path: "vendor"),
+
+  vendor(path: "/vendor"),
 
   route(path: "/route"),
 

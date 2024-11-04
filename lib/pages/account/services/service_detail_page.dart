@@ -54,7 +54,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                 const DetailTabSection(),
               ],
             ),
-            const FloatingCTA(),
+            if (!widget.edittable) const FloatingCTA(),
           ],
         ),
       ),

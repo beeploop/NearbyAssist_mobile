@@ -48,17 +48,7 @@ final router = GoRouter(
                 GoRoute(
                     path: RoutPath.map.path,
                     name: RoutPath.map.name,
-                    builder: (context, state) => const MapPage(),
-                    routes: [
-                      GoRoute(
-                          path: RoutPath.vendor.path,
-                          name: RoutPath.vendor.name,
-                          builder: (context, state) {
-                            final serviceId =
-                                state.uri.queryParameters['serviceId']!;
-                            return ServiceDetailPage(serviceId: serviceId);
-                          }),
-                    ]),
+                    builder: (context, state) => const MapPage()),
               ]),
         ]),
         StatefulShellBranch(routes: [
@@ -83,6 +73,13 @@ final router = GoRouter(
         ]),
       ],
     ),
+    GoRoute(
+        path: RoutPath.vendor.path,
+        name: RoutPath.vendor.name,
+        builder: (context, state) {
+          final serviceId = state.uri.queryParameters['serviceId']!;
+          return ServiceDetailPage(serviceId: serviceId);
+        }),
     GoRoute(
         path: RoutPath.route.path,
         name: RoutPath.route.name,
