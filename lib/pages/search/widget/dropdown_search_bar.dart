@@ -45,17 +45,13 @@ class DropdownSearchBar extends StatelessWidget {
             onChanged: (items) => _selected = items,
           ),
         ),
-        TextButton.icon(
+        IconButton(
           onPressed: onSearch,
-          style: const ButtonStyle(
-            backgroundColor: WidgetStatePropertyAll(Colors.green),
-          ),
           icon: const Icon(
             CupertinoIcons.search,
-            color: Colors.white,
-            size: 18,
+            color: Colors.green,
+            size: 24,
           ),
-          label: const Text("search", style: TextStyle(color: Colors.white)),
         ),
       ],
     );

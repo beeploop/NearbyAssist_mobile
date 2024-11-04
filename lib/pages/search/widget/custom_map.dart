@@ -9,7 +9,12 @@ import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class CustomMap extends StatefulWidget {
-  const CustomMap({super.key});
+  const CustomMap({
+    super.key,
+    required this.coordinates,
+  });
+
+  final List<LatLng> coordinates;
 
   @override
   State<CustomMap> createState() => _CustomMapState();
@@ -20,37 +25,55 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      mapController: _controller.mapController,
-      options: MapOptions(
-        initialCenter: defaultLocation,
-        initialZoom: 13.0,
-        onMapReady: _mapReady,
-      ),
+    return Stack(
       children: [
-        TileLayer(
-          urlTemplate: tileMapProvider,
-          userAgentPackageName: 'com.example.app',
-          tileProvider: _tileProvider(),
-        ),
-        MarkerLayer(
-          markers: [
-            _createMarker(
-              coordinates: defaultLocation,
-              icon: CupertinoIcons.person_circle_fill,
-              color: Colors.red,
-              onTap: _centerMap,
+        FlutterMap(
+          mapController: _controller.mapController,
+          options: MapOptions(
+            initialCenter: defaultLocation,
+            initialZoom: 13.0,
+            onMapReady: _mapReady,
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: tileMapProvider,
+              userAgentPackageName: 'com.example.app',
+              tileProvider: _tileProvider(),
             ),
-            _createMarker(
-              coordinates: testLocation,
-              icon: CupertinoIcons.location_solid,
-              color: Colors.red,
-              onTap: () => context.pushNamed(
-                'vendor',
-                queryParameters: {'serviceId': 'foobar'},
-              ),
+            MarkerLayer(
+              markers: [
+                _createMarker(
+                  point: defaultLocation,
+                  icon: CupertinoIcons.person_circle_fill,
+                  color: Colors.red,
+                  onTap: _centerMap,
+                ),
+                ...widget.coordinates.map(
+                  (coordinate) => _createMarker(
+                    point: coordinate,
+                    icon: CupertinoIcons.location_solid,
+                    color: Colors.red,
+                    onTap: () => context.pushNamed(
+                      'vendor',
+                      queryParameters: {'serviceId': 'foobar'},
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
+        ),
+        Positioned(
+          bottom: 20,
+          right: 20,
+          child: FloatingActionButton(
+            onPressed: _centerMap,
+            backgroundColor: Colors.green,
+            child: const Icon(
+              CupertinoIcons.map_pin_ellipse,
+              color: Colors.white,
+            ),
+          ),
         ),
       ],
     );
@@ -61,7 +84,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
   }
 
   Marker _createMarker({
-    required LatLng coordinates,
+    required LatLng point,
     required IconData icon,
     required Color color,
     required void Function() onTap,
@@ -69,7 +92,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     return Marker(
       rotate: true,
       alignment: Alignment.topCenter,
-      point: coordinates,
+      point: point,
       child: GestureDetector(
         onTap: onTap,
         child: Icon(icon, color: color, size: 40),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
-import 'package:nearby_assist/pages/widget/notification_bell.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class MapPage extends StatefulWidget {
@@ -15,28 +15,29 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: const [
-          NotificationBell(),
-          SizedBox(width: 10),
-        ],
-      ),
-      body: Stack(
-        children: [
-          const CustomMap(),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(color: Colors.white60),
-              child: DropdownSearchBar(
-                onSearch: _handleSearch,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            const CustomMap(
+              coordinates: [testLocation],
+            ),
+            Positioned(
+              top: 20,
+              left: 20,
+              right: 20,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: DropdownSearchBar(
+                  onSearch: _handleSearch,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
