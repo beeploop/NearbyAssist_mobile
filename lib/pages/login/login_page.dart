@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    context.goNamed('home');
+    context.goNamed('search');
   }
 
   void _showTesterSettings() {

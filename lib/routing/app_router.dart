@@ -11,9 +11,9 @@ import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
 import 'package:nearby_assist/pages/account/services/service_detail_page.dart';
 import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
 import 'package:nearby_assist/pages/account/settings/settings_page.dart';
+import 'package:nearby_assist/pages/saves/saves_page.dart';
 import 'package:nearby_assist/pages/chat/chat_page.dart';
 import 'package:nearby_assist/pages/chat/inbox_page.dart';
-import 'package:nearby_assist/pages/home/home_page.dart';
 import 'package:nearby_assist/pages/login/login_page.dart';
 import 'package:nearby_assist/pages/search/map_page.dart';
 import 'package:nearby_assist/pages/search/route_page.dart';
@@ -41,13 +41,6 @@ final router = GoRouter(
       branches: [
         StatefulShellBranch(routes: [
           GoRoute(
-            path: RoutPath.home.path,
-            name: RoutPath.home.name,
-            builder: (context, state) => const HomePage(),
-          ),
-        ]),
-        StatefulShellBranch(routes: [
-          GoRoute(
               path: RoutPath.search.path,
               name: RoutPath.search.name,
               builder: (context, state) => const SearchPage(),
@@ -73,6 +66,13 @@ final router = GoRouter(
             path: RoutPath.inbox.path,
             name: RoutPath.inbox.name,
             builder: (context, state) => const InboxPage(),
+          ),
+        ]),
+        StatefulShellBranch(routes: [
+          GoRoute(
+            path: RoutPath.saves.path,
+            name: RoutPath.saves.name,
+            builder: (context, state) => const SavesPage(),
           ),
         ]),
         StatefulShellBranch(routes: [

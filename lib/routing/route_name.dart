@@ -1,8 +1,6 @@
 enum RoutPath {
   login(path: "/login"),
 
-  home(path: "/home"),
-
   search(path: "/search"),
   map(path: "map"),
   vendor(path: "vendor"),
@@ -11,6 +9,8 @@ enum RoutPath {
 
   inbox(path: "/inbox"),
   chat(path: "/chat"),
+
+  saves(path: "/saves"),
 
   account(path: "/account"),
 

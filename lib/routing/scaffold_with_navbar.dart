@@ -28,11 +28,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
           selectedItemColor: Colors.green,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              activeIcon: Icon(CupertinoIcons.house_fill),
-              icon: Icon(CupertinoIcons.house),
-              label: 'home',
-            ),
-            BottomNavigationBarItem(
               activeIcon: Icon(CupertinoIcons.compass_fill),
               icon: Icon(CupertinoIcons.compass),
               label: 'search',
@@ -41,6 +36,11 @@ class ScaffoldWithNavBar extends StatelessWidget {
               activeIcon: Icon(CupertinoIcons.ellipses_bubble_fill),
               icon: Icon(CupertinoIcons.ellipses_bubble),
               label: 'message',
+            ),
+            BottomNavigationBarItem(
+              activeIcon: Icon(CupertinoIcons.bookmark_fill),
+              icon: Icon(CupertinoIcons.bookmark),
+              label: 'saves',
             ),
             BottomNavigationBarItem(
               activeIcon: Icon(CupertinoIcons.person_fill),
