@@ -1,10 +1,12 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/config/valid_id.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class VerifyAccountPage extends StatefulWidget {
   const VerifyAccountPage({super.key});
@@ -19,6 +21,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   final _idNumberController = TextEditingController();
   final _frontIdController = FillableImageContainerController();
   final _backIdController = FillableImageContainerController();
+  ValidID _selectedID = ValidID.none;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +48,17 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
                 labelText: 'Address',
               ),
               const SizedBox(height: 20),
-              DropdownSearch<String>(
+              DropdownSearch<ValidID>(
                 decoratorProps: const DropDownDecoratorProps(
                   decoration: InputDecoration(labelText: 'ID Type'),
                 ),
-                items: (filter, props) => idTypes,
+                items: (filter, props) => ValidID.values,
+                itemAsString: (id) => id.value,
+                compareFn: (id, selectedID) => id == selectedID,
+                selectedItem: _selectedID,
+                onChanged: (id) => setState(
+                  () => id != null ? _selectedID = id : ValidID.none,
+                ),
               ),
               const SizedBox(height: 20),
               VerifyAccountInputField(
@@ -79,7 +88,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
                   backgroundColor: Colors.green,
                   minimumSize: const Size.fromHeight(50),
                 ),
-                onPressed: () {},
+                onPressed: _submit,
                 child: const Text('Submit'),
               ),
             ],
@@ -87,5 +96,32 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         ),
       ),
     );
+  }
+
+  void _submit() {
+    final name = _nameController.text;
+    final address = _addressController.text;
+    final idType = _selectedID;
+    final idNumber = _idNumberController.text;
+    final frontId = _frontIdController.image;
+    final backId = _backIdController.image;
+
+    if (idType == ValidID.none) {
+      showCustomSnackBar(
+        context,
+        "'none' is not a supported ID",
+        duration: const Duration(seconds: 5),
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        closeIconColor: Colors.white,
+      );
+    }
+
+    logger.log('Name: $name');
+    logger.log('Address: $address');
+    logger.log('ID Type: $idType');
+    logger.log('ID Number: $idNumber');
+    logger.log('Front ID: $frontId');
+    logger.log('Back ID: $backId');
   }
 }
