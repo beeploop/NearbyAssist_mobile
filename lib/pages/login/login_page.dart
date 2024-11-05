@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
         color: Colors.white,
       ),
       label: const Text(
-        "Continue with FaceBook",
+        "Continue with Facebook",
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,

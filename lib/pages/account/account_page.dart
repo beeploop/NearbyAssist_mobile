@@ -50,6 +50,8 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _logout(BuildContext context) async {
+    context.goNamed('login');
+
     showCustomSnackBar(
       context,
       "Logout",
