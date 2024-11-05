@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/pages/chat/widget/menu.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -38,12 +39,9 @@ class _ChatPageState extends State<ChatPage> {
             _user.firstName ?? _user.id,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(CupertinoIcons.ellipsis),
-              onPressed: () {},
-            ),
-            const SizedBox(width: 10),
+          actions: const [
+            Menu(),
+            SizedBox(width: 10),
           ]),
       body: Chat(
         theme: DefaultChatTheme(
