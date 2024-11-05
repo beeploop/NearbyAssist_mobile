@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
@@ -36,7 +37,7 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
               WidgetStatePropertyAll(
                 Colors.green[200],
               ),
-          onTap: _handleTap,
+          onTap: _pickImage,
           child: Ink(
             decoration: widget.decoration ??
                 BoxDecoration(
@@ -90,7 +91,18 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
     );
   }
 
-  void _handleTap() {
-    showCustomSnackBar(context, 'Image picker not implemented yet');
+  Future<void> _pickImage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      if (mounted) {
+        showCustomSnackBar(context, 'No image selected');
+      }
+      return;
+    }
+
+    final imageBytes = await image.readAsBytes();
+    setState(() {
+      widget.controller.setImage(imageBytes);
+    });
   }
 }
