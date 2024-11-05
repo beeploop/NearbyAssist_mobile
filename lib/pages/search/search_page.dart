@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
+import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
 
 class SearchPage extends StatefulWidget {
@@ -11,6 +12,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPage extends State<SearchPage> {
+  final _searchController = DropdownSearchBarController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +28,8 @@ class _SearchPage extends State<SearchPage> {
         child: Column(
           children: [
             DropdownSearchBar(
-              onSearch: () => context.pushNamed('map'),
+              controller: _searchController,
+              onSearchFinished: () => context.pushNamed('map'),
             ),
             Expanded(
               child: Image.asset(
