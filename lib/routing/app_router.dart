@@ -4,7 +4,7 @@ import 'package:nearby_assist/pages/account/account_page.dart';
 import 'package:nearby_assist/pages/account/information_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
 import 'package:nearby_assist/pages/account/profile/verify_account_page.dart';
-import 'package:nearby_assist/pages/account/report_page.dart';
+import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
 import 'package:nearby_assist/pages/account/services/add_service_page.dart';
 import 'package:nearby_assist/pages/account/services/edit_service_page.dart';
 import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
@@ -151,9 +151,9 @@ final router = GoRouter(
         name: RoutPath.vendorApplication.name,
         builder: (context, state) => const VendorApplicationPage()),
     GoRoute(
-        path: RoutPath.report.path,
-        name: RoutPath.report.name,
-        builder: (context, state) => const ReportPage()),
+        path: RoutPath.reportIssue.path,
+        name: RoutPath.reportIssue.name,
+        builder: (context, state) => const ReportIssuePage()),
     GoRoute(
         path: RoutPath.information.path,
         name: RoutPath.information.name,

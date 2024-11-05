@@ -30,7 +30,7 @@ enum RoutPath {
   vendorApplication(path: "/vendorApplication"),
 
   information(path: "/information"),
-  report(path: "/report");
+  reportIssue(path: "/reportIssue");
 
   const RoutPath({required this.path});
   final String path;

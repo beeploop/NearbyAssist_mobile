@@ -120,7 +120,7 @@ class _AccountPageState extends State<AccountPage> {
           AccountTileWidget(
               title: "Report and Feedback",
               icon: CupertinoIcons.exclamationmark_bubble,
-              onPress: () => context.pushNamed("report")),
+              onPress: () => context.pushNamed("reportIssue")),
           AccountTileWidget(
               title: "Contact Support",
               icon: CupertinoIcons.bubble_left_bubble_right,
