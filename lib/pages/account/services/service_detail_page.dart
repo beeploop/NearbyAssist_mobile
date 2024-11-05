@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/floating_cta.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
+import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
 
 class ServiceDetailPage extends StatefulWidget {
@@ -48,9 +49,11 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
             Column(
               children: [
                 VendorInfoSection(serviceId: widget.serviceId),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+                ServiceActions(serviceId: widget.serviceId),
+                const SizedBox(height: 10),
                 const ImageSection(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 const DetailTabSection(),
               ],
             ),
