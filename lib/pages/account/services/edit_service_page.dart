@@ -50,6 +50,9 @@ class _EditServicePageState extends State<EditServicePage> {
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
       builder: (context) => SizedBox(
         height: MediaQuery.of(context).size.height * 0.85,
         child: LocationPicker(
