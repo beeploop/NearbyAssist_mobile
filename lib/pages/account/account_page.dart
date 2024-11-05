@@ -15,32 +15,30 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(children: [
-          _bannerImage(),
-          Expanded(
-            child: ListView(children: [
-              const SizedBox(height: 20),
-              _accountSection(),
-              const Divider(),
-              const SizedBox(height: 20),
-              _privacySection(),
-              const Divider(),
-              const SizedBox(height: 20),
-              _othersSection(),
-              const Divider(),
-              const SizedBox(height: 20),
-              AccountTileWidget(
-                  title: "Logout",
-                  icon: CupertinoIcons.square_arrow_left,
-                  textColor: Colors.red,
-                  iconColor: Colors.red,
-                  endIcon: false,
-                  onPress: () => _logout(context)),
-              const SizedBox(height: 20),
-            ]),
-          ),
-        ]),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _bannerImage(),
+            const SizedBox(height: 20),
+            _accountSection(),
+            const Divider(),
+            const SizedBox(height: 20),
+            _privacySection(),
+            const Divider(),
+            const SizedBox(height: 20),
+            _othersSection(),
+            const Divider(),
+            const SizedBox(height: 20),
+            AccountTileWidget(
+                title: "Logout",
+                icon: CupertinoIcons.square_arrow_left,
+                textColor: Colors.red,
+                iconColor: Colors.red,
+                endIcon: false,
+                onPress: () => _logout(context)),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -142,40 +140,33 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _bannerImage() {
-    return Stack(
-      children: [
-        Container(
-          height: 200,
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.green,
-          ),
+    return Container(
+      height: 200,
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        color: Colors.green,
+      ),
+      child: const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              foregroundImage: AssetImage('assets/images/profile.png'),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "user name",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            Text(
+              "user email",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+          ],
         ),
-        const Positioned(
-          top: 0,
-          bottom: 0,
-          left: 40,
-          right: 40,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 40,
-                foregroundImage: AssetImage('assets/images/profile.png'),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "user name",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-              Text(
-                "user email",
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
