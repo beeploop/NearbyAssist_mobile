@@ -27,16 +27,12 @@ class _ManageServicesState extends State<ManageServices> {
             bottom: 16,
             right: 20,
             left: 20,
-            child: FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(60),
+            child: FilledButton(
+              style: const ButtonStyle(
+                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
               ),
-              backgroundColor: Colors.green,
               onPressed: () => context.pushNamed('addService'),
-              label: const Text(
-                "Add Service",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
+              child: const Text("Add Service"),
             ),
           ),
         ]),

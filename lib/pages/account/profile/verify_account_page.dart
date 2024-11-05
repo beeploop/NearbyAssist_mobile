@@ -82,11 +82,9 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.green,
-                  minimumSize: const Size.fromHeight(50),
+              FilledButton(
+                style: const ButtonStyle(
+                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
                 ),
                 onPressed: _submit,
                 child: const Text('Submit'),
