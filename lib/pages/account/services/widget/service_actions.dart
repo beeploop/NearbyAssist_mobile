@@ -22,7 +22,7 @@ class ServiceActions extends StatelessWidget {
             child: TextButton.icon(
               onPressed: () => _viewMap(context),
               icon: const Icon(CupertinoIcons.arrow_up_right_diamond),
-              label: const Text('View on Map'),
+              label: const Text('View route'),
             ),
           ),
           const VerticalDivider(),

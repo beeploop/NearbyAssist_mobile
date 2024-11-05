@@ -50,7 +50,8 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
               children: [
                 VendorInfoSection(serviceId: widget.serviceId),
                 const SizedBox(height: 10),
-                ServiceActions(serviceId: widget.serviceId),
+                if (!widget.edittable)
+                  ServiceActions(serviceId: widget.serviceId),
                 const SizedBox(height: 10),
                 const ImageSection(),
                 const SizedBox(height: 10),
