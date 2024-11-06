@@ -6,7 +6,9 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
+import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class VerifyAccountPage extends StatefulWidget {
   const VerifyAccountPage({super.key});
@@ -22,6 +24,19 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   final _frontIdController = FillableImageContainerController();
   final _backIdController = FillableImageContainerController();
   ValidID _selectedID = ValidID.none;
+
+  @override
+  void initState() {
+    super.initState();
+    _initialValues();
+  }
+
+  void _initialValues() {
+    final user = context.read<AuthProvider>().user;
+    setState(() {
+      _nameController.text = user.name;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

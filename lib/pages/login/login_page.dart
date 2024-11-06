@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/login/tester_settings_modal.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -79,9 +81,27 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    context.read<AuthProvider>().login(fakeUser);
+    try {
+      _onLoginSuccess(fakeUser);
+    } catch (error) {
+      _showErrorModal(error.toString());
+    }
+  }
 
+  void _onLoginSuccess(UserModel user) {
+    context.read<AuthProvider>().login(user);
     context.goNamed('search');
+  }
+
+  void _showErrorModal(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+    );
   }
 
   void _showTesterSettings() {
