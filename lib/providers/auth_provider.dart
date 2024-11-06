@@ -4,13 +4,7 @@ import 'package:nearby_assist/models/user_model.dart';
 enum AuthStatus { authenticated, unauthenticated }
 
 class AuthProvider extends ChangeNotifier {
-  UserModel? _user = UserModel(
-    id: '1',
-    name: 'John Doe',
-    email: 'jd@email.com',
-    imageUrl: 'assets/images/avatar.png',
-    isVerified: true,
-  );
+  UserModel? _user;
 
   UserModel get user => _user!;
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/account_page.dart';
 import 'package:nearby_assist/pages/account/information_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
@@ -32,7 +31,6 @@ GoRouter generateRoutes(AuthStatus status) {
     navigatorKey: _rootNavigatorKey,
     initialLocation: RoutPath.search.path,
     redirect: (context, state) {
-      logger.log('auth status: $status');
       if (status == AuthStatus.unauthenticated) {
         return RoutPath.login.path;
       }

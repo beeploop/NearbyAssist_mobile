@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearby_assist/main.dart';
 
 class LocationProvider extends ChangeNotifier {
   Future<bool> isLocationServiceEnabled() async {
@@ -33,7 +32,6 @@ class LocationProvider extends ChangeNotifier {
 
     final position = await Geolocator.getLastKnownPosition();
     if (position != null) {
-      logger.log('Returning last known location');
       return position;
     }
 

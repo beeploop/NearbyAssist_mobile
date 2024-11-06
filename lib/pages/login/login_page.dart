@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/login/tester_settings_modal.dart';
+import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -77,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
+    context.read<AuthProvider>().login(fakeUser);
+
     context.goNamed('search');
   }
 

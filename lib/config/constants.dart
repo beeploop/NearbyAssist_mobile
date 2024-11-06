@@ -1,4 +1,5 @@
 import 'package:latlong2/latlong.dart';
+import 'package:nearby_assist/models/user_model.dart';
 
 const appVersion = "v0.5.0-alpha";
 
@@ -17,3 +18,11 @@ const serviceTags = [
   "category 8",
   "category 9",
 ];
+
+final fakeUser = UserModel(
+  id: '1',
+  name: 'John Doe',
+  email: 'johndoe@email.com',
+  imageUrl: 'https://via.placeholder.com/150',
+  isVerified: false,
+);
