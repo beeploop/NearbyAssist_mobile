@@ -32,7 +32,7 @@ class ServiceActions extends StatelessWidget {
               icon: Icon(
                 saved ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
               ),
-              label: const Text('Save'),
+              label: Text(saved ? 'Saved' : 'Save'),
             ),
           ),
         ],

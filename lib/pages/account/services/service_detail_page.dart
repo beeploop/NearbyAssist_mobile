@@ -6,6 +6,8 @@ import 'package:nearby_assist/pages/account/services/widget/floating_cta.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
+import 'package:nearby_assist/providers/saves_provider.dart';
+import 'package:provider/provider.dart';
 
 class ServiceDetailPage extends StatefulWidget {
   const ServiceDetailPage({
@@ -51,7 +53,12 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                 VendorInfoSection(serviceId: widget.serviceId),
                 const SizedBox(height: 10),
                 if (!widget.edittable)
-                  ServiceActions(serviceId: widget.serviceId),
+                  Consumer<SavesProvider>(
+                    builder: (context, saves, child) => ServiceActions(
+                      serviceId: widget.serviceId,
+                      saved: saves.includes(widget.serviceId),
+                    ),
+                  ),
                 const SizedBox(height: 10),
                 const ImageSection(),
                 const SizedBox(height: 10),

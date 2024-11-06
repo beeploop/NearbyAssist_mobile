@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
+import 'package:nearby_assist/providers/saves_provider.dart';
+import 'package:provider/provider.dart';
 
 class SavesPage extends StatefulWidget {
   const SavesPage({super.key});
@@ -9,10 +13,10 @@ class SavesPage extends StatefulWidget {
 }
 
 class _SavesPageState extends State<SavesPage> {
-  final List<String> _saves = [];
-
   @override
   Widget build(BuildContext context) {
+    final saves = context.watch<SavesProvider>().saves;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -27,16 +31,21 @@ class _SavesPageState extends State<SavesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: _saves.isEmpty ? _buildEmptySaves() : _buildSaves(),
+        child: saves.isEmpty ? _buildEmptySaves() : _buildSaves(saves),
       ),
     );
   }
 
-  Widget _buildSaves() {
-    return const Column(
-      children: [
-        Text('bookmark page'),
-      ],
+  Widget _buildSaves(List<ServiceModel> saves) {
+    return ListView.builder(
+      itemCount: saves.length,
+      itemBuilder: (context, index) => ListTile(
+        onTap: () => context.pushNamed(
+          'vendor',
+          queryParameters: {'serviceId': saves[index].id},
+        ),
+        title: Text(saves[index].description),
+      ),
     );
   }
 
