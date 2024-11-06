@@ -2,7 +2,7 @@ import 'package:latlong2/latlong.dart';
 
 const appVersion = "v0.5.0-alpha";
 
-const defaultLocation = LatLng(7.422365, 125.825984);
+const defaultLocation = LatLng(7.4470693031593225, 125.80932608954173);
 const testLocation = LatLng(7.422262088132875, 125.82481735474342);
 const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 

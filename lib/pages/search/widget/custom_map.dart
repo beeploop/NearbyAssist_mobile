@@ -6,7 +6,9 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/providers/location_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class CustomMap extends StatefulWidget {
   const CustomMap({
@@ -22,6 +24,21 @@ class CustomMap extends StatefulWidget {
 
 class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
   late final _controller = AnimatedMapController(vsync: this);
+  LatLng _location = defaultLocation;
+
+  Future<void> _getLocation() async {
+    final position = await context.read<LocationProvider>().getLocation();
+    setState(() {
+      _location = LatLng(position.latitude, position.longitude);
+      _centerMap();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +47,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
         FlutterMap(
           mapController: _controller.mapController,
           options: MapOptions(
-            initialCenter: defaultLocation,
+            initialCenter: LatLng(_location.latitude, _location.longitude),
             initialZoom: 13.0,
             onMapReady: _mapReady,
           ),
@@ -43,7 +60,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
             MarkerLayer(
               markers: [
                 _createMarker(
-                  point: defaultLocation,
+                  point: LatLng(_location.latitude, _location.longitude),
                   icon: CupertinoIcons.person_circle_fill,
                   color: Colors.red,
                   onTap: _centerMap,
@@ -113,7 +130,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   void _centerMap() {
     _controller.animateTo(
-      dest: defaultLocation,
+      dest: LatLng(_location.latitude, _location.longitude),
       zoom: 16,
     );
   }

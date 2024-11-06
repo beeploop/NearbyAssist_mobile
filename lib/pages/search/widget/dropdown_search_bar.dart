@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
-import 'package:nearby_assist/services/geolocation.dart';
+import 'package:nearby_assist/providers/location_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class DropdownSearchBar extends StatefulWidget {
   const DropdownSearchBar({
@@ -94,13 +94,7 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
     });
 
     try {
-      final isEnabled = await Geolocation().isLocationServiceEnabled();
-      if (!isEnabled) {
-        throw LocationServiceDisabledException;
-      }
-
-      final location = await Geolocation().getLocation();
-      logger.log(location.toString());
+      await context.read<LocationProvider>().getLocation();
 
       widget.onSearchFinished();
     } catch (error) {

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/account/services/utils/location_editing_controller.dart';
 import 'package:nearby_assist/pages/account/services/widget/location_picker.dart';
+import 'package:nearby_assist/providers/location_provider.dart';
+import 'package:provider/provider.dart';
 
 class EditServicePage extends StatefulWidget {
   const EditServicePage({super.key, required this.serviceId});
@@ -19,6 +22,21 @@ class _EditServicePageState extends State<EditServicePage> {
   final _locationController = LocationEditingController(
     initialLocation: defaultLocation,
   );
+
+  Future<void> _getLocation() async {
+    final position = await context.read<LocationProvider>().getLocation();
+    setState(() {
+      _locationController.setLocation(
+        LatLng(position.latitude, position.longitude),
+      );
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
