@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/models/conversation_model.dart';
 import 'package:nearby_assist/utils/random_color.dart';
 
 class InboxItem extends StatelessWidget {
   const InboxItem({
     super.key,
-    required this.imageUrl,
-    required this.name,
-    required this.lastMessage,
-    required this.lastMessageDate,
+    required this.conversation,
   });
 
-  final String imageUrl;
-  final String name;
-  final String lastMessage;
-  final String lastMessageDate;
+  final ConversationModel conversation;
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +25,19 @@ class InboxItem extends StatelessWidget {
           ),
         ),
         title: Text(
-          name,
+          conversation.recipient,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
         ),
-        subtitle: Text(lastMessage),
-        trailing: Text(lastMessageDate),
+        subtitle: Text(conversation.lastMessage),
+        trailing: Text(conversation.date),
         onTap: () => context.pushNamed(
           'chat',
           queryParameters: {
-            'recipient': 'foo',
-            'recipientId': '',
+            'recipient': conversation.recipient,
+            'recipientId': conversation.recipientId,
           },
         ),
       ),

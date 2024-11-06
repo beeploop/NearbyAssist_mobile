@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/providers/inbox_provider.dart';
 import 'package:nearby_assist/routing/app_router.dart';
 import 'package:nearby_assist/services/logger.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => InboxProvider()),
       ],
       child: const App(),
     ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/chat/widget/inbox_item.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
+import 'package:nearby_assist/providers/inbox_provider.dart';
+import 'package:provider/provider.dart';
 
 class InboxPage extends StatefulWidget {
   const InboxPage({super.key});
@@ -12,6 +14,8 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   @override
   Widget build(BuildContext context) {
+    final conversations = context.watch<InboxProvider>().conversations;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -26,15 +30,16 @@ class _InboxPageState extends State<InboxPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () => Future.delayed(const Duration(seconds: 1)),
-        child: ListView.builder(
-          itemCount: 2,
-          itemBuilder: (context, index) => const InboxItem(
-            name: "some person's name",
-            lastMessage: "last sent message",
-            imageUrl: "",
-            lastMessageDate: "10/31/24",
-          ),
-        ),
+        child: conversations.isEmpty
+            ? const Center(
+                child: Text('no messages'),
+              )
+            : ListView.builder(
+                itemCount: conversations.length,
+                itemBuilder: (context, index) => InboxItem(
+                  conversation: conversations[index],
+                ),
+              ),
       ),
     );
   }
