@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/routing/app_router.dart';
 import 'package:nearby_assist/services/logger.dart';
+import 'package:provider/provider.dart';
 
 final logger = ConsoleLogger();
 
 void main() {
-  runApp(const App());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+      ],
+      child: const App(),
+    ),
+  );
 }
 
 class App extends StatefulWidget {
@@ -18,6 +27,8 @@ class App extends StatefulWidget {
 class _App extends State<App> {
   @override
   Widget build(BuildContext context) {
+    final authStatus = context.watch<AuthProvider>().status;
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'NearbyAssist',
@@ -29,7 +40,7 @@ class _App extends State<App> {
           },
         ),
       ),
-      routerConfig: router,
+      routerConfig: generateRoutes(authStatus),
     );
   }
 }

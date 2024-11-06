@@ -44,6 +44,7 @@ dependencies:
   flutter_map_cancellable_tile_provider: ^3.0.2
   flutter_chat_ui: ^1.6.15
   image_picker: ^1.1.2
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

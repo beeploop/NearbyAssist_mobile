@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/profile/widget/profile_header.dart';
+import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,6 +13,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AuthProvider>().user;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -19,16 +23,16 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(20),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ProfileHeader(
-              name: 'Firstname Lastname',
-              title: 'some arbitrary title',
-              imageUrl: '',
-              isVerified: false,
+              name: user.name,
+              title: user.email,
+              imageUrl: user.imageUrl,
+              isVerified: user.isVerified,
             ),
           ],
         ),

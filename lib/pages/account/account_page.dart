@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
+import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -48,7 +50,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _logout(BuildContext context) async {
-    context.goNamed('login');
+    context.read<AuthProvider>().logout();
 
     showCustomSnackBar(
       context,
@@ -140,6 +142,8 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _bannerImage() {
+    final user = context.read<AuthProvider>().user;
+
     return Container(
       height: 200,
       width: MediaQuery.of(context).size.width,
@@ -147,22 +151,22 @@ class _AccountPageState extends State<AccountPage> {
       decoration: const BoxDecoration(
         color: Colors.green,
       ),
-      child: const Center(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             CircleAvatar(
               radius: 40,
-              foregroundImage: AssetImage('assets/images/profile.png'),
+              foregroundImage: AssetImage(user.imageUrl),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
-              "user name",
-              style: TextStyle(fontSize: 16, color: Colors.white),
+              user.name,
+              style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
             Text(
-              "user email",
-              style: TextStyle(fontSize: 16, color: Colors.white),
+              user.email,
+              style: const TextStyle(fontSize: 16, color: Colors.white),
             ),
           ],
         ),
