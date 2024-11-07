@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class FloatingCTA extends StatelessWidget {
-  const FloatingCTA({super.key});
+  const FloatingCTA({
+    super.key,
+    required this.recipientId,
+    required this.recipient,
+  });
+
+  final String recipientId;
+  final String recipient;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +45,10 @@ class FloatingCTA extends StatelessWidget {
               Navigator.of(context).pop();
               context.pushNamed(
                 'chat',
-                queryParameters: {'recipientId': '', 'recipient': ''},
+                queryParameters: {
+                  'recipientId': recipientId,
+                  'recipient': recipient,
+                },
               );
             },
             child: const Text('Chat'),

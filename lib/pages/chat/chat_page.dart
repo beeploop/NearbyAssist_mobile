@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/models/conversation_model.dart';
 import 'package:nearby_assist/pages/chat/widget/menu.dart';
+import 'package:nearby_assist/providers/inbox_provider.dart';
+import 'package:nearby_assist/providers/message_provider.dart';
+import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -22,7 +26,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final List<types.Message> _messages = [];
   late types.User _user;
 
   @override
@@ -33,6 +36,12 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final messages =
+        context.watch<MessageProvider>().getMessages(widget.recipientId);
+
+    final messageProvider = context.read<MessageProvider>();
+    final inboxProvider = context.read<InboxProvider>();
+
     return Scaffold(
       appBar: AppBar(
           title: Text(
@@ -62,14 +71,22 @@ class _ChatPageState extends State<ChatPage> {
             filled: true,
           ),
         ),
-        onSendPressed: _addMessage,
-        messages: _messages,
+        onSendPressed: (message) => _addMessage(
+          inboxProvider,
+          messageProvider,
+          message,
+        ),
+        messages: messages,
         user: _user,
       ),
     );
   }
 
-  void _addMessage(types.PartialText message) {
+  void _addMessage(
+    InboxProvider inbox,
+    MessageProvider provider,
+    types.PartialText message,
+  ) {
     final id = Random().nextInt(100).toString();
 
     final text = types.TextMessage.fromPartial(
@@ -81,21 +98,21 @@ class _ChatPageState extends State<ChatPage> {
       status: types.Status.sending,
     );
 
-    setState(() {
-      _messages.insert(0, text);
-    });
+    provider.newMessage(widget.recipientId, text);
 
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _messages.remove(text);
+    final now = DateTime.now().toIso8601String();
 
-        final newMessage = text.copyWith(
-          status:
-              Random().nextInt(2) == 0 ? types.Status.sent : types.Status.error,
-        );
+    if (inbox.includes(widget.recipientId)) {
+      inbox.updateConversation(widget.recipientId, message.text, now);
+      return;
+    }
 
-        _messages.insert(0, newMessage);
-      });
-    });
+    inbox.add(ConversationModel(
+      recipientId: widget.recipientId,
+      recipient: widget.recipient,
+      imageUrl: 'assets/images/avatar.png',
+      lastMessage: message.text,
+      date: now,
+    ));
   }
 }

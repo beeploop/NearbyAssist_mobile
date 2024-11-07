@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/providers/inbox_provider.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
+import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:nearby_assist/routing/app_router.dart';
@@ -16,6 +17,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => InboxProvider()),
+        ChangeNotifierProvider(create: (context) => MessageProvider()),
         ChangeNotifierProvider(create: (context) => SavesProvider()),
         ChangeNotifierProvider(create: (context) => LocationProvider()),
         ChangeNotifierProvider(create: (context) => ServicesProvider()),

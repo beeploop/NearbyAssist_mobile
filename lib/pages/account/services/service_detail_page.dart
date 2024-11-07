@@ -7,6 +7,7 @@ import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
+import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:provider/provider.dart';
 
 class ServiceDetailPage extends StatefulWidget {
@@ -26,6 +27,9 @@ class ServiceDetailPage extends StatefulWidget {
 class _ServiceDetailPageState extends State<ServiceDetailPage> {
   @override
   Widget build(BuildContext context) {
+    final vendorId =
+        context.watch<ServicesProvider>().getById(widget.serviceId).vendor;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -65,7 +69,8 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                 const DetailTabSection(),
               ],
             ),
-            if (!widget.edittable) const FloatingCTA(),
+            if (!widget.edittable)
+              FloatingCTA(recipient: vendorId, recipientId: vendorId),
           ],
         ),
       ),
