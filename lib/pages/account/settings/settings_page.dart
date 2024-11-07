@@ -101,7 +101,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _healthcheck() async {
     try {
-      final api = ApiService();
+      final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.healthcheck);
 
       if (!mounted) throw Exception('connection not mounted');

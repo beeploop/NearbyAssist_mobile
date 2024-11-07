@@ -25,11 +25,9 @@ class UserModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'email': email,
-      'imageUrl': imageUrl,
-      'isVerified': isVerified,
+      'image': imageUrl,
     };
   }
 }

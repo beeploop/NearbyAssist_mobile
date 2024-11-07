@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -32,12 +33,13 @@ class _AccountPageState extends State<AccountPage> {
             const Divider(),
             const SizedBox(height: 20),
             AccountTileWidget(
-                title: "Logout",
-                icon: CupertinoIcons.square_arrow_left,
-                textColor: Colors.red,
-                iconColor: Colors.red,
-                endIcon: false,
-                onPress: () => _logout(context)),
+              title: "Logout",
+              icon: CupertinoIcons.square_arrow_left,
+              textColor: Colors.red,
+              iconColor: Colors.red,
+              endIcon: false,
+              onPress: _logout,
+            ),
             const SizedBox(height: 20),
           ],
         ),
@@ -49,7 +51,16 @@ class _AccountPageState extends State<AccountPage> {
     throw UnimplementedError();
   }
 
-  Future<void> _logout(BuildContext context) async {
+  Future<void> _logout() async {
+    try {
+      await AuthService().logout();
+      _onLogoutSuccess();
+    } catch (error) {
+      _showErrorModal(error.toString());
+    }
+  }
+
+  void _onLogoutSuccess() {
     context.read<AuthProvider>().logout();
 
     showCustomSnackBar(
@@ -58,6 +69,17 @@ class _AccountPageState extends State<AccountPage> {
       textColor: Colors.white,
       backgroundColor: Colors.red,
       duration: const Duration(seconds: 2),
+      closeIconColor: Colors.white,
+    );
+  }
+
+  void _showErrorModal(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
       closeIconColor: Colors.white,
     );
   }

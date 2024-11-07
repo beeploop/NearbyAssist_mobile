@@ -11,5 +11,12 @@ class ApiEndpoint {
   }
 
   String get baseUrl => _baseUrl;
-  String get healthcheck => '$_baseUrl/api/v1/health';
+
+  // Health check
+  String get healthcheck => '$_baseUrl/api/v1/health/protected';
+
+  // Auth Routes
+  String get login => '$_baseUrl/api/v1/user/login';
+  String get logout => '$_baseUrl/api/v1/user/logout';
+  String get refresh => '$_baseUrl/api/v1/user/refresh';
 }
