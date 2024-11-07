@@ -84,6 +84,17 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
   }
 
   Future<void> _handleSearch() async {
+    if (widget.controller.selectedTags.isEmpty) {
+      showCustomSnackBar(
+        context,
+        'select at least 1 service tag',
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        closeIconColor: Colors.white,
+      );
+      return;
+    }
+
     if (widget.controller.isSearching) {
       showCustomSnackBar(context, 'still searching');
       return;
