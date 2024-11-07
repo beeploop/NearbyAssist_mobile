@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nearby_assist/config/api_endpoint.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/providers/inbox_provider.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
@@ -11,8 +13,15 @@ import 'package:nearby_assist/services/logger.dart';
 import 'package:provider/provider.dart';
 
 final logger = ConsoleLogger();
+late ApiEndpoint endpoint;
 
-void main() {
+void main() async {
+  // Load environment variables
+  await dotenv.load(fileName: '.env');
+
+  // Initialize the API endpoints
+  endpoint = ApiEndpoint.fromEnv();
+
   runApp(
     MultiProvider(
       providers: [
