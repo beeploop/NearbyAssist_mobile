@@ -30,18 +30,18 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
 GoRouter generateRoutes(AuthStatus status) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: RoutPath.search.path,
+    initialLocation: RoutePath.search.path,
     redirect: (context, state) {
       if (status == AuthStatus.unauthenticated) {
-        return RoutPath.login.path;
+        return RoutePath.login.path;
       }
 
       return null;
     },
     routes: [
       GoRoute(
-        path: RoutPath.login.path,
-        name: RoutPath.login.name,
+        path: RoutePath.login.path,
+        name: RoutePath.login.name,
         builder: (context, state) => const LoginPage(),
       ),
       StatefulShellRoute.indexedStack(
@@ -51,55 +51,55 @@ GoRouter generateRoutes(AuthStatus status) {
         branches: [
           StatefulShellBranch(routes: [
             GoRoute(
-                path: RoutPath.search.path,
-                name: RoutPath.search.name,
+                path: RoutePath.search.path,
+                name: RoutePath.search.name,
                 builder: (context, state) => const SearchPage(),
                 routes: [
                   GoRoute(
-                      path: RoutPath.map.path,
-                      name: RoutPath.map.name,
+                      path: RoutePath.map.path,
+                      name: RoutePath.map.name,
                       builder: (context, state) => const MapPage()),
                 ]),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
-              path: RoutPath.inbox.path,
-              name: RoutPath.inbox.name,
+              path: RoutePath.inbox.path,
+              name: RoutePath.inbox.name,
               builder: (context, state) => const InboxPage(),
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
-              path: RoutPath.saves.path,
-              name: RoutPath.saves.name,
+              path: RoutePath.saves.path,
+              name: RoutePath.saves.name,
               builder: (context, state) => const SavesPage(),
             ),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
-                path: RoutPath.account.path,
-                name: RoutPath.account.name,
+                path: RoutePath.account.path,
+                name: RoutePath.account.name,
                 builder: (context, state) => const AccountPage()),
           ]),
         ],
       ),
       GoRoute(
-          path: RoutPath.viewService.path,
-          name: RoutPath.viewService.name,
+          path: RoutePath.viewService.path,
+          name: RoutePath.viewService.name,
           builder: (context, state) {
             final serviceId = state.uri.queryParameters['serviceId']!;
             return ServiceViewPage(serviceId: serviceId);
           }),
       GoRoute(
-          path: RoutPath.route.path,
-          name: RoutPath.route.name,
+          path: RoutePath.route.path,
+          name: RoutePath.route.name,
           builder: (context, state) {
             final serviceId = state.uri.queryParameters['serviceId']!;
             return RoutePage(serviceId: serviceId);
           }),
       GoRoute(
-          path: RoutPath.chat.path,
-          name: RoutPath.chat.name,
+          path: RoutePath.chat.path,
+          name: RoutePath.chat.name,
           builder: (context, state) {
             final recipientId = state.uri.queryParameters['recipientId']!;
             final recipient = state.uri.queryParameters['recipient']!;
@@ -107,66 +107,66 @@ GoRouter generateRoutes(AuthStatus status) {
             return ChatPage(recipientId: recipientId, recipient: recipient);
           }),
       GoRoute(
-          path: RoutPath.profile.path,
-          name: RoutPath.profile.name,
+          path: RoutePath.profile.path,
+          name: RoutePath.profile.name,
           builder: (context, state) => const ProfilePage()),
       GoRoute(
-          path: RoutPath.settings.path,
-          name: RoutPath.settings.name,
+          path: RoutePath.settings.path,
+          name: RoutePath.settings.name,
           builder: (context, state) => const SettingsPage()),
       GoRoute(
-          path: RoutPath.manage.path,
-          name: RoutPath.manage.name,
+          path: RoutePath.manage.path,
+          name: RoutePath.manage.name,
           builder: (context, state) => const ManageServices(),
           routes: [
             GoRoute(
-              path: RoutPath.addService.path,
-              name: RoutPath.addService.name,
+              path: RoutePath.addService.path,
+              name: RoutePath.addService.name,
               builder: (context, state) => const AddServicePage(),
               routes: [
                 GoRoute(
-                  path: RoutPath.locationPicker.path,
-                  name: RoutPath.locationPicker.name,
+                  path: RoutePath.locationPicker.path,
+                  name: RoutePath.locationPicker.name,
                   builder: (context, state) => const TestPage(),
                 ),
               ],
             ),
             GoRoute(
-                path: RoutPath.detail.path,
-                name: RoutPath.detail.name,
+                path: RoutePath.detail.path,
+                name: RoutePath.detail.name,
                 builder: (context, state) {
                   final serviceId = state.uri.queryParameters['serviceId']!;
                   return ServiceDetailPage(serviceId: serviceId);
                 }),
             GoRoute(
-                path: RoutPath.editService.path,
-                name: RoutPath.editService.name,
+                path: RoutePath.editService.path,
+                name: RoutePath.editService.name,
                 builder: (context, state) {
                   final serviceId = state.uri.queryParameters['serviceId']!;
                   return EditServicePage(serviceId: serviceId);
                 },
                 routes: [
                   GoRoute(
-                      path: RoutPath.editLocation.path,
-                      name: RoutPath.editLocation.name,
+                      path: RoutePath.editLocation.path,
+                      name: RoutePath.editLocation.name,
                       builder: (context, state) => const TestPage())
                 ]),
           ]),
       GoRoute(
-          path: RoutPath.verifyAccount.path,
-          name: RoutPath.verifyAccount.name,
+          path: RoutePath.verifyAccount.path,
+          name: RoutePath.verifyAccount.name,
           builder: (context, state) => const VerifyAccountPage()),
       GoRoute(
-          path: RoutPath.vendorApplication.path,
-          name: RoutPath.vendorApplication.name,
+          path: RoutePath.vendorApplication.path,
+          name: RoutePath.vendorApplication.name,
           builder: (context, state) => const VendorApplicationPage()),
       GoRoute(
-          path: RoutPath.reportIssue.path,
-          name: RoutPath.reportIssue.name,
+          path: RoutePath.reportIssue.path,
+          name: RoutePath.reportIssue.name,
           builder: (context, state) => const ReportIssuePage()),
       GoRoute(
-          path: RoutPath.information.path,
-          name: RoutPath.information.name,
+          path: RoutePath.information.path,
+          name: RoutePath.information.name,
           builder: (context, state) => const InformationPage()),
     ],
   );

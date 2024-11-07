@@ -1,4 +1,4 @@
-enum RoutPath {
+enum RoutePath {
   login(path: "/login"),
 
   search(path: "/search"),
@@ -32,6 +32,6 @@ enum RoutPath {
   information(path: "/information"),
   reportIssue(path: "/reportIssue");
 
-  const RoutPath({required this.path});
+  const RoutePath({required this.path});
   final String path;
 }
