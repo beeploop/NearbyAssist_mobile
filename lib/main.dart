@@ -3,6 +3,7 @@ import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/providers/inbox_provider.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
+import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:nearby_assist/routing/app_router.dart';
 import 'package:nearby_assist/services/logger.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => InboxProvider()),
         ChangeNotifierProvider(create: (context) => SavesProvider()),
         ChangeNotifierProvider(create: (context) => LocationProvider()),
+        ChangeNotifierProvider(create: (context) => ServicesProvider()),
       ],
       child: const App(),
     ),

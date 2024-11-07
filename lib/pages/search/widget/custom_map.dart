@@ -6,17 +6,14 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
+import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class CustomMap extends StatefulWidget {
-  const CustomMap({
-    super.key,
-    required this.coordinates,
-  });
-
-  final List<LatLng> coordinates;
+  const CustomMap({super.key});
 
   @override
   State<CustomMap> createState() => _CustomMapState();
@@ -42,6 +39,9 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final services = context.watch<ServicesProvider>().services;
+    _fitMarkers(services);
+
     return Stack(
       children: [
         FlutterMap(
@@ -65,17 +65,19 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                   color: Colors.red,
                   onTap: _centerMap,
                 ),
-                ...widget.coordinates.map(
-                  (coordinate) => _createMarker(
-                    point: coordinate,
+
+                // Display markers for the services
+                ...services.map((service) {
+                  return _createMarker(
+                    point: LatLng(service.latitude, service.longitude),
                     icon: CupertinoIcons.location_solid,
                     color: Colors.red,
                     onTap: () => context.pushNamed(
                       'vendor',
-                      queryParameters: {'serviceId': 'foobar'},
+                      queryParameters: {'serviceId': service.id},
                     ),
-                  ),
-                ),
+                  );
+                }),
               ],
             ),
           ],
@@ -133,5 +135,31 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       dest: LatLng(_location.latitude, _location.longitude),
       zoom: 16,
     );
+  }
+
+  void _fitMarkers(List<ServiceModel> services) {
+    final userPosition = LatLng(_location.latitude, _location.longitude);
+
+    final coordinates = services.map((service) {
+      return LatLng(service.latitude, service.longitude);
+    }).toList();
+    coordinates.add(userPosition);
+    final bounds = LatLngBounds.fromPoints(coordinates);
+
+    if (bounds.northEast == bounds.southWest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.animateTo(dest: userPosition, zoom: 16.0);
+      });
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.animatedFitCamera(
+        cameraFit: CameraFit.bounds(
+          bounds: bounds,
+          padding: const EdgeInsets.fromLTRB(40, 120, 40, 40),
+        ),
+      );
+    });
   }
 }

@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/providers/saves_provider.dart';
+import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 
-class ServiceActions extends StatelessWidget {
+class ServiceActions extends StatefulWidget {
   const ServiceActions({
     super.key,
     required this.serviceId,
@@ -13,6 +16,11 @@ class ServiceActions extends StatelessWidget {
   final String serviceId;
   final bool saved;
 
+  @override
+  State<ServiceActions> createState() => _ServiceActionsState();
+}
+
+class _ServiceActionsState extends State<ServiceActions> {
   @override
   Widget build(BuildContext context) {
     return IntrinsicHeight(
@@ -28,11 +36,13 @@ class ServiceActions extends StatelessWidget {
           const VerticalDivider(),
           Expanded(
             child: TextButton.icon(
-              onPressed: () => _save(context),
+              onPressed: widget.saved ? _unsave : _save,
               icon: Icon(
-                saved ? CupertinoIcons.bookmark_fill : CupertinoIcons.bookmark,
+                widget.saved
+                    ? CupertinoIcons.bookmark_fill
+                    : CupertinoIcons.bookmark,
               ),
-              label: Text(saved ? 'Saved' : 'Save'),
+              label: Text(widget.saved ? 'Saved' : 'Save'),
             ),
           ),
         ],
@@ -43,11 +53,21 @@ class ServiceActions extends StatelessWidget {
   void _viewMap(BuildContext context) {
     context.pushNamed(
       'route',
-      queryParameters: {'serviceId': serviceId},
+      queryParameters: {'serviceId': widget.serviceId},
     );
   }
 
-  void _save(BuildContext context) {
+  void _save() {
+    final service = context.read<ServicesProvider>().getById(widget.serviceId);
+    context.read<SavesProvider>().save(service);
+
     showCustomSnackBar(context, 'Saved service');
+  }
+
+  void _unsave() {
+    final service = context.read<ServicesProvider>().getById(widget.serviceId);
+    context.read<SavesProvider>().unsave(service);
+
+    showCustomSnackBar(context, 'Removed save');
   }
 }
