@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:nearby_assist/config/api_endpoint.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/providers/inbox_provider.dart';
@@ -16,6 +17,9 @@ final logger = ConsoleLogger();
 late ApiEndpoint endpoint;
 
 void main() async {
+  WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: binding);
+
   // Load environment variables
   await dotenv.load(fileName: '.env');
 
@@ -46,6 +50,12 @@ class App extends StatefulWidget {
 }
 
 class _App extends State<App> {
+  @override
+  void initState() {
+    super.initState();
+    FlutterNativeSplash.remove();
+  }
+
   @override
   Widget build(BuildContext context) {
     final authStatus = context.watch<AuthProvider>().status;

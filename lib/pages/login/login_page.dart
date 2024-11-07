@@ -38,11 +38,11 @@ class _LoginPageState extends State<LoginPage> {
                 width: 160,
                 child: Column(
                   children: [
-                    Image.asset('assets/images/logo.png'),
-                    const Text(
+                    Image.asset('assets/images/splash_icon_android_12.png'),
+                    Text(
                       "NearbyAssist",
                       style: TextStyle(
-                        color: Colors.green,
+                        color: Colors.green[800],
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
@@ -62,19 +62,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginButton() {
-    return TextButton.icon(
+    return OutlinedButton.icon(
       onPressed: _login,
-      style: ButtonStyle(
-        backgroundColor: WidgetStatePropertyAll(Colors.blue[500]),
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Colors.blue),
       ),
       icon: const Icon(
         Icons.facebook_outlined,
-        color: Colors.white,
+        color: Colors.blue,
       ),
       label: const Text(
         "Continue with Facebook",
         style: TextStyle(
-          color: Colors.white,
+          color: Colors.blue,
           fontSize: 16,
         ),
       ),
