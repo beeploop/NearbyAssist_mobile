@@ -25,7 +25,7 @@ final fakeUser = UserModel(
   id: '1',
   name: 'John Doe',
   email: 'johndoe@email.com',
-  imageUrl: 'https://via.placeholder.com/150',
+  imageUrl: 'assets/images/profile.png',
   isVerified: false,
 );
 

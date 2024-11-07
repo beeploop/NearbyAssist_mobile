@@ -4,7 +4,7 @@ enum RoutPath {
   search(path: "/search"),
   map(path: "map"),
 
-  vendor(path: "/vendor"),
+  viewService(path: "/viewService"),
 
   route(path: "/route"),
 

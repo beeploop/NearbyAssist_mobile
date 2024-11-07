@@ -73,7 +73,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                     icon: CupertinoIcons.location_solid,
                     color: Colors.red,
                     onTap: () => context.pushNamed(
-                      'vendor',
+                      'viewService',
                       queryParameters: {'serviceId': service.id},
                     ),
                   );

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class VendorInfoSection extends StatelessWidget {
   const VendorInfoSection({
     super.key,
-    required this.serviceId,
+    required this.name,
+    required this.rating,
     this.height,
   });
 
-  final String serviceId;
+  final String name;
+  final double rating;
   final double? height;
 
   @override
@@ -33,15 +35,15 @@ class VendorInfoSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Vendor Name',
-                  style: TextStyle(
+                Text(
+                  name,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
                 ),
                 Text(
-                  'Ratings',
+                  'rating: $rating',
                   style: TextStyle(fontSize: 14, color: Colors.grey[800]),
                 ),
               ],

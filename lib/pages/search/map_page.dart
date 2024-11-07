@@ -7,7 +7,6 @@ import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/providers/services_provider.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class MapPage extends StatefulWidget {
@@ -56,14 +55,5 @@ class _MapPageState extends State<MapPage> {
     ];
 
     context.read<ServicesProvider>().replaceAll(newServices);
-
-    showCustomSnackBar(
-      context,
-      "clicked search",
-      textColor: Colors.white,
-      backgroundColor: Colors.green[400],
-      closeIconColor: Colors.white,
-      duration: const Duration(seconds: 2),
-    );
   }
 }

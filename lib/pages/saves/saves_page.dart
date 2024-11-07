@@ -41,7 +41,7 @@ class _SavesPageState extends State<SavesPage> {
       itemCount: saves.length,
       itemBuilder: (context, index) => ListTile(
         onTap: () => context.pushNamed(
-          'vendor',
+          'viewService',
           queryParameters: {'serviceId': saves[index].id},
         ),
         title: Text(saves[index].description),

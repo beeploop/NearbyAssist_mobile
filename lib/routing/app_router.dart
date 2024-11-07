@@ -18,6 +18,7 @@ import 'package:nearby_assist/pages/login/login_page.dart';
 import 'package:nearby_assist/pages/search/map_page.dart';
 import 'package:nearby_assist/pages/search/route_page.dart';
 import 'package:nearby_assist/pages/search/search_page.dart';
+import 'package:nearby_assist/pages/search/service_view_page.dart';
 import 'package:nearby_assist/pages/test_page.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/routing/route_name.dart';
@@ -83,11 +84,11 @@ GoRouter generateRoutes(AuthStatus status) {
         ],
       ),
       GoRoute(
-          path: RoutPath.vendor.path,
-          name: RoutPath.vendor.name,
+          path: RoutPath.viewService.path,
+          name: RoutPath.viewService.name,
           builder: (context, state) {
             final serviceId = state.uri.queryParameters['serviceId']!;
-            return ServiceDetailPage(serviceId: serviceId);
+            return ServiceViewPage(serviceId: serviceId);
           }),
       GoRoute(
           path: RoutPath.route.path,
@@ -135,8 +136,7 @@ GoRouter generateRoutes(AuthStatus status) {
                 name: RoutPath.detail.name,
                 builder: (context, state) {
                   final serviceId = state.uri.queryParameters['serviceId']!;
-                  return ServiceDetailPage(
-                      serviceId: serviceId, edittable: true);
+                  return ServiceDetailPage(serviceId: serviceId);
                 }),
             GoRoute(
                 path: RoutPath.editService.path,
