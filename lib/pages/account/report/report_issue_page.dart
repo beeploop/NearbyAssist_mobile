@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/pages/account/report/widget/input_field.dart';
+import 'package:nearby_assist/pages/account/widget/input_field.dart';
 
 class ReportIssuePage extends StatefulWidget {
   const ReportIssuePage({super.key});

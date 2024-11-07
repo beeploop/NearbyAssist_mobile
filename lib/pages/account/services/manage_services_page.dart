@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_item.dart';
 import 'package:nearby_assist/providers/managed_services_provider.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +35,6 @@ class _ManageServicesState extends State<ManageServices> {
                       itemCount: services.length,
                       itemBuilder: (context, index) {
                         final hasPadding = index == (services.length - 1);
-                        logger.log('--- ${services[index].id}');
 
                         return ServiceItem(
                           serviceId: services[index].id,
