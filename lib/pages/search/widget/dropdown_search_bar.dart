@@ -3,11 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/providers/location_provider.dart';
-import 'package:nearby_assist/providers/search_provider.dart';
-import 'package:nearby_assist/services/search_service.dart';
+import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
-import 'package:provider/provider.dart';
 
 class DropdownSearchBar extends StatefulWidget {
   const DropdownSearchBar({
@@ -22,11 +19,10 @@ class DropdownSearchBar extends StatefulWidget {
 }
 
 class _DropdownSearchBarState extends State<DropdownSearchBar> {
+  final _controller = DropdownSearchBarController();
+
   @override
   Widget build(BuildContext context) {
-    final locationProvider = context.watch<LocationProvider>();
-    final searchProvider = context.watch<SearchProvider>();
-
     return Row(
       children: [
         Expanded(
@@ -56,16 +52,13 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
             ),
             autoValidateMode: AutovalidateMode.always,
             items: (filter, props) => serviceTags,
-            selectedItems: searchProvider.tags,
-            onChanged: (items) => searchProvider.setTags(items),
+            selectedItems: _controller.selectedTags,
+            onChanged: (items) => _controller.replaceAll(items),
           ),
         ),
         FilledButton.icon(
-          onPressed: () => _handleSearch(
-            locationProvider,
-            searchProvider,
-          ),
-          icon: Provider.of<SearchProvider>(context).isSearching
+          onPressed: _handleSearch,
+          icon: _controller.isSearching
               ? const SizedBox(
                   width: 18,
                   height: 18,
@@ -88,50 +81,8 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
     );
   }
 
-  Future<void> _handleSearch(
-    LocationProvider location,
-    SearchProvider searchProvider,
-  ) async {
-    if (searchProvider.tags.isEmpty) {
-      showCustomSnackBar(
-        context,
-        'select at least 1 service tag',
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        closeIconColor: Colors.white,
-      );
-      return;
-    }
-
-    if (searchProvider.isSearching) {
-      showCustomSnackBar(context, 'still searching');
-      return;
-    }
-
-    searchProvider.searching = true;
-
-    try {
-      final position = await location.getLocation();
-
-      final service = SearchService();
-      final result = await service.findServices(
-        userPos: position,
-        tags: searchProvider.tags,
-      );
-
-      searchProvider.replaceResults(result);
-
-      widget.onSearchFinished();
-    } catch (error) {
-      if (error == LocationServiceDisabledException) {
-        _showLocationServiceDisabledDialog();
-        return;
-      }
-
-      _showErrorSnackbar(error.toString());
-    } finally {
-      searchProvider.searching = false;
-    }
+  Future<void> _handleSearch() async {
+    throw UnimplementedError();
   }
 
   void _showLocationServiceDisabledDialog() {

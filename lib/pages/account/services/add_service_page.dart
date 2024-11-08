@@ -1,21 +1,14 @@
-import 'dart:math';
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/services/utils/location_editing_controller.dart';
 import 'package:nearby_assist/pages/account/services/widget/location_picker.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
-import 'package:nearby_assist/providers/managed_services_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddServicePage extends StatefulWidget {
@@ -52,9 +45,6 @@ class _AddServicePageState extends State<AddServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<AuthProvider>().user;
-    final manageProvider = context.read<ManagedServicesProvider>();
-
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -126,7 +116,7 @@ class _AddServicePageState extends State<AddServicePage> {
                 style: const ButtonStyle(
                   minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
                 ),
-                onPressed: () => _save(user, manageProvider),
+                onPressed: _save,
                 child: const Text('Save'),
               ),
             ],
@@ -155,30 +145,8 @@ class _AddServicePageState extends State<AddServicePage> {
     );
   }
 
-  void _save(UserModel user, ManagedServicesProvider provider) {
-    final title = _titleController.text;
-    final description = _descriptionController.text;
-    final price = _priceController.text;
-    final tags = _tagsController.selectedTags;
-    final location = _locationController.location;
-
-    logger.log('Title: $title');
-    logger.log('Description: $description');
-    logger.log('Price: $price');
-    logger.log('Location: $location');
-    logger.log('Tags: ${tags.toString()}');
-
-    final service = ServiceModel(
-      id: Random().nextInt(1000).toString(),
-      vendor: user.id,
-      description: description,
-      latitude: location.latitude,
-      longitude: location.longitude,
-    );
-
-    provider.add(service);
-
-    context.pop();
+  void _save() {
+    throw UnimplementedError();
   }
 
   void _handleLocationPicked() {

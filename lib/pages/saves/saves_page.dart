@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
-import 'package:nearby_assist/providers/saves_provider.dart';
-import 'package:provider/provider.dart';
 
 class SavesPage extends StatefulWidget {
   const SavesPage({super.key});
@@ -13,10 +11,10 @@ class SavesPage extends StatefulWidget {
 }
 
 class _SavesPageState extends State<SavesPage> {
+  final List<ServiceModel> _saves = [];
+
   @override
   Widget build(BuildContext context) {
-    final saves = context.watch<SavesProvider>().saves;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -31,7 +29,7 @@ class _SavesPageState extends State<SavesPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: saves.isEmpty ? _buildEmptySaves() : _buildSaves(saves),
+        child: _saves.isEmpty ? _buildEmptySaves() : _buildSaves(_saves),
       ),
     );
   }

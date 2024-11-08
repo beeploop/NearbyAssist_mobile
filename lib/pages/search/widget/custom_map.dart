@@ -7,10 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
-import 'package:nearby_assist/providers/location_provider.dart';
-import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
-import 'package:provider/provider.dart';
 
 class CustomMap extends StatefulWidget {
   const CustomMap({super.key});
@@ -21,25 +18,11 @@ class CustomMap extends StatefulWidget {
 
 class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
   late final _controller = AnimatedMapController(vsync: this);
-  LatLng _location = defaultLocation;
-
-  Future<void> _getLocation() async {
-    final position = await context.read<LocationProvider>().getLocation();
-    setState(() {
-      _location = LatLng(position.latitude, position.longitude);
-      _centerMap();
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getLocation();
-  }
+  final LatLng _location = defaultLocation;
 
   @override
   Widget build(BuildContext context) {
-    final services = context.watch<SearchProvider>().results;
+    final services = testLocations;
     _fitMarkers(services);
 
     return Stack(

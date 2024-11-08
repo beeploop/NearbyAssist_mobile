@@ -83,7 +83,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
-      final user = await AuthService().login();
+      final auth = AuthService();
+      final user = await auth.login(fakeUser);
       _onLoginSuccess(user);
     } catch (error) {
       _showErrorModal(error.toString());

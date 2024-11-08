@@ -1,11 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/providers/saves_provider.dart';
-import 'package:nearby_assist/providers/search_provider.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
-import 'package:provider/provider.dart';
 
 class ServiceActions extends StatefulWidget {
   const ServiceActions({
@@ -59,30 +54,10 @@ class _ServiceActionsState extends State<ServiceActions> {
   }
 
   void _save() {
-    final result = context.read<SearchProvider>().getById(widget.serviceId);
-    final service = ServiceModel(
-      id: result.id,
-      description: '',
-      latitude: result.latitude,
-      longitude: result.longitude,
-      vendor: result.vendor,
-    );
-    context.read<SavesProvider>().save(service);
-
-    showCustomSnackBar(context, 'Saved service');
+    throw UnimplementedError();
   }
 
   void _unsave() {
-    final result = context.read<SearchProvider>().getById(widget.serviceId);
-    final service = ServiceModel(
-      id: result.id,
-      description: '',
-      latitude: result.latitude,
-      longitude: result.longitude,
-      vendor: result.vendor,
-    );
-    context.read<SavesProvider>().unsave(service);
-
-    showCustomSnackBar(context, 'Removed save');
+    throw UnimplementedError();
   }
 }

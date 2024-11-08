@@ -1,16 +1,15 @@
-import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 
 class AuthService {
-  Future<UserModel> login() async {
+  Future<UserModel> login(UserModel user) async {
     try {
       final api = ApiService.unauthenticated();
       final response = await api.dio.post(
         endpoint.login,
-        data: fakeUser.toJson(),
+        data: user.toJson(),
       );
 
       final accessToken = response.data['accessToken'];

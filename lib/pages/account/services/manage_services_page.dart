@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_item.dart';
-import 'package:nearby_assist/providers/managed_services_provider.dart';
-import 'package:provider/provider.dart';
 
 class ManageServices extends StatefulWidget {
   const ManageServices({super.key});
@@ -12,10 +11,10 @@ class ManageServices extends StatefulWidget {
 }
 
 class _ManageServicesState extends State<ManageServices> {
+  final List<ServiceModel> _services = [];
+
   @override
   Widget build(BuildContext context) {
-    final services = context.watch<ManagedServicesProvider>().services;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -27,18 +26,18 @@ class _ManageServicesState extends State<ManageServices> {
       body: Center(
         child: Stack(
           children: [
-            services.isEmpty
+            _services.isEmpty
                 ? const Center(child: Text('You have no services yet'))
                 : RefreshIndicator(
                     onRefresh: () => Future.delayed(const Duration(seconds: 1)),
                     child: ListView.builder(
-                      itemCount: services.length,
+                      itemCount: _services.length,
                       itemBuilder: (context, index) {
-                        final hasPadding = index == (services.length - 1);
+                        final hasPadding = index == (_services.length - 1);
 
                         return ServiceItem(
-                          serviceId: services[index].id,
-                          description: services[index].description,
+                          serviceId: _services[index].id,
+                          description: _services[index].description,
                           paddingBottom: hasPadding,
                         );
                       },
