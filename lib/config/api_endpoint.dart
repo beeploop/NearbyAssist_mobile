@@ -21,4 +21,6 @@ class ApiEndpoint {
   String get refresh => '$_baseUrl/api/v1/user/refresh';
 
   String get verifyAccount => '$_baseUrl/api/v1/verification/identity';
+
+  String get search => '$_baseUrl/api/v1/services/search';
 }

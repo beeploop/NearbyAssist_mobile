@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/interceptors/auth_interceptor.dart';
+import 'package:nearby_assist/interceptors/query_param_encoding_interceptor.dart';
 import 'package:nearby_assist/main.dart';
 
 class ApiService {
@@ -23,10 +24,12 @@ class ApiService {
 
   ApiService._unauthenticated() {
     dio = Dio(_options);
+    dio.interceptors.add(QueryParamEncodingInterceptor());
   }
 
   ApiService._authenticated() {
     dio = Dio(_options);
+    dio.interceptors.add(QueryParamEncodingInterceptor());
     dio.interceptors.add(AuthInterceptor());
   }
 }

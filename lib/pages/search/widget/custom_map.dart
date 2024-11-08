@@ -6,7 +6,7 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/search_result_model.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
 import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -59,17 +59,27 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
             ),
             MarkerLayer(
               markers: [
-                _createMarker(
+                Marker(
+                  height: 80,
+                  width: 60,
+                  rotate: true,
+                  alignment: Alignment.topCenter,
                   point: LatLng(_location.latitude, _location.longitude),
-                  icon: CupertinoIcons.person_circle_fill,
-                  color: Colors.red,
-                  onTap: _centerMap,
+                  child: GestureDetector(
+                    onTap: _centerMap,
+                    child: const Icon(
+                      CupertinoIcons.person_circle_fill,
+                      color: Colors.red,
+                      size: 40,
+                    ),
+                  ),
                 ),
 
                 // Display markers for the services
                 ...services.map((service) {
                   return _createMarker(
                     point: LatLng(service.latitude, service.longitude),
+                    rank: service.rank,
                     icon: CupertinoIcons.location_solid,
                     color: Colors.red,
                     onTap: () => context.pushNamed(
@@ -86,7 +96,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
           bottom: 20,
           right: 20,
           child: FloatingActionButton(
-            onPressed: _centerMap,
+            onPressed: () => _fitMarkers(services),
             backgroundColor: Colors.green,
             child: const Icon(
               CupertinoIcons.map_pin_ellipse,
@@ -104,17 +114,36 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   Marker _createMarker({
     required LatLng point,
+    required int rank,
     required IconData icon,
     required Color color,
     required void Function() onTap,
   }) {
     return Marker(
+      height: 80,
+      width: 60,
       rotate: true,
       alignment: Alignment.topCenter,
       point: point,
       child: GestureDetector(
         onTap: onTap,
-        child: Icon(icon, color: color, size: 40),
+        child: Column(
+          children: [
+            Container(
+              color: Colors.red,
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              child: Text(
+                '$rank',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Icon(icon, color: color, size: 40),
+          ],
+        ),
       ),
     );
   }
@@ -137,7 +166,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
-  void _fitMarkers(List<ServiceModel> services) {
+  void _fitMarkers(List<SearchResultModel> services) {
     final userPosition = LatLng(_location.latitude, _location.longitude);
 
     final coordinates = services.map((service) {

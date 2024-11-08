@@ -1,28 +1,23 @@
-import 'dart:math';
 import 'package:flutter/foundation.dart';
-import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/search_result_model.dart';
 
 class ServicesProvider extends ChangeNotifier {
-  final List<ServiceModel> _services = [
-    testLocations[Random().nextInt(testLocations.length - 1)],
-    testLocations[Random().nextInt(testLocations.length - 1)],
-  ];
+  final List<SearchResultModel> _services = [];
 
-  List<ServiceModel> get services => _services;
+  List<SearchResultModel> get services => _services;
 
-  void add(ServiceModel service) {
+  void add(SearchResultModel service) {
     _services.add(service);
     notifyListeners();
   }
 
-  void replaceAll(List<ServiceModel> services) {
+  void replaceAll(List<SearchResultModel> services) {
     _services.clear();
     _services.addAll(services);
     notifyListeners();
   }
 
-  ServiceModel getById(String id) {
+  SearchResultModel getById(String id) {
     return _services.firstWhere((service) => service.id == id);
   }
 }

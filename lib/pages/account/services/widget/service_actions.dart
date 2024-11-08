@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -58,14 +59,28 @@ class _ServiceActionsState extends State<ServiceActions> {
   }
 
   void _save() {
-    final service = context.read<ServicesProvider>().getById(widget.serviceId);
+    final result = context.read<ServicesProvider>().getById(widget.serviceId);
+    final service = ServiceModel(
+      id: result.id,
+      description: '',
+      latitude: result.latitude,
+      longitude: result.longitude,
+      vendor: result.vendor,
+    );
     context.read<SavesProvider>().save(service);
 
     showCustomSnackBar(context, 'Saved service');
   }
 
   void _unsave() {
-    final service = context.read<ServicesProvider>().getById(widget.serviceId);
+    final result = context.read<ServicesProvider>().getById(widget.serviceId);
+    final service = ServiceModel(
+      id: result.id,
+      description: '',
+      latitude: result.latitude,
+      longitude: result.longitude,
+      vendor: result.vendor,
+    );
     context.read<SavesProvider>().unsave(service);
 
     showCustomSnackBar(context, 'Removed save');

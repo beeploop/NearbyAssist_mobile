@@ -1,13 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
-import 'package:nearby_assist/providers/services_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -49,11 +44,9 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _handleSearch() {
-    final List<ServiceModel> newServices = [
-      testLocations[Random().nextInt(testLocations.length - 1)],
-      testLocations[Random().nextInt(testLocations.length - 1)],
-    ];
-
-    context.read<ServicesProvider>().replaceAll(newServices);
+    showCustomSnackBar(
+      context,
+      'showing new results',
+    );
   }
 }

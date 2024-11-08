@@ -5,6 +5,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
+import 'package:nearby_assist/providers/services_provider.dart';
+import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +27,9 @@ class DropdownSearchBar extends StatefulWidget {
 class _DropdownSearchBarState extends State<DropdownSearchBar> {
   @override
   Widget build(BuildContext context) {
+    final locationProvider = context.read<LocationProvider>();
+    final serviceProvider = context.read<ServicesProvider>();
+
     return Row(
       children: [
         Expanded(
@@ -59,7 +64,7 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
           ),
         ),
         FilledButton.icon(
-          onPressed: _handleSearch,
+          onPressed: () => _handleSearch(locationProvider, serviceProvider),
           icon: widget.controller.isSearching
               ? const SizedBox(
                   width: 18,
@@ -83,7 +88,10 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
     );
   }
 
-  Future<void> _handleSearch() async {
+  Future<void> _handleSearch(
+    LocationProvider location,
+    ServicesProvider services,
+  ) async {
     if (widget.controller.selectedTags.isEmpty) {
       showCustomSnackBar(
         context,
@@ -105,7 +113,15 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
     });
 
     try {
-      await context.read<LocationProvider>().getLocation();
+      final position = await location.getLocation();
+
+      final service = SearchService();
+      final result = await service.findServices(
+        userPos: position,
+        tags: widget.controller.selectedTags,
+      );
+
+      services.replaceAll(result);
 
       widget.onSearchFinished();
     } catch (error) {
