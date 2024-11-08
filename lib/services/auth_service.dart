@@ -17,8 +17,8 @@ class AuthService {
       final refreshToken = response.data['refreshToken'];
 
       final store = SecureStorage();
-      await store.store(TokenType.accessToken, accessToken);
-      await store.store(TokenType.refreshToken, refreshToken);
+      await store.saveToken(TokenType.accessToken, accessToken);
+      await store.saveToken(TokenType.refreshToken, refreshToken);
 
       return UserModel.fromJson(response.data['user']);
     } catch (error) {
@@ -30,7 +30,7 @@ class AuthService {
   Future<void> logout() async {
     try {
       final store = SecureStorage();
-      final refreshToken = await store.get(TokenType.refreshToken);
+      final refreshToken = await store.getToken(TokenType.refreshToken);
       if (refreshToken == null) {
         throw Exception('NoToken');
       }

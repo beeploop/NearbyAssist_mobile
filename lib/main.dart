@@ -53,6 +53,11 @@ class _App extends State<App> {
   @override
   void initState() {
     super.initState();
+    initialization();
+  }
+
+  Future<void> initialization() async {
+    await context.read<AuthProvider>().tryLoadUser();
     FlutterNativeSplash.remove();
   }
 

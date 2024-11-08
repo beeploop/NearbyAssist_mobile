@@ -30,4 +30,14 @@ class UserModel {
       'image': imageUrl,
     };
   }
+
+  Map<String, dynamic> toJsonAll() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'imageUrl': imageUrl,
+      'verified': isVerified,
+    };
+  }
 }

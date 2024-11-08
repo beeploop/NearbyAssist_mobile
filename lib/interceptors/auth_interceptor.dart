@@ -10,7 +10,7 @@ class AuthInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final store = SecureStorage();
-    final accessToken = await store.get(TokenType.accessToken);
+    final accessToken = await store.getToken(TokenType.accessToken);
     if (accessToken == null) {
       handler.reject(DioException(requestOptions: options));
     }
@@ -34,7 +34,7 @@ class AuthInterceptor extends Interceptor {
     try {
       final store = SecureStorage();
 
-      final refreshToken = await store.get(TokenType.refreshToken);
+      final refreshToken = await store.getToken(TokenType.refreshToken);
       if (refreshToken == null) {
         throw Exception('NoToken');
       }
@@ -45,7 +45,8 @@ class AuthInterceptor extends Interceptor {
         data: {'refreshToken': refreshToken},
       );
 
-      await store.store(TokenType.accessToken, response.data['accessToken']);
+      await store.saveToken(
+          TokenType.accessToken, response.data['accessToken']);
     } catch (error) {
       logger.log('Error refreshing token ${error.toString()}');
       rethrow;
@@ -54,7 +55,7 @@ class AuthInterceptor extends Interceptor {
 
   Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
     final store = SecureStorage();
-    final accessToken = await store.get(TokenType.accessToken);
+    final accessToken = await store.getToken(TokenType.accessToken);
     if (accessToken == null) {
       throw Exception('NoToken');
     }
