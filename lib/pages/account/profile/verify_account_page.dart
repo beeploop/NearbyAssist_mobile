@@ -102,16 +102,16 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               const SizedBox(height: 20),
               const Divider(),
               const SizedBox(height: 20),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.6,
-                height: MediaQuery.of(context).size.width * 0.6,
-                child: FillableImageContainer(
-                  controller: _faceController,
-                  labelText: 'Face',
-                  hintText: 'Tap to open camera',
-                  icon: CupertinoIcons.camera_viewfinder,
-                  source: ImageSource.camera,
-                ),
+              Row(
+                children: [
+                  FillableImageContainer(
+                    controller: _faceController,
+                    labelText: 'Face',
+                    hintText: 'Tap to open camera',
+                    icon: CupertinoIcons.camera_viewfinder,
+                    source: ImageSource.camera,
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               FilledButton(
