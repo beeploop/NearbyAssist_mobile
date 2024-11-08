@@ -1,12 +1,14 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nearby_assist/config/valid_id.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/services/verify_account_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +24,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   final _addressController = TextEditingController();
   final _idNumberController = TextEditingController();
   final _frontIdController = FillableImageContainerController();
+  final _faceController = FillableImageContainerController();
   final _backIdController = FillableImageContainerController();
   ValidID _selectedID = ValidID.none;
 
@@ -85,16 +88,30 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
                 children: [
                   FillableImageContainer(
                     controller: _frontIdController,
-                    labelText: 'Front Side',
+                    labelText: 'ID Front Side',
                     icon: CupertinoIcons.photo,
                   ),
                   const SizedBox(width: 20),
                   FillableImageContainer(
                     controller: _backIdController,
-                    labelText: 'Back Side',
+                    labelText: 'ID Back Side',
                     icon: CupertinoIcons.photo_fill,
                   ),
                 ],
+              ),
+              const SizedBox(height: 20),
+              const Divider(),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.6,
+                height: MediaQuery.of(context).size.width * 0.6,
+                child: FillableImageContainer(
+                  controller: _faceController,
+                  labelText: 'Face',
+                  hintText: 'Tap to open camera',
+                  icon: CupertinoIcons.camera_viewfinder,
+                  source: ImageSource.camera,
+                ),
               ),
               const SizedBox(height: 20),
               FilledButton(
@@ -111,30 +128,54 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     );
   }
 
-  void _submit() {
+  void _submit() async {
     final name = _nameController.text;
     final address = _addressController.text;
     final idType = _selectedID;
     final idNumber = _idNumberController.text;
     final frontId = _frontIdController.image;
     final backId = _backIdController.image;
+    final face = _faceController.image;
 
-    if (idType == ValidID.none) {
-      showCustomSnackBar(
-        context,
-        "'none' is not a supported ID",
-        duration: const Duration(seconds: 5),
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        closeIconColor: Colors.white,
+    try {
+      final service = VerifyAccountService();
+      await service.verify(
+        name: name,
+        address: address,
+        idType: idType,
+        idNumber: idNumber,
+        frontId: frontId,
+        backId: backId,
+        face: face,
       );
-    }
 
-    logger.log('Name: $name');
-    logger.log('Address: $address');
-    logger.log('ID Type: $idType');
-    logger.log('ID Number: $idNumber');
-    logger.log('Front ID: $frontId');
-    logger.log('Back ID: $backId');
+      _showSuccessModal();
+    } catch (error) {
+      _showErrorModal(error.toString());
+    }
+  }
+
+  void _showSuccessModal() {
+    showCustomSnackBar(
+      context,
+      'Request submitted. We are reviewing your request and will get back to you',
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+    );
+
+    context.pop();
+  }
+
+  void _showErrorModal(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+    );
   }
 }

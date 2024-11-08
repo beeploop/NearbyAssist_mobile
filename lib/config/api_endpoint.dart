@@ -19,4 +19,6 @@ class ApiEndpoint {
   String get login => '$_baseUrl/api/v1/user/login';
   String get logout => '$_baseUrl/api/v1/user/logout';
   String get refresh => '$_baseUrl/api/v1/user/refresh';
+
+  String get verifyAccount => '$_baseUrl/api/v1/verification/identity';
 }

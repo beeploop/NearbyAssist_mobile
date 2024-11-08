@@ -13,15 +13,19 @@ class FillableImageContainer extends StatefulWidget {
     this.iconColor,
     this.decoration,
     this.overlay,
+    this.hintText = 'Tap to upload',
+    this.source = ImageSource.gallery,
   });
 
   final FillableImageContainerController controller;
   final String labelText;
+  final String hintText;
   final Color? labelColor;
   final IconData icon;
   final Color? iconColor;
   final Decoration? decoration;
   final WidgetStateProperty<Color>? overlay;
+  final ImageSource source;
 
   @override
   State<FillableImageContainer> createState() => _FillableImageContainerState();
@@ -37,7 +41,9 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
               WidgetStatePropertyAll(
                 Colors.green[200],
               ),
-          onTap: _pickImage,
+          onTap: widget.source == ImageSource.gallery
+              ? _pickImageFromGallery
+              : _pickImageFromCamera,
           child: Ink(
             decoration: widget.decoration ??
                 BoxDecoration(
@@ -81,7 +87,7 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
         ),
         const SizedBox(height: 10),
         Text(
-          'Tap to upload',
+          widget.hintText,
           style: TextStyle(
             fontSize: 12,
             color: widget.labelColor ?? Colors.green[700],
@@ -91,8 +97,23 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
     );
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImageFromGallery() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      if (mounted) {
+        showCustomSnackBar(context, 'No image selected');
+      }
+      return;
+    }
+
+    final imageBytes = await image.readAsBytes();
+    setState(() {
+      widget.controller.setImage(imageBytes);
+    });
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.camera);
     if (image == null) {
       if (mounted) {
         showCustomSnackBar(context, 'No image selected');
