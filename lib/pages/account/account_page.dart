@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -48,7 +50,9 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _launchUrl(BuildContext context, Uri url) async {
-    throw UnimplementedError();
+    if (!await launchUrl(url)) {
+      _showErrorModal('Could not launch $url');
+    }
   }
 
   Future<void> _logout() async {
@@ -119,13 +123,13 @@ class _AccountPageState extends State<AccountPage> {
               title: "Privacy Policy",
               icon: CupertinoIcons.shield,
               onPress: () {
-                _launchUrl(context, Uri.parse(""));
+                _launchUrl(context, Uri.parse(endpoint.privacyPolicy));
               }),
           AccountTileWidget(
               title: "Terms and Conditions",
               icon: CupertinoIcons.doc_plaintext,
               onPress: () {
-                _launchUrl(context, Uri.parse(""));
+                _launchUrl(context, Uri.parse(endpoint.termsAndConditions));
               }),
         ],
       ),

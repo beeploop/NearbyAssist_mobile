@@ -20,6 +20,9 @@ class ApiEndpoint {
   String get logout => '$_baseUrl/api/v1/user/logout';
   String get refresh => '$_baseUrl/api/v1/user/refresh';
 
+  String get privacyPolicy => '$_baseUrl/privacy_policy';
+  String get termsAndConditions => '$_baseUrl/terms_and_conditions';
+
   String get verifyAccount => '$_baseUrl/api/v1/verification/identity';
 
   String get search => '$_baseUrl/api/v1/services/search';
