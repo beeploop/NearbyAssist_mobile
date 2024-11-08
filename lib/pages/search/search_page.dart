@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
-import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
 
-class SearchPage extends StatefulWidget {
+class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
-
-  @override
-  State<SearchPage> createState() => _SearchPage();
-}
-
-class _SearchPage extends State<SearchPage> {
-  final _searchController = DropdownSearchBarController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +20,6 @@ class _SearchPage extends State<SearchPage> {
         child: Column(
           children: [
             DropdownSearchBar(
-              controller: _searchController,
               onSearchFinished: () => context.pushNamed('map'),
             ),
             Expanded(

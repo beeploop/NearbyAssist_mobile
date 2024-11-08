@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
-import 'package:nearby_assist/providers/services_provider.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +59,7 @@ class _ServiceActionsState extends State<ServiceActions> {
   }
 
   void _save() {
-    final result = context.read<ServicesProvider>().getById(widget.serviceId);
+    final result = context.read<SearchProvider>().getById(widget.serviceId);
     final service = ServiceModel(
       id: result.id,
       description: '',
@@ -73,7 +73,7 @@ class _ServiceActionsState extends State<ServiceActions> {
   }
 
   void _unsave() {
-    final result = context.read<ServicesProvider>().getById(widget.serviceId);
+    final result = context.read<SearchProvider>().getById(widget.serviceId);
     final service = ServiceModel(
       id: result.id,
       description: '',

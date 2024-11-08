@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
-import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
-class MapPage extends StatefulWidget {
+class MapPage extends StatelessWidget {
   const MapPage({super.key});
-
-  @override
-  State<MapPage> createState() => _MapPageState();
-}
-
-class _MapPageState extends State<MapPage> {
-  final _searchController = DropdownSearchBarController();
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +24,7 @@ class _MapPageState extends State<MapPage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: DropdownSearchBar(
-                  controller: _searchController,
-                  onSearchFinished: _handleSearch,
+                  onSearchFinished: () => _handleSearch(context),
                 ),
               ),
             ),
@@ -43,7 +34,7 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  void _handleSearch() {
+  void _handleSearch(BuildContext context) {
     showCustomSnackBar(
       context,
       'showing new results',

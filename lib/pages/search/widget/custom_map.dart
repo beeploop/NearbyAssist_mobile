@@ -8,7 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
-import 'package:nearby_assist/providers/services_provider.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +39,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final services = context.watch<ServicesProvider>().services;
+    final services = context.watch<SearchProvider>().results;
     _fitMarkers(services);
 
     return Stack(

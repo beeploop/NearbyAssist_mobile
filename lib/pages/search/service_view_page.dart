@@ -5,7 +5,6 @@ import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
-import 'package:nearby_assist/providers/services_provider.dart';
 import 'package:provider/provider.dart';
 
 class ServiceViewPage extends StatefulWidget {
@@ -23,9 +22,6 @@ class ServiceViewPage extends StatefulWidget {
 class _ServiceViewPageState extends State<ServiceViewPage> {
   @override
   Widget build(BuildContext context) {
-    final vendorId =
-        context.watch<ServicesProvider>().getById(widget.serviceId).vendor;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -53,7 +49,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 const DetailTabSection(),
               ],
             ),
-            FloatingCTA(recipient: vendorId, recipientId: vendorId),
+            const FloatingCTA(recipient: '', recipientId: ''),
           ],
         ),
       ),

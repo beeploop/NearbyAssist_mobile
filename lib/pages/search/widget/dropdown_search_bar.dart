@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/providers/location_provider.dart';
-import 'package:nearby_assist/providers/services_provider.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/services/search_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -14,11 +13,9 @@ class DropdownSearchBar extends StatefulWidget {
   const DropdownSearchBar({
     super.key,
     required this.onSearchFinished,
-    required this.controller,
   });
 
   final void Function() onSearchFinished;
-  final DropdownSearchBarController controller;
 
   @override
   State<DropdownSearchBar> createState() => _DropdownSearchBarState();
@@ -27,8 +24,8 @@ class DropdownSearchBar extends StatefulWidget {
 class _DropdownSearchBarState extends State<DropdownSearchBar> {
   @override
   Widget build(BuildContext context) {
-    final locationProvider = context.read<LocationProvider>();
-    final serviceProvider = context.read<ServicesProvider>();
+    final locationProvider = context.watch<LocationProvider>();
+    final searchProvider = context.watch<SearchProvider>();
 
     return Row(
       children: [
@@ -59,13 +56,16 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
             ),
             autoValidateMode: AutovalidateMode.always,
             items: (filter, props) => serviceTags,
-            selectedItems: widget.controller.selectedTags,
-            onChanged: (items) => widget.controller.replaceAll(items),
+            selectedItems: searchProvider.tags,
+            onChanged: (items) => searchProvider.setTags(items),
           ),
         ),
         FilledButton.icon(
-          onPressed: () => _handleSearch(locationProvider, serviceProvider),
-          icon: widget.controller.isSearching
+          onPressed: () => _handleSearch(
+            locationProvider,
+            searchProvider,
+          ),
+          icon: Provider.of<SearchProvider>(context).isSearching
               ? const SizedBox(
                   width: 18,
                   height: 18,
@@ -90,9 +90,9 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
 
   Future<void> _handleSearch(
     LocationProvider location,
-    ServicesProvider services,
+    SearchProvider searchProvider,
   ) async {
-    if (widget.controller.selectedTags.isEmpty) {
+    if (searchProvider.tags.isEmpty) {
       showCustomSnackBar(
         context,
         'select at least 1 service tag',
@@ -103,14 +103,12 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
       return;
     }
 
-    if (widget.controller.isSearching) {
+    if (searchProvider.isSearching) {
       showCustomSnackBar(context, 'still searching');
       return;
     }
 
-    setState(() {
-      widget.controller.toggleSearching();
-    });
+    searchProvider.searching = true;
 
     try {
       final position = await location.getLocation();
@@ -118,10 +116,10 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
       final service = SearchService();
       final result = await service.findServices(
         userPos: position,
-        tags: widget.controller.selectedTags,
+        tags: searchProvider.tags,
       );
 
-      services.replaceAll(result);
+      searchProvider.replaceResults(result);
 
       widget.onSearchFinished();
     } catch (error) {
@@ -132,9 +130,7 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
 
       _showErrorSnackbar(error.toString());
     } finally {
-      setState(() {
-        widget.controller.toggleSearching();
-      });
+      searchProvider.searching = false;
     }
   }
 
