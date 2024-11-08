@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
 
 class TesterSettingsModal extends StatelessWidget {
   const TesterSettingsModal({super.key});
@@ -11,6 +12,7 @@ class TesterSettingsModal extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _disclaimer(),
+          Text('API Endpoint: ${endpoint.baseUrl}'),
         ],
       ),
     );
