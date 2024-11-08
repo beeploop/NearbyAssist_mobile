@@ -12,7 +12,7 @@ class AuthProvider extends ChangeNotifier {
   AuthStatus get status =>
       _user == null ? AuthStatus.unauthenticated : AuthStatus.authenticated;
 
-  void login(UserModel user) async {
+  Future<void> login(UserModel user) async {
     _user = user;
 
     final store = SecureStorage();

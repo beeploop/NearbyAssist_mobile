@@ -2,10 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
+import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -21,12 +24,16 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(),
       body: ListView(
         children: [
-          AccountTileWidget(
-            title: "Sync Account",
-            subtitle: "Update user information to latest values",
-            icon: CupertinoIcons.arrow_2_circlepath,
-            endIcon: false,
-            onPress: _updateInfo,
+          Consumer<AuthProvider>(
+            builder: (context, auth, child) {
+              return AccountTileWidget(
+                title: "Sync Account",
+                subtitle: "Update user information to latest values",
+                icon: CupertinoIcons.arrow_2_circlepath,
+                endIcon: false,
+                onPress: () => _updateInfo(auth),
+              );
+            },
           ),
           AccountTileWidget(
             title: "Update Tags",
@@ -72,13 +79,18 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<void> _updateInfo() async {
-    showCustomSnackBar(
-      context,
-      "This feature is under development",
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.yellow[300],
-    );
+  Future<void> _updateInfo(AuthProvider auth) async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get(endpoint.me);
+
+      final user = UserModel.fromJson(response.data['user']);
+      await auth.login(user);
+
+      _showSuccessModal('Account information synced');
+    } catch (error) {
+      _showErrorModal(error.toString());
+    }
   }
 
   void _disableAccount() async {
@@ -134,6 +146,28 @@ class _SettingsPageState extends State<SettingsPage> {
       "This feature is under development",
       duration: const Duration(seconds: 2),
       backgroundColor: Colors.yellow[300],
+    );
+  }
+
+  void _showSuccessModal(String message) {
+    showCustomSnackBar(
+      context,
+      message,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+      duration: const Duration(seconds: 5),
+    );
+  }
+
+  void _showErrorModal(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+      duration: const Duration(seconds: 5),
     );
   }
 }

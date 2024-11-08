@@ -13,8 +13,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final user = context.read<AuthProvider>().user;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -23,19 +21,25 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProfileHeader(
-              name: user.name,
-              title: user.email,
-              imageUrl: user.imageUrl,
-              isVerified: user.isVerified,
+      body: Consumer<AuthProvider>(
+        builder: (context, auth, child) {
+          return Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ProfileHeader(
+                  name: auth.user.name,
+                  title: auth.user.email,
+                  imageUrl: auth.user.imageUrl,
+                  isVerified: auth.user.isVerified,
+                ),
+                const SizedBox(height: 10),
+                Text('Account ID: ${auth.user.id}'),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
