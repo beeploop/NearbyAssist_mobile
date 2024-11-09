@@ -5,8 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/account/services/utils/location_editing_controller.dart';
 import 'package:nearby_assist/pages/account/services/widget/location_picker.dart';
-import 'package:nearby_assist/providers/location_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:nearby_assist/services/location_service.dart';
 
 class EditServicePage extends StatefulWidget {
   const EditServicePage({super.key, required this.serviceId});
@@ -24,7 +23,7 @@ class _EditServicePageState extends State<EditServicePage> {
   );
 
   Future<void> _getLocation() async {
-    final position = await context.read<LocationProvider>().getLocation();
+    final position = await LocationService().getLocation();
     setState(() {
       _locationController.setLocation(
         LatLng(position.latitude, position.longitude),

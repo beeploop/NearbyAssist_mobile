@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
+import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class DropdownSearchBar extends StatefulWidget {
   const DropdownSearchBar({
@@ -19,70 +21,88 @@ class DropdownSearchBar extends StatefulWidget {
 }
 
 class _DropdownSearchBarState extends State<DropdownSearchBar> {
-  final _controller = DropdownSearchBarController();
-
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: DropdownSearch<String>.multiSelection(
-            decoratorProps: const DropDownDecoratorProps(
-              decoration: InputDecoration(
-                hintText: 'select tags',
-              ),
-            ),
-            popupProps: PopupPropsMultiSelection.modalBottomSheet(
-              containerBuilder: (context, child) {
-                return Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: child,
-                );
-              },
-              modalBottomSheetProps: const ModalBottomSheetProps(
-                showDragHandle: true,
-              ),
-              showSearchBox: true,
-              showSelectedItems: true,
-              searchFieldProps: const TextFieldProps(
+    return Consumer<SearchProvider>(
+      builder: (context, search, child) {
+        return Row(
+          children: [
+            Expanded(
+              child: DropdownSearch<String>.multiSelection(
+                decoratorProps: const DropDownDecoratorProps(
                   decoration: InputDecoration(
-                hintText: 'filter tags',
-              )),
-              searchDelay: const Duration(milliseconds: 500),
-            ),
-            autoValidateMode: AutovalidateMode.always,
-            items: (filter, props) => serviceTags,
-            selectedItems: _controller.selectedTags,
-            onChanged: (items) => _controller.replaceAll(items),
-          ),
-        ),
-        FilledButton.icon(
-          onPressed: _handleSearch,
-          icon: _controller.isSearching
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                      strokeCap: StrokeCap.round,
-                    ),
+                    hintText: 'select tags',
                   ),
-                )
-              : const Icon(
-                  CupertinoIcons.search,
-                  color: Colors.white,
-                  size: 18,
                 ),
-          label: const Text('search'),
-        ),
-      ],
+                popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                  containerBuilder: (context, child) {
+                    return Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: child,
+                    );
+                  },
+                  modalBottomSheetProps: const ModalBottomSheetProps(
+                    showDragHandle: true,
+                  ),
+                  showSearchBox: true,
+                  showSelectedItems: true,
+                  searchFieldProps: const TextFieldProps(
+                      decoration: InputDecoration(
+                    hintText: 'filter tags',
+                  )),
+                  searchDelay: const Duration(milliseconds: 500),
+                ),
+                autoValidateMode: AutovalidateMode.always,
+                items: (filter, props) => serviceTags,
+                selectedItems: search.tags,
+                onChanged: (items) => search.updateTags(items),
+              ),
+            ),
+            FilledButton.icon(
+              onPressed: () => _handleSearch(search),
+              icon: search.isSearching
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                          strokeCap: StrokeCap.round,
+                        ),
+                      ),
+                    )
+                  : const Icon(
+                      CupertinoIcons.search,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+              label: const Text('search'),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Future<void> _handleSearch() async {
-    throw UnimplementedError();
+  Future<void> _handleSearch(SearchProvider search) async {
+    try {
+      if (search.tags.isEmpty) {
+        throw 'Empty tags';
+      }
+
+      final userPos = await LocationService().getLocation();
+      await search.search(userPos);
+
+      widget.onSearchFinished();
+    } catch (error) {
+      if (error == LocationServiceDisabledException) {
+        _showLocationServiceDisabledDialog();
+        return;
+      }
+
+      _showErrorModal(error.toString());
+    }
   }
 
   void _showLocationServiceDisabledDialog() {
@@ -110,7 +130,7 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
     );
   }
 
-  void _showErrorSnackbar(String error) {
+  void _showErrorModal(String error) {
     showCustomSnackBar(
       context,
       error,
