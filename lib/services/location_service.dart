@@ -28,6 +28,11 @@ class LocationService {
       );
     }
 
+    final position = await Geolocator.getLastKnownPosition();
+    if (position != null) {
+      return position;
+    }
+
     return await Geolocator.getCurrentPosition();
   }
 

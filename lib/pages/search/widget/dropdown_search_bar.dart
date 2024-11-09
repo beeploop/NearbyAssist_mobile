@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
-import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -87,12 +86,7 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
 
   Future<void> _handleSearch(SearchProvider search) async {
     try {
-      if (search.tags.isEmpty) {
-        throw 'Empty tags';
-      }
-
-      final userPos = await LocationService().getLocation();
-      await search.search(userPos);
+      await search.search();
 
       widget.onSearchFinished();
     } catch (error) {

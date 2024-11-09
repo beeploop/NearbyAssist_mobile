@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
+import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
 class SearchProvider extends ChangeNotifier {
@@ -29,7 +29,7 @@ class SearchProvider extends ChangeNotifier {
     return _detail[id]!;
   }
 
-  Future<void> search(Position userPos) async {
+  Future<void> search() async {
     _searching = true;
     notifyListeners();
 
@@ -37,6 +37,8 @@ class SearchProvider extends ChangeNotifier {
       if (_tags.isEmpty) {
         throw 'Empty tags';
       }
+
+      final userPos = await LocationService().getLocation();
 
       _results = await _api.findServices(userPos: userPos, tags: _tags);
       notifyListeners();
