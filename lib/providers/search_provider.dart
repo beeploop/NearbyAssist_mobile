@@ -9,6 +9,7 @@ class SearchProvider extends ChangeNotifier {
   final _api = SearchService();
   List<SearchResultModel> _results = [];
   final Map<String, DetailedServiceModel> _detail = {};
+  final Map<String, List<List<num>>> _routes = {};
   List<String> _tags = [];
   bool _searching = false;
 
@@ -27,6 +28,14 @@ class SearchProvider extends ChangeNotifier {
 
   DetailedServiceModel getDetails(String id) {
     return _detail[id]!;
+  }
+
+  bool hasRoute(String id) {
+    return _routes.containsKey(id);
+  }
+
+  List<List<num>> getRoute(String id) {
+    return _routes[id]!;
   }
 
   Future<void> search() async {
@@ -59,6 +68,19 @@ class SearchProvider extends ChangeNotifier {
       return detail;
     } catch (error) {
       logger.log('Error fetching details of service with id: $id');
+      rethrow;
+    }
+  }
+
+  Future<List<List<num>>> fetchRoute(String id) async {
+    try {
+      final route = await _api.getRouteToService(id);
+      _routes[id] = route;
+      notifyListeners();
+
+      return route;
+    } catch (error) {
+      logger.log('Error fetching route of service with id: $id');
       rethrow;
     }
   }

@@ -29,4 +29,5 @@ class ApiEndpoint {
 
   String get search => '$_baseUrl/api/v1/services/search';
   String get serviceDetails => '$_baseUrl/api/v1/services';
+  String get findRoute => '$_baseUrl/api/v1/services/route';
 }

@@ -1,4 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
+import 'package:provider/provider.dart';
 
 class RoutePage extends StatefulWidget {
   const RoutePage({super.key, required this.serviceId});
@@ -9,13 +17,101 @@ class RoutePage extends StatefulWidget {
   State<RoutePage> createState() => _RoutePageState();
 }
 
-class _RoutePageState extends State<RoutePage> {
+class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
+  late final _controller = AnimatedMapController(vsync: this);
+
   @override
   Widget build(BuildContext context) {
+    final searchProvider = Provider.of<SearchProvider>(context);
+
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: Text("route to ${widget.serviceId}"),
+      body: searchProvider.hasRoute(widget.serviceId)
+          ? _content(searchProvider.getRoute(widget.serviceId))
+          : FutureBuilder(
+              future: searchProvider.fetchRoute(widget.serviceId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: AlertDialog(
+                      icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                      title: Text('Something went wrong'),
+                      content: Text(
+                        'An error occurred while finding a route to the service. Please try again later',
+                      ),
+                    ),
+                  );
+                }
+
+                final route = snapshot.data!;
+                return _content(route);
+              },
+            ),
+    );
+  }
+
+  Widget _content(List<List<num>> route) {
+    final coordinates = route
+        .map((coord) => LatLng(coord[0].toDouble(), coord[1].toDouble()))
+        .toList();
+
+    final userPos = LatLng(route[0][0].toDouble(), route[0][1].toDouble());
+
+    return FlutterMap(
+      mapController: _controller.mapController,
+      options: MapOptions(
+        initialZoom: 15,
+        initialCenter: userPos,
+        onMapReady: () => _fitMarkers(coordinates),
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: tileMapProvider,
+          userAgentPackageName: 'com.example.app',
+          tileProvider: _tileProvider(),
+        ),
+        PolylineLayer(
+          polylines: [
+            Polyline(
+              points: coordinates,
+              color: Colors.orange,
+              strokeWidth: 6.0,
+            ),
+          ],
+        ),
+        MarkerLayer(
+          markers: [
+            Marker(
+              rotate: true,
+              alignment: Alignment.topCenter,
+              point: userPos,
+              child: const Icon(
+                Icons.person_pin,
+                size: 30.0,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  TileProvider _tileProvider() {
+    return CancellableNetworkTileProvider();
+  }
+
+  void _fitMarkers(List<LatLng> coordinates) {
+    _controller.animatedFitCamera(
+      cameraFit: CameraFit.coordinates(
+        coordinates: coordinates,
+        padding: const EdgeInsets.all(50),
       ),
     );
   }
