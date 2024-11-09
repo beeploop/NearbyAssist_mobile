@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/models/rating_count_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/providers/search_provider.dart';
 
 class DetailTabSection extends StatelessWidget {
   const DetailTabSection({

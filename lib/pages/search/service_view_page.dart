@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/floating_cta.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
@@ -74,10 +75,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 rating: details.vendor.rating,
               ),
               const SizedBox(height: 10),
-              ServiceActions(
-                serviceId: widget.serviceId,
-                saved: false,
-              ),
+              ServiceActions(service: details),
               const SizedBox(height: 10),
               const ImageSection(),
               const SizedBox(height: 10),

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
-import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
 class SearchProvider extends ChangeNotifier {
@@ -59,99 +59,5 @@ class SearchProvider extends ChangeNotifier {
       logger.log('Error fetching details of service with id: $id');
       rethrow;
     }
-  }
-}
-
-class DetailedServiceModel {
-  final RatingCountModel ratingCount;
-  final ServiceModel service;
-  final VendorModel vendor;
-  final List<ServiceImageModel> images;
-
-  DetailedServiceModel({
-    required this.ratingCount,
-    required this.service,
-    required this.vendor,
-    required this.images,
-  });
-
-  factory DetailedServiceModel.fromJson(Map<String, dynamic> json) {
-    return DetailedServiceModel(
-      ratingCount: RatingCountModel.fromJson(json['countPerRating']),
-      service: ServiceModel.fromJson(json['serviceInfo']),
-      vendor: VendorModel.fromJson(json['vendorInfo']),
-      images: (json['serviceImages'] as List)
-          .map((image) => ServiceImageModel.fromJson(image))
-          .toList(),
-    );
-  }
-}
-
-class RatingCountModel {
-  final int five;
-  final int four;
-  final int three;
-  final int two;
-  final int one;
-
-  RatingCountModel({
-    required this.five,
-    required this.four,
-    required this.three,
-    required this.two,
-    required this.one,
-  });
-
-  factory RatingCountModel.fromJson(Map<String, dynamic> json) {
-    return RatingCountModel(
-      five: json['five'],
-      four: json['four'],
-      three: json['three'],
-      two: json['two'],
-      one: json['one'],
-    );
-  }
-}
-
-class VendorModel {
-  final String id;
-  final String name;
-  final String imageUrl;
-  final double rating;
-  final String job;
-
-  VendorModel({
-    required this.id,
-    required this.name,
-    required this.imageUrl,
-    required this.rating,
-    required this.job,
-  });
-
-  factory VendorModel.fromJson(Map<String, dynamic> json) {
-    return VendorModel(
-      id: json['vendorId'],
-      name: json['vendor'],
-      imageUrl: json['imageUrl'],
-      rating: double.parse(json['rating']),
-      job: json['job'],
-    );
-  }
-}
-
-class ServiceImageModel {
-  final String id;
-  final String url;
-
-  ServiceImageModel({
-    required this.id,
-    required this.url,
-  });
-
-  factory ServiceImageModel.fromJson(Map<String, dynamic> json) {
-    return ServiceImageModel(
-      id: json['id'],
-      url: json['url'],
-    );
   }
 }

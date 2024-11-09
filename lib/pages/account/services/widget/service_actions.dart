@@ -1,16 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/providers/saved_service_provider.dart';
+import 'package:provider/provider.dart';
 
 class ServiceActions extends StatefulWidget {
   const ServiceActions({
     super.key,
-    required this.serviceId,
-    this.saved = false,
+    required this.service,
   });
 
-  final String serviceId;
-  final bool saved;
+  final DetailedServiceModel service;
 
   @override
   State<ServiceActions> createState() => _ServiceActionsState();
@@ -30,16 +31,24 @@ class _ServiceActionsState extends State<ServiceActions> {
             ),
           ),
           const VerticalDivider(),
-          Expanded(
-            child: TextButton.icon(
-              onPressed: widget.saved ? _unsave : _save,
-              icon: Icon(
-                widget.saved
-                    ? CupertinoIcons.bookmark_fill
-                    : CupertinoIcons.bookmark,
-              ),
-              label: Text(widget.saved ? 'Saved' : 'Save'),
-            ),
+          Consumer<SavedServiceProvider>(
+            builder: (context, saves, child) {
+              return Expanded(
+                child: TextButton.icon(
+                  onPressed: saves.isSaved(widget.service.service.id)
+                      ? () => saves.unsave(widget.service.service.id)
+                      : () => saves.save(widget.service),
+                  icon: Icon(
+                    saves.isSaved(widget.service.service.id)
+                        ? CupertinoIcons.bookmark_fill
+                        : CupertinoIcons.bookmark,
+                  ),
+                  label: Text(saves.isSaved(widget.service.service.id)
+                      ? 'Saved'
+                      : 'Save'),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -49,15 +58,7 @@ class _ServiceActionsState extends State<ServiceActions> {
   void _viewMap(BuildContext context) {
     context.pushNamed(
       'route',
-      queryParameters: {'serviceId': widget.serviceId},
+      queryParameters: {'serviceId': widget.service.service.id},
     );
-  }
-
-  void _save() {
-    throw UnimplementedError();
-  }
-
-  void _unsave() {
-    throw UnimplementedError();
   }
 }

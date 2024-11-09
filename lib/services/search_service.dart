@@ -1,7 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
-import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 
 class SearchService {
