@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/rating_count_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/pages/account/services/widget/rating_count_bar.dart';
 
 class DetailTabSection extends StatelessWidget {
   const DetailTabSection({
@@ -60,15 +61,21 @@ class DetailTabSection extends StatelessWidget {
   }
 
   Widget _reviewSection(BuildContext context) {
+    final totalReview =
+        rating.one + rating.two + rating.three + rating.four + rating.five;
+
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(color: Colors.green[200]),
+        Text(
+          'Total reviews: $totalReview',
+          style: const TextStyle(
+            fontSize: 16,
+          ),
+        ),
+        SizedBox(
           width: double.infinity,
           height: 160,
-          child: Center(
-            child: Text('Five stars: ${rating.five}'),
-          ),
+          child: RatingCountBar(rating: rating),
         ),
         TextButton(
           onPressed: () => _showReviews(context),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class VendorInfoSection extends StatelessWidget {
   const VendorInfoSection({
@@ -42,9 +43,16 @@ class VendorInfoSection extends StatelessWidget {
                     fontSize: 18,
                   ),
                 ),
-                Text(
-                  'rating: $rating',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+                RatingBar.builder(
+                  initialRating: rating,
+                  allowHalfRating: true,
+                  itemSize: 20,
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                  ),
+                  onRatingUpdate: (_) {},
+                  ignoreGestures: true,
                 ),
               ],
             ),
