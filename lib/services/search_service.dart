@@ -1,6 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 
 class SearchService {
@@ -18,6 +19,16 @@ class SearchService {
       return (response.data['services'] as List).map((service) {
         return SearchResultModel.fromJson(service);
       }).toList();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<DetailedServiceModel> getServiceDetails(String id) async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get('${endpoint.serviceDetails}/$id');
+      return DetailedServiceModel.fromJson(response.data);
     } catch (error) {
       rethrow;
     }

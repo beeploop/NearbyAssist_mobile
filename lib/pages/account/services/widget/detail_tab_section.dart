@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
 
 class DetailTabSection extends StatelessWidget {
-  const DetailTabSection({super.key});
+  const DetailTabSection({
+    super.key,
+    required this.service,
+    required this.rating,
+  });
+
+  final ServiceModel service;
+  final RatingCountModel rating;
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +54,8 @@ class DetailTabSection extends StatelessWidget {
   }
 
   Widget _decriptionSection() {
-    return const Text(
-      "This is an example description for this service indicating that the description should go here.",
+    return Text(
+      service.description,
     );
   }
 
@@ -57,8 +66,8 @@ class DetailTabSection extends StatelessWidget {
           decoration: BoxDecoration(color: Colors.green[200]),
           width: double.infinity,
           height: 160,
-          child: const Center(
-            child: Text("ratings bar goes here"),
+          child: Center(
+            child: Text('Five stars: ${rating.five}'),
           ),
         ),
         TextButton(

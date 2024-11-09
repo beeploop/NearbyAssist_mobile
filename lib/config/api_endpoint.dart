@@ -28,4 +28,5 @@ class ApiEndpoint {
   String get verifyAccount => '$_baseUrl/api/v1/verification/identity';
 
   String get search => '$_baseUrl/api/v1/services/search';
+  String get serviceDetails => '$_baseUrl/api/v1/services';
 }

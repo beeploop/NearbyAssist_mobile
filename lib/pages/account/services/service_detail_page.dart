@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
+//import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
@@ -54,7 +54,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                 const SizedBox(height: 10),
                 const ImageSection(),
                 const SizedBox(height: 10),
-                const DetailTabSection(),
+                //const DetailTabSection(),
               ],
             ),
           ],
