@@ -14,19 +14,11 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> login(UserModel user) async {
     _user = user;
-
-    final store = SecureStorage();
-    await store.saveUser(user);
-
     notifyListeners();
   }
 
   Future<void> logout() async {
     _user = null;
-
-    final store = SecureStorage();
-    await store.clearAll();
-
     notifyListeners();
   }
 
@@ -38,5 +30,12 @@ class AuthProvider extends ChangeNotifier {
     }
 
     login(user);
+  }
+
+  Future<void> clearData() async {
+    final store = SecureStorage();
+    await store.clearAll();
+
+    await logout();
   }
 }

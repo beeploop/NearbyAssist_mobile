@@ -72,7 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
             icon: CupertinoIcons.trash,
             iconColor: Colors.red,
             endIcon: false,
-            onPress: _clearData,
+            onPress: _deleteAccount,
           ),
         ],
       ),
@@ -141,7 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _clearData() async {
-    await context.read<AuthProvider>().logout();
+    await context.read<AuthProvider>().clearData();
 
     if (!mounted) return;
 
@@ -152,6 +152,15 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: Colors.red,
       duration: const Duration(seconds: 2),
       closeIconColor: Colors.white,
+    );
+  }
+
+  void _deleteAccount() async {
+    showCustomSnackBar(
+      context,
+      "This feature is under development",
+      duration: const Duration(seconds: 2),
+      backgroundColor: Colors.yellow[300],
     );
   }
 

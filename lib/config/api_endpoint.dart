@@ -24,6 +24,10 @@ class ApiEndpoint {
   String get logout => '$_baseUrl/api/v1/user/logout';
   String get refresh => '$_baseUrl/api/v1/user/refresh';
 
+  String get saveKeys => '$_baseUrl/api/v1/e2ee';
+  String get getKeys => '$_baseUrl/api/v1/e2ee/keys';
+  String get getPublicKey => '$_baseUrl/api/v1/e2ee/key';
+
   String get me => '$_baseUrl/api/v1/user/protected/me';
 
   String get privacyPolicy => '$_baseUrl/privacy_policy';
