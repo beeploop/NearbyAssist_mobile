@@ -60,7 +60,13 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
 
     final encrypted = await _encrypt(message);
-    _channel!.sink.add(jsonEncode(encrypted));
+
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.post(endpoint.sendMessage, data: encrypted.toJson());
+    } catch (error) {
+      logger.log('Error sending message: ${error.toString()}');
+    }
   }
 
   void receive(MessageModel message) async {
