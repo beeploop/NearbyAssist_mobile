@@ -5,8 +5,15 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/conversation_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
+import 'package:nearby_assist/services/secure_storage.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageProvider extends ChangeNotifier {
+  WebSocketChannel? _channel;
+  bool _connected = false;
+
+  bool get connected => _connected;
+
   List<ConversationModel> _conversations = [];
   final Map<String, List<types.Message>> _messages = {};
 
@@ -59,5 +66,39 @@ class MessageProvider extends ChangeNotifier {
     } catch (error) {
       logger.log('Error fetching conversations: $error');
     }
+  }
+
+  Future<void> connect() async {
+    logger.log('Connecting to websocket');
+
+    final store = SecureStorage();
+    final accessToken = await store.getToken(TokenType.accessToken);
+    if (accessToken == null) {
+      throw 'NoToken';
+    }
+
+    final url = '${endpoint.websocket}?token=$accessToken';
+    _channel = WebSocketChannel.connect(Uri.parse(url));
+    _connected = true;
+    notifyListeners();
+
+    _channel!.stream.listen(
+      (event) => logger.log,
+      onDone: disconnect,
+      onError: (error) {
+        logger.log('Error connecting to websocket: $error');
+      },
+      cancelOnError: true,
+    );
+  }
+
+  void disconnect() {
+    if (_channel == null) return;
+
+    _channel!.sink.close(1000);
+    _channel = null;
+    _connected = false;
+
+    logger.log('Disconnected from websocket');
   }
 }

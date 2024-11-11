@@ -2,12 +2,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiEndpoint {
   final String _baseUrl;
+  final String _wsUrl;
 
-  ApiEndpoint({required String baseUrl}) : _baseUrl = baseUrl;
+  ApiEndpoint({required String baseUrl, required String wsUrl})
+      : _baseUrl = baseUrl,
+        _wsUrl = wsUrl;
 
   factory ApiEndpoint.fromEnv() {
-    final endpoint = dotenv.get('API_URL', fallback: 'http://localhost:3000');
-    return ApiEndpoint(baseUrl: endpoint);
+    final baseUrl = dotenv.get('API_URL', fallback: 'http://localhost:3000');
+    final wsUrl = dotenv.get('WS_URL', fallback: 'ws://localhost:3000');
+    return ApiEndpoint(baseUrl: baseUrl, wsUrl: wsUrl);
   }
 
   String get baseUrl => _baseUrl;
@@ -31,5 +35,6 @@ class ApiEndpoint {
   String get serviceDetails => '$_baseUrl/api/v1/services';
   String get findRoute => '$_baseUrl/api/v1/services/route';
 
+  String get websocket => '$_wsUrl/api/v1/chat/ws';
   String get conversations => '$_baseUrl/api/v1/chat/conversations';
 }

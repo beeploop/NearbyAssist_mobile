@@ -23,6 +23,21 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  late MessageProvider _messageProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _messageProvider = Provider.of<MessageProvider>(context, listen: false);
+    _messageProvider.connect();
+  }
+
+  @override
+  void dispose() {
+    _messageProvider.disconnect();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final messageProvider = Provider.of<MessageProvider>(context);
@@ -39,29 +54,33 @@ class _ChatPageState extends State<ChatPage> {
             Menu(),
             SizedBox(width: 10),
           ]),
-      body: Chat(
-        theme: DefaultChatTheme(
-          primaryColor: Theme.of(context).primaryColor,
-          inputBorderRadius: BorderRadius.zero,
-          inputBackgroundColor: Colors.transparent,
-          sendButtonIcon: const Icon(
-            CupertinoIcons.paperplane_fill,
-            color: Colors.green,
-          ),
-          inputTextColor: Colors.black,
-          inputTextDecoration: InputDecoration(
-            isDense: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
+      body: messageProvider.connected == false
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Chat(
+              theme: DefaultChatTheme(
+                primaryColor: Theme.of(context).primaryColor,
+                inputBorderRadius: BorderRadius.zero,
+                inputBackgroundColor: Colors.transparent,
+                sendButtonIcon: const Icon(
+                  CupertinoIcons.paperplane_fill,
+                  color: Colors.green,
+                ),
+                inputTextColor: Colors.black,
+                inputTextDecoration: InputDecoration(
+                  isDense: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  fillColor: Colors.grey[200],
+                  filled: true,
+                ),
+              ),
+              onSendPressed: (partial) {},
+              messages: messageProvider.getMessages(widget.recipientId),
+              user: user,
             ),
-            fillColor: Colors.grey[200],
-            filled: true,
-          ),
-        ),
-        onSendPressed: (partial) {},
-        messages: messageProvider.getMessages(widget.recipientId),
-        user: user,
-      ),
     );
   }
 }
