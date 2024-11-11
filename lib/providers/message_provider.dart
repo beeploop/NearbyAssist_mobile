@@ -2,9 +2,13 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/models/conversation_model.dart';
 
 class MessageProvider extends ChangeNotifier {
+  final List<ConversationModel> _conversations = [];
   final Map<String, List<types.Message>> _messages = {};
+
+  List<ConversationModel> get conversations => _conversations;
 
   List<types.Message> getMessages(String recipientId) {
     if (_messages.containsKey(recipientId)) {

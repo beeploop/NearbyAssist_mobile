@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/chat/widget/inbox_item.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
-import 'package:nearby_assist/providers/inbox_provider.dart';
+import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:provider/provider.dart';
 
 class InboxPage extends StatefulWidget {
@@ -14,7 +14,7 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   @override
   Widget build(BuildContext context) {
-    final conversations = context.watch<InboxProvider>().conversations;
+    final conversations = Provider.of<MessageProvider>(context).conversations;
 
     return Scaffold(
       appBar: AppBar(
