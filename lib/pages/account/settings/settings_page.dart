@@ -141,11 +141,17 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _clearData() async {
+    await context.read<AuthProvider>().logout();
+
+    if (!mounted) return;
+
     showCustomSnackBar(
       context,
-      "This feature is under development",
+      "Data cleared",
+      textColor: Colors.white,
+      backgroundColor: Colors.red,
       duration: const Duration(seconds: 2),
-      backgroundColor: Colors.yellow[300],
+      closeIconColor: Colors.white,
     );
   }
 
