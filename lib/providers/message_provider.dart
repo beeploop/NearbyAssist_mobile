@@ -2,10 +2,12 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/conversation_model.dart';
+import 'package:nearby_assist/services/api_service.dart';
 
 class MessageProvider extends ChangeNotifier {
-  final List<ConversationModel> _conversations = [];
+  List<ConversationModel> _conversations = [];
   final Map<String, List<types.Message>> _messages = {};
 
   List<ConversationModel> get conversations => _conversations;
@@ -41,5 +43,22 @@ class MessageProvider extends ChangeNotifier {
 
       notifyListeners();
     });
+  }
+
+  Future<void> fetchConversations() async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get(endpoint.conversations);
+      logger.log(response.data['conversations']);
+
+      final conversations = (response.data['conversations'] as List)
+          .map((conversation) => ConversationModel.fromJson(conversation))
+          .toList();
+
+      _conversations = conversations;
+      notifyListeners();
+    } catch (error) {
+      logger.log('Error fetching conversations: $error');
+    }
   }
 }

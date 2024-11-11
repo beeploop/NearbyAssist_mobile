@@ -29,10 +29,12 @@ class _InboxPageState extends State<InboxPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => Future.delayed(const Duration(seconds: 1)),
+        onRefresh: Provider.of<MessageProvider>(context).fetchConversations,
         child: conversations.isEmpty
-            ? const Center(
-                child: Text('no messages'),
+            ? ListView(
+                children: const [
+                  Center(child: Text('No conversations yet')),
+                ],
               )
             : ListView.builder(
                 itemCount: conversations.length,

@@ -15,11 +15,11 @@ class ConversationModel {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      recipientId: json['recipientId'],
-      recipient: json['recipient'],
+      recipientId: json['userId'],
+      recipient: json['name'],
       imageUrl: json['imageUrl'],
       lastMessage: json['lastMessage'],
-      date: json['date'],
+      date: json['lastMessageDate'],
     );
   }
 }
