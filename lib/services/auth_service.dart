@@ -10,7 +10,7 @@ class AuthService {
       final signedUser = await _signInToServer(user);
 
       final store = SecureStorage();
-      await store.saveUser(user);
+      await store.saveUser(signedUser);
 
       final dh = DiffieHellman();
       await dh.register();
