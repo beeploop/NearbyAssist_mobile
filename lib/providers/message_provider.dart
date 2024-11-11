@@ -49,7 +49,6 @@ class MessageProvider extends ChangeNotifier {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.conversations);
-      logger.log(response.data['conversations']);
 
       final conversations = (response.data['conversations'] as List)
           .map((conversation) => ConversationModel.fromJson(conversation))

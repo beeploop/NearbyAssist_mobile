@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/chat/widget/inbox_item.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
@@ -32,8 +33,27 @@ class _InboxPageState extends State<InboxPage> {
         onRefresh: Provider.of<MessageProvider>(context).fetchConversations,
         child: conversations.isEmpty
             ? ListView(
-                children: const [
-                  Center(child: Text('No conversations yet')),
+                children: [
+                  SingleChildScrollView(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height,
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            CupertinoIcons.envelope_open,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'No messages',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               )
             : ListView.builder(
