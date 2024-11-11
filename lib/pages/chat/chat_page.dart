@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/models/message_model.dart';
 import 'package:nearby_assist/pages/chat/widget/menu.dart';
 import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
@@ -77,7 +78,15 @@ class _ChatPageState extends State<ChatPage> {
                   filled: true,
                 ),
               ),
-              onSendPressed: (partial) {},
+              onSendPressed: (partial) {
+                final message = MessageModel(
+                  receiver: widget.recipientId,
+                  sender: user.id,
+                  content: partial.text,
+                );
+
+                messageProvider.send(message);
+              },
               messages: messageProvider.getMessages(widget.recipientId),
               user: user,
             ),
