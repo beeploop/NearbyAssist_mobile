@@ -1,13 +1,14 @@
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 
 class AuthService {
-  Future<UserModel> login(UserModel user) async {
+  Future<UserModel> login(LoginPayloadModel payload) async {
     try {
-      final signedUser = await _signInToServer(user);
+      final signedUser = await _signInToServer(payload);
 
       final store = SecureStorage();
       await store.saveUser(signedUser);
@@ -21,12 +22,12 @@ class AuthService {
     }
   }
 
-  Future<UserModel> _signInToServer(UserModel user) async {
+  Future<UserModel> _signInToServer(LoginPayloadModel payload) async {
     try {
       final api = ApiService.unauthenticated();
       final response = await api.dio.post(
         endpoint.login,
-        data: user.toJson(),
+        data: payload.toJson(),
       );
 
       final accessToken = response.data['accessToken'];

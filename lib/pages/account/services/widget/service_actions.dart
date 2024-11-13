@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
-import 'package:nearby_assist/providers/saved_service_provider.dart';
+import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:provider/provider.dart';
 
 class ServiceActions extends StatefulWidget {
@@ -31,7 +31,7 @@ class _ServiceActionsState extends State<ServiceActions> {
             ),
           ),
           const VerticalDivider(),
-          Consumer<SavedServiceProvider>(
+          Consumer<SavesProvider>(
             builder: (context, saves, child) {
               return Expanded(
                 child: TextButton.icon(

@@ -6,6 +6,8 @@ enum RoutePath {
 
   viewService(path: "/viewService"),
 
+  vendorPage(path: "/vendorPage"),
+
   route(path: "/route"),
 
   inbox(path: "/inbox"),

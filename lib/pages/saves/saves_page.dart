@@ -1,8 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
-import 'package:nearby_assist/providers/saved_service_provider.dart';
+import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:nearby_assist/utils/random_color.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,8 @@ class SavesPage extends StatefulWidget {
 class _SavesPageState extends State<SavesPage> {
   @override
   Widget build(BuildContext context) {
+    final saves = context.watch<SavesProvider>().getSaves();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -28,15 +31,12 @@ class _SavesPageState extends State<SavesPage> {
           SizedBox(width: 10),
         ],
       ),
-      body: Consumer<SavedServiceProvider>(
-        builder: (context, saves, child) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: saves.getSaves().isEmpty
-                ? _buildEmptySaves()
-                : _buildSaves(saves.getSaves()),
-          );
-        },
+      body: RefreshIndicator(
+        onRefresh: context.read<SavesProvider>().refetchSaves,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: saves.isEmpty ? _emptyState() : _buildSaves(saves),
+        ),
       ),
     );
   }
@@ -63,9 +63,30 @@ class _SavesPageState extends State<SavesPage> {
     );
   }
 
-  Widget _buildEmptySaves() {
-    return const Center(
-      child: Text('No saved items'),
+  Widget _emptyState() {
+    return ListView(
+      children: [
+        SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.center,
+            height: MediaQuery.of(context).size.height,
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  CupertinoIcons.tray,
+                  color: Colors.grey,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'No saves',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

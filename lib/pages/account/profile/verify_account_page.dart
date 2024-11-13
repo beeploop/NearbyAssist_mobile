@@ -7,7 +7,7 @@ import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/verify_account_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +35,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   }
 
   void _initialValues() {
-    final user = context.read<AuthProvider>().user;
+    final user = context.read<UserProvider>().user;
     setState(() {
       _nameController.text = user.name;
     });

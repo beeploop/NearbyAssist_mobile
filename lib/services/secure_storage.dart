@@ -39,7 +39,7 @@ class SecureStorage {
   }
 
   Future<void> saveUser(UserModel user) async {
-    final userData = jsonEncode(user.toJsonAll());
+    final userData = jsonEncode(user.toJson());
     await _storage.write(key: _userKey, value: userData);
   }
 

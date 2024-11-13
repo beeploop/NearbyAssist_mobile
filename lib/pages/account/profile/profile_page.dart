@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/profile/widget/profile_header.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -21,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Consumer<AuthProvider>(
+      body: Consumer<UserProvider>(
         builder: (context, auth, child) {
           return Padding(
             padding: const EdgeInsets.all(20),

@@ -15,7 +15,7 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   @override
   Widget build(BuildContext context) {
-    final conversations = Provider.of<MessageProvider>(context).conversations;
+    final conversations = context.watch<MessageProvider>().getConversations();
 
     return Scaffold(
       appBar: AppBar(
@@ -30,32 +30,9 @@ class _InboxPageState extends State<InboxPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: Provider.of<MessageProvider>(context).fetchConversations,
+        onRefresh: context.read<MessageProvider>().refreshConversations,
         child: conversations.isEmpty
-            ? ListView(
-                children: [
-                  SingleChildScrollView(
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height,
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            CupertinoIcons.envelope_open,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'No messages',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )
+            ? _emptyState()
             : ListView.builder(
                 itemCount: conversations.length,
                 itemBuilder: (context, index) => InboxItem(
@@ -63,6 +40,33 @@ class _InboxPageState extends State<InboxPage> {
                 ),
               ),
       ),
+    );
+  }
+
+  Widget _emptyState() {
+    return ListView(
+      children: [
+        SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.center,
+            height: MediaQuery.of(context).size.height,
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  CupertinoIcons.envelope_open,
+                  color: Colors.grey,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'No messages',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

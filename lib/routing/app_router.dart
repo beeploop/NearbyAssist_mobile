@@ -20,21 +20,35 @@ import 'package:nearby_assist/pages/search/route_page.dart';
 import 'package:nearby_assist/pages/search/search_page.dart';
 import 'package:nearby_assist/pages/search/service_view_page.dart';
 import 'package:nearby_assist/pages/test_page.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/pages/vendor/vendor_page.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/providers/websocket_provider.dart';
 import 'package:nearby_assist/routing/route_name.dart';
 import 'package:nearby_assist/routing/scaffold_with_navbar.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 
-GoRouter generateRoutes(AuthStatus status) {
+GoRouter generateRoutes(
+  UserProvider userProvider,
+  WebsocketProvider websocketProvider,
+) {
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: RoutePath.search.path,
-    redirect: (context, state) {
-      if (status == AuthStatus.unauthenticated) {
+    refreshListenable: userProvider,
+    redirect: (context, state) async {
+      if (userProvider.status == AuthStatus.unauthenticated) {
+        websocketProvider.disconnect();
         return RoutePath.login.path;
       }
+
+      // If authenticated and on login page, redirect to search page
+      if (state.uri == Uri.parse('/login')) {
+        return RoutePath.search.path;
+      }
+
+      await websocketProvider.connect();
 
       return null;
     },
@@ -89,6 +103,13 @@ GoRouter generateRoutes(AuthStatus status) {
           builder: (context, state) {
             final serviceId = state.uri.queryParameters['serviceId']!;
             return ServiceViewPage(serviceId: serviceId);
+          }),
+      GoRoute(
+          path: RoutePath.vendorPage.path,
+          name: RoutePath.vendorPage.name,
+          builder: (context, state) {
+            final vendorId = state.uri.queryParameters['vendorId']!;
+            return VendorPage(vendorId: vendorId);
           }),
       GoRoute(
           path: RoutePath.route.path,

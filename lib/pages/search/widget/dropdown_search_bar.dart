@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
+import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -53,13 +54,13 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
                 ),
                 autoValidateMode: AutovalidateMode.always,
                 items: (filter, props) => serviceTags,
-                selectedItems: search.tags,
-                onChanged: (items) => search.updateTags(items),
+                selectedItems: search.queries,
+                onChanged: (items) => search.setQueries(items),
               ),
             ),
             FilledButton.icon(
-              onPressed: () => _handleSearch(search),
-              icon: search.isSearching
+              onPressed: _handleSearch,
+              icon: search.searching
                   ? const SizedBox(
                       width: 18,
                       height: 18,
@@ -84,9 +85,12 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
     );
   }
 
-  Future<void> _handleSearch(SearchProvider search) async {
+  Future<void> _handleSearch() async {
     try {
-      await search.search();
+      final serviceProvider = context.read<ServiceProvider>();
+      final services = await context.read<SearchProvider>().search();
+
+      serviceProvider.replaceAll(services);
 
       widget.onSearchFinished();
     } catch (error) {

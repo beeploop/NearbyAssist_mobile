@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Menu extends StatelessWidget {
-  const Menu({super.key});
+  const Menu({super.key, required this.vendorId});
+
+  final String vendorId;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +14,10 @@ class Menu extends StatelessWidget {
       itemBuilder: (context) => [
         _popupItem(
           context,
-          onTap: () {},
+          onTap: () => context.pushNamed(
+            'vendorPage',
+            queryParameters: {'vendorId': vendorId},
+          ),
           icon: CupertinoIcons.person,
           text: 'View profile',
         ),

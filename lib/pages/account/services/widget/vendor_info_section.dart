@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class VendorInfoSection extends StatelessWidget {
   const VendorInfoSection({
     super.key,
     required this.name,
+    required this.vendorId,
     required this.rating,
     this.height,
   });
 
   final String name;
+  final String vendorId;
   final double rating;
   final double? height;
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().user;
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -36,11 +43,24 @@ class VendorInfoSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                GestureDetector(
+                  onTap: () {
+                    if (vendorId == user.id) {
+                      context.pushNamed('manage');
+                      return;
+                    }
+
+                    context.pushNamed(
+                      'vendorPage',
+                      queryParameters: {'vendorId': vendorId},
+                    );
+                  },
+                  child: Text(
+                    name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
                 RatingBar.builder(

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:nearby_assist/config/api_endpoint.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
-import 'package:nearby_assist/providers/saved_service_provider.dart';
+import 'package:nearby_assist/providers/route_provider.dart';
+import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
+import 'package:nearby_assist/providers/service_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/providers/vendor_provider.dart';
+import 'package:nearby_assist/providers/websocket_provider.dart';
 import 'package:nearby_assist/routing/app_router.dart';
 import 'package:nearby_assist/services/logger.dart';
 import 'package:provider/provider.dart';
@@ -26,10 +30,14 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => MessageProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => SearchProvider()),
-        ChangeNotifierProvider(create: (context) => SavedServiceProvider()),
+        ChangeNotifierProvider(create: (context) => ServiceProvider()),
+        ChangeNotifierProvider(create: (context) => VendorProvider()),
+        ChangeNotifierProvider(create: (context) => RouteProvider()),
+        ChangeNotifierProvider(create: (context) => MessageProvider()),
+        ChangeNotifierProvider(create: (context) => WebsocketProvider()),
+        ChangeNotifierProvider(create: (context) => SavesProvider()),
       ],
       child: const App(),
     ),
@@ -51,13 +59,14 @@ class _App extends State<App> {
   }
 
   Future<void> initialization() async {
-    await context.read<AuthProvider>().tryLoadUser();
+    await context.read<UserProvider>().tryLoadUser();
     FlutterNativeSplash.remove();
   }
 
   @override
   Widget build(BuildContext context) {
-    final authStatus = context.watch<AuthProvider>().status;
+    final userProvider = context.read<UserProvider>();
+    final websocketProvider = context.read<WebsocketProvider>();
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
@@ -70,7 +79,7 @@ class _App extends State<App> {
           },
         ),
       ),
-      routerConfig: generateRoutes(authStatus),
+      routerConfig: generateRoutes(userProvider, websocketProvider),
     );
   }
 }

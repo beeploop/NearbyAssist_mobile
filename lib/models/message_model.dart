@@ -1,6 +1,5 @@
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:nearby_assist/models/text_message_model.dart';
 
 class MessageModel {
   String id;
@@ -9,7 +8,7 @@ class MessageModel {
   String content;
 
   MessageModel({
-    this.id = '',
+    required this.id,
     required this.sender,
     required this.receiver,
     required this.content,
@@ -42,15 +41,13 @@ class MessageModel {
     );
   }
 
-  TextMessageModel toTextMessage({
-    types.Status status = types.Status.sending,
-  }) {
-    return TextMessageModel(
+  types.TextMessage toTextMessage() {
+    return types.TextMessage(
       id: id,
       author: types.User(id: sender),
       text: content,
-      status: status,
       showStatus: true,
+      status: types.Status.sending,
     );
   }
 }

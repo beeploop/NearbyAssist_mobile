@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 //import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class ServiceDetailPage extends StatefulWidget {
@@ -22,6 +22,8 @@ class ServiceDetailPage extends StatefulWidget {
 class _ServiceDetailPageState extends State<ServiceDetailPage> {
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().user;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -45,10 +47,10 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
           children: [
             Column(
               children: [
-                Consumer<AuthProvider>(
-                  builder: (context, auth, child) {
-                    return VendorInfoSection(name: auth.user.name, rating: 0);
-                  },
+                VendorInfoSection(
+                  name: user.name,
+                  vendorId: user.id,
+                  rating: 0,
                 ),
                 const SizedBox(height: 10),
                 const SizedBox(height: 10),

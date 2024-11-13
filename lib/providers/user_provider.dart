@@ -4,7 +4,7 @@ import 'package:nearby_assist/services/secure_storage.dart';
 
 enum AuthStatus { authenticated, unauthenticated }
 
-class AuthProvider extends ChangeNotifier {
+class UserProvider extends ChangeNotifier {
   UserModel? _user;
 
   UserModel get user => _user!;

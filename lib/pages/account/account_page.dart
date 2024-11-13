@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +65,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   void _onLogoutSuccess() {
-    context.read<AuthProvider>().logout();
+    context.read<UserProvider>().logout();
 
     showCustomSnackBar(
       context,
@@ -168,7 +168,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _bannerImage() {
-    final user = context.read<AuthProvider>().user;
+    final user = context.read<UserProvider>().user;
 
     return Container(
       height: 200,

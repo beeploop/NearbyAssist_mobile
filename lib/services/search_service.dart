@@ -8,14 +8,14 @@ import 'package:nearby_assist/services/location_service.dart';
 
 class SearchService {
   Future<List<SearchResultModel>> findServices({
-    required Position userPos,
+    required Position location,
     required List<String> tags,
   }) async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.search, queryParameters: {
         'q': tags.map((tag) => tag.replaceAll(' ', '_')).join(','),
-        'l': '${userPos.latitude},${userPos.longitude}',
+        'l': '${location.latitude},${location.longitude}',
       });
 
       return (response.data['services'] as List).map((service) {

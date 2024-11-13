@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/login/tester_settings_modal.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onLoginSuccess(UserModel user) {
-    context.read<AuthProvider>().login(user);
+    context.read<UserProvider>().login(user);
     context.goNamed('search');
   }
 

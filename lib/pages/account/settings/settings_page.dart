@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
-import 'package:nearby_assist/providers/auth_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
@@ -24,7 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(),
       body: ListView(
         children: [
-          Consumer<AuthProvider>(
+          Consumer<UserProvider>(
             builder: (context, auth, child) {
               return AccountTileWidget(
                 title: "Sync Account",
@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<void> _updateInfo(AuthProvider auth) async {
+  Future<void> _updateInfo(UserProvider auth) async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.me);
@@ -141,7 +141,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _clearData() async {
-    await context.read<AuthProvider>().clearData();
+    await context.read<UserProvider>().clearData();
 
     if (!mounted) return;
 

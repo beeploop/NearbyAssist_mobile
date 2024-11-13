@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
-import 'package:nearby_assist/providers/search_provider.dart';
+import 'package:nearby_assist/providers/service_provider.dart';
+import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +24,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
   LatLng _location = defaultLocation;
 
   Future<void> _getLocation() async {
-    final position = await Geolocator.getLastKnownPosition();
+    final position = await LocationService().lastPosition();
     if (position == null) return;
 
     setState(() {
@@ -40,9 +40,10 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchProvider>(
-      builder: (context, search, child) {
-        _fitMarkers(search.results);
+    return Consumer<ServiceProvider>(
+      builder: (context, provider, child) {
+        final services = provider.getServices();
+        _fitMarkers(services);
 
         return Stack(
           children: [
@@ -78,7 +79,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                     ),
 
                     // Display markers for the services
-                    ...search.results.map((service) {
+                    ...services.map((service) {
                       return _createMarker(
                         point: LatLng(service.latitude, service.longitude),
                         rank: service.rank,
@@ -98,7 +99,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
               bottom: 20,
               right: 20,
               child: FloatingActionButton(
-                onPressed: () => _fitMarkers(search.results),
+                onPressed: () => _fitMarkers(services),
                 backgroundColor: Colors.green,
                 child: const Icon(
                   CupertinoIcons.map_pin_ellipse,
