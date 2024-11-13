@@ -31,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: "Update user information to latest values",
                 icon: CupertinoIcons.arrow_2_circlepath,
                 endIcon: false,
-                onPress: () => _updateInfo(auth),
+                onPress: () => _syncAccount(auth),
               );
             },
           ),
@@ -79,7 +79,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Future<void> _updateInfo(UserProvider auth) async {
+  Future<void> _syncAccount(UserProvider auth) async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.me);

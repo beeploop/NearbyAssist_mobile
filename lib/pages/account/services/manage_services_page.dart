@@ -49,6 +49,27 @@ class _ManageServicesState extends State<ManageServices> {
             );
           }
 
+          if (!auth.user.isVendor) {
+            return Center(
+              child: AlertDialog(
+                icon: const Icon(CupertinoIcons.exclamationmark_triangle),
+                title: const Text('You are not a vendor'),
+                content: const Text(
+                    'You need to be a vendor to access this feature'),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => context.pushNamed('vendorApplication'),
+                    child: const Text('Apply'),
+                  ),
+                ],
+              ),
+            );
+          }
+
           return _mainContent();
         },
       ),

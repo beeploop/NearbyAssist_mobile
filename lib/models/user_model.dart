@@ -4,6 +4,7 @@ class UserModel {
   String email;
   String imageUrl;
   bool isVerified;
+  bool isVendor;
 
   UserModel({
     required this.id,
@@ -11,6 +12,7 @@ class UserModel {
     required this.email,
     required this.imageUrl,
     required this.isVerified,
+    required this.isVendor,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -19,7 +21,8 @@ class UserModel {
       name: json['name'],
       email: json['email'],
       imageUrl: json['imageUrl'],
-      isVerified: json['verified'],
+      isVerified: json['isVerified'],
+      isVendor: json['isVendor'],
     );
   }
 
@@ -29,7 +32,8 @@ class UserModel {
       'name': name,
       'email': email,
       'imageUrl': imageUrl,
-      'verified': isVerified,
+      'isVerified': isVerified,
+      'isVendor': isVendor,
     };
   }
 }
