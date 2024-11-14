@@ -67,9 +67,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
           Column(
             children: [
               VendorInfoSection(
-                name: details.vendor.name,
-                vendorId: details.vendor.id,
-                rating: details.vendor.rating,
+                vendor: details.vendor,
               ),
               const SizedBox(height: 10),
               ServiceActions(service: details),

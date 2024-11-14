@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
-import 'package:nearby_assist/utils/random_color.dart';
 import 'package:provider/provider.dart';
 
 class SavesPage extends StatefulWidget {
@@ -42,23 +42,32 @@ class _SavesPageState extends State<SavesPage> {
   }
 
   Widget _buildSaves(List<DetailedServiceModel> saves) {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
       itemCount: saves.length,
-      itemBuilder: (context, index) => ListTile(
-        onTap: () => context.pushNamed(
-          'viewService',
-          queryParameters: {'serviceId': saves[index].service.id},
+      itemBuilder: (context, index) => Container(
+        decoration: BoxDecoration(
+          color: Colors.green[100],
+          borderRadius: BorderRadius.circular(10),
         ),
-        leading: CircleAvatar(
-          backgroundColor: getRandomColor(),
-          radius: 30,
-          child: CircleAvatar(
-            radius: 27,
-            backgroundImage: NetworkImage(saves[index].vendor.imageUrl),
+        padding: const EdgeInsets.all(10),
+        child: ListTile(
+          onTap: () => context.pushNamed(
+            'viewService',
+            queryParameters: {'serviceId': saves[index].service.id},
           ),
+          leading: Icon(
+            tagIconMap[saves[index].service.tags[0]],
+            size: 26,
+            grade: 10,
+          ),
+          title: Text(
+            saves[index].vendor.name,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(saves[index].service.description),
+          trailing: const Icon(CupertinoIcons.arrow_right),
         ),
-        title: Text(saves[index].vendor.name),
-        subtitle: Text(saves[index].service.description),
       ),
     );
   }
