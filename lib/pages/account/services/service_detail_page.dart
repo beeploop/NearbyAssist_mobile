@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/models/vendor_model.dart';
+import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 //import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
-import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:provider/provider.dart';
 
 class ServiceDetailPage extends StatefulWidget {
@@ -23,8 +25,6 @@ class ServiceDetailPage extends StatefulWidget {
 class _ServiceDetailPageState extends State<ServiceDetailPage> {
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<UserProvider>().user;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -42,27 +42,58 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
           const SizedBox(width: 10),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                _header(user),
-                const SizedBox(height: 10),
-                const SizedBox(height: 10),
-                const ImageSection(),
-                const SizedBox(height: 10),
-                //const DetailTabSection(),
-              ],
-            ),
-          ],
-        ),
+      body: FutureBuilder(
+        future:
+            context.read<ManagedServiceProvider>().getService(widget.serviceId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: AlertDialog(
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching the details of this service. Please try again later.',
+                ),
+              ),
+            );
+          }
+
+          final data = snapshot.data!;
+          return _content(data);
+        },
       ),
     );
   }
 
-  Widget _header(UserModel user) {
+  Widget _content(DetailedServiceModel detail) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              _header(detail.vendor),
+              const SizedBox(height: 10),
+              const ImageSection(),
+              const SizedBox(height: 10),
+              DetailTabSection(
+                rating: detail.ratingCount,
+                service: detail.service,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _header(VendorModel vendor) {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -75,7 +106,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
             height: 80,
             width: 80,
             child: Image.network(
-              user.imageUrl,
+              vendor.imageUrl,
               fit: BoxFit.cover,
               loadingBuilder: (context, child, chunk) {
                 if (chunk == null) {
@@ -97,15 +128,22 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                 GestureDetector(
                   onTap: () => context.pushNamed('manage'),
                   child: Text(
-                    user.name,
+                    vendor.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),
                   ),
                 ),
+                Text(
+                  vendor.email,
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 5),
                 RatingBar.builder(
-                  initialRating: 0,
+                  initialRating: vendor.rating,
                   allowHalfRating: true,
                   itemSize: 20,
                   itemBuilder: (context, _) => const Icon(

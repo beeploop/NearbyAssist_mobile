@@ -4,11 +4,17 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/utils/location_editing_controller.dart';
 import 'package:nearby_assist/pages/account/services/widget/location_picker.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
+import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/services/manage_services_service.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class AddServicePage extends StatefulWidget {
   const AddServicePage({super.key});
@@ -144,10 +150,6 @@ class _AddServicePageState extends State<AddServicePage> {
     );
   }
 
-  void _save() {
-    throw UnimplementedError();
-  }
-
   void _handleLocationPicked() {
     setState(() {
       _locationController.setLocation(
@@ -155,5 +157,54 @@ class _AddServicePageState extends State<AddServicePage> {
       );
     });
     context.pop();
+  }
+
+  void _save() async {
+    try {
+      final provider = context.read<ManagedServiceProvider>();
+
+      final data = ServiceModel(
+        vendorId: context.read<UserProvider>().user.id,
+        title: _titleController.text,
+        description: _descriptionController.text,
+        rate: double.parse(_priceController.text),
+        latitude: _locationController.location.latitude,
+        longitude: _locationController.location.longitude,
+        tags: _tagsController.selectedTags,
+      );
+
+      final service = ManageServicesService();
+      final response = await service.add(data);
+
+      provider.add(response);
+
+      _onSuccess();
+    } catch (error) {
+      _showErrorModal(error.toString());
+    }
+  }
+
+  void _onSuccess() {
+    showCustomSnackBar(
+      context,
+      'Service added successfully',
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+    );
+
+    context.pop();
+  }
+
+  void _showErrorModal(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+    );
   }
 }

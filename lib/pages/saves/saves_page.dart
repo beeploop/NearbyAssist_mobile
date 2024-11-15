@@ -62,7 +62,7 @@ class _SavesPageState extends State<SavesPage> {
             grade: 10,
           ),
           title: Text(
-            saves[index].vendor.name,
+            saves[index].service.title,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Text(saves[index].service.description),

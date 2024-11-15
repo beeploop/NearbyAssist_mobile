@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_item.dart';
+import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -14,10 +15,10 @@ class ManageServices extends StatefulWidget {
 }
 
 class _ManageServicesState extends State<ManageServices> {
-  final List<ServiceModel> _services = [];
-
   @override
   Widget build(BuildContext context) {
+    final services = context.watch<ManagedServiceProvider>().getServices();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -70,33 +71,38 @@ class _ManageServicesState extends State<ManageServices> {
             );
           }
 
-          return _mainContent();
+          return _mainContent(services, auth.user.id);
         },
       ),
     );
   }
 
-  Widget _mainContent() {
+  Widget _mainContent(List<ServiceModel> services, String userId) {
     return Center(
       child: Stack(
         children: [
-          _services.isEmpty
-              ? const Center(child: Text('You have no services yet'))
-              : RefreshIndicator(
-                  onRefresh: () => Future.delayed(const Duration(seconds: 1)),
-                  child: ListView.builder(
-                    itemCount: _services.length,
-                    itemBuilder: (context, index) {
-                      final hasPadding = index == (_services.length - 1);
+          RefreshIndicator(
+            onRefresh: () =>
+                context.read<ManagedServiceProvider>().refreshServices(userId),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: services.isEmpty
+                  ? _emptyState()
+                  : ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
+                      itemCount: services.length,
+                      itemBuilder: (context, index) {
+                        final hasPadding = index == (services.length - 1);
 
-                      return ServiceItem(
-                        serviceId: _services[index].id,
-                        description: _services[index].description,
-                        paddingBottom: hasPadding,
-                      );
-                    },
-                  ),
-                ),
+                        return ServiceItem(
+                          service: services[index],
+                          paddingBottom: hasPadding,
+                        );
+                      },
+                    ),
+            ),
+          ),
           Positioned(
             bottom: 16,
             right: 20,
@@ -111,6 +117,30 @@ class _ManageServicesState extends State<ManageServices> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _emptyState() {
+    return ListView(
+      children: [
+        SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.center,
+            height: MediaQuery.of(context).size.height,
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(CupertinoIcons.tray, color: Colors.grey),
+                SizedBox(height: 10),
+                Text(
+                  'No services',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

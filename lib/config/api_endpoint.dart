@@ -46,4 +46,6 @@ class ApiEndpoint {
 
   String get vendor => '$_baseUrl/api/v1/vendors';
   String get vendorServices => '$_baseUrl/api/v1/vendors/services';
+
+  String get addService => '$_baseUrl/api/v1/services';
 }

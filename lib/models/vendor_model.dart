@@ -4,7 +4,7 @@ class VendorModel {
   final String email;
   final String imageUrl;
   final double rating;
-  final bool restricted;
+  final bool isRestricted;
 
   VendorModel({
     required this.id,
@@ -12,7 +12,7 @@ class VendorModel {
     required this.email,
     required this.imageUrl,
     required this.rating,
-    required this.restricted,
+    required this.isRestricted,
   });
 
   factory VendorModel.fromJson(Map<String, dynamic> json) {
@@ -22,7 +22,18 @@ class VendorModel {
       email: json['email'],
       imageUrl: json['imageUrl'],
       rating: double.parse(json['rating']),
-      restricted: json['restricted'] == 1 ? true : false,
+      isRestricted: json['isRestricted'] == 1 ? true : false,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'imageUrl': imageUrl,
+      'rating': rating,
+      'isRestricted': isRestricted,
+    };
   }
 }

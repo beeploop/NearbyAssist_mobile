@@ -17,8 +17,8 @@ const serviceTags = [
 ];
 
 final fakeUser = LoginPayloadModel(
-  name: 'John Doe',
-  email: 'johndoe@email.com',
+  name: 'Sophia Reed',
+  email: 'sophia.reed@example.com',
   imageUrl: 'assets/images/profile.png',
 );
 

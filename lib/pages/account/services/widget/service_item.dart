@@ -1,44 +1,45 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/utils/random_color.dart';
+import 'package:nearby_assist/config/service_tag_icon.dart';
+import 'package:nearby_assist/models/service_model.dart';
 
 class ServiceItem extends StatelessWidget {
   const ServiceItem({
     super.key,
     this.paddingBottom = false,
-    required this.description,
-    required this.serviceId,
+    required this.service,
   });
 
   final bool paddingBottom;
-  final String description;
-  final String serviceId;
+  final ServiceModel service;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: paddingBottom ? 80 : 0),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: ListTile(
-          title: Text(
-            description,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          leading: Container(
-            width: 2,
-            decoration: BoxDecoration(
-              color: getRandomColor(),
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          onTap: () {
-            context.pushNamed(
-              "detail",
-              queryParameters: {'serviceId': serviceId},
-            );
-          },
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green[100],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.all(10),
+      child: ListTile(
+        onTap: () {
+          context.pushNamed(
+            "detail",
+            queryParameters: {'serviceId': service.id},
+          );
+        },
+        leading: Icon(
+          tagIconMap[service.tags[0]],
+          size: 26,
+          grade: 10,
         ),
+        title: Text(
+          service.title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(service.description),
+        trailing: const Icon(CupertinoIcons.arrow_right),
       ),
     );
   }
