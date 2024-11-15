@@ -34,6 +34,7 @@ class ApiEndpoint {
   String get termsAndConditions => '$_baseUrl/terms_and_conditions';
 
   String get verifyAccount => '$_baseUrl/api/v1/verification/identity';
+  String get vendorApplication => '$_baseUrl/api/v1/applications';
 
   String get search => '$_baseUrl/api/v1/services/search';
   String get serviceDetails => '$_baseUrl/api/v1/services';
