@@ -6,6 +6,7 @@ import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
+import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
@@ -85,6 +86,10 @@ class _SettingsPageState extends State<SettingsPage> {
       final response = await api.dio.get(endpoint.me);
 
       final user = UserModel.fromJson(response.data['user']);
+
+      final store = SecureStorage();
+      await store.saveUser(user);
+
       await auth.login(user);
 
       _showSuccessModal('Account information synced');
