@@ -1,4 +1,5 @@
 import 'package:diffie_hellman/diffie_hellman.dart';
+import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/key_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
@@ -107,6 +108,11 @@ class DiffieHellman {
       await api.dio.post(
         endpoint.saveKeys,
         data: KeyModel(public: publicKeyPem, private: privateKeyPem).toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
       );
     } catch (error) {
       rethrow;

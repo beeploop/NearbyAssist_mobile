@@ -49,7 +49,15 @@ class VerifyAccountService {
       });
 
       final api = ApiService.authenticated();
-      await api.dio.post(endpoint.verifyAccount, data: data);
+      await api.dio.post(
+        endpoint.verifyAccount,
+        data: data,
+        options: Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
     } on DioException catch (error) {
       if (error.response?.statusCode == 400) {
         throw 'You already submitted an application';

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
@@ -28,6 +29,11 @@ class AuthService {
       final response = await api.dio.post(
         endpoint.login,
         data: payload.toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
       );
 
       final accessToken = response.data['accessToken'];
@@ -67,6 +73,11 @@ class AuthService {
       await api.dio.post(
         endpoint.logout,
         data: {'refreshToken': refreshToken},
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
       );
     } catch (error) {
       logger.log('Error on logout: ${error.toString()}');

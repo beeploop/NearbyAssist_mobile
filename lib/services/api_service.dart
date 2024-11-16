@@ -15,9 +15,6 @@ class ApiService {
     connectTimeout: const Duration(seconds: 5),
     receiveTimeout: const Duration(seconds: 5),
     responseType: ResponseType.json,
-    headers: {
-      'Content-Type': 'application/json',
-    },
   );
 
   late Dio dio;
@@ -30,6 +27,6 @@ class ApiService {
   ApiService._authenticated() {
     dio = Dio(_options);
     dio.interceptors.add(QueryParamEncodingInterceptor());
-    dio.interceptors.add(AuthInterceptor());
+    dio.interceptors.add(AuthInterceptor(_options));
   }
 }

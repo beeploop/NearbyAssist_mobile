@@ -26,7 +26,15 @@ class VendorApplicationService {
       });
 
       final api = ApiService.authenticated();
-      await api.dio.post(endpoint.vendorApplication, data: data);
+      await api.dio.post(
+        endpoint.vendorApplication,
+        data: data,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
     } on DioException catch (error) {
       if (error.response?.statusCode == 400) {
         throw 'You already submitted an application';

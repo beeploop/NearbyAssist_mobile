@@ -1,11 +1,14 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 
 class AuthInterceptor extends Interceptor {
+  final BaseOptions _options;
+
+  AuthInterceptor(BaseOptions options) : _options = options;
+
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
@@ -23,8 +26,33 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == HttpStatus.unauthorized) {
-      await _refreshToken();
-      return handler.resolve(await _retry(err.requestOptions));
+      try {
+        await _refreshToken();
+
+        try {
+          final response = await _retry(err.requestOptions);
+          handler.resolve(response);
+        } on DioException catch (error) {
+          handler.reject(DioException.badResponse(
+            statusCode: error.response?.statusCode ?? HttpStatus.unauthorized,
+            requestOptions: error.requestOptions,
+            response:
+                error.response ?? Response(requestOptions: RequestOptions()),
+          ));
+        } catch (error) {
+          handler.reject(DioException.badResponse(
+            statusCode: HttpStatus.unauthorized,
+            requestOptions: RequestOptions(),
+            response: Response(requestOptions: RequestOptions()),
+          ));
+        }
+      } catch (error) {
+        handler.reject(DioException.badResponse(
+          statusCode: HttpStatus.unauthorized,
+          requestOptions: RequestOptions(),
+          response: Response(requestOptions: RequestOptions()),
+        ));
+      }
     }
 
     super.onError(err, handler);
@@ -43,12 +71,16 @@ class AuthInterceptor extends Interceptor {
       final response = await api.dio.post(
         endpoint.refresh,
         data: {'refreshToken': refreshToken},
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
       );
 
       await store.saveToken(
           TokenType.accessToken, response.data['accessToken']);
     } catch (error) {
-      logger.log('Error refreshing token ${error.toString()}');
       rethrow;
     }
   }
@@ -60,20 +92,44 @@ class AuthInterceptor extends Interceptor {
       throw Exception('NoToken');
     }
 
-    final options = Options(
-      method: requestOptions.method,
-      headers: {
-        ...requestOptions.headers,
-        'Authorization': 'Bearer $accessToken',
-      },
-    );
+    final RequestOptions originalOptions = requestOptions;
 
-    final dio = Dio();
-    return dio.request<dynamic>(
-      requestOptions.path,
-      data: requestOptions.data,
-      queryParameters: requestOptions.queryParameters,
-      options: options,
-    );
+    final dynamic retryFormData;
+    if (originalOptions.data is FormData) {
+      final oldData = originalOptions.data as FormData;
+
+      final newData = FormData();
+      newData.fields.addAll(oldData.fields);
+
+      for (var entry in oldData.files) {
+        newData.files.add(MapEntry(entry.key, entry.value.clone()));
+      }
+
+      retryFormData = newData;
+    } else {
+      retryFormData = originalOptions.data;
+    }
+
+    try {
+      final Options options = Options(
+        method: originalOptions.method,
+        headers: {
+          ...originalOptions.headers,
+          'Authorization': 'Bearer $accessToken',
+        },
+        contentType: originalOptions.contentType,
+      );
+
+      final dio = Dio(_options);
+
+      return await dio.request(
+        originalOptions.path,
+        data: retryFormData,
+        queryParameters: originalOptions.queryParameters,
+        options: options,
+      );
+    } catch (error) {
+      rethrow;
+    }
   }
 }
