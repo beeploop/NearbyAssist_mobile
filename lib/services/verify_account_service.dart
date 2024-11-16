@@ -50,6 +50,12 @@ class VerifyAccountService {
 
       final api = ApiService.authenticated();
       await api.dio.post(endpoint.verifyAccount, data: data);
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 400) {
+        throw 'You already submitted an application';
+      }
+
+      rethrow;
     } catch (error) {
       logger.log('Error submitting account verification: ${error.toString()}');
       rethrow;

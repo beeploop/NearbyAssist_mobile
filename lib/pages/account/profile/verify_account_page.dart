@@ -149,13 +149,13 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         face: face,
       );
 
-      _showSuccessModal();
+      _onSuccess();
     } catch (error) {
-      _showErrorModal(error.toString());
+      _onError(error.toString());
     }
   }
 
-  void _showSuccessModal() {
+  void _onSuccess() {
     showCustomSnackBar(
       context,
       'Request submitted. We are reviewing your request and will get back to you',
@@ -168,7 +168,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     context.pop();
   }
 
-  void _showErrorModal(String error) {
+  void _onError(String error) {
     showCustomSnackBar(
       context,
       error,
@@ -177,5 +177,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       textColor: Colors.white,
       closeIconColor: Colors.white,
     );
+
+    context.pop();
   }
 }
