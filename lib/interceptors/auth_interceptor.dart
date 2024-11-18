@@ -16,11 +16,12 @@ class AuthInterceptor extends Interceptor {
     final accessToken = await store.getToken(TokenType.accessToken);
     if (accessToken == null) {
       handler.reject(DioException(requestOptions: options));
+      return;
     }
 
     options.headers['Authorization'] = 'Bearer $accessToken';
 
-    return handler.next(options);
+    super.onRequest(options, handler);
   }
 
   @override
@@ -49,6 +50,7 @@ class AuthInterceptor extends Interceptor {
             requestOptions: RequestOptions(),
             response: Response(requestOptions: RequestOptions()),
           ));
+          return;
         }
       } catch (error) {
         handler.reject(DioException.badResponse(
@@ -56,10 +58,11 @@ class AuthInterceptor extends Interceptor {
           requestOptions: err.requestOptions,
           response: Response(requestOptions: RequestOptions()),
         ));
+        return;
       }
     }
 
-    return handler.next(err);
+    super.onError(err, handler);
   }
 
   Future<void> _refreshToken() async {
