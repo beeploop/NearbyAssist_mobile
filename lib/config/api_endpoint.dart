@@ -48,4 +48,8 @@ class ApiEndpoint {
   String get vendorServices => '$_baseUrl/api/v1/vendors/services';
 
   String get addService => '$_baseUrl/api/v1/services';
+
+  String get savedServices => '$_baseUrl/api/v1/services/get-saved';
+  String get saveService => '$_baseUrl/api/v1/services/save';
+  String get unsaveService => '$_baseUrl/api/v1/services/unsave';
 }

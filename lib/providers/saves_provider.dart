@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/services/saves_service.dart';
 
 class SavesProvider extends ChangeNotifier {
   final Map<String, DetailedServiceModel> _saves = {};
@@ -13,16 +14,38 @@ class SavesProvider extends ChangeNotifier {
   }
 
   Future<void> refetchSaves() async {
-    return Future.error('Unimplemented');
+    try {
+      final saves = await SavesService().getSaves();
+
+      for (final item in saves) {
+        _saves[item.service.id] = item;
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 
-  void save(DetailedServiceModel service) {
+  Future<void> save(DetailedServiceModel service) async {
     _saves[service.service.id] = service;
     notifyListeners();
+
+    try {
+      await SavesService().save(service);
+    } catch (error) {
+      rethrow;
+    }
   }
 
-  void unsave(String id) {
+  Future<void> unsave(String id) async {
     _saves.remove(id);
     notifyListeners();
+
+    try {
+      await SavesService().unsave(id);
+    } catch (error) {
+      rethrow;
+    }
   }
 }

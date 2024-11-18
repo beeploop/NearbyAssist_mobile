@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class ServiceActions extends StatefulWidget {
@@ -36,8 +37,8 @@ class _ServiceActionsState extends State<ServiceActions> {
               return Expanded(
                 child: TextButton.icon(
                   onPressed: saves.isSaved(widget.service.service.id)
-                      ? () => saves.unsave(widget.service.service.id)
-                      : () => saves.save(widget.service),
+                      ? () => _unsave(saves, widget.service.service.id)
+                      : () => _save(saves, widget.service),
                   icon: Icon(
                     saves.isSaved(widget.service.service.id)
                         ? CupertinoIcons.bookmark_fill
@@ -59,6 +60,47 @@ class _ServiceActionsState extends State<ServiceActions> {
     context.pushNamed(
       'route',
       queryParameters: {'serviceId': widget.service.service.id},
+    );
+  }
+
+  Future<void> _save(
+      SavesProvider provider, DetailedServiceModel service) async {
+    try {
+      await provider.save(service);
+      _onSuccess('Service saved');
+    } catch (error) {
+      _onError(error.toString());
+    }
+  }
+
+  Future<void> _unsave(SavesProvider provider, String serviceId) async {
+    try {
+      await provider.unsave(serviceId);
+      _onSuccess('Service unsaved');
+    } catch (error) {
+      _onError(error.toString());
+    }
+  }
+
+  void _onSuccess(String message) {
+    showCustomSnackBar(
+      context,
+      message,
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+    );
+  }
+
+  void _onError(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      duration: const Duration(seconds: 5),
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
     );
   }
 }
