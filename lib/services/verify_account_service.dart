@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/api_service.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http_parser/http_parser.dart';
 
 class VerifyAccountService {
   Future<void> verify({
@@ -36,6 +38,7 @@ class VerifyAccountService {
           MultipartFile.fromBytes(
             frontId!,
             filename: 'frontId',
+            contentType: MediaType('image', 'jpeg'),
           ),
           MultipartFile.fromBytes(
             backId!,
@@ -52,11 +55,6 @@ class VerifyAccountService {
       await api.dio.post(
         endpoint.verifyAccount,
         data: data,
-        options: Options(
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        ),
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == 400) {

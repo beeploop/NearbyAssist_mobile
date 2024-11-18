@@ -177,7 +177,5 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       textColor: Colors.white,
       closeIconColor: Colors.white,
     );
-
-    context.pop();
   }
 }

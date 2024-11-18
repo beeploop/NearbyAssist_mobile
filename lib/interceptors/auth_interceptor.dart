@@ -20,12 +20,16 @@ class AuthInterceptor extends Interceptor {
 
     options.headers['Authorization'] = 'Bearer $accessToken';
 
-    super.onRequest(options, handler);
+    return handler.next(options);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    if (err.response?.statusCode == HttpStatus.unauthorized) {
+    final bool isPossibleAuthError = (err.error is SocketException &&
+            err.error.toString().toLowerCase().contains('broken pipe')) ||
+        err.response?.statusCode == HttpStatus.unauthorized;
+
+    if (isPossibleAuthError) {
       try {
         await _refreshToken();
 
@@ -49,13 +53,13 @@ class AuthInterceptor extends Interceptor {
       } catch (error) {
         handler.reject(DioException.badResponse(
           statusCode: HttpStatus.unauthorized,
-          requestOptions: RequestOptions(),
+          requestOptions: err.requestOptions,
           response: Response(requestOptions: RequestOptions()),
         ));
       }
     }
 
-    super.onError(err, handler);
+    return handler.next(err);
   }
 
   Future<void> _refreshToken() async {
@@ -101,8 +105,16 @@ class AuthInterceptor extends Interceptor {
       final newData = FormData();
       newData.fields.addAll(oldData.fields);
 
-      for (var entry in oldData.files) {
-        newData.files.add(MapEntry(entry.key, entry.value.clone()));
+      for (final entry in oldData.files) {
+        try {
+          newData.files.add(MapEntry(
+            entry.key,
+            entry.value.clone(),
+          ));
+        } catch (error) {
+          logger.log('Error cloning file: $error');
+          rethrow;
+        }
       }
 
       retryFormData = newData;

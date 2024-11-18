@@ -12,8 +12,9 @@ class ApiService {
 
   final _options = BaseOptions(
     baseUrl: endpoint.baseUrl,
-    connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 5),
+    connectTimeout: const Duration(seconds: 30),
+    receiveTimeout: const Duration(minutes: 10),
+    sendTimeout: const Duration(minutes: 10),
     responseType: ResponseType.json,
   );
 
