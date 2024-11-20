@@ -9,6 +9,14 @@ class LoginPayloadModel {
     required this.imageUrl,
   });
 
+  factory LoginPayloadModel.fromFacebook(Map<String, dynamic> response) {
+    return LoginPayloadModel(
+      name: response['name'],
+      email: response['email'],
+      imageUrl: response['picture']['data']['url'],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'name': name,

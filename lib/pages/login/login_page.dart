@@ -6,6 +6,7 @@ import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/login/tester_settings_modal.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
+import 'package:nearby_assist/services/facebook_auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -83,8 +84,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
+      final fbAuth = FacebookAuthService();
+      final fbUser = await fbAuth.login();
+
       final auth = AuthService();
-      final user = await auth.login(fakeUser);
+      final user = await auth.login(fbUser);
+
       _onLoginSuccess(user);
     } catch (error) {
       _showErrorModal(error.toString());
