@@ -1,17 +1,20 @@
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/models/partial_message_model.dart';
 
 class MessageModel {
   String id;
   String sender;
   String receiver;
   String content;
+  types.Status status;
 
   MessageModel({
     required this.id,
     required this.sender,
     required this.receiver,
     required this.content,
+    this.status = types.Status.sent,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +23,16 @@ class MessageModel {
       sender: json['sender'],
       receiver: json['receiver'],
       content: json['content'],
+    );
+  }
+
+  factory MessageModel.fromPartial(PartialMessageModel partial) {
+    return MessageModel(
+      id: '',
+      sender: partial.sender,
+      receiver: partial.receiver,
+      content: partial.content,
+      status: types.Status.sending,
     );
   }
 
@@ -41,13 +54,39 @@ class MessageModel {
     );
   }
 
+  MessageModel copyWithNewStatus(types.Status status) {
+    return MessageModel(
+      id: id,
+      sender: sender,
+      receiver: receiver,
+      content: content,
+      status: status,
+    );
+  }
+
   types.TextMessage toTextMessage() {
     return types.TextMessage(
       id: id,
       author: types.User(id: sender),
       text: content,
       showStatus: true,
-      status: types.Status.sending,
+      status: status,
     );
+  }
+
+  /// Does not take into account the content
+  bool isPartialEqual(MessageModel message) {
+    if (sender == message.sender &&
+        receiver == message.receiver &&
+        status == types.Status.sending) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool isSending() {
+    if (status == types.Status.sending) return true;
+    return false;
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/message_model.dart';
@@ -42,8 +41,13 @@ class WebsocketProvider extends ChangeNotifier {
 
     _channel!.stream.listen(
       (event) {
-        final message = MessageModel.fromJson(jsonDecode(event));
-        _receiveMessage(message);
+        try {
+          final decoded = jsonDecode(event);
+          final message = MessageModel.fromJson(decoded);
+          _receiveMessage(message);
+        } catch (error) {
+          logger.log('Error parsing event: ${error.toString()}');
+        }
       },
       onDone: disconnect,
       onError: (error) => logger.log,
@@ -60,7 +64,10 @@ class WebsocketProvider extends ChangeNotifier {
   }
 
   Future<void> _receiveMessage(MessageModel message) async {
-    if (_messageProvider == null) return;
+    if (_messageProvider == null) {
+      logger.log('--- message provider is null');
+      return;
+    }
 
     _messageProvider!.addMessage(message);
   }

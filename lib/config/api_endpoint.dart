@@ -42,6 +42,7 @@ class ApiEndpoint {
 
   String get websocket => '$_wsUrl/api/v1/chat/ws';
   String get conversations => '$_baseUrl/api/v1/chat/conversations';
+  String get getMessages => '$_baseUrl/api/v1/chat/messages';
   String get sendMessage => '$_baseUrl/api/v1/chat/send';
 
   String get vendor => '$_baseUrl/api/v1/vendors';

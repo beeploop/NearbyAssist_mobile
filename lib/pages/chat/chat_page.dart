@@ -7,6 +7,7 @@ import 'package:nearby_assist/models/partial_message_model.dart';
 import 'package:nearby_assist/pages/chat/widget/menu.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
@@ -38,37 +39,84 @@ class _ChatPageState extends State<ChatPage> {
             Menu(vendorId: widget.recipientId),
             const SizedBox(width: 10),
           ]),
-      body: Chat(
-        theme: DefaultChatTheme(
-          primaryColor: Theme.of(context).primaryColor,
-          inputBorderRadius: BorderRadius.zero,
-          inputBackgroundColor: Colors.transparent,
-          sendButtonIcon: const Icon(
-            CupertinoIcons.paperplane_fill,
-            color: Colors.green,
-          ),
-          inputTextColor: Colors.black,
-          inputTextDecoration: InputDecoration(
-            isDense: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            fillColor: Colors.grey[200],
-            filled: true,
-          ),
-        ),
-        onSendPressed: (partial) {
-          final message = PartialMessageModel(
-            sender: user.id,
-            receiver: widget.recipientId,
-            content: partial.text,
-          );
+      body: FutureBuilder(
+        future:
+            context.read<MessageProvider>().fetchMessages(widget.recipientId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-          context.read<MessageProvider>().send(message);
+          if (snapshot.hasError) {
+            return const Center(
+              child: AlertDialog(
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching messages. Please try again later',
+                ),
+              ),
+            );
+          }
+
+          final messages =
+              context.watch<MessageProvider>().getMessages(widget.recipientId);
+          return _chat(user, messages);
         },
-        messages: const [],
-        user: user,
       ),
+    );
+  }
+
+  Widget _chat(types.User user, List<types.TextMessage> messages) {
+    return Chat(
+      theme: DefaultChatTheme(
+        primaryColor: Theme.of(context).primaryColor,
+        inputBorderRadius: BorderRadius.zero,
+        inputBackgroundColor: Colors.transparent,
+        sendButtonIcon: const Icon(
+          CupertinoIcons.paperplane_fill,
+          color: Colors.green,
+        ),
+        inputTextColor: Colors.black,
+        inputTextDecoration: InputDecoration(
+          isDense: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          fillColor: Colors.grey[200],
+          filled: true,
+        ),
+      ),
+      onSendPressed: (partial) => _sendMessage(partial, user.id),
+      messages: messages,
+      user: user,
+    );
+  }
+
+  Future<void> _sendMessage(types.PartialText partial, String sender) async {
+    try {
+      final message = PartialMessageModel(
+        sender: sender,
+        receiver: widget.recipientId,
+        content: partial.text,
+      );
+
+      await context.read<MessageProvider>().send(message);
+    } catch (error) {
+      _onSendError(error.toString());
+    }
+  }
+
+  void _onSendError(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+      duration: const Duration(seconds: 3),
     );
   }
 }

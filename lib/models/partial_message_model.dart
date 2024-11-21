@@ -1,3 +1,5 @@
+import 'package:nearby_assist/models/message_model.dart';
+
 class PartialMessageModel {
   String sender;
   String receiver;
@@ -15,5 +17,14 @@ class PartialMessageModel {
       'receiver': receiver,
       'content': content,
     };
+  }
+
+  MessageModel toMessageModel() {
+    return MessageModel(
+      id: '',
+      sender: sender,
+      receiver: receiver,
+      content: content,
+    );
   }
 }

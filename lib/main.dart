@@ -69,6 +69,8 @@ class _App extends State<App> {
   Widget build(BuildContext context) {
     final userProvider = context.read<UserProvider>();
     final websocketProvider = context.read<WebsocketProvider>();
+    final messageProvider = context.read<MessageProvider>();
+    websocketProvider.setMessageProvider(messageProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
