@@ -78,6 +78,7 @@ class MessageModel {
   bool isPartialEqual(MessageModel message) {
     if (sender == message.sender &&
         receiver == message.receiver &&
+        content == message.content &&
         status == types.Status.sending) {
       return true;
     }

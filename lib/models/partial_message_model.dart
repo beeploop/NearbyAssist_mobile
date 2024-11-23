@@ -27,4 +27,12 @@ class PartialMessageModel {
       content: content,
     );
   }
+
+  PartialMessageModel copyWithNewContent(String content) {
+    return PartialMessageModel(
+      sender: sender,
+      receiver: receiver,
+      content: content,
+    );
+  }
 }
