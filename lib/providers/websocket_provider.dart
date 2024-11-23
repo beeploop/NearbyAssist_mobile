@@ -69,6 +69,6 @@ class WebsocketProvider extends ChangeNotifier {
       return;
     }
 
-    _messageProvider!.addMessage(message);
+    _messageProvider!.receive(message);
   }
 }

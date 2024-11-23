@@ -61,37 +61,39 @@ class _ChatPageState extends State<ChatPage> {
             );
           }
 
-          final messages =
-              context.watch<MessageProvider>().getMessages(widget.recipientId);
-          return _chat(user, messages);
+          return _chat(user);
         },
       ),
     );
   }
 
-  Widget _chat(types.User user, List<types.TextMessage> messages) {
-    return Chat(
-      theme: DefaultChatTheme(
-        primaryColor: Theme.of(context).primaryColor,
-        inputBorderRadius: BorderRadius.zero,
-        inputBackgroundColor: Colors.transparent,
-        sendButtonIcon: const Icon(
-          CupertinoIcons.paperplane_fill,
-          color: Colors.green,
-        ),
-        inputTextColor: Colors.black,
-        inputTextDecoration: InputDecoration(
-          isDense: true,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+  Widget _chat(types.User user) {
+    return Consumer<MessageProvider>(
+      builder: (context, provider, child) {
+        return Chat(
+          theme: DefaultChatTheme(
+            primaryColor: Theme.of(context).primaryColor,
+            inputBorderRadius: BorderRadius.zero,
+            inputBackgroundColor: Colors.transparent,
+            sendButtonIcon: const Icon(
+              CupertinoIcons.paperplane_fill,
+              color: Colors.green,
+            ),
+            inputTextColor: Colors.black,
+            inputTextDecoration: InputDecoration(
+              isDense: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              fillColor: Colors.grey[200],
+              filled: true,
+            ),
           ),
-          fillColor: Colors.grey[200],
-          filled: true,
-        ),
-      ),
-      onSendPressed: (partial) => _sendMessage(partial, user.id),
-      messages: messages,
-      user: user,
+          onSendPressed: (partial) => _sendMessage(partial, user.id),
+          messages: provider.getMessages(widget.recipientId),
+          user: user,
+        );
+      },
     );
   }
 
