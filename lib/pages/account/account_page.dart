@@ -159,7 +159,7 @@ class _AccountPageState extends State<AccountPage> {
                 );
               }),
           AccountTileWidget(
-              title: "Information",
+              title: "Information & Licenses",
               icon: CupertinoIcons.info,
               onPress: () => context.pushNamed("information")),
         ],
