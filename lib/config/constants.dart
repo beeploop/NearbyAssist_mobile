@@ -3,7 +3,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/models/login_payload_model.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
 
+const appName = "NearbyAssist";
 const appVersion = "v0.5.0-alpha";
+const appLegalese = "© 2024 NearbyAssist";
 
 const defaultLocation = LatLng(7.4470693031593225, 125.80932608954173);
 const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
