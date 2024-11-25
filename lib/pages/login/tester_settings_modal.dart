@@ -12,7 +12,14 @@ class TesterSettingsModal extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _disclaimer(),
-          Text('API Endpoint: ${endpoint.baseUrl}'),
+          const SizedBox(height: 10),
+          Text(
+            'API Endpoint: ${endpoint.baseUrl}',
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );

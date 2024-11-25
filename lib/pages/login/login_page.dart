@@ -24,9 +24,10 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: const Icon(CupertinoIcons.gear),
+            icon: const Icon(CupertinoIcons.ellipsis),
             onPressed: () => _showTesterSettings(),
           ),
+          const SizedBox(width: 10),
         ],
       ),
       body: Center(
@@ -36,19 +37,22 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 60),
               SizedBox(
-                width: 160,
-                child: Column(
-                  children: [
-                    Image.asset('assets/images/splash_icon_android_12.png'),
-                    Text(
-                      "NearbyAssist",
-                      style: TextStyle(
-                        color: Colors.green[800],
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icon/login-icon.png'),
+                      Text(
+                        "NearbyAssist",
+                        style: TextStyle(
+                          color: Colors.green[800],
+                          fontSize: 90,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 60),
