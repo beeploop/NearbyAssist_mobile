@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 class InputField extends StatefulWidget {
   const InputField({
     super.key,
-    required this.controller,
     required this.hintText,
+    this.controller,
     this.labelText,
     this.minLines = 1,
     this.maxLines = 2,
     this.readOnly = false,
   });
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hintText;
   final String? labelText;
   final int? minLines;
