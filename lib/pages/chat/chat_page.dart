@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/partial_message_model.dart';
 import 'package:nearby_assist/pages/chat/widget/menu.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
@@ -27,8 +28,6 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
-    final user = types.User(id: context.watch<UserProvider>().user.id);
-
     return Scaffold(
       appBar: AppBar(
           title: Text(
@@ -39,35 +38,57 @@ class _ChatPageState extends State<ChatPage> {
             Menu(vendorId: widget.recipientId),
             const SizedBox(width: 10),
           ]),
-      body: FutureBuilder(
-        future:
-            context.read<MessageProvider>().fetchMessages(widget.recipientId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return const Center(
+      body: context.read<UserProvider>().user.isVerified == false
+          ? Center(
               child: AlertDialog(
-                icon: Icon(CupertinoIcons.exclamationmark_triangle),
-                title: Text('Something went wrong'),
-                content: Text(
-                  'An error occurred while fetching messages. Please try again later',
-                ),
+                icon: const Icon(CupertinoIcons.exclamationmark_triangle),
+                title: const Text('Account not verified'),
+                content: const Text(
+                    'Please verify your account to unlock more features'),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => context.pushNamed('verifyAccount'),
+                    child: const Text('Verify'),
+                  ),
+                ],
               ),
-            );
-          }
+            )
+          : FutureBuilder(
+              future: context
+                  .read<MessageProvider>()
+                  .fetchMessages(widget.recipientId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-          return _chat(user);
-        },
-      ),
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: AlertDialog(
+                      icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                      title: Text('Something went wrong'),
+                      content: Text(
+                        'An error occurred while fetching messages. Please try again later',
+                      ),
+                    ),
+                  );
+                }
+
+                return _chat();
+              },
+            ),
     );
   }
 
-  Widget _chat(types.User user) {
+  Widget _chat() {
+    final user = types.User(id: context.watch<UserProvider>().user.id);
+
     return Consumer<MessageProvider>(
       builder: (context, provider, child) {
         return Chat(

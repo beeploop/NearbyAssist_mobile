@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/providers/route_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class RoutePage extends StatefulWidget {
@@ -24,31 +26,50 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: FutureBuilder(
-        future: context.read<RouteProvider>().getRoute(widget.serviceId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return const Center(
+      body: context.read<UserProvider>().user.isVerified == false
+          ? Center(
               child: AlertDialog(
-                icon: Icon(CupertinoIcons.exclamationmark_triangle),
-                title: Text('Something went wrong'),
-                content: Text(
-                  'An error occurred while finding a route to the service. Please try again later',
-                ),
+                icon: const Icon(CupertinoIcons.exclamationmark_triangle),
+                title: const Text('Account not verified'),
+                content: const Text(
+                    'Please verify your account to unlock more features'),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => context.pushNamed('verifyAccount'),
+                    child: const Text('Verify'),
+                  ),
+                ],
               ),
-            );
-          }
+            )
+          : FutureBuilder(
+              future: context.read<RouteProvider>().getRoute(widget.serviceId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-          final route = snapshot.data!;
-          return _mapView(route);
-        },
-      ),
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: AlertDialog(
+                      icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                      title: Text('Something went wrong'),
+                      content: Text(
+                        'An error occurred while finding a route to the service. Please try again later',
+                      ),
+                    ),
+                  );
+                }
+
+                final route = snapshot.data!;
+                return _mapView(route);
+              },
+            ),
     );
   }
 
