@@ -1,13 +1,16 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearby_assist/config/valid_id.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/verify_account_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -138,10 +141,14 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     final face = _faceController.image;
 
     try {
+      final location = await LocationService().getLocation();
+
       final service = VerifyAccountService();
       await service.verify(
         name: name,
         address: address,
+        latitude: location.latitude,
+        longitude: location.longitude,
         idType: idType,
         idNumber: idNumber,
         frontId: frontId,
@@ -150,6 +157,9 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       );
 
       _onSuccess();
+    } on LocationServiceDisabledException catch (error) {
+      logger.log('Error on verify account: ${error.toString()}');
+      _showLocationServiceDisabledDialog();
     } catch (error) {
       _onError(error.toString());
     }
@@ -176,6 +186,31 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       backgroundColor: Colors.red,
       textColor: Colors.white,
       closeIconColor: Colors.white,
+    );
+  }
+
+  void _showLocationServiceDisabledDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Location Services Disabled'),
+          content: const Text(
+            'Please enable location services to use this feature.',
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await Geolocator.openLocationSettings();
+              },
+              child: const Text('Open Settings'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -10,6 +10,8 @@ class VerifyAccountService {
   Future<void> verify({
     required String name,
     required String address,
+    required double latitude,
+    required double longitude,
     required ValidID idType,
     required String idNumber,
     required Uint8List? frontId,
@@ -20,6 +22,8 @@ class VerifyAccountService {
       if (!_isValid(
         name: name,
         address: address,
+        latitude: latitude,
+        longitude: longitude,
         idType: idType,
         idNumber: idNumber,
         frontId: frontId,
@@ -32,6 +36,8 @@ class VerifyAccountService {
       final data = FormData.fromMap({
         'name': name,
         'address': address,
+        'latitude': latitude,
+        'longitude': longitude,
         'idType': idType.value,
         'idNumber': idNumber,
         'files': [
@@ -71,6 +77,8 @@ class VerifyAccountService {
   bool _isValid({
     required String name,
     required String address,
+    required double latitude,
+    required double longitude,
     required ValidID idType,
     required String idNumber,
     required Uint8List? frontId,
@@ -90,6 +98,10 @@ class VerifyAccountService {
     }
 
     if (face == null) {
+      return false;
+    }
+
+    if (latitude == 0 || longitude == 0) {
       return false;
     }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/profile/widget/profile_header.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -35,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   isVerified: auth.user.isVerified,
                 ),
                 const SizedBox(height: 10),
-                Text('Account ID: ${auth.user.id}'),
+                Text(prettyJSON(auth.user)),
               ],
             ),
           );

@@ -5,6 +5,9 @@ class UserModel {
   String imageUrl;
   bool isVerified;
   bool isVendor;
+  String? address;
+  double? latitude;
+  double? longitude;
 
   UserModel({
     required this.id,
@@ -13,6 +16,9 @@ class UserModel {
     required this.imageUrl,
     required this.isVerified,
     required this.isVendor,
+    this.address,
+    this.latitude,
+    this.longitude,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +29,9 @@ class UserModel {
       imageUrl: json['imageUrl'],
       isVerified: json['isVerified'],
       isVendor: json['isVendor'],
+      address: json['address'] == "" ? null : json['address'],
+      latitude: json['latitude'] == 0 ? null : json['latitude'],
+      longitude: json['longitude'] == 0 ? null : json['longitude'],
     );
   }
 
@@ -34,6 +43,9 @@ class UserModel {
       'imageUrl': imageUrl,
       'isVerified': isVerified,
       'isVendor': isVendor,
+      'address': address,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }
