@@ -1,15 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/pages/booking/booking_page.dart';
 
 class FloatingCTA extends StatelessWidget {
-  const FloatingCTA({
-    super.key,
-    required this.recipientId,
-    required this.recipient,
-  });
+  const FloatingCTA({super.key, required this.details});
 
-  final String recipientId;
-  final String recipient;
+  final DetailedServiceModel details;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,15 @@ class FloatingCTA extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => BookingPage(details: details),
+                ),
+              );
+            },
             child: const Text('Book Now'),
           ),
           TextButton(
@@ -46,8 +52,8 @@ class FloatingCTA extends StatelessWidget {
               context.pushNamed(
                 'chat',
                 queryParameters: {
-                  'recipientId': recipientId,
-                  'recipient': recipient,
+                  'recipientId': details.vendor.id,
+                  'recipient': details.vendor.name,
                 },
               );
             },

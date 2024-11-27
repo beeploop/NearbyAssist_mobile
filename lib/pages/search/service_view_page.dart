@@ -80,8 +80,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
               ),
             ],
           ),
-          FloatingCTA(
-              recipient: details.vendor.name, recipientId: details.vendor.id),
+          FloatingCTA(details: details),
         ],
       ),
     );
