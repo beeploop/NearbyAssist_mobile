@@ -19,6 +19,8 @@ class ApiEndpoint {
   // Health check
   String get healthcheck => '$_baseUrl/api/v1/health/protected';
 
+  String get reverseGeocoding => 'https://nominatim.openstreetmap.org/reverse';
+
   // Auth Routes
   String get login => '$_baseUrl/api/v1/user/login';
   String get logout => '$_baseUrl/api/v1/user/logout';

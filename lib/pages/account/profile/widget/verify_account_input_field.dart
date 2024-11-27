@@ -23,6 +23,7 @@ class _VerifyAccountInputFieldState extends State<VerifyAccountInputField> {
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
       decoration: InputDecoration(
         labelText: widget.labelText,
+        border: const OutlineInputBorder(),
       ),
     );
   }

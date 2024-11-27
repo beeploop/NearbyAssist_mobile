@@ -9,6 +9,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
+import 'package:nearby_assist/pages/widget/address_input.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/verify_account_service.dart';
@@ -59,19 +60,20 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(height: 20),
               VerifyAccountInputField(
                 controller: _nameController,
                 labelText: 'Complete name',
               ),
               const SizedBox(height: 20),
-              VerifyAccountInputField(
-                controller: _addressController,
-                labelText: 'Address',
-              ),
+              AddressInput(onLocationPicked: _onLocationPicked),
               const SizedBox(height: 20),
               DropdownSearch<ValidID>(
                 decoratorProps: const DropDownDecoratorProps(
-                  decoration: InputDecoration(labelText: 'ID Type'),
+                  decoration: InputDecoration(
+                    labelText: 'ID Type',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 items: (filter, props) => ValidID.values,
                 itemAsString: (id) => id.value,
@@ -129,6 +131,12 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         ),
       ),
     );
+  }
+
+  void _onLocationPicked(String address) {
+    setState(() {
+      _addressController.text = address;
+    });
   }
 
   void _submit() async {
