@@ -16,11 +16,7 @@ class DatePickerController extends ChangeNotifier {
   String get dateRange => '$formattedStart - $formattedEnd';
 
   int get days {
-    final days = _selectedRange.duration.inDays;
-    if (days <= 0) {
-      return 1;
-    }
-    return days;
+    return _selectedRange.duration.inDays + 1;
   }
 
   DateTime get start => _selectedRange.start;

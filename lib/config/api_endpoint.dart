@@ -53,4 +53,6 @@ class ApiEndpoint {
   String get savedServices => '$_baseUrl/api/v1/services/get-saved';
   String get saveService => '$_baseUrl/api/v1/services/save';
   String get unsaveService => '$_baseUrl/api/v1/services/unsave';
+
+  String get createBooking => '$_baseUrl/api/v1/transactions';
 }

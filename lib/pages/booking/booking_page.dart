@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/employment_type.dart';
+import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/booking/widget/date_picker_controller.dart';
 import 'package:nearby_assist/pages/booking/widget/service_information_section.dart';
 import 'package:nearby_assist/pages/booking/widget/summary_section.dart';
 import 'package:nearby_assist/pages/booking/widget/user_information_section.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/services/booking_service.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class BookingPage extends StatefulWidget {
@@ -160,6 +163,51 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> _book() async {
-    //
+    final cost = _employmentType == EmploymentType.pakyaw
+        ? widget.details.service.rate
+        : widget.details.service.rate * _calendarController.days;
+
+    final booking = BookingModel(
+      vendorId: widget.details.vendor.id,
+      clientId: context.read<UserProvider>().user.id,
+      serviceId: widget.details.service.id,
+      startDate: _calendarController.start.toIso8601String(),
+      endDate: _calendarController.end.toIso8601String(),
+      employmentType: _employmentType!,
+      cost: cost.toString(),
+    );
+
+    try {
+      final service = BookingService();
+      await service.book(booking);
+
+      _onSuccess();
+    } catch (error) {
+      _onError(error.toString());
+    }
+  }
+
+  void _onSuccess() {
+    showCustomSnackBar(
+      context,
+      'Booking successful',
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+      duration: const Duration(seconds: 5),
+    );
+
+    context.pop();
+  }
+
+  void _onError(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+      duration: const Duration(seconds: 5),
+    );
   }
 }
