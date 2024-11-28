@@ -7,6 +7,7 @@ import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class ServiceViewPage extends StatefulWidget {
@@ -60,6 +61,8 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
   }
 
   Widget _showContent(DetailedServiceModel details) {
+    final user = context.read<UserProvider>().user;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Stack(
@@ -80,7 +83,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
               ),
             ],
           ),
-          FloatingCTA(details: details),
+          if (user.id != details.vendor.id) FloatingCTA(details: details),
         ],
       ),
     );
