@@ -7,7 +7,7 @@ import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/services/utils/location_editing_controller.dart';
 import 'package:nearby_assist/pages/account/services/widget/location_picker.dart';
-import 'package:nearby_assist/pages/account/widget/input_field.dart';
+import 'package:nearby_assist/pages/booking/widget/input_field.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/geocoding_service.dart';
 import 'package:provider/provider.dart';
@@ -51,6 +51,7 @@ class _AddressInputState extends State<AddressInput> {
           child: InputField(
             controller: _addressController,
             hintText: 'your address',
+            labelText: 'Address',
             minLines: 1,
             maxLines: 6,
           ),

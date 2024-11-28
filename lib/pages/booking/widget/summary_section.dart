@@ -12,11 +12,13 @@ class SummarySection extends StatefulWidget {
     required this.detail,
     required this.employmentType,
     required this.calendarController,
+    required this.clientAddress,
   });
 
   final DetailedServiceModel detail;
   final EmploymentType employmentType;
   final DatePickerController calendarController;
+  final String clientAddress;
 
   @override
   State<SummarySection> createState() => _SummarySectionState();
@@ -38,33 +40,32 @@ class _SummarySectionState extends State<SummarySection> {
           ),
         ),
         const SizedBox(height: 20),
-        RowTile(label: 'Client Name', text: user.name),
+        RowTile(label: 'Client Name:', text: user.name),
         const SizedBox(height: 20),
-        RowTile(label: 'Client Email', text: user.email),
+        RowTile(label: 'Client Email:', text: user.email),
         const SizedBox(height: 20),
-        const RowTile(
-            label: 'Client Address', text: ''), // TODO: Implement address
+        RowTile(label: 'Client Address:', text: widget.clientAddress),
         const SizedBox(height: 20),
-        RowTile(label: 'Vendor Name', text: widget.detail.vendor.name),
+        RowTile(label: 'Vendor Name:', text: widget.detail.vendor.name),
         const SizedBox(height: 20),
-        RowTile(label: 'Vendor Email', text: widget.detail.vendor.email),
+        RowTile(label: 'Vendor Email:', text: widget.detail.vendor.email),
         const SizedBox(height: 20),
-        RowTile(label: 'Rate', text: '₱ ${widget.detail.service.rate}'),
+        RowTile(label: 'Rate:', text: '₱ ${widget.detail.service.rate}'),
         const SizedBox(height: 20),
         RowTile(
-            label: 'Duration',
+            label: 'Duration:',
             text: '${widget.calendarController.days} day(s)'),
         const SizedBox(height: 20),
         RowTile(
-            label: 'Start Date',
+            label: 'Start Date:',
             text: widget.calendarController.formattedStart),
         const SizedBox(height: 20),
         RowTile(
-            label: 'End Date', text: widget.calendarController.formattedEnd),
+            label: 'End Date:', text: widget.calendarController.formattedEnd),
         const SizedBox(height: 20),
-        RowTile(label: 'Employment Type', text: widget.employmentType.value),
+        RowTile(label: 'Employment Type:', text: widget.employmentType.value),
         const SizedBox(height: 20),
-        RowTile(label: 'Estimated Cost', text: '${computeCost()}'),
+        RowTile(label: 'Estimated Cost:', text: '₱ ${computeCost()}'),
         const SizedBox(height: 20),
       ],
     );

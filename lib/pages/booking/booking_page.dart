@@ -25,8 +25,18 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   EmploymentType? _employmentType = EmploymentType.pakyaw;
   final _calendarController = DatePickerController();
+  String _clientAddress = '';
 
   int _currentStep = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (user.address != null) {
+      _clientAddress = user.address!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +94,7 @@ class _BookingPageState extends State<BookingPage> {
       Step(
         isActive: _currentStep >= 1,
         title: const Text('Step 2'),
-        content: const UserInformationSection(),
+        content: UserInformationSection(onAddressLocated: _onAddressLocated),
       ),
       Step(
         isActive: _currentStep >= 2,
@@ -93,6 +103,7 @@ class _BookingPageState extends State<BookingPage> {
           detail: widget.details,
           calendarController: _calendarController,
           employmentType: _employmentType!,
+          clientAddress: _clientAddress,
         ),
       ),
     ];
@@ -155,6 +166,12 @@ class _BookingPageState extends State<BookingPage> {
   void _onChangeEmploymentType(EmploymentType? value) {
     setState(() {
       _employmentType = value;
+    });
+  }
+
+  void _onAddressLocated(String address) {
+    setState(() {
+      _clientAddress = address;
     });
   }
 

@@ -14,17 +14,22 @@ class RowTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = TextStyle(
-      fontSize: 16,
-      fontWeight: bold ? FontWeight.bold : FontWeight.normal,
-      color: Colors.grey[800],
-    );
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: style),
-        Text(text, style: style),
+        Text(label,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[900],
+            )),
+        const SizedBox(height: 6),
+        Text(text,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.normal,
+              color: Colors.grey[900],
+            )),
       ],
     );
   }

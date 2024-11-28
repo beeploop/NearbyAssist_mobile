@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/booking/widget/input_field.dart';
+import 'package:nearby_assist/pages/widget/address_input.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class UserInformationSection extends StatefulWidget {
   const UserInformationSection({
     super.key,
+    required this.onAddressLocated,
   });
+
+  final void Function(String) onAddressLocated;
 
   @override
   State<UserInformationSection> createState() => _UserInformationSectionState();
@@ -54,15 +58,7 @@ class _UserInformationSectionState extends State<UserInformationSection> {
           labelText: 'Email',
         ),
         const SizedBox(height: 20),
-        // TODO: Implement address
-        InputField(
-          readOnly: true,
-          controller: addressController,
-          hintText: 'your address',
-          labelText: 'Address',
-          minLines: 1,
-          maxLines: 4,
-        ),
+        AddressInput(onLocationPicked: widget.onAddressLocated),
       ],
     );
   }
