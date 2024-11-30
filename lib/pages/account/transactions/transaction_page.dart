@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/transactions/widget/grid_section.dart';
+import 'package:nearby_assist/pages/account/transactions/widget/recent_transaction.dart';
 
 class TransactionPage extends StatelessWidget {
   const TransactionPage({super.key});
@@ -14,28 +15,16 @@ class TransactionPage extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: const Padding(
+        padding: EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const GridSection(),
-              const SizedBox(height: 20),
-
-              // Recent Transactions
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Recent Transactions',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text('View All'),
-                  ),
-                ],
-              ),
+              GridSection(),
+              SizedBox(height: 20),
+              Divider(),
+              SizedBox(height: 10),
+              RecentTransaction(),
             ],
           ),
         ),

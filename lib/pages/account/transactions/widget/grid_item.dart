@@ -18,7 +18,7 @@ class GridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.2)),
-      onTap: () => onTap,
+      onTap: () => onTap(),
       child: Ink(
         decoration: BoxDecoration(
           color: background,
