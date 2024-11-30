@@ -88,11 +88,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
-      final fbAuth = FacebookAuthService();
-      final fbUser = await fbAuth.login();
-
       final auth = AuthService();
-      final user = await auth.login(fbUser);
+      final user = await auth.login(fakeUser);
 
       _onLoginSuccess(user);
     } catch (error) {
