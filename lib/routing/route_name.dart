@@ -17,6 +17,8 @@ enum RoutePath {
 
   account(path: "/account"),
 
+  transactions(path: "/transactions"),
+
   profile(path: "/profile"),
 
   settings(path: "/settings"),
