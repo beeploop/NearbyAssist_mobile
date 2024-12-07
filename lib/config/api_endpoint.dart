@@ -61,4 +61,6 @@ class ApiEndpoint {
   String get ongoing => '$_baseUrl/api/v1/transactions/ongoing';
   String get myRequests => '$_baseUrl/api/v1/transactions/mine';
   String get clientRequests => '$_baseUrl/api/v1/transactions/mine';
+
+  String get expertiseList => '$_baseUrl/api/v1/tags/expertise';
 }

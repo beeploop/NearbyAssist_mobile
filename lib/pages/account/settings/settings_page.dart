@@ -7,6 +7,7 @@ import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
+import 'package:nearby_assist/services/tag_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
@@ -108,12 +109,14 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _updateTags() async {
-    showCustomSnackBar(
-      context,
-      "This feature is under development",
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.yellow[300],
-    );
+    try {
+      final service = TagService();
+      await service.getExpertiseWithTags();
+
+      _showSuccessModal('Tags updated');
+    } catch (error) {
+      _showErrorModal(error.toString());
+    }
   }
 
   void _healthcheck() async {
