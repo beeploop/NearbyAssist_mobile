@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
+import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
-import 'package:nearby_assist/services/tag_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
@@ -110,8 +110,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _updateTags() async {
     try {
-      final service = TagService();
-      await service.getExpertiseWithTags();
+      await context.read<ExpertiseProvider>().fetchExpertise();
 
       _showSuccessModal('Tags updated');
     } catch (error) {

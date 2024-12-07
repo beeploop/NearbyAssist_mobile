@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:nearby_assist/config/api_endpoint.dart';
+import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/route_provider.dart';
@@ -42,6 +43,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => SavesProvider()),
         ChangeNotifierProvider(create: (context) => ManagedServiceProvider()),
         ChangeNotifierProvider(create: (context) => TransactionProvider()),
+        ChangeNotifierProvider(create: (context) => ExpertiseProvider()),
       ],
       child: const App(),
     ),

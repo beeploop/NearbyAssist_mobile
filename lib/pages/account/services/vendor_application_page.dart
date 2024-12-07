@@ -2,14 +2,16 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/widget/clickable_text.dart';
 import 'package:nearby_assist/pages/widget/divider_with_text.dart';
+import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/services/vendor_application_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VendorApplicationPage extends StatefulWidget {
@@ -20,10 +22,20 @@ class VendorApplicationPage extends StatefulWidget {
 }
 
 class _VendorApplicationPageState extends State<VendorApplicationPage> {
-  String? _selectedTag;
+  List<ExpertiseModel> _expertiseList = [];
+  ExpertiseModel? _selectedExpertise;
+  List<String> _unlockables = [];
   final _supportingDocController = FillableImageContainerController();
   final _policeClearanceController = FillableImageContainerController();
   bool _hasAgreedToTAC = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _expertiseList =
+        Provider.of<ExpertiseProvider>(context, listen: false).expertise;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +53,12 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
           child: Column(
             children: [
               _tagsDropdown(),
+              const SizedBox(height: 20),
+              const Text('Selected expertise will unlock the following tags:'),
+              Text(
+                _unlockables.join(', '),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 20),
               const DividerWithText(text: 'Supporting Document'),
               const SizedBox(height: 10),
@@ -98,10 +116,10 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
   }
 
   Widget _tagsDropdown() {
-    return DropdownSearch<String>(
+    return DropdownSearch<ExpertiseModel>(
       decoratorProps: const DropDownDecoratorProps(
         decoration: InputDecoration(
-          hintText: 'Applying for?',
+          hintText: 'Select expertise',
           border: OutlineInputBorder(),
         ),
       ),
@@ -119,16 +137,24 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
         showSelectedItems: true,
         searchFieldProps: const TextFieldProps(
           decoration: InputDecoration(
-            hintText: 'filter tags',
+            hintText: 'filter list',
           ),
         ),
         searchDelay: const Duration(milliseconds: 500),
       ),
       autoValidateMode: AutovalidateMode.always,
-      items: (filter, props) => serviceTags,
-      selectedItem: _selectedTag,
+      items: (filter, props) => _expertiseList,
+      itemAsString: (expertise) => expertise.title,
+      compareFn: (expertise, selected) => expertise.id == selected.id,
+      selectedItem: _selectedExpertise,
       onChanged: (item) => setState(() {
-        _selectedTag = item;
+        _selectedExpertise = item;
+        final unlocks =
+            context.read<ExpertiseProvider>().getTagsOfExpertise(item?.id);
+
+        setState(() {
+          _unlockables = unlocks.map((e) => e.title).toList();
+        });
       }),
     );
   }
@@ -161,7 +187,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
       return;
     }
 
-    if (_selectedTag == null) {
+    if (_selectedExpertise == null) {
       _showErrorModal('Please select a tag');
       return;
     }
@@ -175,7 +201,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
     try {
       final service = VendorApplicationService();
       await service.apply(
-        tag: _selectedTag!,
+        expertise: _selectedExpertise!,
         supportingDoc: _supportingDocController.imageBytes!,
         policeClearance: _supportingDocController.imageBytes!,
       );

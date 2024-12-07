@@ -1,7 +1,9 @@
+import 'package:nearby_assist/models/tag_model.dart';
+
 class ExpertiseModel {
   String id;
   String title;
-  List<String> tags = [];
+  List<TagModel> tags = [];
 
   ExpertiseModel({
     required this.id,
@@ -13,7 +15,11 @@ class ExpertiseModel {
     return ExpertiseModel(
       id: json['id'],
       title: json['title'],
-      tags: List<String>.from(json['tags']),
+      tags: List<TagModel>.from(
+        json['tags'].map(
+          (tag) => TagModel.fromJson(tag),
+        ),
+      ),
     );
   }
 }

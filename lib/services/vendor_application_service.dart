@@ -2,17 +2,18 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 
 class VendorApplicationService {
   Future<void> apply({
-    required String tag,
+    required ExpertiseModel expertise,
     required Uint8List supportingDoc,
     required Uint8List policeClearance,
   }) async {
     try {
       final data = FormData.fromMap({
-        'job': tag,
+        'expertiseId': expertise.id,
         'files': [
           MultipartFile.fromBytes(
             supportingDoc,

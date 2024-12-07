@@ -1,15 +1,15 @@
 class TagModel {
-  String? id;
+  String id;
   String title;
 
   TagModel({
-    this.id,
+    required this.id,
     required this.title,
   });
 
   factory TagModel.fromJson(Map<String, dynamic> json) {
     return TagModel(
-      id: json['id'] ?? '',
+      id: json['id'],
       title: json['title'],
     );
   }
