@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:provider/provider.dart';
 
 class OngoingTransactionPage extends StatelessWidget {
   const OngoingTransactionPage({super.key});
@@ -14,13 +16,40 @@ class OngoingTransactionPage extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: const Center(
-        child: Column(
-          children: [
-            Icon(CupertinoIcons.arrow_clockwise_circle),
-            Text('Ongoing Transaction Page'),
-          ],
-        ),
+      body: FutureBuilder(
+        future: context.read<TransactionProvider>().fetchOngoing(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: AlertDialog(
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching data. Please try again later',
+                ),
+              ),
+            );
+          }
+
+          return _mainContent();
+        },
+      ),
+    );
+  }
+
+  Widget _mainContent() {
+    return const Center(
+      child: Column(
+        children: [
+          Icon(CupertinoIcons.arrow_down_circle),
+          Text('Client Request Page'),
+        ],
       ),
     );
   }
