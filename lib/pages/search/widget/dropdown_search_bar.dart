@@ -2,7 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -23,6 +23,8 @@ class DropdownSearchBar extends StatefulWidget {
 class _DropdownSearchBarState extends State<DropdownSearchBar> {
   @override
   Widget build(BuildContext context) {
+    final tags = context.watch<ExpertiseProvider>().getAllTags();
+
     return Consumer<SearchProvider>(
       builder: (context, search, child) {
         return Row(
@@ -53,9 +55,9 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
                   searchDelay: const Duration(milliseconds: 500),
                 ),
                 autoValidateMode: AutovalidateMode.always,
-                items: (filter, props) => serviceTags,
+                items: (filter, props) => tags.map((tag) => tag.title).toList(),
                 selectedItems: search.queries,
-                onChanged: (items) => search.setQueries(items),
+                onChanged: (tags) => search.setQueries(tags),
               ),
             ),
             FilledButton.icon(

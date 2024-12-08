@@ -18,6 +18,16 @@ class ExpertiseProvider extends ChangeNotifier {
     return expertise.tags;
   }
 
+  List<TagModel> getAllTags() {
+    final List<TagModel> tags = [];
+
+    for (final expertise in _expertise) {
+      tags.addAll(expertise.tags);
+    }
+
+    return tags;
+  }
+
   Future<void> fetchExpertise() async {
     try {
       final service = TagService();

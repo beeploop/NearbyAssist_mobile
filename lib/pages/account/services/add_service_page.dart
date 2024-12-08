@@ -5,10 +5,10 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/pages/account/services/utils/location_editing_controller.dart';
 import 'package:nearby_assist/pages/account/services/widget/location_picker.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
-import 'package:nearby_assist/pages/search/widget/dropdown_search_bar_controller.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
@@ -24,10 +24,11 @@ class AddServicePage extends StatefulWidget {
 }
 
 class _AddServicePageState extends State<AddServicePage> {
+  final List<TagModel> _availableTags = [];
+  List<TagModel> _selectedTags = [];
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
-  final _tagsController = DropdownSearchBarController();
   final _mapController = MapController();
   final _locationController = LocationEditingController(
     initialLocation: defaultLocation,
@@ -42,9 +43,19 @@ class _AddServicePageState extends State<AddServicePage> {
     });
   }
 
+  void initializeTags() {
+    final expertises =
+        Provider.of<UserProvider>(context, listen: false).user.expertise;
+
+    for (final expertise in expertises) {
+      _availableTags.addAll(expertise.tags);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    initializeTags();
     _getLocation();
   }
 
@@ -76,7 +87,7 @@ class _AddServicePageState extends State<AddServicePage> {
                 labelText: 'Price',
               ),
               const SizedBox(height: 10),
-              DropdownSearch<String>.multiSelection(
+              DropdownSearch<TagModel>.multiSelection(
                 decoratorProps: const DropDownDecoratorProps(
                   decoration: InputDecoration(
                     hintText: 'select tags',
@@ -103,9 +114,11 @@ class _AddServicePageState extends State<AddServicePage> {
                   searchDelay: const Duration(milliseconds: 500),
                 ),
                 autoValidateMode: AutovalidateMode.always,
-                items: (filter, props) => serviceTags,
-                selectedItems: _tagsController.selectedTags,
-                onChanged: (items) => _tagsController.replaceAll(items),
+                items: (filter, props) => _availableTags,
+                itemAsString: (tag) => tag.title,
+                compareFn: (tag, selected) => tag.id == selected.id,
+                selectedItems: _selectedTags,
+                onChanged: (items) => _selectedTags = items,
               ),
               const SizedBox(height: 10),
               Text('Location: ${_locationController.location}'),
@@ -170,7 +183,7 @@ class _AddServicePageState extends State<AddServicePage> {
         rate: double.parse(_priceController.text),
         latitude: _locationController.location.latitude,
         longitude: _locationController.location.longitude,
-        tags: _tagsController.selectedTags,
+        tags: _selectedTags.map((e) => e.title).toList(),
       );
 
       final service = ManageServicesService();
