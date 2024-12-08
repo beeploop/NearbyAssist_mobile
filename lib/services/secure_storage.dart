@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/user_model.dart';
 
 enum TokenType {
@@ -39,15 +40,20 @@ class SecureStorage {
   }
 
   Future<void> saveUser(UserModel user) async {
-    final userData = jsonEncode(user.toJson());
+    final userData = jsonEncode(user);
     await _storage.write(key: _userKey, value: userData);
   }
 
-  Future<UserModel?> getUser() async {
-    final value = await _storage.read(key: _userKey);
-    if (value == null) return null;
+  Future<UserModel> getUser() async {
+    try {
+      final value = await _storage.read(key: _userKey);
+      if (value == null) throw Exception('User not found');
 
-    return UserModel.fromJson(jsonDecode(value));
+      return UserModel.fromJson(jsonDecode(value));
+    } catch (error) {
+      logger.log('Error on get user: ${error.toString()}');
+      rethrow;
+    }
   }
 
   Future<void> saveKey(KeyType type, String value) async {

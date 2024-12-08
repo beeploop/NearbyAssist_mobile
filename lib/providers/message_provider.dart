@@ -6,6 +6,7 @@ import 'package:nearby_assist/models/message_model.dart';
 import 'package:nearby_assist/models/partial_message_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/encryption.dart';
 import 'package:nearby_assist/services/message_service.dart';
@@ -107,9 +108,11 @@ class MessageProvider extends ChangeNotifier {
   }
 
   Future<void> receive(MessageModel message) async {
-    final user = await SecureStorage().getUser();
-    if (user == null) {
-      throw Exception('NoUser');
+    UserModel user;
+    try {
+      user = await SecureStorage().getUser();
+    } catch (error) {
+      rethrow;
     }
 
     // Case 1: I am the sender, so check the cache for the receiver

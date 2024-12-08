@@ -55,7 +55,7 @@ class UserModel {
       'address': address,
       'latitude': latitude,
       'longitude': longitude,
-      'expertise': expertise.map((e) => e.toJson()).toList(),
+      'expertises': expertise.map((e) => e.toJson()).toList(),
     };
   }
 }

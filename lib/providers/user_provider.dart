@@ -23,13 +23,14 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> tryLoadUser() async {
-    final store = SecureStorage();
-    final user = await store.getUser();
-    if (user == null) {
+    try {
+      final store = SecureStorage();
+      final user = await store.getUser();
+
+      login(user);
+    } catch (error) {
       return;
     }
-
-    login(user);
   }
 
   Future<void> clearData() async {
