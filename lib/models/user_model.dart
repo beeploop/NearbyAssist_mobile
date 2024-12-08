@@ -1,3 +1,5 @@
+import 'package:nearby_assist/models/expertise_model.dart';
+
 class UserModel {
   String id;
   String name;
@@ -8,6 +10,7 @@ class UserModel {
   String? address;
   double? latitude;
   double? longitude;
+  List<ExpertiseModel> expertise;
 
   UserModel({
     required this.id,
@@ -19,6 +22,7 @@ class UserModel {
     this.address,
     this.latitude,
     this.longitude,
+    required this.expertise,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,11 @@ class UserModel {
       address: json['address'] == "" ? null : json['address'],
       latitude: json['latitude'] == 0 ? null : json['latitude'],
       longitude: json['longitude'] == 0 ? null : json['longitude'],
+      expertise: json['expertises'] == null
+          ? []
+          : (json['expertises'] as List)
+              .map((e) => ExpertiseModel.fromJson(e))
+              .toList(),
     );
   }
 
@@ -46,6 +55,7 @@ class UserModel {
       'address': address,
       'latitude': latitude,
       'longitude': longitude,
+      'expertise': expertise.map((e) => e.toJson()).toList(),
     };
   }
 }

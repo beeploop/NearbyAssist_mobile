@@ -24,20 +24,22 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Consumer<UserProvider>(
         builder: (context, auth, child) {
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ProfileHeader(
-                  name: auth.user.name,
-                  title: auth.user.email,
-                  imageUrl: auth.user.imageUrl,
-                  isVerified: auth.user.isVerified,
-                ),
-                const SizedBox(height: 10),
-                Text(prettyJSON(auth.user)),
-              ],
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ProfileHeader(
+                    name: auth.user.name,
+                    title: auth.user.email,
+                    imageUrl: auth.user.imageUrl,
+                    isVerified: auth.user.isVerified,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(prettyJSON(auth.user)),
+                ],
+              ),
             ),
           );
         },

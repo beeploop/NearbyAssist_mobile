@@ -86,6 +86,8 @@ class _SettingsPageState extends State<SettingsPage> {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.me);
 
+      logger.log(prettyJSON(response.data));
+
       final user = UserModel.fromJson(response.data['user']);
 
       final store = SecureStorage();

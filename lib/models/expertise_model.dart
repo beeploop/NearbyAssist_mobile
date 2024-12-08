@@ -22,4 +22,12 @@ class ExpertiseModel {
       ),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'tags': tags.map((tag) => tag.toJson()).toList(),
+    };
+  }
 }

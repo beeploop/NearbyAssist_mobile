@@ -13,4 +13,11 @@ class TagModel {
       title: json['title'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+    };
+  }
 }
