@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -105,18 +106,11 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
           SizedBox(
             height: 80,
             width: 80,
-            child: Image.network(
-              vendor.imageUrl,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, chunk) {
-                if (chunk == null) {
-                  return child;
-                }
-
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
+            child: CachedNetworkImage(
+              imageUrl: vendor.imageUrl,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(value: downloadProgress.progress),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
           const SizedBox(width: 10),

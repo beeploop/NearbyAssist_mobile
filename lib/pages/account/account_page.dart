@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -187,7 +188,8 @@ class _AccountPageState extends State<AccountPage> {
           children: [
             CircleAvatar(
               radius: 40,
-              foregroundImage: AssetImage(user.imageUrl),
+              foregroundImage: CachedNetworkImageProvider(user.imageUrl),
+              backgroundImage: const AssetImage('assets/images/profile.png'),
             ),
             const SizedBox(height: 10),
             Text(

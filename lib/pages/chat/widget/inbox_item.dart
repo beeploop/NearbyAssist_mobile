@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/conversation_model.dart';
@@ -19,9 +20,12 @@ class InboxItem extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: getRandomColor(),
           radius: 30,
-          child: const CircleAvatar(
+          child: CircleAvatar(
             radius: 27,
-            backgroundImage: AssetImage('assets/images/avatar.png'),
+            foregroundImage: CachedNetworkImageProvider(
+              conversation.imageUrl,
+            ),
+            backgroundImage: const AssetImage('assets/images/profile.png'),
           ),
         ),
         title: Text(
