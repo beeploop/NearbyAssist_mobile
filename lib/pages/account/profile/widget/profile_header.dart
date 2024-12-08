@@ -2,21 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
     super.key,
-    required this.name,
-    required this.title,
-    required this.imageUrl,
-    required this.isVerified,
+    required this.user,
   });
 
-  final String name;
-  final String title;
-  final String imageUrl;
-  final bool isVerified;
+  final UserModel user;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +35,7 @@ class ProfileHeader extends StatelessWidget {
               ),
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: CachedNetworkImageProvider(imageUrl),
+                image: CachedNetworkImageProvider(user.imageUrl),
               ),
             ),
           ),
@@ -52,7 +47,7 @@ class ProfileHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      name,
+                      user.name,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -60,14 +55,14 @@ class ProfileHeader extends StatelessWidget {
                     ),
                     IconButton(
                       icon: Icon(
-                        isVerified
+                        user.isVerified
                             ? CupertinoIcons.checkmark_seal_fill
                             : CupertinoIcons.checkmark_seal,
                         size: 20,
                         color: Colors.blue,
                       ),
                       onPressed: () {
-                        if (isVerified) {
+                        if (user.isVerified) {
                           showCustomSnackBar(
                             context,
                             'Account already verified',
@@ -85,7 +80,7 @@ class ProfileHeader extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  title,
+                  user.email,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[800],

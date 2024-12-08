@@ -5,6 +5,7 @@ class VendorModel {
   final String imageUrl;
   final double rating;
   final bool isRestricted;
+  final List<String> expertise;
 
   VendorModel({
     required this.id,
@@ -13,6 +14,7 @@ class VendorModel {
     required this.imageUrl,
     required this.rating,
     required this.isRestricted,
+    required this.expertise,
   });
 
   factory VendorModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,8 @@ class VendorModel {
       imageUrl: json['imageUrl'],
       rating: double.parse(json['rating']),
       isRestricted: json['isRestricted'] == 1 ? true : false,
+      expertise:
+          json['expertise'] == null ? [] : List<String>.from(json['expertise']),
     );
   }
 
@@ -34,6 +38,7 @@ class VendorModel {
       'imageUrl': imageUrl,
       'rating': rating,
       'isRestricted': isRestricted,
+      'expertise': expertise,
     };
   }
 }

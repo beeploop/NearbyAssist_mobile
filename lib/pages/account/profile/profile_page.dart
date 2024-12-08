@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/pages/account/profile/widget/expertise_section.dart';
 import 'package:nearby_assist/pages/account/profile/widget/profile_header.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
@@ -31,12 +32,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ProfileHeader(
-                    name: auth.user.name,
-                    title: auth.user.email,
-                    imageUrl: auth.user.imageUrl,
-                    isVerified: auth.user.isVerified,
+                    user: auth.user,
                   ),
                   const SizedBox(height: 10),
+                  if (auth.user.isVendor) const ExpertiseSection(),
+                  const Divider(),
                   Text(prettyJSON(auth.user)),
                 ],
               ),

@@ -41,7 +41,7 @@ class VendorInfoSection extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              height: height ?? 80,
+              height: 80,
               width: 80,
               child: CachedNetworkImage(
                 imageUrl: vendor.imageUrl,
@@ -52,7 +52,6 @@ class VendorInfoSection extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             SizedBox(
-              height: height ?? 80,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -69,7 +68,6 @@ class VendorInfoSection extends StatelessWidget {
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 5),
                   RatingBar.builder(
                     initialRating: vendor.rating,
                     allowHalfRating: true,
@@ -80,6 +78,29 @@ class VendorInfoSection extends StatelessWidget {
                     ),
                     onRatingUpdate: (_) {},
                     ignoreGestures: true,
+                  ),
+                  Wrap(
+                    runSpacing: 6,
+                    spacing: 6,
+                    children: vendor.expertise
+                        .map((e) => Chip(
+                              label: Text(e),
+                              labelStyle: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.all(2),
+                              backgroundColor: Colors.green.shade800,
+                              shape: const RoundedRectangleBorder(
+                                side: BorderSide(color: Colors.transparent),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(20),
+                                ),
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ],
               ),
