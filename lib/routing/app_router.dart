@@ -5,9 +5,9 @@ import 'package:nearby_assist/pages/account/information_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
 import 'package:nearby_assist/pages/account/profile/verify_account_page.dart';
 import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
-import 'package:nearby_assist/pages/account/services/add_service_page.dart';
 import 'package:nearby_assist/pages/account/services/edit_service_page.dart';
 import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
+import 'package:nearby_assist/pages/account/services/publish_service/publish_service_page.dart';
 import 'package:nearby_assist/pages/account/services/service_detail_page.dart';
 import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
 import 'package:nearby_assist/pages/account/settings/settings_page.dart';
@@ -144,7 +144,7 @@ GoRouter generateRoutes(
             GoRoute(
               path: RoutePath.addService.path,
               name: RoutePath.addService.name,
-              builder: (context, state) => const AddServicePage(),
+              builder: (context, state) => const PublishServicePage(),
               routes: [
                 GoRoute(
                   path: RoutePath.locationPicker.path,

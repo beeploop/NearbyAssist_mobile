@@ -1,3 +1,5 @@
+import 'package:nearby_assist/models/service_extra_model.dart';
+
 class ServiceModel {
   final String id;
   final String vendorId;
@@ -7,6 +9,7 @@ class ServiceModel {
   final double latitude;
   final double longitude;
   final List<String> tags;
+  final List<ServiceExtraModel> extras;
 
   ServiceModel({
     this.id = '',
@@ -17,6 +20,7 @@ class ServiceModel {
     required this.latitude,
     required this.longitude,
     this.tags = const [],
+    this.extras = const [],
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +33,9 @@ class ServiceModel {
       latitude: json['latitude'],
       longitude: json['longitude'],
       tags: List<String>.from(json['tags']),
+      extras: (json['extras'] as List)
+          .map((extra) => ServiceExtraModel.fromJson(extra))
+          .toList(),
     );
   }
 
@@ -41,6 +48,7 @@ class ServiceModel {
       'latitude': latitude,
       'longitude': longitude,
       'tags': tags,
+      'extras': extras.map((extra) => extra.toJson()).toList(),
     };
   }
 
@@ -54,6 +62,7 @@ class ServiceModel {
       latitude: latitude,
       longitude: longitude,
       tags: tags,
+      extras: extras,
     );
   }
 }

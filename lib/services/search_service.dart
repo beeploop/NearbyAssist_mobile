@@ -5,6 +5,7 @@ import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
 
 class SearchService {
   Future<List<SearchResultModel>> findServices({
@@ -30,8 +31,12 @@ class SearchService {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get('${endpoint.serviceDetails}/$id');
+
+      logger.log(prettyJSON(response.data['serviceInfo']));
+
       return DetailedServiceModel.fromJson(response.data);
     } catch (error) {
+      logger.log('Error fetching service details: ${error.toString()}');
       rethrow;
     }
   }

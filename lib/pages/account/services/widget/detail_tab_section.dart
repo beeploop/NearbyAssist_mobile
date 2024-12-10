@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/rating_count_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/widget/rating_count_bar.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
 
 class DetailTabSection extends StatelessWidget {
   const DetailTabSection({
@@ -18,7 +19,7 @@ class DetailTabSection extends StatelessWidget {
     return Expanded(
       child: DefaultTabController(
         initialIndex: 0,
-        length: 2,
+        length: 3,
         child: Column(
           children: [
             TabBar(
@@ -35,6 +36,7 @@ class DetailTabSection extends StatelessWidget {
               tabs: const [
                 Tab(child: Text("Description")),
                 Tab(child: Text("Reviews")),
+                Tab(child: Text("Extras")),
               ],
             ),
             Container(
@@ -45,6 +47,7 @@ class DetailTabSection extends StatelessWidget {
                 children: [
                   _decriptionSection(),
                   _reviewSection(context),
+                  _extrasSection(),
                 ],
               ),
             ),
@@ -83,6 +86,10 @@ class DetailTabSection extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _extrasSection() {
+    return Text(prettyJSON(service.extras));
   }
 
   void _showReviews(BuildContext context) {
