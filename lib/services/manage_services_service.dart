@@ -12,11 +12,6 @@ class ManageServicesService {
       final response = await api.dio.post(
         endpoint.addService,
         data: service.toJson(),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
       );
 
       final id = response.data['service'];

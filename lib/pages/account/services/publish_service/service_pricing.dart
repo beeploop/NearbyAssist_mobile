@@ -5,15 +5,20 @@ import 'package:nearby_assist/pages/account/services/publish_service/widget/serv
 import 'package:nearby_assist/pages/account/services/publish_service/widget/service_extra_controller.dart';
 
 class ServicePricing extends StatefulWidget {
-  const ServicePricing({super.key});
+  const ServicePricing({
+    super.key,
+    required this.basePriceController,
+    required this.serviceExtras,
+  });
+
+  final TextEditingController basePriceController;
+  final List<ServiceExtra> serviceExtras;
 
   @override
   State<ServicePricing> createState() => _ServicePricingState();
 }
 
 class _ServicePricingState extends State<ServicePricing> {
-  final List<ServiceExtra> _serviceExtras = [];
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,7 +40,7 @@ class _ServicePricingState extends State<ServicePricing> {
           label: const Text('Add Extra'),
         ),
         const SizedBox(height: 10),
-        ..._serviceExtras,
+        ...widget.serviceExtras,
       ],
     );
   }
@@ -47,6 +52,7 @@ class _ServicePricingState extends State<ServicePricing> {
         const SizedBox(width: 10),
         Expanded(
           child: TextFormField(
+            controller: widget.basePriceController,
             onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
@@ -61,9 +67,9 @@ class _ServicePricingState extends State<ServicePricing> {
   void _addField() {
     logger.log('Adding field');
     setState(() {
-      if (_serviceExtras.isNotEmpty) {
-        final lastField = _serviceExtras.last;
-        _serviceExtras[_serviceExtras.length - 1] = ServiceExtra(
+      if (widget.serviceExtras.isNotEmpty) {
+        final lastField = widget.serviceExtras.last;
+        widget.serviceExtras[widget.serviceExtras.length - 1] = ServiceExtra(
           removeable: false,
           onRemoveFn: _removeField,
           controller: lastField.controller,
@@ -71,7 +77,7 @@ class _ServicePricingState extends State<ServicePricing> {
       }
 
       final controller = ServiceExtraController();
-      _serviceExtras.add(ServiceExtra(
+      widget.serviceExtras.add(ServiceExtra(
         removeable: true,
         onRemoveFn: _removeField,
         controller: controller,
@@ -82,11 +88,11 @@ class _ServicePricingState extends State<ServicePricing> {
   void _removeField() {
     logger.log('Removing field');
     setState(() {
-      _serviceExtras.removeLast();
+      widget.serviceExtras.removeLast();
 
-      if (_serviceExtras.isNotEmpty) {
-        final lastField = _serviceExtras.last;
-        _serviceExtras[_serviceExtras.length - 1] = ServiceExtra(
+      if (widget.serviceExtras.isNotEmpty) {
+        final lastField = widget.serviceExtras.last;
+        widget.serviceExtras[widget.serviceExtras.length - 1] = ServiceExtra(
           removeable: true,
           onRemoveFn: _removeField,
           controller: lastField.controller,

@@ -5,15 +5,18 @@ import 'package:image_picker/image_picker.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class ServiceGallery extends StatefulWidget {
-  const ServiceGallery({super.key});
+  const ServiceGallery({
+    super.key,
+    required this.images,
+  });
+
+  final List<Uint8List> images;
 
   @override
   State<ServiceGallery> createState() => _ServiceGalleryState();
 }
 
 class _ServiceGalleryState extends State<ServiceGallery> {
-  final List<Uint8List> _images = [];
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -48,7 +51,7 @@ class _ServiceGalleryState extends State<ServiceGallery> {
                 ),
                 width: constraints.maxWidth,
                 height: constraints.maxWidth,
-                child: _images.isEmpty ? _emptyState() : _imageList(),
+                child: widget.images.isEmpty ? _emptyState() : _imageList(),
               ),
             ),
           ),
@@ -60,12 +63,12 @@ class _ServiceGalleryState extends State<ServiceGallery> {
   Widget _imageList() {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: _images.length,
+      itemCount: widget.images.length,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(5),
           child: Image.memory(
-            _images[index],
+            widget.images[index],
             width: 100,
             height: 100,
             fit: BoxFit.contain,
@@ -114,7 +117,7 @@ class _ServiceGalleryState extends State<ServiceGallery> {
     for (final image in images) {
       final imageBytes = await image.readAsBytes();
       setState(() {
-        _images.add(imageBytes);
+        widget.images.add(imageBytes);
       });
     }
   }

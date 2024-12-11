@@ -26,6 +26,7 @@ class VendorApplicationService {
         ],
       });
 
+      // TODO: double check content-type, maybe a bug
       final api = ApiService.authenticated();
       await api.dio.post(
         endpoint.vendorApplication,
