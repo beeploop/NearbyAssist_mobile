@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/config/employment_type.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
-import 'package:nearby_assist/pages/booking/widget/date_picker_controller.dart';
+import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -10,15 +9,13 @@ class SummarySection extends StatefulWidget {
   const SummarySection({
     super.key,
     required this.detail,
-    required this.employmentType,
-    required this.calendarController,
     required this.clientAddress,
+    required this.selectedExtras,
   });
 
   final DetailedServiceModel detail;
-  final EmploymentType employmentType;
-  final DatePickerController calendarController;
   final String clientAddress;
+  final List<ServiceExtraModel> selectedExtras;
 
   @override
   State<SummarySection> createState() => _SummarySectionState();
@@ -39,43 +36,64 @@ class _SummarySectionState extends State<SummarySection> {
             fontWeight: FontWeight.bold,
           ),
         ),
+
+        // Vendor information
         const SizedBox(height: 20),
-        RowTile(label: 'Client Name:', text: user.name),
-        const SizedBox(height: 20),
-        RowTile(label: 'Client Email:', text: user.email),
-        const SizedBox(height: 20),
-        RowTile(label: 'Client Address:', text: widget.clientAddress),
+        const Text('Vendor Information', style: TextStyle(fontSize: 16)),
         const SizedBox(height: 20),
         RowTile(label: 'Vendor Name:', text: widget.detail.vendor.name),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         RowTile(label: 'Vendor Email:', text: widget.detail.vendor.email),
+        const Divider(),
+
+        // Client information
         const SizedBox(height: 20),
-        RowTile(label: 'Rate:', text: '₱ ${widget.detail.service.rate}'),
+        const Text('Client Information', style: TextStyle(fontSize: 16)),
         const SizedBox(height: 20),
-        RowTile(
-            label: 'Duration:',
-            text: '${widget.calendarController.days} day(s)'),
+        RowTile(label: 'Client Name:', text: user.name),
+        const SizedBox(height: 10),
+        RowTile(label: 'Client Email:', text: user.email),
+        const Divider(),
+
+        // Service Price
         const SizedBox(height: 20),
-        RowTile(
-            label: 'Start Date:',
-            text: widget.calendarController.formattedStart),
+        const Text('Service Information', style: TextStyle(fontSize: 16)),
+
+        // Extras
         const SizedBox(height: 20),
-        RowTile(
-            label: 'End Date:', text: widget.calendarController.formattedEnd),
+        RowTile(label: 'Base Rate:', text: '₱ ${widget.detail.service.rate}'),
         const SizedBox(height: 20),
-        RowTile(label: 'Employment Type:', text: widget.employmentType.value),
+        const Text(
+          'Extras:',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 10),
+        ...widget.selectedExtras.map((extra) {
+          return RowTile(
+            label: extra.title,
+            text: '₱ ${extra.price}',
+            withLeftPad: true,
+          );
+        }),
         const SizedBox(height: 20),
-        RowTile(label: 'Estimated Cost:', text: '₱ ${computeCost()}'),
+        const Divider(),
+
+        // Estimated cost
+        const SizedBox(height: 20),
+        RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
         const SizedBox(height: 20),
       ],
     );
   }
 
-  double computeCost() {
-    if (widget.employmentType == EmploymentType.pakyaw) {
-      return widget.detail.service.rate;
+  double _calculateTotalCost() {
+    double total = widget.detail.service.rate;
+    for (final extra in widget.selectedExtras) {
+      total += extra.price;
     }
-
-    return widget.detail.service.rate * widget.calendarController.days;
+    return total;
   }
 }

@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/config/employment_type.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
-import 'package:nearby_assist/pages/booking/widget/date_picker.dart';
-import 'package:nearby_assist/pages/booking/widget/date_picker_controller.dart';
+import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 
 class ServiceInformationSection extends StatefulWidget {
   const ServiceInformationSection({
     super.key,
+    required this.selectedExtras,
     required this.details,
-    required this.calendarController,
-    required this.employmentType,
-    required this.onEmploymentTypeChange,
   });
 
+  final List<ServiceExtraModel> selectedExtras;
   final DetailedServiceModel details;
-  final DatePickerController calendarController;
-  final EmploymentType? employmentType;
-  final void Function(EmploymentType?) onEmploymentTypeChange;
 
   @override
   State<ServiceInformationSection> createState() =>
@@ -25,6 +19,20 @@ class ServiceInformationSection extends StatefulWidget {
 }
 
 class _ServiceInformationSectionState extends State<ServiceInformationSection> {
+  final Map<String, bool> _selectedExtras = {};
+
+  void initializeExtras() {
+    for (final extra in widget.details.service.extras) {
+      _selectedExtras[extra.id] = false;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeExtras();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,68 +46,65 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
           ),
         ),
         const SizedBox(height: 20),
-        RowTile(label: 'Title', text: widget.details.service.title),
-        const SizedBox(height: 20),
-        RowTile(label: 'Rate', text: '₱ ${widget.details.service.rate}'),
-        const SizedBox(height: 20),
-        const Divider(),
-        const SizedBox(height: 20),
-        const Text(
-          'Choose Date',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 10),
-        DatePicker(controller: widget.calendarController),
-        const SizedBox(height: 20),
-        ListenableBuilder(
-            listenable: widget.calendarController,
-            builder: (context, child) {
-              return RowTile(
-                  label: 'Duration',
-                  text: '${widget.calendarController.days} day(s)');
-            }),
-        const SizedBox(height: 20),
-        const Divider(),
-        const SizedBox(height: 20),
-        const Text(
-          'Employment Type',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        RadioListTile<EmploymentType>(
-          value: EmploymentType.pakyaw,
-          groupValue: widget.employmentType,
-          onChanged: widget.onEmploymentTypeChange,
-          title: const Text('Pay Per Task (Pakyaw)'),
-          dense: true,
-        ),
-        RadioListTile<EmploymentType>(
-          value: EmploymentType.arawan,
-          groupValue: widget.employmentType,
-          onChanged: widget.onEmploymentTypeChange,
-          title: const Text('Pay Per Day (Arawan)'),
-          dense: true,
-        ),
-        const SizedBox(height: 20),
-        const Divider(),
-        const SizedBox(height: 20),
-        ListenableBuilder(
-            listenable: widget.calendarController,
-            builder: (context, child) {
-              final cost = widget.employmentType == EmploymentType.pakyaw
-                  ? widget.details.service.rate
-                  : widget.details.service.rate *
-                      widget.calendarController.days;
 
-              return RowTile(
-                  label: 'Estimated Cost', text: '₱ $cost', bold: true);
-            }),
+        // Title and description
+        const Text(
+          'Title',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(widget.details.service.title),
+        const SizedBox(height: 20),
+        const Text(
+          'Description',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(widget.details.service.description),
+        const SizedBox(height: 20),
+        RowTile(
+          label: 'Base Rate',
+          text: '₱ ${widget.details.service.rate}',
+        ),
+
+        const SizedBox(height: 20),
+        const Divider(),
+        const Text('Extras', style: TextStyle(fontWeight: FontWeight.bold)),
+
+        // Extras
+        ..._buildExtras(),
       ],
     );
+  }
+
+  List<Widget> _buildExtras() {
+    return widget.details.service.extras.map((extra) {
+      return ListTile(
+        leading: Checkbox(
+          onChanged: (bool? value) {
+            if (value == null) return;
+
+            setState(() {
+              _selectedExtras[extra.id] = value;
+            });
+
+            if (value) {
+              widget.selectedExtras.add(extra);
+            } else {
+              widget.selectedExtras.removeWhere((item) => item.id == extra.id);
+            }
+          },
+          value: _selectedExtras[extra.id],
+        ),
+        title: Text(extra.title),
+        subtitle: Text(extra.description),
+        trailing: Text(
+          '₱ ${extra.price}',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      );
+    }).toList();
   }
 }

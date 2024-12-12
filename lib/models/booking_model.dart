@@ -1,22 +1,18 @@
-import 'package:nearby_assist/config/employment_type.dart';
+import 'package:nearby_assist/models/service_extra_model.dart';
 
 class BookingModel {
   final String vendorId;
   final String clientId;
   final String serviceId;
-  final String startDate;
-  final String endDate;
-  final String cost;
-  final EmploymentType employmentType;
+  final String totalCost;
+  final List<ServiceExtraModel> extras;
 
   BookingModel({
     required this.vendorId,
     required this.clientId,
     required this.serviceId,
-    required this.startDate,
-    required this.endDate,
-    required this.cost,
-    required this.employmentType,
+    required this.totalCost,
+    required this.extras,
   });
 
   Map<String, dynamic> toJson() {
@@ -24,10 +20,8 @@ class BookingModel {
       'vendorId': vendorId,
       'clientId': clientId,
       'serviceId': serviceId,
-      'startDate': startDate,
-      'endDate': endDate,
-      'cost': cost,
-      'employmentType': employmentType.value,
+      'cost': totalCost,
+      'extras': extras.map((e) => e.toJson()).toList(),
     };
   }
 }

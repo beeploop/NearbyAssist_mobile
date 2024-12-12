@@ -58,7 +58,7 @@ class _UserInformationSectionState extends State<UserInformationSection> {
           labelText: 'Email',
         ),
         const SizedBox(height: 20),
-        AddressInput(onLocationPicked: widget.onAddressLocated),
+        AddressInput(onLocationPicked: widget.onAddressLocated, readOnly: true),
       ],
     );
   }
