@@ -93,4 +93,16 @@ class TransactionService {
       rethrow;
     }
   }
+
+  Future<void> fetchTransaction(String id) async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get('${endpoint.getTransaction}/$id');
+
+      logger.log(prettyJSON(response.data));
+    } catch (error) {
+      logger.log('Error fetching transaction: ${error.toString()}');
+      rethrow;
+    }
+  }
 }

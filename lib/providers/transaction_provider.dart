@@ -70,4 +70,13 @@ class TransactionProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> getTransaction(String id) async {
+    try {
+      final service = TransactionService();
+      await service.fetchTransaction(id);
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'package:nearby_assist/models/service_model.dart';
 
 class BookingModel {
   String id;
+  String vendor;
   String vendorId;
   String clientId;
   double cost;
@@ -12,6 +13,7 @@ class BookingModel {
 
   BookingModel({
     required this.id,
+    required this.vendor,
     required this.vendorId,
     required this.clientId,
     required this.cost,
@@ -23,6 +25,7 @@ class BookingModel {
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
       id: json['id'],
+      vendor: json['vendor'],
       vendorId: json['vendorId'],
       clientId: json['clientId'],
       cost: double.tryParse(json['cost'].toString()) ?? 0.0,
