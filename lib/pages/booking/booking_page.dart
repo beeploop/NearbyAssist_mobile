@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/service_information_section.dart';
@@ -172,7 +172,7 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> _book() async {
-    final booking = BookingModel(
+    final booking = BookingRequestModel(
       vendorId: widget.details.vendor.id,
       clientId: context.read<UserProvider>().user.id,
       serviceId: widget.details.service.id,

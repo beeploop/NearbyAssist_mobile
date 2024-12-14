@@ -1,17 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/services/transaction_service.dart';
 
 class TransactionProvider extends ChangeNotifier {
   List _history = [];
   List _ongoing = [];
-  List _myRequests = [];
-  List _clientRequest = [];
+  List<BookingModel> _myRequests = [];
+  List<BookingModel> _clientRequest = [];
 
   List get history => _history;
   List get ongoing => _ongoing;
-  List get myRequests => _myRequests;
-  List get clientRequest => _clientRequest;
+  List<BookingModel> get myRequests => _myRequests;
+  List<BookingModel> get clientRequest => _clientRequest;
 
   Future<void> fetchHistory() async {
     try {
@@ -61,7 +62,7 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> createTransaction(BookingModel booking) async {
+  Future<void> createTransaction(BookingRequestModel booking) async {
     try {
       final service = TransactionService();
       await service.createTransaction(booking);

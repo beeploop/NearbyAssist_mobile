@@ -29,13 +29,15 @@ class ServiceModel {
       vendorId: json['vendorId'],
       title: json['title'],
       description: json['description'],
-      rate: double.parse(json['rate']),
-      latitude: json['latitude'],
-      longitude: json['longitude'],
-      tags: List<String>.from(json['tags']),
-      extras: (json['extras'] as List)
-          .map((extra) => ServiceExtraModel.fromJson(extra))
-          .toList(),
+      rate: double.tryParse(json['rate']) ?? 0.0,
+      latitude: json['latitude'] ?? 0.0,
+      longitude: json['longitude'] ?? 0.0,
+      tags: json['tags'] == null ? [] : List<String>.from(json['tags']),
+      extras: json['extras'] == null
+          ? []
+          : (json['extras'] as List)
+              .map((extra) => ServiceExtraModel.fromJson(extra))
+              .toList(),
     );
   }
 

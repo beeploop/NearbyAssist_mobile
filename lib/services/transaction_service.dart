@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 
@@ -33,7 +34,7 @@ class TransactionService {
     }
   }
 
-  Future<List> fetchClientRequests() async {
+  Future<List<BookingModel>> fetchClientRequests() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(
@@ -43,14 +44,16 @@ class TransactionService {
 
       logger.log(prettyJSON(response.data));
 
-      return response.data['transactions'] as List;
+      return (response.data['transactions'] as List)
+          .map((transaction) => BookingModel.fromJson(transaction))
+          .toList();
     } catch (error) {
-      logger.log('Error fetching ongoing transactions: ${error.toString()}');
+      logger.log('Error fetching client transactions: ${error.toString()}');
       rethrow;
     }
   }
 
-  Future<List> fetchMyRequests() async {
+  Future<List<BookingModel>> fetchMyRequests() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(
@@ -58,16 +61,18 @@ class TransactionService {
         queryParameters: {'filter': 'sent'},
       );
 
-      logger.log(prettyJSON(response.data));
+      logger.log(prettyJSON(response.data['transactions']));
 
-      return response.data['transactions'] as List;
+      return (response.data['transactions'] as List)
+          .map((transaction) => BookingModel.fromJson(transaction))
+          .toList();
     } catch (error) {
-      logger.log('Error fetching ongoing transactions: ${error.toString()}');
+      logger.log('Error fetching my request transactions: ${error.toString()}');
       rethrow;
     }
   }
 
-  Future<void> createTransaction(BookingModel booking) async {
+  Future<void> createTransaction(BookingRequestModel booking) async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.post(
