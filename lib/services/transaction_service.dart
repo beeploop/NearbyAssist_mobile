@@ -6,28 +6,42 @@ import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 
 class TransactionService {
-  Future<List> fetchHistory() async {
+  Future<List<BookingModel>> fetchRecent() async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get(endpoint.recent);
+
+      return (response.data['transactions'] as List)
+          .map((transaction) => BookingModel.fromJson(transaction))
+          .toList();
+    } catch (error) {
+      logger.log('Error fetching recent transaction: ${error.toString()}');
+      rethrow;
+    }
+  }
+
+  Future<List<BookingModel>> fetchHistory() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.history);
 
-      logger.log(prettyJSON(response.data));
-
-      return response.data['history'] as List;
+      return (response.data['history'] as List)
+          .map((transaction) => BookingModel.fromJson(transaction))
+          .toList();
     } catch (error) {
       logger.log('Error fetching transaction history: ${error.toString()}');
       rethrow;
     }
   }
 
-  Future<List> fetchOngoing() async {
+  Future<List<BookingModel>> fetchOngoing() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.ongoing);
 
-      logger.log(prettyJSON(response.data));
-
-      return response.data['transactions'] as List;
+      return (response.data['transactions'] as List)
+          .map((transaction) => BookingModel.fromJson(transaction))
+          .toList();
     } catch (error) {
       logger.log('Error fetching ongoing transactions: ${error.toString()}');
       rethrow;
@@ -41,8 +55,6 @@ class TransactionService {
         endpoint.clientRequests,
         queryParameters: {'filter': 'received'},
       );
-
-      logger.log(prettyJSON(response.data));
 
       return (response.data['transactions'] as List)
           .map((transaction) => BookingModel.fromJson(transaction))
@@ -60,8 +72,6 @@ class TransactionService {
         endpoint.myRequests,
         queryParameters: {'filter': 'sent'},
       );
-
-      logger.log(prettyJSON(response.data['transactions']));
 
       return (response.data['transactions'] as List)
           .map((transaction) => BookingModel.fromJson(transaction))
@@ -102,6 +112,16 @@ class TransactionService {
       logger.log(prettyJSON(response.data));
     } catch (error) {
       logger.log('Error fetching transaction: ${error.toString()}');
+      rethrow;
+    }
+  }
+
+  Future<void> cancelTransaction(String id) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put('${endpoint.cancelBooking}/$id');
+    } catch (error) {
+      logger.log('Error cancelling transaction request: ${error.toString()}');
       rethrow;
     }
   }

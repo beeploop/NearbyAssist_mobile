@@ -99,10 +99,7 @@ class _MyRequestPageState extends State<MyRequestPage> {
         color = Colors.orange;
         break;
       case 'ongoing':
-        color = Colors.green;
-        break;
-      case 'cancelled':
-        color = Colors.red;
+        color = Colors.teal;
         break;
       default:
         color = Colors.grey;

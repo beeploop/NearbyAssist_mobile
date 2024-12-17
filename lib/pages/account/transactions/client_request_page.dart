@@ -95,7 +95,7 @@ class _ClientRequestPageState extends State<ClientRequestPage> {
         color = Colors.orange;
         break;
       case 'ongoing':
-        color = Colors.green;
+        color = Colors.teal;
         break;
       case 'cancelled':
         color = Colors.red;

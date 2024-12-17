@@ -4,15 +4,29 @@ import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/services/transaction_service.dart';
 
 class TransactionProvider extends ChangeNotifier {
-  List _history = [];
-  List _ongoing = [];
+  List<BookingModel> _recents = [];
+  List<BookingModel> _history = [];
+  List<BookingModel> _ongoing = [];
   List<BookingModel> _myRequests = [];
   List<BookingModel> _clientRequest = [];
 
-  List get history => _history;
-  List get ongoing => _ongoing;
+  List<BookingModel> get recents => _recents;
+  List<BookingModel> get history => _history;
+  List<BookingModel> get ongoing => _ongoing;
   List<BookingModel> get myRequests => _myRequests;
   List<BookingModel> get clientRequest => _clientRequest;
+
+  Future<void> fetchRecent() async {
+    try {
+      final service = TransactionService();
+      final response = await service.fetchRecent();
+
+      _recents = response;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
 
   Future<void> fetchHistory() async {
     try {
@@ -66,6 +80,17 @@ class TransactionProvider extends ChangeNotifier {
     try {
       final service = TransactionService();
       await service.createTransaction(booking);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> cancelTransactionRequest(String id) async {
+    try {
+      await TransactionService().cancelTransaction(id);
+
+      _myRequests.removeWhere((request) => request.id == id);
+      notifyListeners();
     } catch (error) {
       rethrow;
     }

@@ -1,10 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class TransactionSummaryPage extends StatelessWidget {
+class TransactionSummaryPage extends StatefulWidget {
   const TransactionSummaryPage({
     super.key,
     required this.transaction,
@@ -12,6 +15,11 @@ class TransactionSummaryPage extends StatelessWidget {
 
   final BookingModel transaction;
 
+  @override
+  State<TransactionSummaryPage> createState() => _TransactionSummaryPageState();
+}
+
+class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
   @override
   Widget build(BuildContext context) {
     final user = context.read<UserProvider>().user;
@@ -40,7 +48,7 @@ class TransactionSummaryPage extends StatelessWidget {
                         color: Colors.grey[900],
                       )),
                   const Spacer(),
-                  _chip(transaction.status),
+                  _chip(widget.transaction.status),
                 ],
               ),
               const Divider(),
@@ -49,7 +57,7 @@ class TransactionSummaryPage extends StatelessWidget {
               const SizedBox(height: 20),
               const Text('Vendor Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(label: 'Vendor Name:', text: transaction.vendor),
+              RowTile(label: 'Vendor Name:', text: widget.transaction.vendor),
               const Divider(),
 
               // Client information
@@ -65,8 +73,14 @@ class TransactionSummaryPage extends StatelessWidget {
 
               // Extras
               const SizedBox(height: 20),
+              Text(
+                widget.transaction.service.title,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 10),
               RowTile(
-                  label: 'Base Rate:', text: '₱ ${transaction.service.rate}'),
+                  label: 'Base Rate:',
+                  text: '₱ ${widget.transaction.service.rate}'),
               const SizedBox(height: 20),
               const Text(
                 'Extras:',
@@ -76,7 +90,7 @@ class TransactionSummaryPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              ...transaction.extras.map((extra) {
+              ...widget.transaction.extras.map((extra) {
                 return RowTile(
                   label: extra.title,
                   text: '₱ ${extra.price}',
@@ -93,9 +107,41 @@ class TransactionSummaryPage extends StatelessWidget {
 
               // Cancel Button
               const SizedBox(height: 20),
-              if (transaction.status.toLowerCase() == 'pending')
+              if (widget.transaction.status.toLowerCase() == 'pending')
                 FilledButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        icon: const Icon(
+                          CupertinoIcons.question_circle,
+                          color: Colors.red,
+                          size: 40,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        title: const Text('Are you sure?'),
+                        content: const Text(
+                          'This action is not reversible.',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => context.pop(),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.pop();
+                              _cancelTransaction();
+                            },
+                            child: const Text('Continue'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                   style: const ButtonStyle(
                     minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
                     backgroundColor: WidgetStatePropertyAll(Colors.red),
@@ -110,11 +156,81 @@ class TransactionSummaryPage extends StatelessWidget {
   }
 
   double _calculateTotalCost() {
-    double total = transaction.service.rate;
-    for (final extra in transaction.extras) {
+    double total = widget.transaction.service.rate;
+    for (final extra in widget.transaction.extras) {
       total += extra.price;
     }
     return total;
+  }
+
+  void _cancelTransaction() async {
+    try {
+      await context
+          .read<TransactionProvider>()
+          .cancelTransactionRequest(widget.transaction.id);
+
+      _onSuccess();
+    } catch (error) {
+      _onError(error.toString());
+    }
+  }
+
+  void _onSuccess() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.check_mark_circled_solid,
+            color: Colors.green,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Successful'),
+          content:
+              const Text('You successfully cancelled your booking request'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+                context.pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onError(String error) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.xmark_circle_fill,
+            color: Colors.red,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Failed'),
+          content: Text(error),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _chip(String label) {
@@ -124,6 +240,9 @@ class TransactionSummaryPage extends StatelessWidget {
         color = Colors.orange;
         break;
       case 'ongoing':
+        color = Colors.teal;
+        break;
+      case 'done':
         color = Colors.green;
         break;
       case 'cancelled':
