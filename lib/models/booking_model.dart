@@ -1,33 +1,39 @@
-import 'package:nearby_assist/config/employment_type.dart';
+import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/models/service_model.dart';
 
 class BookingModel {
-  final String vendorId;
-  final String clientId;
-  final String serviceId;
-  final String startDate;
-  final String endDate;
-  final String cost;
-  final EmploymentType employmentType;
+  String id;
+  String vendor;
+  String vendorId;
+  String clientId;
+  double cost;
+  String status;
+  List<ServiceExtraModel> extras;
+  ServiceModel service;
 
   BookingModel({
+    required this.id,
+    required this.vendor,
     required this.vendorId,
     required this.clientId,
-    required this.serviceId,
-    required this.startDate,
-    required this.endDate,
     required this.cost,
-    required this.employmentType,
+    required this.status,
+    required this.extras,
+    required this.service,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'vendorId': vendorId,
-      'clientId': clientId,
-      'serviceId': serviceId,
-      'startDate': startDate,
-      'endDate': endDate,
-      'cost': cost,
-      'employmentType': employmentType.value,
-    };
+  factory BookingModel.fromJson(Map<String, dynamic> json) {
+    return BookingModel(
+      id: json['id'],
+      vendor: json['vendor'],
+      vendorId: json['vendorId'],
+      clientId: json['clientId'],
+      cost: double.tryParse(json['cost'].toString()) ?? 0.0,
+      status: json['status'],
+      extras: json['extras']
+          .map<ServiceExtraModel>((extra) => ServiceExtraModel.fromJson(extra))
+          .toList(),
+      service: ServiceModel.fromJson(json['service']),
+    );
   }
 }

@@ -22,7 +22,7 @@ class GridSection extends StatelessWidget {
           children: [
             Expanded(
               child: GridItem(
-                background: Colors.teal.shade400,
+                background: Colors.pink.shade300,
                 icon: CupertinoIcons.arrow_down_circle,
                 label: 'Client Requests',
                 onTap: () => _handleClientRequestTap(context),
@@ -31,7 +31,7 @@ class GridSection extends StatelessWidget {
             SizedBox(width: spacing),
             Expanded(
               child: GridItem(
-                background: Colors.pink.shade300,
+                background: Colors.teal.shade400,
                 icon: CupertinoIcons.arrow_up_circle,
                 label: 'My Requests',
                 onTap: () => _handleMyRequestTap(context),
@@ -53,7 +53,7 @@ class GridSection extends StatelessWidget {
             SizedBox(width: spacing),
             Expanded(
               child: GridItem(
-                background: Colors.amber.shade400,
+                background: Colors.orange.shade400,
                 icon: CupertinoIcons.chart_pie,
                 label: 'History',
                 onTap: () => _handleHistoryTap(context),

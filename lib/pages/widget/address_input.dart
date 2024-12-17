@@ -13,9 +13,14 @@ import 'package:nearby_assist/services/geocoding_service.dart';
 import 'package:provider/provider.dart';
 
 class AddressInput extends StatefulWidget {
-  const AddressInput({super.key, required this.onLocationPicked});
+  const AddressInput({
+    super.key,
+    required this.onLocationPicked,
+    this.readOnly = false,
+  });
 
   final void Function(String) onLocationPicked;
+  final bool readOnly;
 
   @override
   State<AddressInput> createState() => _AddressInputState();
@@ -54,12 +59,14 @@ class _AddressInputState extends State<AddressInput> {
             labelText: 'Address',
             minLines: 1,
             maxLines: 6,
+            readOnly: widget.readOnly,
           ),
         ),
-        IconButton(
-          onPressed: _showAddressPicker,
-          icon: const Icon(CupertinoIcons.compass),
-        ),
+        if (!widget.readOnly)
+          IconButton(
+            onPressed: _showAddressPicker,
+            icon: const Icon(CupertinoIcons.compass),
+          ),
       ],
     );
   }

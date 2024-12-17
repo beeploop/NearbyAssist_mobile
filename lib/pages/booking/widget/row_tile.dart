@@ -6,24 +6,27 @@ class RowTile extends StatelessWidget {
     required this.label,
     required this.text,
     this.bold = false,
+    this.withLeftPad = false,
   });
 
   final String label;
   final String text;
   final bool bold;
+  final bool withLeftPad;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        if (withLeftPad) const SizedBox(width: 16),
         Text(label,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.grey[900],
             )),
-        const SizedBox(height: 6),
+        const Spacer(),
         Text(text,
             style: TextStyle(
               fontSize: 18,

@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/config/employment_type.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
-import 'package:nearby_assist/pages/booking/widget/date_picker_controller.dart';
+import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/service_information_section.dart';
 import 'package:nearby_assist/pages/booking/widget/summary_section.dart';
 import 'package:nearby_assist/pages/booking/widget/user_information_section.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
 
 class BookingPage extends StatefulWidget {
@@ -23,8 +23,7 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  EmploymentType? _employmentType = EmploymentType.pakyaw;
-  final _calendarController = DatePickerController();
+  final List<ServiceExtraModel> _selectedExtras = [];
   String _clientAddress = '';
 
   int _currentStep = 0;
@@ -85,25 +84,24 @@ class _BookingPageState extends State<BookingPage> {
         isActive: _currentStep >= 0,
         title: const Text('Step 1'),
         content: ServiceInformationSection(
+          selectedExtras: _selectedExtras,
           details: widget.details,
-          calendarController: _calendarController,
-          employmentType: _employmentType,
-          onEmploymentTypeChange: _onChangeEmploymentType,
         ),
       ),
       Step(
         isActive: _currentStep >= 1,
         title: const Text('Step 2'),
-        content: UserInformationSection(onAddressLocated: _onAddressLocated),
+        content: UserInformationSection(
+          onAddressLocated: _onAddressLocated,
+        ),
       ),
       Step(
         isActive: _currentStep >= 2,
         title: const Text('Step 3'),
         content: SummarySection(
           detail: widget.details,
-          calendarController: _calendarController,
-          employmentType: _employmentType!,
           clientAddress: _clientAddress,
+          selectedExtras: _selectedExtras,
         ),
       ),
     ];
@@ -163,12 +161,6 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  void _onChangeEmploymentType(EmploymentType? value) {
-    setState(() {
-      _employmentType = value;
-    });
-  }
-
   void _onAddressLocated(String address) {
     setState(() {
       _clientAddress = address;
@@ -180,19 +172,15 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> _book() async {
-    final cost = _employmentType == EmploymentType.pakyaw
-        ? widget.details.service.rate
-        : widget.details.service.rate * _calendarController.days;
-
-    final booking = BookingModel(
+    final booking = BookingRequestModel(
       vendorId: widget.details.vendor.id,
       clientId: context.read<UserProvider>().user.id,
       serviceId: widget.details.service.id,
-      startDate: _calendarController.start.toIso8601String(),
-      endDate: _calendarController.end.toIso8601String(),
-      employmentType: _employmentType!,
-      cost: cost.toString(),
+      extras: _selectedExtras,
+      totalCost: _computeTotal().toString(),
     );
+
+    logger.log(prettyJSON(booking));
 
     try {
       await context.read<TransactionProvider>().createTransaction(booking);
@@ -204,26 +192,68 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   void _onSuccess() {
-    showCustomSnackBar(
-      context,
-      'Booking successful',
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      closeIconColor: Colors.white,
-      duration: const Duration(seconds: 5),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.check_mark_circled_solid,
+            color: Colors.green,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Booking Successful'),
+          content: const Text(
+              'Please wait for the vendor to contact you and confirm your booking.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+                context.pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
-
-    context.pop();
   }
 
   void _onError(String error) {
-    showCustomSnackBar(
-      context,
-      error,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      closeIconColor: Colors.white,
-      duration: const Duration(seconds: 5),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.xmark_circle_fill,
+            color: Colors.red,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Booking Failed'),
+          content: Text(error),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
+  }
+
+  double _computeTotal() {
+    double total = widget.details.service.rate;
+    for (final extra in _selectedExtras) {
+      total += extra.price;
+    }
+    return total;
   }
 }
