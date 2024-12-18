@@ -37,13 +37,13 @@ class TransactionService {
   Future<List<BookingModel>> fetchOngoing() async {
     try {
       final api = ApiService.authenticated();
-      final response = await api.dio.get(endpoint.ongoing);
+      final response = await api.dio.get(endpoint.confirmed);
 
       return (response.data['transactions'] as List)
           .map((transaction) => BookingModel.fromJson(transaction))
           .toList();
     } catch (error) {
-      logger.log('Error fetching ongoing transactions: ${error.toString()}');
+      logger.log('Error fetching confirmed transactions: ${error.toString()}');
       rethrow;
     }
   }

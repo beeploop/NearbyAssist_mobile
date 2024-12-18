@@ -5,17 +5,18 @@ import 'package:nearby_assist/pages/account/transactions/transaction_summary_pag
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-class OngoingTransactionPage extends StatefulWidget {
-  const OngoingTransactionPage({super.key});
+class ConfirmedTransactionPage extends StatefulWidget {
+  const ConfirmedTransactionPage({super.key});
 
   @override
-  State<OngoingTransactionPage> createState() => _OngoingTransactionPageState();
+  State<ConfirmedTransactionPage> createState() =>
+      _ConfirmedTransactionPageState();
 }
 
-class _OngoingTransactionPageState extends State<OngoingTransactionPage> {
+class _ConfirmedTransactionPageState extends State<ConfirmedTransactionPage> {
   @override
   Widget build(BuildContext context) {
-    final ongoing = context.watch<TransactionProvider>().ongoing;
+    final confirmed = context.watch<TransactionProvider>().confirmed;
 
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +28,7 @@ class _OngoingTransactionPageState extends State<OngoingTransactionPage> {
       ),
       body: RefreshIndicator(
         onRefresh: context.read<TransactionProvider>().fetchOngoing,
-        child: ongoing.isEmpty ? _emptyState() : _mainContent(ongoing),
+        child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
       ),
     );
   }

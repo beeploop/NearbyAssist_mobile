@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/transactions/client_request_page.dart';
 import 'package:nearby_assist/pages/account/transactions/history_page.dart';
 import 'package:nearby_assist/pages/account/transactions/my_request_page.dart';
-import 'package:nearby_assist/pages/account/transactions/ongoing_transaction_page.dart';
+import 'package:nearby_assist/pages/account/transactions/confirmed_transaction_page.dart';
 import 'package:nearby_assist/pages/account/transactions/widget/grid_item.dart';
 
 class GridSection extends StatelessWidget {
@@ -46,8 +46,8 @@ class GridSection extends StatelessWidget {
               child: GridItem(
                 background: Colors.cyan.shade400,
                 icon: CupertinoIcons.arrow_clockwise_circle,
-                label: 'Ongoing',
-                onTap: () => _handleOngoingTap(context),
+                label: 'Confirmed',
+                onTap: () => _handleConfirmedTap(context),
               ),
             ),
             SizedBox(width: spacing),
@@ -83,11 +83,11 @@ class GridSection extends StatelessWidget {
     );
   }
 
-  void _handleOngoingTap(BuildContext context) {
+  void _handleConfirmedTap(BuildContext context) {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => const OngoingTransactionPage(),
+        builder: (context) => const ConfirmedTransactionPage(),
       ),
     );
   }

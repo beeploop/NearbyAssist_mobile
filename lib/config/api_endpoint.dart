@@ -61,7 +61,7 @@ class ApiEndpoint {
   String get getTransaction => '$_baseUrl/api/v1/transactions';
   String get recent => '$_baseUrl/api/v1/transactions/recent';
   String get history => '$_baseUrl/api/v1/transactions/history';
-  String get ongoing => '$_baseUrl/api/v1/transactions/ongoing';
+  String get confirmed => '$_baseUrl/api/v1/transactions/confirmed';
   String get myRequests => '$_baseUrl/api/v1/transactions/mine';
   String get clientRequests => '$_baseUrl/api/v1/transactions/mine';
 

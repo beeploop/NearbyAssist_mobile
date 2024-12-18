@@ -6,13 +6,13 @@ import 'package:nearby_assist/services/transaction_service.dart';
 class TransactionProvider extends ChangeNotifier {
   List<BookingModel> _recents = [];
   List<BookingModel> _history = [];
-  List<BookingModel> _ongoing = [];
+  List<BookingModel> _confirmed = [];
   List<BookingModel> _myRequests = [];
   List<BookingModel> _clientRequest = [];
 
   List<BookingModel> get recents => _recents;
   List<BookingModel> get history => _history;
-  List<BookingModel> get ongoing => _ongoing;
+  List<BookingModel> get confirmed => _confirmed;
   List<BookingModel> get myRequests => _myRequests;
   List<BookingModel> get clientRequest => _clientRequest;
 
@@ -45,7 +45,7 @@ class TransactionProvider extends ChangeNotifier {
       final service = TransactionService();
       final response = await service.fetchOngoing();
 
-      _ongoing = response;
+      _confirmed = response;
       notifyListeners();
     } catch (error) {
       rethrow;

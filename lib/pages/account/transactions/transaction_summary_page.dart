@@ -239,7 +239,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
       case 'pending':
         color = Colors.orange;
         break;
-      case 'ongoing':
+      case 'confirmed':
         color = Colors.teal;
         break;
       case 'done':

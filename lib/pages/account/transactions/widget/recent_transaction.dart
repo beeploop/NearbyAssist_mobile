@@ -87,7 +87,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
       case 'pending':
         color = Colors.orange;
         break;
-      case 'ongoing':
+      case 'confirmed':
         color = Colors.teal;
         break;
       case 'done':

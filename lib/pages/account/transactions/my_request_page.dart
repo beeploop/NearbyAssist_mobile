@@ -98,7 +98,7 @@ class _MyRequestPageState extends State<MyRequestPage> {
       case 'pending':
         color = Colors.orange;
         break;
-      case 'ongoing':
+      case 'confirmed':
         color = Colors.teal;
         break;
       default:
