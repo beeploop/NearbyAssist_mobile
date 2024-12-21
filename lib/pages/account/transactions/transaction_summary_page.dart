@@ -11,9 +11,11 @@ class TransactionSummaryPage extends StatefulWidget {
   const TransactionSummaryPage({
     super.key,
     required this.transaction,
+    this.showChatIcon = false,
   });
 
   final BookingModel transaction;
+  final bool showChatIcon;
 
   @override
   State<TransactionSummaryPage> createState() => _TransactionSummaryPageState();
@@ -31,6 +33,23 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
           'Transaction Summary',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          if (widget.showChatIcon)
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.pushNamed(
+                  'chat',
+                  queryParameters: {
+                    'recipientId': widget.transaction.vendorId,
+                    'recipient': widget.transaction.vendor,
+                  },
+                );
+              },
+              icon: const Icon(CupertinoIcons.ellipses_bubble),
+            ),
+          const SizedBox(width: 20),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
