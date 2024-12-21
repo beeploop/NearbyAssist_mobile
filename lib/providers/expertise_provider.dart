@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
+import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:nearby_assist/services/tag_service.dart';
 
 class ExpertiseProvider extends ChangeNotifier {
@@ -34,6 +35,18 @@ class ExpertiseProvider extends ChangeNotifier {
       final response = await service.getExpertiseWithTags();
 
       _expertise = response;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> tryLoadLocal() async {
+    try {
+      final store = SecureStorage();
+      final expertises = await store.getTags();
+
+      _expertise = expertises;
       notifyListeners();
     } catch (error) {
       rethrow;

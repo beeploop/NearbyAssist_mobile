@@ -68,8 +68,6 @@ class _App extends State<App> {
     try {
       await context.read<UserProvider>().tryLoadUser();
       await loadTags();
-      await loadSaves();
-      await loadInbox();
     } catch (error) {
       logger.log(error.toString());
     } finally {
@@ -78,15 +76,7 @@ class _App extends State<App> {
   }
 
   Future<void> loadTags() async {
-    await context.read<ExpertiseProvider>().fetchExpertise();
-  }
-
-  Future<void> loadSaves() async {
-    await context.read<SavesProvider>().refetchSaves();
-  }
-
-  Future<void> loadInbox() async {
-    await context.read<MessageProvider>().refreshConversations();
+    await context.read<ExpertiseProvider>().tryLoadLocal();
   }
 
   @override

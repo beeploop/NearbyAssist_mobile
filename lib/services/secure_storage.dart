@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 
 enum TokenType {
@@ -21,6 +22,7 @@ enum KeyType {
 
 class SecureStorage {
   final String _userKey = 'userKey';
+  final String _expertiseKey = 'expertiseKey';
   late FlutterSecureStorage _storage;
 
   SecureStorage() {
@@ -62,6 +64,27 @@ class SecureStorage {
 
   Future<String?> getKey(KeyType type) async {
     return await _storage.read(key: type.key);
+  }
+
+  Future<void> saveTags(List<ExpertiseModel> expertises) async {
+    final tagsData = jsonEncode(expertises);
+    await _storage.write(key: _expertiseKey, value: tagsData);
+  }
+
+  Future<List<ExpertiseModel>> getTags() async {
+    try {
+      final value = await _storage.read(key: _expertiseKey);
+      if (value == null) throw Exception('Expertises not found');
+
+      List<dynamic> expertises = jsonDecode(value);
+
+      return (expertises)
+          .map((expertise) => ExpertiseModel.fromJson(expertise))
+          .toList();
+    } catch (error) {
+      logger.log('Error on get tags: ${error.toString()}');
+      rethrow;
+    }
   }
 
   Future<void> clearAll() async {

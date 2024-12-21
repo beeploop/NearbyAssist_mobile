@@ -110,7 +110,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _updateTags() async {
     try {
-      await context.read<ExpertiseProvider>().fetchExpertise();
+      final provider = context.read<ExpertiseProvider>();
+
+      await provider.fetchExpertise();
+      final expertises = provider.expertise;
+
+      final store = SecureStorage();
+      await store.saveTags(expertises);
 
       _showSuccessModal('Tags updated');
     } catch (error) {
