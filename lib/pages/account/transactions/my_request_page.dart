@@ -43,8 +43,10 @@ class _MyRequestPageState extends State<MyRequestPage> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) =>
-                    TransactionSummaryPage(transaction: requests[index]),
+                builder: (context) => TransactionSummaryPage(
+                  transaction: requests[index],
+                  showChatIcon: true,
+                ),
               ),
             );
           },

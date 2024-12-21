@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -61,15 +60,6 @@ class _RecentTransactionState extends State<RecentTransaction> {
       separatorBuilder: (context, index) => const SizedBox(),
       itemCount: recents.length,
       itemBuilder: (context, index) => ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (context) =>
-                  TransactionSummaryPage(transaction: recents[index]),
-            ),
-          );
-        },
         dense: true,
         title: Text(recents[index].vendor),
         subtitle: Text(
