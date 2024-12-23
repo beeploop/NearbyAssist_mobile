@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/transactions/client_request_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +39,15 @@ class _ClientRequestPageState extends State<ClientRequestPage> {
         separatorBuilder: (context, index) => const Divider(),
         itemCount: requests.length,
         itemBuilder: (context, index) => ListTile(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) =>
+                    ClientRequestSummaryPage(transaction: requests[index]),
+              ),
+            );
+          },
           title: Text(requests[index].service.title),
           trailing: _chip(requests[index].status),
         ),
