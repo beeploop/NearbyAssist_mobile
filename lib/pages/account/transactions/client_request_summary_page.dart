@@ -39,7 +39,7 @@ class _ClientRequestSummaryPageState extends State<ClientRequestSummaryPage> {
                 'chat',
                 queryParameters: {
                   'recipientId': widget.transaction.clientId,
-                  'recipient': 'unknown',
+                  'recipient': widget.transaction.client,
                 },
               );
             },
