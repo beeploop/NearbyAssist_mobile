@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +15,25 @@ class ExpertiseSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Divider(),
-        const Text('Expertise',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            )),
+        Row(
+          children: [
+            const Text('Expertise',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                )),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: () {
+                context.pushNamed(
+                  'vendorApplication',
+                );
+              },
+              icon: const Icon(CupertinoIcons.add, size: 14),
+              label: const Text('Add Expertise'),
+            ),
+          ],
+        ),
         Wrap(
           runSpacing: 6,
           spacing: 6,

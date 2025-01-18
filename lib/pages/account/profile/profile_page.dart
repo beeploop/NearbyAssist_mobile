@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/profile/widget/expertise_section.dart';
 import 'package:nearby_assist/pages/account/profile/widget/profile_header.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -37,7 +36,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 10),
                   if (auth.user.isVendor) const ExpertiseSection(),
                   const Divider(),
-                  Text(prettyJSON(auth.user)),
                 ],
               ),
             ),
