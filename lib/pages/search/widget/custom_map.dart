@@ -9,7 +9,6 @@ import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class CustomMap extends StatefulWidget {
@@ -155,13 +154,6 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   void _mapReady() {
     _centerMap();
-
-    showCustomSnackBar(
-      context,
-      "There might be some delay in displaying the map depending on your connection",
-      duration: const Duration(seconds: 6),
-      backgroundColor: Colors.green[400],
-    );
   }
 
   void _centerMap() {
@@ -191,7 +183,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       _controller.animatedFitCamera(
         cameraFit: CameraFit.bounds(
           bounds: bounds,
-          padding: const EdgeInsets.fromLTRB(40, 120, 40, 40),
+          padding: const EdgeInsets.fromLTRB(40, 180, 40, 40),
         ),
       );
     });
