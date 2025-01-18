@@ -1,8 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/rating_count_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/widget/rating_count_bar.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 
 class DetailTabSection extends StatelessWidget {
   const DetailTabSection({
@@ -35,19 +35,16 @@ class DetailTabSection extends StatelessWidget {
               labelColor: Colors.white,
               tabs: const [
                 Tab(child: Text("Description")),
-                Tab(child: Text("Reviews")),
                 Tab(child: Text("Extras")),
+                Tab(child: Text("Reviews")),
               ],
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              width: double.infinity,
-              height: 300,
+            Flexible(
               child: TabBarView(
                 children: [
                   _decriptionSection(),
-                  _reviewSection(context),
                   _extrasSection(),
+                  _reviewSection(context),
                 ],
               ),
             ),
@@ -89,7 +86,23 @@ class DetailTabSection extends StatelessWidget {
   }
 
   Widget _extrasSection() {
-    return Text(prettyJSON(service.extras));
+    return ListView.builder(
+      itemCount: service.extras.length,
+      itemBuilder: (context, idx) {
+        return ListTile(
+          leading: const Icon(CupertinoIcons.tags),
+          title: Text(service.extras[idx].title),
+          subtitle: Text(service.extras[idx].description),
+          trailing: Text(
+            '₱ ${service.extras[idx].price}',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _showReviews(BuildContext context) {
