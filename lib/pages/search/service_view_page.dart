@@ -81,6 +81,9 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 service: details.service,
                 rating: details.ratingCount,
               ),
+              const SizedBox(
+                height: 20,
+              ),
             ],
           ),
           if (user.id != details.vendor.id) FloatingCTA(details: details),
