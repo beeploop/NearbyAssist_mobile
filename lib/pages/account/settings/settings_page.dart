@@ -20,110 +20,144 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: ListView(
-        children: [
-          Consumer<UserProvider>(
-            builder: (context, auth, child) {
-              return AccountTileWidget(
-                title: "Sync Account",
-                subtitle: "Update user information to latest values",
-                icon: CupertinoIcons.arrow_2_circlepath,
-                endIcon: false,
-                onPress: () => _syncAccount(auth),
-              );
-            },
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(),
+          body: buildListView(context),
+        ),
+
+        // Show loading overlay
+        if (_isLoading)
+          const Opacity(
+            opacity: 0.8,
+            child: ModalBarrier(dismissible: false, color: Colors.black),
           ),
-          AccountTileWidget(
-            title: "Update Tags",
-            subtitle: "Force update service tags",
-            icon: CupertinoIcons.tag,
-            endIcon: false,
-            onPress: _updateTags,
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
           ),
-          AccountTileWidget(
-            title: "Healthcheck",
-            subtitle: "Check status and connection of the server",
-            icon: CupertinoIcons.waveform_path,
-            endIcon: false,
-            onPress: _healthcheck,
-          ),
-          const Divider(),
-          const SizedBox(height: 10),
-          AccountTileWidget(
-            title: "Clear Data",
-            subtitle: "Clear cached data and logout",
-            icon: CupertinoIcons.clear,
-            endIcon: false,
-            onPress: _clearData,
-          ),
-          AccountTileWidget(
-            title: "Disable Account",
-            subtitle: "Temporarily disable your account",
-            icon: CupertinoIcons.nosign,
-            endIcon: false,
-            onPress: _disableAccount,
-          ),
-          AccountTileWidget(
-            title: "Delete Account",
-            textColor: Colors.red,
-            subtitle: "Delete your account and saved data",
-            icon: CupertinoIcons.trash,
-            iconColor: Colors.red,
-            endIcon: false,
-            onPress: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  icon: const Icon(
-                    CupertinoIcons.exclamationmark_triangle,
-                    color: Colors.amber,
-                    size: 30,
+      ],
+    );
+  }
+
+  ListView buildListView(BuildContext context) {
+    return ListView(
+      children: [
+        Consumer<UserProvider>(
+          builder: (context, auth, child) {
+            return AccountTileWidget(
+              title: "Sync Account",
+              subtitle: "Update user information to latest values",
+              icon: CupertinoIcons.arrow_2_circlepath,
+              endIcon: false,
+              onPress: () => _syncAccount(auth),
+            );
+          },
+        ),
+        AccountTileWidget(
+          title: "Update Tags",
+          subtitle: "Force update service tags",
+          icon: CupertinoIcons.tag,
+          endIcon: false,
+          onPress: _updateTags,
+        ),
+        AccountTileWidget(
+          title: "Healthcheck",
+          subtitle: "Check status and connection of the server",
+          icon: CupertinoIcons.waveform_path,
+          endIcon: false,
+          onPress: _healthcheck,
+        ),
+        const Divider(),
+        const SizedBox(height: 10),
+        AccountTileWidget(
+          title: "Clear Data",
+          subtitle: "Clear cached data and logout",
+          icon: CupertinoIcons.clear,
+          endIcon: false,
+          onPress: _clearData,
+        ),
+        AccountTileWidget(
+          title: "Disable Account",
+          subtitle: "Temporarily disable your account",
+          icon: CupertinoIcons.nosign,
+          endIcon: false,
+          onPress: _disableAccount,
+        ),
+        AccountTileWidget(
+          title: "Delete Account",
+          textColor: Colors.red,
+          subtitle: "Delete your account and saved data",
+          icon: CupertinoIcons.trash,
+          iconColor: Colors.red,
+          endIcon: false,
+          onPress: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                icon: const Icon(
+                  CupertinoIcons.exclamationmark_triangle,
+                  color: Colors.amber,
+                  size: 30,
+                ),
+                title: const Text('Delete Account'),
+                content: const Text(
+                  'This action will delete all your user data. This action is not reversible, are you sure?',
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
                   ),
-                  title: const Text('Delete Account'),
-                  content: const Text(
-                    'This action will delete all your user data. This action is not reversible, are you sure?',
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Cancel'),
-                    ),
-                    FilledButton(
-                      onPressed: () {
-                        _deleteAccount();
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                            const WidgetStatePropertyAll(Colors.red),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                  FilledButton(
+                    onPressed: () {
+                      _deleteAccount();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: const WidgetStatePropertyAll(Colors.red),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text('Continue'),
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+                    child: const Text('Continue'),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
+  }
+
+  void showLoader() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
+  void hideLoader() {
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _syncAccount(UserProvider auth) async {
     try {
+      showLoader();
+
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.me);
 
@@ -137,6 +171,8 @@ class _SettingsPageState extends State<SettingsPage> {
       _showSuccessModal('Account information synced');
     } catch (error) {
       _showErrorModal(error.toString());
+    } finally {
+      hideLoader();
     }
   }
 
@@ -151,6 +187,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _updateTags() async {
     try {
+      showLoader();
+
       final provider = context.read<ExpertiseProvider>();
 
       await provider.fetchExpertise();
@@ -162,11 +200,15 @@ class _SettingsPageState extends State<SettingsPage> {
       _showSuccessModal('Tags updated');
     } catch (error) {
       _showErrorModal(error.toString());
+    } finally {
+      hideLoader();
     }
   }
 
   void _healthcheck() async {
     try {
+      showLoader();
+
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.healthcheck);
 
@@ -191,6 +233,8 @@ class _SettingsPageState extends State<SettingsPage> {
       );
     } catch (error) {
       logger.log(error.toString());
+    } finally {
+      hideLoader();
     }
   }
 
