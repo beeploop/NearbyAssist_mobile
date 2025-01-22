@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/login/tester_settings_modal.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
-import 'package:nearby_assist/services/facebook_auth_service.dart';
+import 'package:nearby_assist/services/google_auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -67,19 +68,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginButton() {
-    return OutlinedButton.icon(
+    return FilledButton.icon(
       onPressed: _login,
-      style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: Colors.blue),
+      style: ButtonStyle(
+        backgroundColor: WidgetStatePropertyAll(Colors.green.shade900),
       ),
-      icon: const Icon(
-        Icons.facebook_outlined,
-        color: Colors.blue,
+      icon: const FaIcon(
+        FontAwesomeIcons.google,
+        color: Colors.white,
+        size: 16,
       ),
       label: const Text(
-        "Continue with Facebook",
+        "Continue with Google",
         style: TextStyle(
-          color: Colors.blue,
           fontSize: 16,
         ),
       ),
@@ -88,13 +89,15 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     try {
-      final fbAuth = FacebookAuthService();
-      final fbUser = await fbAuth.login();
+      final gAuth = GoogleAuthService();
+      final gUser = await gAuth.login();
 
       final auth = AuthService();
-      final user = await auth.login(fbUser);
+      final user = await auth.login(gUser);
 
       _onLoginSuccess(user);
+    } on GoogleNullUserException catch (error) {
+      _showErrorModal(error.message);
     } catch (error) {
       _showErrorModal(error.toString());
     }

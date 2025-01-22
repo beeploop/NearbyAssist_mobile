@@ -57,6 +57,8 @@ dependencies:
   encrypt: ^5.0.3
   flutter_facebook_auth: ^7.1.1
   cached_network_image: ^3.4.1
+  google_sign_in: ^6.2.2
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_test:
