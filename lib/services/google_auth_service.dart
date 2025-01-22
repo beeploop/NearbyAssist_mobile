@@ -1,4 +1,5 @@
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/login_payload_model.dart';
 
 class GoogleAuthService {
@@ -18,7 +19,7 @@ class GoogleAuthService {
       return LoginPayloadModel(
         name: user.displayName ?? '',
         email: user.email,
-        imageUrl: user.photoUrl ?? '',
+        imageUrl: user.photoUrl ?? fallbackUserImage,
       );
     } catch (error) {
       rethrow;

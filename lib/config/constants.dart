@@ -8,6 +8,9 @@ const appLegalese = "© 2024 NearbyAssist";
 const defaultLocation = LatLng(7.4470693031593225, 125.80932608954173);
 const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
+const fallbackUserImage =
+    'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+
 const serviceTags = [
   'computer repair',
   'carpentry',
