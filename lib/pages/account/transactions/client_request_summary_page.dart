@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
-import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
 class ClientRequestSummaryPage extends StatefulWidget {
@@ -22,8 +22,6 @@ class ClientRequestSummaryPage extends StatefulWidget {
 class _ClientRequestSummaryPageState extends State<ClientRequestSummaryPage> {
   @override
   Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().user;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -80,7 +78,7 @@ class _ClientRequestSummaryPageState extends State<ClientRequestSummaryPage> {
               const SizedBox(height: 20),
               const Text('Client Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(label: 'Client Name:', text: user.name),
+              RowTile(label: 'Client Name:', text: widget.transaction.client),
               const Divider(),
 
               // Service Price
@@ -143,7 +141,8 @@ class _ClientRequestSummaryPageState extends State<ClientRequestSummaryPage> {
                           child: const Text('Cancel'),
                         ),
                         TextButton(
-                          onPressed: _confirmRequest,
+                          onPressed: () =>
+                              _confirmRequest(widget.transaction.id),
                           child: const Text('Continue'),
                         ),
                       ],
@@ -182,7 +181,8 @@ class _ClientRequestSummaryPageState extends State<ClientRequestSummaryPage> {
                           child: const Text('Cancel'),
                         ),
                         TextButton(
-                          onPressed: _rejectRequest,
+                          onPressed: () =>
+                              _rejectRequest(widget.transaction.id),
                           child: const Text('Continue'),
                         ),
                       ],
@@ -202,16 +202,18 @@ class _ClientRequestSummaryPageState extends State<ClientRequestSummaryPage> {
     );
   }
 
-  Future<void> _confirmRequest() async {
+  Future<void> _confirmRequest(String id) async {
     try {
+      await context.read<TransactionProvider>().acceptTransactionRequest(id);
       _onSuccess();
     } catch (error) {
       _onError(error.toString());
     }
   }
 
-  Future<void> _rejectRequest() async {
+  Future<void> _rejectRequest(String id) async {
     try {
+      await context.read<TransactionProvider>().rejectTransactionRequest(id);
       _onSuccess();
     } catch (error) {
       _onError(error.toString());

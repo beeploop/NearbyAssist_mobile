@@ -125,4 +125,24 @@ class TransactionService {
       rethrow;
     }
   }
+
+  Future<void> acceptRequest(String id) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put('${endpoint.acceptRequest}/$id');
+    } catch (error) {
+      logger.log('Error accepting client request: ${error.toString()}');
+      rethrow;
+    }
+  }
+
+  Future<void> rejectRequest(String id) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put('${endpoint.rejectRequest}/$id');
+    } catch (error) {
+      logger.log('Error reject client request: ${error.toString()}');
+      rethrow;
+    }
+  }
 }

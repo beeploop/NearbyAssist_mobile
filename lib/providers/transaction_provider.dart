@@ -96,6 +96,22 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> acceptTransactionRequest(String id) async {
+    try {
+      await TransactionService().acceptRequest(id);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> rejectTransactionRequest(String id) async {
+    try {
+      await TransactionService().rejectRequest(id);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<void> getTransaction(String id) async {
     try {
       final service = TransactionService();
