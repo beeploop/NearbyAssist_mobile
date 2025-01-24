@@ -25,6 +25,14 @@ class GoogleAuthService {
       rethrow;
     }
   }
+
+  Future<void> logout() async {
+    try {
+      await GoogleSignIn(scopes: scopes).signOut();
+    } catch (error) {
+      rethrow;
+    }
+  }
 }
 
 class GoogleNullUserException implements Exception {

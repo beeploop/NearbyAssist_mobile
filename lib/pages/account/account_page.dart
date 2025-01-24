@@ -6,6 +6,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
+import 'package:nearby_assist/services/google_auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -58,6 +59,7 @@ class _AccountPageState extends State<AccountPage> {
 
   Future<void> _logout() async {
     try {
+      await GoogleAuthService().logout();
       await AuthService().logout();
       _onLogoutSuccess();
     } catch (error) {
