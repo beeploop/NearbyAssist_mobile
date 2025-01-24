@@ -7,6 +7,7 @@ import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
+import 'package:nearby_assist/services/google_auth_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
@@ -240,6 +241,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _clearData() async {
     await context.read<UserProvider>().clearData();
+    await GoogleAuthService().logout();
 
     if (!mounted) return;
 
