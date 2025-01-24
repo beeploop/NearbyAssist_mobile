@@ -84,8 +84,10 @@ class _RecentTransactionState extends State<RecentTransaction> {
         color = Colors.green;
         break;
       case 'cancelled':
-        color = Colors.red;
+        color = Colors.grey;
         break;
+      case 'rejected':
+        color = Colors.red;
       default:
         color = Colors.grey;
     }

@@ -99,8 +99,10 @@ class _HistoryPageState extends State<HistoryPage> {
         color = Colors.green;
         break;
       case 'cancelled':
-        color = Colors.red;
+        color = Colors.grey;
         break;
+      case 'rejected':
+        color = Colors.red;
       default:
         color = Colors.grey;
     }

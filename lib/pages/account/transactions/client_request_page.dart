@@ -48,7 +48,8 @@ class _ClientRequestPageState extends State<ClientRequestPage> {
               ),
             );
           },
-          title: Text(requests[index].service.title),
+          title: Text(requests[index].client),
+          subtitle: Text(requests[index].service.title),
           trailing: _chip(requests[index].status),
         ),
       ),
@@ -98,8 +99,10 @@ class _ClientRequestPageState extends State<ClientRequestPage> {
         color = Colors.teal;
         break;
       case 'cancelled':
-        color = Colors.red;
+        color = Colors.grey;
         break;
+      case 'rejected':
+        color = Colors.red;
       default:
         color = Colors.grey;
     }
