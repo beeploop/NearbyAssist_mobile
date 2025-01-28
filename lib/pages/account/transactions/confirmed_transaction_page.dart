@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
+import 'package:nearby_assist/pages/account/transactions/confirmed_request_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +45,7 @@ class _ConfirmedTransactionPageState extends State<ConfirmedTransactionPage> {
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    TransactionSummaryPage(transaction: requests[index]),
+                    ConfirmedRequestSummaryPage(transaction: requests[index]),
               ),
             );
           },
