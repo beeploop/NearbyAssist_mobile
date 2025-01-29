@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
-import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 
 class ConfirmedRequestSummaryPage extends StatefulWidget {
   const ConfirmedRequestSummaryPage({
@@ -25,8 +23,6 @@ class _ConfirmedRequestSummaryPageState
     extends State<ConfirmedRequestSummaryPage> {
   @override
   Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().user;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -84,7 +80,7 @@ class _ConfirmedRequestSummaryPageState
               const SizedBox(height: 20),
               const Text('Client Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(label: 'Client Name:', text: user.name),
+              RowTile(label: 'Client Name:', text: widget.transaction.client),
               const Divider(),
 
               // Service Price
