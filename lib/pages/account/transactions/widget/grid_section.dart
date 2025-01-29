@@ -9,57 +9,47 @@ import 'package:nearby_assist/pages/account/transactions/widget/grid_item.dart';
 class GridSection extends StatelessWidget {
   const GridSection({
     super.key,
+    this.rowCount = 2,
     this.spacing = 10,
   });
 
+  final int rowCount;
   final double spacing;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return GridView(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: rowCount,
+        mainAxisSpacing: spacing,
+        crossAxisSpacing: spacing,
+      ),
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(4),
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: GridItem(
-                background: Colors.pink.shade300,
-                icon: CupertinoIcons.arrow_down_circle,
-                label: 'Received Requests',
-                onTap: () => _handleClientRequestTap(context),
-              ),
-            ),
-            SizedBox(width: spacing),
-            Expanded(
-              child: GridItem(
-                background: Colors.teal.shade400,
-                icon: CupertinoIcons.arrow_up_circle,
-                label: 'Sent Requests',
-                onTap: () => _handleMyRequestTap(context),
-              ),
-            ),
-          ],
+        GridItem(
+          background: Colors.pink.shade300,
+          icon: CupertinoIcons.arrow_down_circle,
+          label: 'Received Requests',
+          onTap: () => _handleClientRequestTap(context),
         ),
-        SizedBox(height: spacing),
-        Row(
-          children: [
-            Expanded(
-              child: GridItem(
-                background: Colors.cyan.shade400,
-                icon: CupertinoIcons.arrow_clockwise_circle,
-                label: 'Accepted Requests',
-                onTap: () => _handleConfirmedTap(context),
-              ),
-            ),
-            SizedBox(width: spacing),
-            Expanded(
-              child: GridItem(
-                background: Colors.orange.shade400,
-                icon: CupertinoIcons.chart_pie,
-                label: 'History',
-                onTap: () => _handleHistoryTap(context),
-              ),
-            ),
-          ],
+        GridItem(
+          background: Colors.teal.shade400,
+          icon: CupertinoIcons.arrow_up_circle,
+          label: 'Sent Requests',
+          onTap: () => _handleMyRequestTap(context),
+        ),
+        GridItem(
+          background: Colors.cyan.shade400,
+          icon: CupertinoIcons.arrow_clockwise_circle,
+          label: 'Accepted Requests',
+          onTap: () => _handleConfirmedTap(context),
+        ),
+        GridItem(
+          background: Colors.orange.shade400,
+          icon: CupertinoIcons.chart_pie,
+          label: 'Requests History',
+          onTap: () => _handleHistoryTap(context),
         ),
       ],
     );

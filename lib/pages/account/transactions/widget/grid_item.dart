@@ -27,19 +27,24 @@ class GridItem extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            const Spacer(),
             Icon(
               icon,
               color: Colors.white,
               size: 40,
             ),
             const SizedBox(height: 5),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
               ),
             ),
+            const Spacer(),
           ],
         ),
       ),
