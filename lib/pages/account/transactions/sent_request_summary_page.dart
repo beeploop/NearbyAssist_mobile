@@ -167,6 +167,9 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                   ),
                   child: const Text('Cancel'),
                 ),
+
+              if (widget.transaction.status.toLowerCase() == 'confirmed')
+                _displayQR(),
             ],
           ),
         ),
@@ -180,6 +183,15 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
       total += extra.price;
     }
     return total;
+  }
+
+  Widget _displayQR() {
+    // TODO: code to display transaction qr code
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.green.shade900,
+      ),
+    );
   }
 
   void _cancelTransaction() async {
