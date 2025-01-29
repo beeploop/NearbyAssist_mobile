@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/pages/account/transactions/client_request_page.dart';
+import 'package:nearby_assist/pages/account/transactions/received_request_page.dart';
 import 'package:nearby_assist/pages/account/transactions/history_page.dart';
-import 'package:nearby_assist/pages/account/transactions/my_request_page.dart';
-import 'package:nearby_assist/pages/account/transactions/confirmed_transaction_page.dart';
+import 'package:nearby_assist/pages/account/transactions/sent_request_page.dart';
+import 'package:nearby_assist/pages/account/transactions/confirmed_request_page.dart';
 import 'package:nearby_assist/pages/account/transactions/widget/grid_item.dart';
 
 class GridSection extends StatelessWidget {
@@ -24,7 +24,7 @@ class GridSection extends StatelessWidget {
               child: GridItem(
                 background: Colors.pink.shade300,
                 icon: CupertinoIcons.arrow_down_circle,
-                label: 'Client Requests',
+                label: 'Received Requests',
                 onTap: () => _handleClientRequestTap(context),
               ),
             ),
@@ -33,7 +33,7 @@ class GridSection extends StatelessWidget {
               child: GridItem(
                 background: Colors.teal.shade400,
                 icon: CupertinoIcons.arrow_up_circle,
-                label: 'My Requests',
+                label: 'Sent Requests',
                 onTap: () => _handleMyRequestTap(context),
               ),
             ),
@@ -46,7 +46,7 @@ class GridSection extends StatelessWidget {
               child: GridItem(
                 background: Colors.cyan.shade400,
                 icon: CupertinoIcons.arrow_clockwise_circle,
-                label: 'Confirmed',
+                label: 'Accepted Requests',
                 onTap: () => _handleConfirmedTap(context),
               ),
             ),
@@ -69,7 +69,7 @@ class GridSection extends StatelessWidget {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => const ClientRequestPage(),
+        builder: (context) => const ReceivedRequestPage(),
       ),
     );
   }
@@ -78,7 +78,7 @@ class GridSection extends StatelessWidget {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => const MyRequestPage(),
+        builder: (context) => const SentRequestPage(),
       ),
     );
   }
@@ -87,7 +87,7 @@ class GridSection extends StatelessWidget {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => const ConfirmedTransactionPage(),
+        builder: (context) => const ConfirmedRequestPage(),
       ),
     );
   }

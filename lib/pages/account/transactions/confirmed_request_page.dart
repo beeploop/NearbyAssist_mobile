@@ -5,15 +5,14 @@ import 'package:nearby_assist/pages/account/transactions/confirmed_request_summa
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-class ConfirmedTransactionPage extends StatefulWidget {
-  const ConfirmedTransactionPage({super.key});
+class ConfirmedRequestPage extends StatefulWidget {
+  const ConfirmedRequestPage({super.key});
 
   @override
-  State<ConfirmedTransactionPage> createState() =>
-      _ConfirmedTransactionPageState();
+  State<ConfirmedRequestPage> createState() => _ConfirmedRequestPageState();
 }
 
-class _ConfirmedTransactionPageState extends State<ConfirmedTransactionPage> {
+class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
   @override
   Widget build(BuildContext context) {
     final confirmed = context.watch<TransactionProvider>().confirmed;

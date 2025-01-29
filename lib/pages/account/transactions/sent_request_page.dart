@@ -1,32 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/transactions/client_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-class ClientRequestPage extends StatefulWidget {
-  const ClientRequestPage({super.key});
+class SentRequestPage extends StatefulWidget {
+  const SentRequestPage({super.key});
 
   @override
-  State<ClientRequestPage> createState() => _ClientRequestPageState();
+  State<SentRequestPage> createState() => _SentRequestPageState();
 }
 
-class _ClientRequestPageState extends State<ClientRequestPage> {
+class _SentRequestPageState extends State<SentRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final requests = context.watch<TransactionProvider>().clientRequest;
+    final requests = context.watch<TransactionProvider>().myRequests;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Client Request',
+          'Sent Requests',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchClientRequests,
+        onRefresh: context.read<TransactionProvider>().fetchMyRequests,
         child: requests.isEmpty ? _emptyState() : _mainContent(requests),
       ),
     );
@@ -43,13 +43,18 @@ class _ClientRequestPageState extends State<ClientRequestPage> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) =>
-                    ClientRequestSummaryPage(transaction: requests[index]),
+                builder: (context) => SentRequestSummaryPage(
+                  transaction: requests[index],
+                  showChatIcon: true,
+                ),
               ),
             );
           },
-          title: Text(requests[index].client),
-          subtitle: Text(requests[index].service.title),
+          title: Text(requests[index].vendor),
+          subtitle: Text(
+            requests[index].service.title,
+            overflow: TextOverflow.ellipsis,
+          ),
           trailing: _chip(requests[index].status),
         ),
       ),
@@ -98,11 +103,6 @@ class _ClientRequestPageState extends State<ClientRequestPage> {
       case 'confirmed':
         color = Colors.teal;
         break;
-      case 'cancelled':
-        color = Colors.grey;
-        break;
-      case 'rejected':
-        color = Colors.red;
       default:
         color = Colors.grey;
     }

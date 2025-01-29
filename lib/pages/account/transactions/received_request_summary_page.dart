@@ -6,8 +6,8 @@ import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-class ClientRequestSummaryPage extends StatefulWidget {
-  const ClientRequestSummaryPage({
+class ReceivedRequestSummaryPage extends StatefulWidget {
+  const ReceivedRequestSummaryPage({
     super.key,
     required this.transaction,
   });
@@ -15,18 +15,19 @@ class ClientRequestSummaryPage extends StatefulWidget {
   final BookingModel transaction;
 
   @override
-  State<ClientRequestSummaryPage> createState() =>
-      _ClientRequestSummaryPageState();
+  State<ReceivedRequestSummaryPage> createState() =>
+      _ReceivedRequestSummaryPageState();
 }
 
-class _ClientRequestSummaryPageState extends State<ClientRequestSummaryPage> {
+class _ReceivedRequestSummaryPageState
+    extends State<ReceivedRequestSummaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Client Request',
+          'Received',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [

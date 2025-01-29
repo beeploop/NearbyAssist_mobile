@@ -1,32 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
+import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-class MyRequestPage extends StatefulWidget {
-  const MyRequestPage({super.key});
+class ReceivedRequestPage extends StatefulWidget {
+  const ReceivedRequestPage({super.key});
 
   @override
-  State<MyRequestPage> createState() => _MyRequestPageState();
+  State<ReceivedRequestPage> createState() => _ReceivedRequestPageState();
 }
 
-class _MyRequestPageState extends State<MyRequestPage> {
+class _ReceivedRequestPageState extends State<ReceivedRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final requests = context.watch<TransactionProvider>().myRequests;
+    final requests = context.watch<TransactionProvider>().clientRequest;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'My Request',
+          'Received Requests',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchMyRequests,
+        onRefresh: context.read<TransactionProvider>().fetchClientRequests,
         child: requests.isEmpty ? _emptyState() : _mainContent(requests),
       ),
     );
@@ -43,18 +43,14 @@ class _MyRequestPageState extends State<MyRequestPage> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => TransactionSummaryPage(
+                builder: (context) => ReceivedRequestSummaryPage(
                   transaction: requests[index],
-                  showChatIcon: true,
                 ),
               ),
             );
           },
-          title: Text(requests[index].vendor),
-          subtitle: Text(
-            requests[index].service.title,
-            overflow: TextOverflow.ellipsis,
-          ),
+          title: Text(requests[index].client),
+          subtitle: Text(requests[index].service.title),
           trailing: _chip(requests[index].status),
         ),
       ),
@@ -103,6 +99,11 @@ class _MyRequestPageState extends State<MyRequestPage> {
       case 'confirmed':
         color = Colors.teal;
         break;
+      case 'cancelled':
+        color = Colors.grey;
+        break;
+      case 'rejected':
+        color = Colors.red;
       default:
         color = Colors.grey;
     }
