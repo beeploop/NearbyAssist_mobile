@@ -206,9 +206,7 @@ class _ReceivedRequestSummaryPageState
   Future<void> _confirmRequest(String id) async {
     try {
       final transactionProvider = context.read<TransactionProvider>();
-
       await transactionProvider.acceptTransactionRequest(id);
-      transactionProvider.removeRequestFromReceived(id);
 
       _onSuccess();
     } catch (error) {

@@ -34,7 +34,7 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchOngoing() async {
+  Future<List<BookingModel>> fetchAccepted() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.confirmed);
@@ -48,7 +48,7 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchClientRequests() async {
+  Future<List<BookingModel>> fetchReceivedRequests() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(
@@ -65,7 +65,7 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchMyRequests() async {
+  Future<List<BookingModel>> fetchSentRequests() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(

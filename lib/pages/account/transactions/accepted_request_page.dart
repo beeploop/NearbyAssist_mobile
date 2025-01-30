@@ -15,7 +15,7 @@ class AcceptedRequestPage extends StatefulWidget {
 class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final confirmed = context.watch<TransactionProvider>().confirmed;
+    final confirmed = context.watch<TransactionProvider>().accepted;
 
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +26,7 @@ class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchOngoing,
+        onRefresh: context.read<TransactionProvider>().fetchAccepted,
         child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
       ),
     );

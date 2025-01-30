@@ -6,15 +6,15 @@ import 'package:nearby_assist/services/transaction_service.dart';
 class TransactionProvider extends ChangeNotifier {
   List<BookingModel> _recents = [];
   List<BookingModel> _history = [];
-  List<BookingModel> _confirmed = [];
-  List<BookingModel> _myRequests = [];
-  List<BookingModel> _clientRequest = [];
+  List<BookingModel> _accepted = [];
+  List<BookingModel> _sentRequests = [];
+  List<BookingModel> _receivedRequests = [];
 
   List<BookingModel> get recents => _recents;
   List<BookingModel> get history => _history;
-  List<BookingModel> get confirmed => _confirmed;
-  List<BookingModel> get myRequests => _myRequests;
-  List<BookingModel> get clientRequest => _clientRequest;
+  List<BookingModel> get accepted => _accepted;
+  List<BookingModel> get sentRequests => _sentRequests;
+  List<BookingModel> get receivedRequests => _receivedRequests;
 
   Future<void> fetchRecent() async {
     try {
@@ -40,36 +40,36 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchOngoing() async {
+  Future<void> fetchAccepted() async {
     try {
       final service = TransactionService();
-      final response = await service.fetchOngoing();
+      final response = await service.fetchAccepted();
 
-      _confirmed = response;
+      _accepted = response;
       notifyListeners();
     } catch (error) {
       rethrow;
     }
   }
 
-  Future<void> fetchMyRequests() async {
+  Future<void> fetchSentRequests() async {
     try {
       final service = TransactionService();
-      final response = await service.fetchMyRequests();
+      final response = await service.fetchSentRequests();
 
-      _myRequests = response;
+      _sentRequests = response;
       notifyListeners();
     } catch (error) {
       rethrow;
     }
   }
 
-  Future<void> fetchClientRequests() async {
+  Future<void> fetchReceivedRequests() async {
     try {
       final service = TransactionService();
-      final response = await service.fetchClientRequests();
+      final response = await service.fetchReceivedRequests();
 
-      _clientRequest = response;
+      _receivedRequests = response;
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -77,12 +77,7 @@ class TransactionProvider extends ChangeNotifier {
   }
 
   void removeRequestFromAccepted(String transactionId) {
-    _confirmed.removeWhere((request) => request.id == transactionId);
-    notifyListeners();
-  }
-
-  void removeRequestFromReceived(String id) {
-    _clientRequest.removeWhere((request) => request.id == id);
+    _accepted.removeWhere((request) => request.id == transactionId);
     notifyListeners();
   }
 
@@ -99,7 +94,7 @@ class TransactionProvider extends ChangeNotifier {
     try {
       await TransactionService().cancelTransaction(id);
 
-      _myRequests.removeWhere((request) => request.id == id);
+      _sentRequests.removeWhere((request) => request.id == id);
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -109,6 +104,8 @@ class TransactionProvider extends ChangeNotifier {
   Future<void> acceptTransactionRequest(String id) async {
     try {
       await TransactionService().acceptRequest(id);
+      _receivedRequests.removeWhere((request) => request.id == id);
+      notifyListeners();
     } catch (error) {
       rethrow;
     }

@@ -15,7 +15,7 @@ class ConfirmedRequestPage extends StatefulWidget {
 class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final confirmed = context.watch<TransactionProvider>().confirmed;
+    final confirmed = context.watch<TransactionProvider>().accepted;
 
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +26,7 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchOngoing,
+        onRefresh: context.read<TransactionProvider>().fetchAccepted,
         child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
       ),
     );
@@ -44,7 +44,7 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    ConfirmedRequestSummaryPage(transaction: requests[index]),
+                    AcceptedRequestSummaryPage(transaction: requests[index]),
               ),
             );
           },

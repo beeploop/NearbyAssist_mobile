@@ -15,7 +15,7 @@ class ReceivedRequestPage extends StatefulWidget {
 class _ReceivedRequestPageState extends State<ReceivedRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final requests = context.watch<TransactionProvider>().clientRequest;
+    final requests = context.watch<TransactionProvider>().receivedRequests;
 
     return Scaffold(
       appBar: AppBar(
@@ -26,7 +26,7 @@ class _ReceivedRequestPageState extends State<ReceivedRequestPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchClientRequests,
+        onRefresh: context.read<TransactionProvider>().fetchReceivedRequests,
         child: requests.isEmpty ? _emptyState() : _mainContent(requests),
       ),
     );
