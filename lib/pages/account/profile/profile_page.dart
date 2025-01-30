@@ -34,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     user: auth.user,
                   ),
                   const SizedBox(height: 10),
-                  if (auth.user.isVendor) const ExpertiseSection(),
+                  const ExpertiseSection(),
                   const Divider(),
                 ],
               ),
