@@ -68,4 +68,7 @@ class ApiEndpoint {
   String get clientRequests => '$_baseUrl/api/v1/transactions/mine';
 
   String get expertiseList => '$_baseUrl/api/v1/tags/expertise';
+
+  String get qrSignature => '$_baseUrl/api/v1/qr/generateSignature';
+  String get qrVerifySignature => '$_baseUrl/api/v1/qr/verifySignature';
 }
