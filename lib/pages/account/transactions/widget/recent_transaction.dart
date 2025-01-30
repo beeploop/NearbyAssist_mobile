@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class RecentTransaction extends StatefulWidget {
@@ -29,39 +30,54 @@ class _RecentTransactionState extends State<RecentTransaction> {
 
   Widget _fetchAndBuildList() {
     return FutureBuilder(
-        future: context.read<TransactionProvider>().fetchRecent(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      future: context.read<TransactionProvider>().fetchRecent(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
 
-          if (snapshot.hasError) {
-            return const Center(
-              child: AlertDialog(
-                icon: Icon(CupertinoIcons.exclamationmark_triangle),
-                title: Text('Something went wrong'),
-                content: Text(
-                  'An error occurred while fetching recents. Please try again later',
-                ),
+        if (snapshot.hasError) {
+          return const Center(
+            child: AlertDialog(
+              icon: Icon(CupertinoIcons.exclamationmark_triangle),
+              title: Text('Something went wrong'),
+              content: Text(
+                'An error occurred while fetching recents. Please try again later',
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          final recents = context.watch<TransactionProvider>().recents;
-          return _buildList(recents);
-        });
+        final recents = context.watch<TransactionProvider>().recents;
+        return _buildList(recents);
+      },
+    );
   }
 
   Widget _buildList(List<BookingModel> recents) {
+    final user = context.read<UserProvider>().user;
+
     return ListView.separated(
       shrinkWrap: true,
       separatorBuilder: (context, index) => const SizedBox(),
       itemCount: recents.length,
       itemBuilder: (context, index) => ListTile(
         dense: true,
-        title: Text(recents[index].vendor),
+        leading: Icon(
+          recents[index].clientId == user.id
+              ? CupertinoIcons.arrow_up
+              : CupertinoIcons.arrow_down,
+        ),
+        title: Text(
+          recents[index].clientId == user.id
+              ? 'vendor: ${recents[index].vendor}'
+              : 'client: ${recents[index].client}',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         subtitle: Text(
           recents[index].service.title,
           overflow: TextOverflow.ellipsis,
