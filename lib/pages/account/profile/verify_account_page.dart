@@ -24,6 +24,7 @@ class VerifyAccountPage extends StatefulWidget {
 }
 
 class _VerifyAccountPageState extends State<VerifyAccountPage> {
+  bool _isLoading = false;
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _idNumberController = TextEditingController();
@@ -47,90 +48,121 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Verify Account',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              VerifyAccountInputField(
-                controller: _nameController,
-                labelText: 'Complete name',
-              ),
-              const SizedBox(height: 20),
-              AddressInput(onLocationPicked: _onLocationPicked),
-              const SizedBox(height: 20),
-              DropdownSearch<ValidID>(
-                decoratorProps: const DropDownDecoratorProps(
-                  decoration: InputDecoration(
-                    labelText: 'ID Type',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                items: (filter, props) => ValidID.values,
-                itemAsString: (id) => id.value,
-                compareFn: (id, selectedID) => id == selectedID,
-                selectedItem: _selectedID,
-                onChanged: (id) => setState(
-                  () => id != null ? _selectedID = id : ValidID.none,
-                ),
-              ),
-              const SizedBox(height: 20),
-              VerifyAccountInputField(
-                controller: _idNumberController,
-                labelText: 'ID Number',
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  FillableImageContainer(
-                    controller: _frontIdController,
-                    labelText: 'ID Front Side',
-                    icon: CupertinoIcons.photo,
-                  ),
-                  const SizedBox(width: 20),
-                  FillableImageContainer(
-                    controller: _backIdController,
-                    labelText: 'ID Back Side',
-                    icon: CupertinoIcons.photo_fill,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Divider(),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  FillableImageContainer(
-                    controller: _faceController,
-                    labelText: 'Face',
-                    hintText: 'Tap to open camera',
-                    icon: CupertinoIcons.camera_viewfinder,
-                    source: ImageSource.camera,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              FilledButton(
-                style: const ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                ),
-                onPressed: _submit,
-                child: const Text('Submit'),
-              ),
-            ],
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'Verify Account',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
+          body: buildBody(),
+        ),
+
+        // Show loading overlay
+        if (_isLoading)
+          const Opacity(
+            opacity: 0.8,
+            child: ModalBarrier(dismissible: false, color: Colors.black),
+          ),
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ],
+    );
+  }
+
+  Widget buildBody() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            VerifyAccountInputField(
+              controller: _nameController,
+              labelText: 'Complete name',
+            ),
+            const SizedBox(height: 20),
+            AddressInput(onLocationPicked: _onLocationPicked),
+            const SizedBox(height: 20),
+            DropdownSearch<ValidID>(
+              decoratorProps: const DropDownDecoratorProps(
+                decoration: InputDecoration(
+                  labelText: 'ID Type',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              items: (filter, props) => ValidID.values,
+              itemAsString: (id) => id.value,
+              compareFn: (id, selectedID) => id == selectedID,
+              selectedItem: _selectedID,
+              onChanged: (id) => setState(
+                () => id != null ? _selectedID = id : ValidID.none,
+              ),
+            ),
+            const SizedBox(height: 20),
+            VerifyAccountInputField(
+              controller: _idNumberController,
+              labelText: 'ID Number',
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                FillableImageContainer(
+                  controller: _frontIdController,
+                  labelText: 'ID Front Side',
+                  icon: CupertinoIcons.photo,
+                ),
+                const SizedBox(width: 20),
+                FillableImageContainer(
+                  controller: _backIdController,
+                  labelText: 'ID Back Side',
+                  icon: CupertinoIcons.photo_fill,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Divider(),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                FillableImageContainer(
+                  controller: _faceController,
+                  labelText: 'Face',
+                  hintText: 'Tap to open camera',
+                  icon: CupertinoIcons.camera_viewfinder,
+                  source: ImageSource.camera,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            FilledButton(
+              style: const ButtonStyle(
+                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+              ),
+              onPressed: _submit,
+              child: const Text('Submit'),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  void _showLoader() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
+  void _hideLoader() {
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _onLocationPicked(String address) {
@@ -140,6 +172,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   }
 
   void _submit() async {
+    _showLoader();
+
     final name = _nameController.text;
     final address = _addressController.text;
     final idType = _selectedID;
@@ -170,6 +204,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       _showLocationServiceDisabledDialog();
     } catch (error) {
       _onError(error.toString());
+    } finally {
+      _hideLoader();
     }
   }
 

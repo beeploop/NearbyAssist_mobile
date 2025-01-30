@@ -22,6 +22,7 @@ class VendorApplicationPage extends StatefulWidget {
 }
 
 class _VendorApplicationPageState extends State<VendorApplicationPage> {
+  bool _isLoading = false;
   List<ExpertiseModel> _expertiseList = [];
   ExpertiseModel? _selectedExpertise;
   List<String> _unlockables = [];
@@ -39,77 +40,96 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Vendor Application',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _tagsDropdown(),
-              const SizedBox(height: 20),
-              const Text('Selected expertise will unlock the following tags:'),
-              Text(
-                _unlockables.join(', '),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              const DividerWithText(text: 'Supporting Document'),
-              const SizedBox(height: 10),
-              const Text(
-                'Document that prove you are capable of offering satisfactory service for this role. Example documents are license and certifications',
-                style: TextStyle(fontSize: 12),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  FillableImageContainer(
-                    controller: _supportingDocController,
-                    icon: CupertinoIcons.doc_on_clipboard,
-                    labelText: 'Supporting Document',
-                  ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(color: Colors.orange[200]),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const DividerWithText(text: 'Police Clearance'),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  FillableImageContainer(
-                    controller: _policeClearanceController,
-                    icon: CupertinoIcons.doc_on_clipboard,
-                    labelText: 'Police Clearance',
-                  ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(color: Colors.orange[200]),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _checkboxTAC(),
-              const SizedBox(height: 10),
-              FilledButton(
-                style: const ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                ),
-                onPressed: _handleSubmit,
-                child: const Text('Submit'),
-              ),
-            ],
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'Vendor Application',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
+          body: buildBody(),
+        ),
+
+        // Show loading overlay
+        if (_isLoading)
+          const Opacity(
+            opacity: 0.8,
+            child: ModalBarrier(dismissible: false, color: Colors.black),
+          ),
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ],
+    );
+  }
+
+  Widget buildBody() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _tagsDropdown(),
+            const SizedBox(height: 20),
+            const Text('Selected expertise will unlock the following tags:'),
+            Text(
+              _unlockables.join(', '),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            const DividerWithText(text: 'Supporting Document'),
+            const SizedBox(height: 10),
+            const Text(
+              'Document that prove you are capable of offering satisfactory service for this role. Example documents are license and certifications',
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                FillableImageContainer(
+                  controller: _supportingDocController,
+                  icon: CupertinoIcons.doc_on_clipboard,
+                  labelText: 'Supporting Document',
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.orange[200]),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const DividerWithText(text: 'Police Clearance'),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                FillableImageContainer(
+                  controller: _policeClearanceController,
+                  icon: CupertinoIcons.doc_on_clipboard,
+                  labelText: 'Police Clearance',
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.orange[200]),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _checkboxTAC(),
+            const SizedBox(height: 10),
+            FilledButton(
+              style: const ButtonStyle(
+                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+              ),
+              onPressed: _handleSubmit,
+              child: const Text('Submit'),
+            ),
+          ],
         ),
       ),
     );
@@ -181,6 +201,18 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
     );
   }
 
+  void _showLoader() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
+  void _hideLoader() {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   void _handleSubmit() async {
     if (!_hasAgreedToTAC) {
       _showErrorModal('You did not agreed to the terms and conditions');
@@ -198,6 +230,8 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
       return;
     }
 
+    _showLoader();
+
     try {
       final service = VendorApplicationService();
       await service.apply(
@@ -209,6 +243,8 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
       _showSuccessModal();
     } catch (error) {
       _showErrorModal(error.toString());
+    } finally {
+      _hideLoader();
     }
   }
 
