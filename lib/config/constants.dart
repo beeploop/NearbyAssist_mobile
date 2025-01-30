@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/models/login_payload_model.dart';
 
-const appVersion = "v0.8.6-alpha";
+const appVersion = "v0.8.7-alpha";
 const appName = "NearbyAssist";
 const appLegalese = "© 2024 NearbyAssist";
 
