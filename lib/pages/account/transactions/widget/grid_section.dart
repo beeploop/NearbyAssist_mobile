@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/transactions/received_request_page.dart';
 import 'package:nearby_assist/pages/account/transactions/history_page.dart';
 import 'package:nearby_assist/pages/account/transactions/sent_request_page.dart';
-import 'package:nearby_assist/pages/account/transactions/confirmed_request_page.dart';
+import 'package:nearby_assist/pages/account/transactions/accepted_request_page.dart';
 import 'package:nearby_assist/pages/account/transactions/widget/grid_item.dart';
 
 class GridSection extends StatelessWidget {
@@ -41,7 +41,7 @@ class GridSection extends StatelessWidget {
         ),
         GridItem(
           background: Colors.cyan.shade400,
-          icon: CupertinoIcons.arrow_clockwise_circle,
+          icon: CupertinoIcons.checkmark_circle,
           label: 'Accepted Requests',
           onTap: () => _handleConfirmedTap(context),
         ),
@@ -77,7 +77,7 @@ class GridSection extends StatelessWidget {
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => const ConfirmedRequestPage(),
+        builder: (context) => const AcceptedRequestPage(),
       ),
     );
   }

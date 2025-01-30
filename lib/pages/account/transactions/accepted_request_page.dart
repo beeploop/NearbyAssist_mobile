@@ -5,14 +5,14 @@ import 'package:nearby_assist/pages/account/transactions/accepted_request_summar
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
-class ConfirmedRequestPage extends StatefulWidget {
-  const ConfirmedRequestPage({super.key});
+class AcceptedRequestPage extends StatefulWidget {
+  const AcceptedRequestPage({super.key});
 
   @override
-  State<ConfirmedRequestPage> createState() => _ConfirmedRequestPageState();
+  State<AcceptedRequestPage> createState() => _AcceptedRequestPageState();
 }
 
-class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
+class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
   @override
   Widget build(BuildContext context) {
     final confirmed = context.watch<TransactionProvider>().confirmed;
@@ -21,7 +21,7 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Ongoing',
+          'Accepted Requests',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -44,7 +44,7 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    ConfirmedRequestSummaryPage(transaction: requests[index]),
+                    AcceptedRequestSummaryPage(transaction: requests[index]),
               ),
             );
           },

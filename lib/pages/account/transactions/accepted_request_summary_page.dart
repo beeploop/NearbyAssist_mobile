@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 
-class ConfirmedRequestSummaryPage extends StatefulWidget {
-  const ConfirmedRequestSummaryPage({
+class AcceptedRequestSummaryPage extends StatefulWidget {
+  const AcceptedRequestSummaryPage({
     super.key,
     required this.transaction,
     this.showChatIcon = false,
@@ -15,12 +15,12 @@ class ConfirmedRequestSummaryPage extends StatefulWidget {
   final bool showChatIcon;
 
   @override
-  State<ConfirmedRequestSummaryPage> createState() =>
-      _ConfirmedRequestSummaryPageState();
+  State<AcceptedRequestSummaryPage> createState() =>
+      _AcceptedRequestSummaryPageState();
 }
 
-class _ConfirmedRequestSummaryPageState
-    extends State<ConfirmedRequestSummaryPage> {
+class _AcceptedRequestSummaryPageState
+    extends State<AcceptedRequestSummaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
