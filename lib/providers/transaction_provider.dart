@@ -76,6 +76,11 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
+  void removeRequestFromAccepted(String transactionId) {
+    _confirmed.removeWhere((request) => request.id == transactionId);
+    notifyListeners();
+  }
+
   Future<void> createTransaction(BookingRequestModel booking) async {
     try {
       final service = TransactionService();

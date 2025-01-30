@@ -60,6 +60,7 @@ dependencies:
   google_sign_in: ^6.2.2
   font_awesome_flutter: ^10.8.0
   qr_flutter: ^4.1.0
+  mobile_scanner: ^6.0.5
 
 dev_dependencies:
   flutter_test:

@@ -60,6 +60,7 @@ class ApiEndpoint {
   String get cancelBooking => '$_baseUrl/api/v1/transactions/cancel';
   String get acceptRequest => '$_baseUrl/api/v1/transactions/accept';
   String get rejectRequest => '$_baseUrl/api/v1/transactions/reject';
+  String get completeTransaction => '$_baseUrl/api/v1/transactions/complete';
   String get getTransaction => '$_baseUrl/api/v1/transactions';
   String get recent => '$_baseUrl/api/v1/transactions/recent';
   String get history => '$_baseUrl/api/v1/transactions/history';
