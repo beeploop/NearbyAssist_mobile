@@ -175,7 +175,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _bannerImage() {
-    final user = context.read<UserProvider>().user;
+    final user = context.watch<UserProvider>().user;
 
     return Container(
       height: 200,
