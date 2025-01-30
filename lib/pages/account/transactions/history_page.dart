@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -33,6 +34,8 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _mainContent(List<BookingModel> requests) {
+    final user = context.read<UserProvider>().user;
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ListView.separated(
@@ -48,6 +51,11 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
             );
           },
+          leading: Icon(
+            requests[index].clientId == user.id
+                ? CupertinoIcons.arrow_up
+                : CupertinoIcons.arrow_down,
+          ),
           title: Text(requests[index].vendor),
           subtitle: Text(
             requests[index].service.title,

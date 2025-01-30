@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
-import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class TransactionSummaryPage extends StatefulWidget {
@@ -24,8 +23,6 @@ class TransactionSummaryPage extends StatefulWidget {
 class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
   @override
   Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().user;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -83,7 +80,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
               const SizedBox(height: 20),
               const Text('Client Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(label: 'Client Name:', text: user.name),
+              RowTile(label: 'Client Name:', text: widget.transaction.client),
               const Divider(),
 
               // Service Price
