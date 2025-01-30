@@ -245,12 +245,12 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
           data: jsonEncode(data.toJson()),
           version: QrVersions.auto,
           size: 250,
-          eyeStyle: QrEyeStyle(
-            color: Colors.green.shade900,
+          eyeStyle: const QrEyeStyle(
+            color: Colors.black,
           ),
-          dataModuleStyle: QrDataModuleStyle(
-            dataModuleShape: QrDataModuleShape.circle,
-            color: Colors.green.shade900,
+          dataModuleStyle: const QrDataModuleStyle(
+            dataModuleShape: QrDataModuleShape.square,
+            color: Colors.black,
           ),
           embeddedImage: const AssetImage('assets/icon/icon.png'),
           embeddedImageStyle: const QrEmbeddedImageStyle(
