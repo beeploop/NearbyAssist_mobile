@@ -23,6 +23,7 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
+  bool _isLoading = false;
   final List<ServiceExtraModel> _selectedExtras = [];
   String _clientAddress = '';
 
@@ -39,43 +40,62 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Booking',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: context.read<UserProvider>().user.isVerified == false
-          ? Center(
-              child: AlertDialog(
-                icon: const Icon(CupertinoIcons.exclamationmark_triangle),
-                title: const Text('Account not verified'),
-                content: const Text(
-                    'Please verify your account to unlock more features'),
-                actions: [
-                  TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () => context.pushNamed('verifyAccount'),
-                    child: const Text('Verify'),
-                  ),
-                ],
-              ),
-            )
-          : Stepper(
-              type: StepperType.horizontal,
-              elevation: 0,
-              steps: _steps(),
-              currentStep: _currentStep,
-              onStepContinue: _onContinue,
-              onStepCancel: _onCancel,
-              controlsBuilder: _controlsBuilder,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'Booking',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
+          ),
+          body: _buildBody(),
+        ),
+
+        // Show loading overlay
+        if (_isLoading)
+          const Opacity(
+            opacity: 0.8,
+            child: ModalBarrier(dismissible: false, color: Colors.black),
+          ),
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ],
     );
+  }
+
+  Widget _buildBody() {
+    return context.read<UserProvider>().user.isVerified == false
+        ? Center(
+            child: AlertDialog(
+              icon: const Icon(CupertinoIcons.exclamationmark_triangle),
+              title: const Text('Account not verified'),
+              content: const Text(
+                  'Please verify your account to unlock more features'),
+              actions: [
+                TextButton(
+                  onPressed: () => context.pop(),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => context.pushNamed('verifyAccount'),
+                  child: const Text('Verify'),
+                ),
+              ],
+            ),
+          )
+        : Stepper(
+            type: StepperType.horizontal,
+            elevation: 0,
+            steps: _steps(),
+            currentStep: _currentStep,
+            onStepContinue: _onContinue,
+            onStepCancel: _onCancel,
+            controlsBuilder: _controlsBuilder,
+          );
   }
 
   List<Step> _steps() {
@@ -171,7 +191,21 @@ class _BookingPageState extends State<BookingPage> {
     return true;
   }
 
+  void _showLoader() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
+  void _hideLoader() {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   Future<void> _book() async {
+    _showLoader();
+
     final booking = BookingRequestModel(
       vendorId: widget.details.vendor.id,
       clientId: context.read<UserProvider>().user.id,
@@ -188,6 +222,8 @@ class _BookingPageState extends State<BookingPage> {
       _onSuccess();
     } catch (error) {
       _onError(error.toString());
+    } finally {
+      _hideLoader();
     }
   }
 
