@@ -4,12 +4,13 @@ import 'package:nearby_assist/pages/account/transactions/received_request_page.d
 import 'package:nearby_assist/pages/account/transactions/history_page.dart';
 import 'package:nearby_assist/pages/account/transactions/sent_request_page.dart';
 import 'package:nearby_assist/pages/account/transactions/accepted_request_page.dart';
+import 'package:nearby_assist/pages/account/transactions/to_rate_page.dart';
 import 'package:nearby_assist/pages/account/transactions/widget/grid_item.dart';
 
 class GridSection extends StatelessWidget {
   const GridSection({
     super.key,
-    this.rowCount = 2,
+    this.rowCount = 3,
     this.spacing = 10,
   });
 
@@ -46,10 +47,16 @@ class GridSection extends StatelessWidget {
           onTap: () => _handleConfirmedTap(context),
         ),
         GridItem(
-          background: Colors.orange.shade400,
+          background: Colors.purple.shade700,
           icon: CupertinoIcons.chart_pie,
           label: 'Requests History',
           onTap: () => _handleHistoryTap(context),
+        ),
+        GridItem(
+          background: Colors.orange.shade400,
+          icon: CupertinoIcons.star_circle,
+          label: 'To Rate',
+          onTap: () => _handleReviewTap(context),
         ),
       ],
     );
@@ -87,6 +94,15 @@ class GridSection extends StatelessWidget {
       context,
       CupertinoPageRoute(
         builder: (context) => const HistoryPage(),
+      ),
+    );
+  }
+
+  void _handleReviewTap(BuildContext context) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => const ToRatePage(),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
+import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 
@@ -82,6 +83,20 @@ class TransactionService {
     }
   }
 
+  Future<List<BookingModel>> fetchToReviewTransactions() async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get(endpoint.toReviews);
+
+      return (response.data['reviewables'] as List)
+          .map((transaction) => BookingModel.fromJson(transaction))
+          .toList();
+    } catch (error) {
+      logger.log('Error fetching reviewable transactions: ${error.toString()}');
+      rethrow;
+    }
+  }
+
   Future<void> createTransaction(BookingRequestModel booking) async {
     try {
       final api = ApiService.authenticated();
@@ -142,6 +157,15 @@ class TransactionService {
       await api.dio.put('${endpoint.rejectRequest}/$id');
     } catch (error) {
       logger.log('Error reject client request: ${error.toString()}');
+      rethrow;
+    }
+  }
+
+  Future<void> postReview(ReviewModel review) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.post(endpoint.postReview, data: review.toJson());
+    } catch (error) {
       rethrow;
     }
   }
