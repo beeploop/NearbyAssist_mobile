@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 
 enum AuthStatus { authenticated, unauthenticated }
@@ -15,11 +16,15 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> login(UserModel user) async {
     _user = user;
+    OneSignalService().updateUser(user);
+
     notifyListeners();
   }
 
   Future<void> logout() async {
     _user = null;
+    OneSignalService().updateUser(null);
+
     notifyListeners();
   }
 

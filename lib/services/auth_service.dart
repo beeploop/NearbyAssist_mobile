@@ -4,6 +4,7 @@ import 'package:nearby_assist/models/login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
+import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 
@@ -59,6 +60,8 @@ class AuthService {
 
       final store = SecureStorage();
       await store.clearAll();
+
+      OneSignalService().updateUser(null);
     } catch (error) {
       rethrow;
     }
