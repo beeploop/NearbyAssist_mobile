@@ -62,7 +62,7 @@ class AuthInterceptor extends Interceptor {
       }
     }
 
-    super.onError(err, handler);
+    handler.reject(err);
   }
 
   Future<void> _refreshToken() async {
