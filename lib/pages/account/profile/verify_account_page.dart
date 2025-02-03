@@ -77,7 +77,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
 
   Widget buildBody() {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -147,6 +147,9 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               onPressed: _submit,
               child: const Text('Submit'),
             ),
+
+            // Bottom padding
+            const SizedBox(height: 20),
           ],
         ),
       ),
