@@ -9,6 +9,7 @@ import 'package:nearby_assist/pages/account/profile/widget/fillable_image_contai
 import 'package:nearby_assist/pages/widget/clickable_text.dart';
 import 'package:nearby_assist/pages/widget/divider_with_text.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/vendor_application_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +69,29 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
   }
 
   Widget buildBody() {
+    final isVerified = context.read<UserProvider>().user.isVerified;
+
+    if (isVerified == false) {
+      return Center(
+        child: AlertDialog(
+          icon: const Icon(CupertinoIcons.exclamationmark_triangle),
+          title: const Text('Account not verified'),
+          content:
+              const Text('Please verify your account to unlock more features'),
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => context.pushNamed('verifyAccount'),
+              child: const Text('Verify'),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: SingleChildScrollView(
