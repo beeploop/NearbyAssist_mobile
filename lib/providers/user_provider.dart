@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
@@ -9,7 +10,7 @@ enum AuthStatus { authenticated, unauthenticated }
 class UserProvider extends ChangeNotifier {
   UserModel? _user;
 
-  UserModel get user => _user!;
+  UserModel get user => _user ?? placeHolderUser;
 
   AuthStatus get status =>
       _user == null ? AuthStatus.unauthenticated : AuthStatus.authenticated;

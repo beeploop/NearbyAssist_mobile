@@ -1,5 +1,6 @@
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/models/login_payload_model.dart';
+import 'package:nearby_assist/models/user_model.dart';
 
 const appVersion = "v0.9.1-alpha";
 const appName = "NearbyAssist";
@@ -10,6 +11,16 @@ const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 const fallbackUserImage =
     'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
+
+final placeHolderUser = UserModel(
+  id: '',
+  name: '',
+  email: '',
+  imageUrl: '',
+  isVendor: false,
+  isVerified: false,
+  expertise: [],
+);
 
 const serviceTags = [
   'computer repair',
