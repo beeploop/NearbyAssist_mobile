@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/providers/notifications_provider.dart';
+import 'package:provider/provider.dart';
 
 class NotificationBell extends StatefulWidget {
   const NotificationBell({super.key});
@@ -10,17 +12,18 @@ class NotificationBell extends StatefulWidget {
 }
 
 class _NotificationBellState extends State<NotificationBell> {
-  final notifications = 0;
-
   @override
   Widget build(BuildContext context) {
+    final notificationCount =
+        context.watch<NotificationsProvider>().notifications.length;
+
     return Stack(
       children: [
         IconButton(
           icon: const Icon(CupertinoIcons.bell),
           onPressed: _handlePress,
         ),
-        if (notifications >= 1)
+        if (notificationCount >= 1)
           Positioned(
             top: 6,
             left: 8,
@@ -34,7 +37,7 @@ class _NotificationBellState extends State<NotificationBell> {
                 ),
               ),
               child: Text(
-                '$notifications',
+                '$notificationCount',
                 style: const TextStyle(color: Colors.white),
               ),
             ),

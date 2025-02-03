@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/notification_model.dart';
 
-class IdentityVerificationAccepted extends StatelessWidget {
-  const IdentityVerificationAccepted({
+class IdentityVerificationRejected extends StatelessWidget {
+  const IdentityVerificationRejected({
     super.key,
     required this.notification,
   });

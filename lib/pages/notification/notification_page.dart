@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/notification_model.dart';
+import 'package:nearby_assist/pages/notification/widget/generic_notification.dart';
 import 'package:nearby_assist/pages/notification/widget/identity_verification_accepted.dart';
-import 'package:nearby_assist/pages/notification/widget/identity_verification_request_response.dart';
+import 'package:nearby_assist/pages/notification/widget/identity_verification_rejected.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key, required this.notification});
@@ -16,15 +17,10 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          widget.notification.title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
+      backgroundColor: Colors.grey.shade300,
+      appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
         child: _buildBody(),
       ),
     );
@@ -37,11 +33,11 @@ class _NotificationPageState extends State<NotificationPage> {
           notification: widget.notification,
         );
       case NotificationType.identityVerificationRejected:
-        return IdentityVerificationRequestResponse(
+        return IdentityVerificationRejected(
           notification: widget.notification,
         );
       case NotificationType.generic:
-        return IdentityVerificationRequestResponse(
+        return GenericNotification(
           notification: widget.notification,
         );
     }
