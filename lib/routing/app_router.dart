@@ -12,6 +12,7 @@ import 'package:nearby_assist/pages/account/services/service_detail_page.dart';
 import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
 import 'package:nearby_assist/pages/account/settings/settings_page.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_page.dart';
+import 'package:nearby_assist/pages/notification/notification_list_page.dart';
 import 'package:nearby_assist/pages/saves/saves_page.dart';
 import 'package:nearby_assist/pages/chat/chat_page.dart';
 import 'package:nearby_assist/pages/chat/inbox_page.dart';
@@ -98,6 +99,12 @@ GoRouter generateRoutes(
           ]),
         ],
       ),
+      GoRoute(
+          path: RoutePath.notifications.path,
+          name: RoutePath.notifications.name,
+          builder: (context, state) {
+            return const NotificationListPage();
+          }),
       GoRoute(
           path: RoutePath.viewService.path,
           name: RoutePath.viewService.name,

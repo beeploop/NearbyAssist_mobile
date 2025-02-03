@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:go_router/go_router.dart';
 
 class NotificationBell extends StatefulWidget {
   const NotificationBell({super.key});
@@ -10,7 +10,7 @@ class NotificationBell extends StatefulWidget {
 }
 
 class _NotificationBellState extends State<NotificationBell> {
-  final notifications = 1;
+  final notifications = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +44,6 @@ class _NotificationBellState extends State<NotificationBell> {
   }
 
   void _handlePress() {
-    showCustomSnackBar(
-      context,
-      'You have $notifications notifications',
-      backgroundColor: Colors.green[300],
-      duration: const Duration(seconds: 2),
-    );
+    context.pushNamed('notifications');
   }
 }

@@ -15,6 +15,8 @@ enum RoutePath {
 
   saves(path: "/saves"),
 
+  notifications(path: "/notifications"),
+
   account(path: "/account"),
 
   transactions(path: "/transactions"),

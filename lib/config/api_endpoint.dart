@@ -74,4 +74,7 @@ class ApiEndpoint {
 
   String get qrSignature => '$_baseUrl/api/v1/qr/generateSignature';
   String get qrVerifySignature => '$_baseUrl/api/v1/qr/verifySignature';
+
+  String get getNotifications => '$_baseUrl/api/v1/notifications';
+  String get readNotification => '$_baseUrl/api/v1/notifications';
 }
