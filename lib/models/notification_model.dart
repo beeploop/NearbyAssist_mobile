@@ -1,6 +1,7 @@
 enum NotificationType {
-  identityVerificationAccepted,
-  identityVerificationRejected,
+  success,
+  fail,
+  announcement,
   generic,
 }
 
@@ -27,10 +28,14 @@ class NotificationModel {
       content: json['content'],
       type: () {
         switch (json['type'] as String) {
-          case 'identity_verification_accepted':
-            return NotificationType.identityVerificationAccepted;
-          case 'identity_verification_rejected':
-            return NotificationType.identityVerificationRejected;
+          case 'success':
+            return NotificationType.success;
+          case 'fail':
+            return NotificationType.fail;
+          case 'announcement':
+            return NotificationType.announcement;
+          case 'generic':
+            return NotificationType.generic;
           default:
             return NotificationType.generic;
         }
