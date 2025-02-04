@@ -39,7 +39,7 @@ class VendorApplicationService {
       );
     } on DioException catch (error) {
       if (error.response?.statusCode == 400) {
-        throw 'You already submitted an application';
+        throw error.response?.data['message'];
       }
 
       rethrow;

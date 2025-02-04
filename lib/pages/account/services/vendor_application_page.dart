@@ -11,7 +11,6 @@ import 'package:nearby_assist/pages/widget/divider_with_text.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/vendor_application_service.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -93,7 +92,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -153,6 +152,9 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
               onPressed: _handleSubmit,
               child: const Text('Submit'),
             ),
+
+            // Bottom padding
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -160,6 +162,8 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
   }
 
   Widget _tagsDropdown() {
+    final userExpertise = context.watch<UserProvider>().user.expertise;
+
     return DropdownSearch<ExpertiseModel>(
       decoratorProps: const DropDownDecoratorProps(
         decoration: InputDecoration(
@@ -187,7 +191,9 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
         searchDelay: const Duration(milliseconds: 500),
       ),
       autoValidateMode: AutovalidateMode.always,
-      items: (filter, props) => _expertiseList,
+      items: (filter, props) => _expertiseList
+          .where((entry) => !userExpertise.map((e) => e.id).contains(entry.id))
+          .toList(),
       itemAsString: (expertise) => expertise.title,
       compareFn: (expertise, selected) => expertise.id == selected.id,
       selectedItem: _selectedExpertise,
@@ -273,26 +279,65 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
   }
 
   void _showSuccessModal() {
-    showCustomSnackBar(
-      context,
-      'Request submitted. We are reviewing your request and will get back to you',
-      duration: const Duration(seconds: 5),
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      closeIconColor: Colors.white,
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.check_mark_circled_solid,
+            color: Colors.green,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Request submitted'),
+          content: const Text(
+            'Your request will be processed and reviewed. You will get a notification once done.',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+                context.pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
-
-    context.pop();
   }
 
   void _showErrorModal(String error) {
-    showCustomSnackBar(
-      context,
-      error,
-      duration: const Duration(seconds: 5),
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      closeIconColor: Colors.white,
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.xmark_circle_fill,
+            color: Colors.red,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Failed'),
+          content: Text(
+            error,
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
