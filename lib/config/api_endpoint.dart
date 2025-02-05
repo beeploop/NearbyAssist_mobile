@@ -77,4 +77,6 @@ class ApiEndpoint {
 
   String get getNotifications => '$_baseUrl/api/v1/notifications';
   String get readNotification => '$_baseUrl/api/v1/notifications';
+
+  String get reportIssue => '$_baseUrl/api/v1/complaints/system';
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
+import 'package:nearby_assist/services/report_issue_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class ReportIssuePage extends StatefulWidget {
@@ -14,62 +15,82 @@ class ReportIssuePage extends StatefulWidget {
 }
 
 class _ReportIssuePageState extends State<ReportIssuePage> {
+  bool _isLoading = false;
   List<Uint8List> _images = [];
   final _titleController = TextEditingController();
   final _detailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Report Issue',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              InputField(
-                controller: _titleController,
-                labelText: 'Title',
-                hintText: 'title of the issue',
-              ),
-              const SizedBox(height: 10),
-
-              // Details
-              InputField(
-                controller: _detailController,
-                hintText: 'Describe the issue in more detail',
-                minLines: 4,
-                maxLines: 8,
-              ),
-              const SizedBox(height: 10),
-
-              // Images
-              const SizedBox(height: 10),
-              const Text('Images'),
-              const SizedBox(height: 6),
-              _buildImages(),
-              const SizedBox(height: 20),
-
-              // Submit Button
-              FilledButton(
-                style: const ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                ),
-                onPressed: _submit,
-                child: const Text('Submit'),
-              ),
-
-              // Bottom padding
-              const SizedBox(height: 20),
-            ],
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'Report Issue',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
+          body: _buildBody(),
+        ),
+
+        // Show loading overlay
+        if (_isLoading)
+          const Opacity(
+            opacity: 0.8,
+            child: ModalBarrier(dismissible: false, color: Colors.black),
+          ),
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildBody() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InputField(
+              controller: _titleController,
+              labelText: 'Title',
+              hintText: 'title of the issue',
+            ),
+            const SizedBox(height: 10),
+
+            // Details
+            InputField(
+              controller: _detailController,
+              hintText: 'Describe the issue in more detail',
+              minLines: 4,
+              maxLines: 8,
+            ),
+            const SizedBox(height: 10),
+
+            // Images
+            const SizedBox(height: 10),
+            const Text('Images'),
+            const SizedBox(height: 6),
+            _buildImages(),
+            const SizedBox(height: 20),
+
+            // Submit Button
+            FilledButton(
+              style: const ButtonStyle(
+                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+              ),
+              onPressed: _submit,
+              child: const Text('Submit'),
+            ),
+
+            // Bottom padding
+            const SizedBox(height: 20),
+          ],
         ),
       ),
     );
@@ -169,12 +190,34 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
     });
   }
 
+  void _showLoader() {
+    setState(() {
+      _isLoading = true;
+    });
+  }
+
+  void _hideLoader() {
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   Future<void> _submit() async {
     try {
-      //
+      _showLoader();
+
+      final service = ReportIssueService();
+      await service.reportIssue(
+        title: _titleController.text,
+        detail: _detailController.text,
+        images: _images,
+      );
+
       _showSuccessModal();
     } catch (error) {
       _showErrorModal(error.toString());
+    } finally {
+      _hideLoader();
     }
   }
 
