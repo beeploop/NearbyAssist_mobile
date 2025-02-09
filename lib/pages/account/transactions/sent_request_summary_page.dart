@@ -208,6 +208,8 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                       style: TextStyle(fontSize: 16),
                     ),
 
+                  const SizedBox(height: 10),
+
                   if (widget.transaction.status.toLowerCase() == 'confirmed')
                     _displayQR(widget.transaction, snapshot.data!),
 
@@ -244,9 +246,10 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
         QrImageView(
           data: jsonEncode(data.toJson()),
           version: QrVersions.auto,
-          size: 250,
-          eyeStyle: const QrEyeStyle(
-            color: Colors.black,
+          size: 280,
+          eyeStyle: QrEyeStyle(
+            eyeShape: QrEyeShape.square,
+            color: Colors.green.shade800,
           ),
           dataModuleStyle: const QrDataModuleStyle(
             dataModuleShape: QrDataModuleShape.square,
