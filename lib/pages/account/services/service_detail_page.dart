@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
 import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
-//import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +34,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(CupertinoIcons.gear),
+            icon: const FaIcon(FontAwesomeIcons.edit),
             onPressed: () => context.pushNamed(
               'editService',
               queryParameters: {'serviceId': widget.serviceId},
