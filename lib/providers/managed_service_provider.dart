@@ -5,7 +5,7 @@ import 'package:nearby_assist/services/manage_services_service.dart';
 
 class ManagedServiceProvider extends ChangeNotifier {
   final Map<String, ServiceModel> _services = {};
-  final Map<String, DetailedServiceModel> _serviceDetails = {};
+  Map<String, DetailedServiceModel> _serviceDetails = {};
 
   List<ServiceModel> getServices() {
     return _services.values.toList().reversed.toList();
@@ -47,6 +47,8 @@ class ManagedServiceProvider extends ChangeNotifier {
       for (var service in response.services) {
         _services[service.id] = service.toServiceModel(response.vendor.id);
       }
+
+      _serviceDetails = {};
 
       notifyListeners();
     } catch (error) {

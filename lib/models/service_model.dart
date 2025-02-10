@@ -29,7 +29,7 @@ class ServiceModel {
       vendorId: json['vendorId'],
       title: json['title'],
       description: json['description'],
-      rate: double.tryParse(json['rate']) ?? 0.0,
+      rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
       latitude: json['latitude'] ?? 0.0,
       longitude: json['longitude'] ?? 0.0,
       tags: json['tags'] == null ? [] : List<String>.from(json['tags']),

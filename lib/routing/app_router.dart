@@ -7,7 +7,6 @@ import 'package:nearby_assist/pages/account/profile/verify_account_page.dart';
 import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
 import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/publish_service_page.dart';
-import 'package:nearby_assist/pages/account/services/service_detail_page.dart';
 import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
 import 'package:nearby_assist/pages/account/settings/settings_page.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_page.dart';
@@ -158,14 +157,6 @@ GoRouter generateRoutes(
                   builder: (context, state) => const TestPage(),
                 ),
               ],
-            ),
-            GoRoute(
-              path: RoutePath.detail.path,
-              name: RoutePath.detail.name,
-              builder: (context, state) {
-                final serviceId = state.uri.queryParameters['serviceId']!;
-                return ServiceDetailPage(serviceId: serviceId);
-              },
             ),
           ]),
       GoRoute(

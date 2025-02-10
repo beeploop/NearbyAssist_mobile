@@ -4,7 +4,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/account/services/utils/location_editing_controller.dart';
 import 'package:nearby_assist/pages/account/services/widget/location_picker.dart';
 import 'package:nearby_assist/providers/service_provider.dart';

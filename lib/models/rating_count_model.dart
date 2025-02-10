@@ -32,4 +32,8 @@ class RatingCountModel {
       'one': one,
     };
   }
+
+  int total() {
+    return one + two + three + four + five;
+  }
 }

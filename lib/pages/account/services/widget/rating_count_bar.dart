@@ -6,10 +6,12 @@ class RatingCountBar extends StatelessWidget {
     super.key,
     required this.rating,
     this.gap = 24,
+    this.spacing = 2,
   });
 
   final RatingCountModel rating;
   final double gap;
+  final double spacing;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +19,15 @@ class RatingCountBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _ratingRow('5⭐', rating.five),
+        SizedBox(height: spacing),
         _ratingRow('4⭐', rating.four),
+        SizedBox(height: spacing),
         _ratingRow('3⭐', rating.three),
+        SizedBox(height: spacing),
         _ratingRow('2⭐', rating.two),
+        SizedBox(height: spacing),
         _ratingRow('1⭐', rating.one),
+        SizedBox(height: spacing),
       ],
     );
   }

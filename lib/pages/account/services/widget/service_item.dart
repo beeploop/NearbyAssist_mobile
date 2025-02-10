@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/pages/account/services/detail/service_detail_page.dart';
 
 class ServiceItem extends StatelessWidget {
   const ServiceItem({
@@ -24,13 +24,15 @@ class ServiceItem extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: ListTile(
         onTap: () {
-          context.pushNamed(
-            "detail",
-            queryParameters: {'serviceId': service.id},
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => ServiceDetailPage(serviceId: service.id),
+            ),
           );
         },
         leading: Icon(
-          tagIconMap[service.tags[0]],
+          _icon(service.tags[0]),
           size: 26,
           grade: 10,
         ),
@@ -42,5 +44,13 @@ class ServiceItem extends StatelessWidget {
         trailing: const Icon(CupertinoIcons.arrow_right),
       ),
     );
+  }
+
+  IconData _icon(String key) {
+    if (!tagIconMap.containsKey(key)) {
+      return CupertinoIcons.wrench;
+    }
+
+    return tagIconMap[key]!;
   }
 }

@@ -26,7 +26,6 @@ enum RoutePath {
   settings(path: "/settings"),
 
   manage(path: "/manage"),
-  detail(path: "detail"),
   locationPicker(path: "locationPicker"),
   editLocation(path: "editLocation"),
   addService(path: "addService"),
