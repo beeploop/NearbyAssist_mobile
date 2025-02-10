@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
+import 'package:nearby_assist/pages/account/services/edit_service_page.dart';
 import 'package:nearby_assist/pages/account/services/widget/detail_tab_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
@@ -34,11 +35,17 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
         ),
         actions: [
           IconButton(
-            icon: const FaIcon(FontAwesomeIcons.edit),
-            onPressed: () => context.pushNamed(
-              'editService',
-              queryParameters: {'serviceId': widget.serviceId},
-            ),
+            icon: const FaIcon(FontAwesomeIcons.penToSquare),
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => EditServicePage(
+                    serviceId: widget.serviceId,
+                  ),
+                ),
+              );
+            },
           ),
           const SizedBox(width: 10),
         ],

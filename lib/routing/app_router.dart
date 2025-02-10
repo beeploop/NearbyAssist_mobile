@@ -5,7 +5,6 @@ import 'package:nearby_assist/pages/account/information_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
 import 'package:nearby_assist/pages/account/profile/verify_account_page.dart';
 import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
-import 'package:nearby_assist/pages/account/services/edit_service_page.dart';
 import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/publish_service_page.dart';
 import 'package:nearby_assist/pages/account/services/service_detail_page.dart';
@@ -161,25 +160,13 @@ GoRouter generateRoutes(
               ],
             ),
             GoRoute(
-                path: RoutePath.detail.path,
-                name: RoutePath.detail.name,
-                builder: (context, state) {
-                  final serviceId = state.uri.queryParameters['serviceId']!;
-                  return ServiceDetailPage(serviceId: serviceId);
-                }),
-            GoRoute(
-                path: RoutePath.editService.path,
-                name: RoutePath.editService.name,
-                builder: (context, state) {
-                  final serviceId = state.uri.queryParameters['serviceId']!;
-                  return EditServicePage(serviceId: serviceId);
-                },
-                routes: [
-                  GoRoute(
-                      path: RoutePath.editLocation.path,
-                      name: RoutePath.editLocation.name,
-                      builder: (context, state) => const TestPage())
-                ]),
+              path: RoutePath.detail.path,
+              name: RoutePath.detail.name,
+              builder: (context, state) {
+                final serviceId = state.uri.queryParameters['serviceId']!;
+                return ServiceDetailPage(serviceId: serviceId);
+              },
+            ),
           ]),
       GoRoute(
           path: RoutePath.transactions.path,

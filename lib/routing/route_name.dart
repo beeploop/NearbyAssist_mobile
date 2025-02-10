@@ -30,7 +30,6 @@ enum RoutePath {
   locationPicker(path: "locationPicker"),
   editLocation(path: "editLocation"),
   addService(path: "addService"),
-  editService(path: "editService"),
 
   verifyAccount(path: "/verifyAccount"),
   vendorApplication(path: "/vendorApplication"),
