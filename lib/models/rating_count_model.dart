@@ -22,4 +22,14 @@ class RatingCountModel {
       one: json['one'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'five': five,
+      'four': four,
+      'three': three,
+      'two': two,
+      'one': one,
+    };
+  }
 }

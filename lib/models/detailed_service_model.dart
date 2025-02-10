@@ -26,4 +26,15 @@ class DetailedServiceModel {
           .toList(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ratingCount': ratingCount.toJson(),
+      'service': service.toJson(),
+      'vendor': vendor.toJson(),
+      'images': List.from(
+        images.map((image) => image.toJson()).toList(),
+      )
+    };
+  }
 }
