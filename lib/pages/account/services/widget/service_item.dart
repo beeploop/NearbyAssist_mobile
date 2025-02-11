@@ -39,8 +39,12 @@ class ServiceItem extends StatelessWidget {
         title: Text(
           service.title,
           style: const TextStyle(fontWeight: FontWeight.bold),
+          overflow: TextOverflow.ellipsis,
         ),
-        subtitle: Text(service.description),
+        subtitle: Text(
+          service.description,
+          overflow: TextOverflow.ellipsis,
+        ),
         trailing: const Icon(CupertinoIcons.arrow_right),
       ),
     );
