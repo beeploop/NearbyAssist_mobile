@@ -36,6 +36,13 @@ class ManagedServiceProvider extends ChangeNotifier {
 
   void update(ServiceModel service) {
     _services[service.id] = service;
+
+    if (_serviceDetails.containsKey(service.id)) {
+      final old = _serviceDetails[service.id]!;
+      final updated = old.copyWithUpdatedService(service);
+      _serviceDetails[updated.service.id] = updated;
+    }
+
     notifyListeners();
   }
 

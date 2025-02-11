@@ -191,7 +191,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         rate: double.tryParse(_basePriceController.text) ?? 0,
         latitude: location.latitude,
         longitude: location.longitude,
-        tags: _selectedTags.map((e) => e.title).toList(),
+        tags: _selectedTags,
         extras: extras,
       );
 

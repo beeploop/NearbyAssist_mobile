@@ -4,7 +4,7 @@ class LocationEditingController {
   LatLng _location;
 
   LocationEditingController({
-    required initialLocation,
+    required LatLng initialLocation,
   }) : _location = initialLocation;
 
   LatLng get location => _location;

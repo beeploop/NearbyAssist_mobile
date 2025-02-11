@@ -1,4 +1,5 @@
 import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/models/tag_model.dart';
 
 class ServiceModel {
   final String id;
@@ -8,7 +9,7 @@ class ServiceModel {
   final double rate;
   final double latitude;
   final double longitude;
-  final List<String> tags;
+  final List<TagModel> tags;
   final List<ServiceExtraModel> extras;
 
   ServiceModel({
@@ -32,7 +33,11 @@ class ServiceModel {
       rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
       latitude: json['latitude'] ?? 0.0,
       longitude: json['longitude'] ?? 0.0,
-      tags: json['tags'] == null ? [] : List<String>.from(json['tags']),
+      tags: json['tags'] == null
+          ? []
+          : (json['tags'] as List)
+              .map((tag) => TagModel.fromJson(tag))
+              .toList(),
       extras: json['extras'] == null
           ? []
           : (json['extras'] as List)
@@ -49,7 +54,7 @@ class ServiceModel {
       'rate': rate.toString(),
       'latitude': latitude,
       'longitude': longitude,
-      'tags': tags,
+      'tags': tags.map((extra) => extra.title).toList(),
       'extras': extras.map((extra) => extra.toJson()).toList(),
     };
   }

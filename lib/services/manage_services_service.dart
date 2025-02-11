@@ -3,7 +3,9 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
 
 class ManageServicesService {
   Future<ServiceModel> add(ServiceModel service) async {
@@ -27,9 +29,13 @@ class ManageServicesService {
     }
   }
 
-  Future<void> edit(ServiceModel service) async {
+  Future<void> update(UpdateServiceModel updated) async {
     try {
-      throw UnimplementedError();
+      final api = ApiService.authenticated();
+      await api.dio.put(
+        '${endpoint.updateService}/${updated.id}',
+        data: updated.toJson(),
+      );
     } catch (error) {
       rethrow;
     }
@@ -49,6 +55,7 @@ class ManageServicesService {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get('${endpoint.vendorServices}/$id');
+      print('---- ${prettyJSON(response.data)}');
 
       return DetailedVendorModel.fromJson(response.data);
     } catch (error) {

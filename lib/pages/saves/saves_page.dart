@@ -57,7 +57,7 @@ class _SavesPageState extends State<SavesPage> {
             queryParameters: {'serviceId': saves[index].service.id},
           ),
           leading: Icon(
-            tagIconMap[saves[index].service.tags[0]],
+            _icon(saves[index].service.tags.first.title),
             size: 26,
             grade: 10,
           ),
@@ -97,5 +97,13 @@ class _SavesPageState extends State<SavesPage> {
         ),
       ],
     );
+  }
+
+  IconData _icon(String key) {
+    if (!tagIconMap.containsKey(key)) {
+      return CupertinoIcons.wrench;
+    }
+
+    return tagIconMap[key]!;
   }
 }

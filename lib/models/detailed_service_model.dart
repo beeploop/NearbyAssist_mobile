@@ -5,7 +5,7 @@ import 'package:nearby_assist/models/vendor_model.dart';
 
 class DetailedServiceModel {
   final RatingCountModel ratingCount;
-  final ServiceModel service;
+  ServiceModel service;
   final VendorModel vendor;
   final List<ServiceImageModel> images;
 
@@ -36,5 +36,10 @@ class DetailedServiceModel {
         images.map((image) => image.toJson()).toList(),
       )
     };
+  }
+
+  DetailedServiceModel copyWithUpdatedService(ServiceModel service) {
+    this.service = service;
+    return this;
   }
 }

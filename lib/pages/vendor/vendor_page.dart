@@ -83,7 +83,7 @@ class _VendorPageState extends State<VendorPage> {
                   queryParameters: {'serviceId': service.id},
                 ),
                 leading: Icon(
-                  tagIconMap[service.tags[0]],
+                  _icon(service.tags.first.title),
                   size: 26,
                   grade: 10,
                 ),
@@ -167,5 +167,13 @@ class _VendorPageState extends State<VendorPage> {
         ],
       ),
     );
+  }
+
+  IconData _icon(String key) {
+    if (!tagIconMap.containsKey(key)) {
+      return CupertinoIcons.wrench;
+    }
+
+    return tagIconMap[key]!;
   }
 }

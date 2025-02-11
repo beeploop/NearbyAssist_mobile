@@ -16,10 +16,12 @@ class AddressInput extends StatefulWidget {
   const AddressInput({
     super.key,
     required this.onLocationPicked,
+    this.initialLocation,
     this.readOnly = false,
   });
 
   final void Function(String) onLocationPicked;
+  final LatLng? initialLocation;
   final bool readOnly;
 
   @override
@@ -29,13 +31,15 @@ class AddressInput extends StatefulWidget {
 class _AddressInputState extends State<AddressInput> {
   final _addressController = TextEditingController();
   final _mapController = MapController();
-  final _locationController = LocationEditingController(
-    initialLocation: defaultLocation,
-  );
+  late LocationEditingController _locationController;
 
   @override
   void initState() {
     super.initState();
+
+    _locationController = LocationEditingController(
+      initialLocation: widget.initialLocation ?? defaultLocation,
+    );
 
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user.latitude != null && user.longitude != null) {

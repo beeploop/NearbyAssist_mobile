@@ -1,4 +1,5 @@
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
 
 class DetailedVendorModel {
@@ -27,7 +28,7 @@ class Service {
   final String price;
   final double latitude;
   final double longitude;
-  final List<String> tags;
+  final List<TagModel> tags;
 
   Service({
     required this.id,
@@ -47,7 +48,11 @@ class Service {
       price: json['price'],
       latitude: json['latitude'],
       longitude: json['longitude'],
-      tags: List<String>.from(json['tags']),
+      tags: json['tags'] == null
+          ? []
+          : (json['tags'] as List)
+              .map((tag) => TagModel.fromJson(tag))
+              .toList(),
     );
   }
 

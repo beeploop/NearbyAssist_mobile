@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_item.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
 
 class ManageServices extends StatefulWidget {
@@ -17,15 +19,20 @@ class ManageServices extends StatefulWidget {
 class _ManageServicesState extends State<ManageServices> {
   @override
   Widget build(BuildContext context) {
-    final services = context.watch<ManagedServiceProvider>().getServices();
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Manage Services',
+          'Services',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            onPressed: () => context.pushNamed('addService'),
+            icon: const FaIcon(FontAwesomeIcons.plus),
+          ),
+          const SizedBox(width: 10),
+        ],
       ),
       body: Consumer<UserProvider>(
         builder: (context, auth, child) {
@@ -71,51 +78,36 @@ class _ManageServicesState extends State<ManageServices> {
             );
           }
 
-          return _mainContent(services, auth.user.id);
+          return _mainContent(auth.user.id);
         },
       ),
     );
   }
 
-  Widget _mainContent(List<ServiceModel> services, String userId) {
-    return Center(
-      child: Stack(
-        children: [
-          RefreshIndicator(
-            onRefresh: () =>
-                context.read<ManagedServiceProvider>().refreshServices(userId),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: services.isEmpty
-                  ? _emptyState()
-                  : ListView.separated(
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 10),
-                      itemCount: services.length,
-                      itemBuilder: (context, index) {
-                        final hasPadding = index == (services.length - 1);
+  Widget _mainContent(String userId) {
+    final services = context.watch<ManagedServiceProvider>().getServices();
+    logger.log(prettyJSON(services));
 
-                        return ServiceItem(
-                          service: services[index],
-                          paddingBottom: hasPadding,
-                        );
-                      },
-                    ),
-            ),
-          ),
-          Positioned(
-            bottom: 16,
-            right: 20,
-            left: 20,
-            child: FilledButton(
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+    return RefreshIndicator(
+      onRefresh: () =>
+          context.read<ManagedServiceProvider>().refreshServices(userId),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: services.isEmpty
+            ? _emptyState()
+            : ListView.separated(
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
+                itemCount: services.length,
+                itemBuilder: (context, index) {
+                  final hasPadding = index == (services.length - 1);
+
+                  return ServiceItem(
+                    service: services[index],
+                    paddingBottom: hasPadding,
+                  );
+                },
               ),
-              onPressed: () => context.pushNamed('addService'),
-              child: const Text("Add Service"),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -123,21 +115,19 @@ class _ManageServicesState extends State<ManageServices> {
   Widget _emptyState() {
     return ListView(
       children: [
-        SingleChildScrollView(
-          child: Container(
-            alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height,
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(CupertinoIcons.tray, color: Colors.grey),
-                SizedBox(height: 10),
-                Text(
-                  'No services',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
-            ),
+        Container(
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height,
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(CupertinoIcons.tray, color: Colors.grey),
+              SizedBox(height: 10),
+              Text(
+                'No services',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
           ),
         ),
       ],
