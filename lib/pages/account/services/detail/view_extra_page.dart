@@ -1,0 +1,319 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/services/manage_services_service.dart';
+
+class ViewExtraPage extends StatefulWidget {
+  const ViewExtraPage({
+    super.key,
+    required this.extra,
+    required this.onDeleteCb,
+    required this.onEditCb,
+  });
+
+  final ServiceExtraModel extra;
+  final void Function(String id) onDeleteCb;
+  final void Function(ServiceExtraModel updated) onEditCb;
+
+  @override
+  State<ViewExtraPage> createState() => _ViewExtraPageState();
+}
+
+class _ViewExtraPageState extends State<ViewExtraPage> {
+  bool _isLoading = false;
+  bool _hasChanged = false;
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  final _priceController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _titleController.text = widget.extra.title;
+    _descriptionController.text = widget.extra.description;
+    _priceController.text = widget.extra.price.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'Edit',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(CupertinoIcons.trash),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      icon: const Icon(
+                        CupertinoIcons.exclamationmark_triangle,
+                        color: Colors.amber,
+                        size: 30,
+                      ),
+                      title: const Text('Delete Extra'),
+                      content: const Text(
+                        'This is a permanent action. This will fail if there are active transactions using this extra. Are you sure?',
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            _handleDelete();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                const WidgetStatePropertyAll(Colors.red),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          child: const Text('Continue'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 10),
+            ],
+          ),
+          body: _body(),
+        ),
+
+        // Show loading overlay
+        if (_isLoading)
+          const Opacity(
+            opacity: 0.8,
+            child: ModalBarrier(dismissible: false, color: Colors.black),
+          ),
+        if (_isLoading)
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+      ],
+    );
+  }
+
+  Widget _body() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Title
+            const Text('Title'),
+            const SizedBox(height: 10),
+            TextFormField(
+              onChanged: (value) {
+                if (value != widget.extra.title) {
+                  setState(() {
+                    _hasChanged = true;
+                  });
+                } else {
+                  setState(() {
+                    _hasChanged = false;
+                  });
+                }
+              },
+              controller: _titleController,
+              onTapOutside: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Description
+            const Text('Description'),
+            const SizedBox(height: 10),
+            TextFormField(
+              onChanged: (value) {
+                if (value != widget.extra.description) {
+                  setState(() {
+                    _hasChanged = true;
+                  });
+                } else {
+                  setState(() {
+                    _hasChanged = false;
+                  });
+                }
+              },
+              controller: _descriptionController,
+              onTapOutside: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 6,
+              minLines: 3,
+            ),
+            const SizedBox(height: 20),
+
+            // Price
+            const Text('Price'),
+            TextFormField(
+              onChanged: (value) {
+                if (double.parse(value) != widget.extra.price) {
+                  setState(() {
+                    _hasChanged = true;
+                  });
+                } else {
+                  setState(() {
+                    _hasChanged = false;
+                  });
+                }
+              },
+              keyboardType: TextInputType.number,
+              controller: _priceController,
+              onTapOutside: (_) =>
+                  FocusManager.instance.primaryFocus?.unfocus(),
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Save button
+            FilledButton(
+              style: ButtonStyle(
+                minimumSize: const WidgetStatePropertyAll(Size.fromHeight(50)),
+                backgroundColor: WidgetStatePropertyAll(
+                  !_hasChanged ? Colors.grey : null,
+                ),
+              ),
+              onPressed: () {
+                if (!_hasChanged) {
+                  return;
+                }
+
+                _handleSave();
+              },
+              child: const Text('Save'),
+            ),
+
+            // Bottom padding
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _toggleLoader(bool state) {
+    setState(() {
+      _isLoading = state;
+    });
+  }
+
+  Future<void> _handleSave() async {
+    try {
+      _toggleLoader(true);
+
+      final navigator = Navigator.of(context);
+
+      if (_titleController.text.isEmpty ||
+          _descriptionController.text.isEmpty ||
+          _priceController.text.isEmpty) {
+        _onError("Don't leave empty fields");
+        return;
+      }
+
+      await ManageServicesService().updateExtra(ServiceExtraModel(
+        id: widget.extra.id,
+        title: _titleController.text,
+        description: _descriptionController.text,
+        price: double.parse(_priceController.text),
+      ));
+
+      widget.onEditCb(ServiceExtraModel(
+        id: widget.extra.id,
+        title: _titleController.text,
+        description: _descriptionController.text,
+        price: double.parse(_priceController.text),
+      ));
+
+      navigator.pop();
+      navigator.pop();
+    } on DioException catch (error) {
+      _onError(error.response?.data['message']);
+    } catch (error) {
+      _onError(error.toString());
+    } finally {
+      _toggleLoader(false);
+    }
+  }
+
+  Future<void> _handleDelete() async {
+    try {
+      _toggleLoader(true);
+
+      final navigator = Navigator.of(context);
+
+      await ManageServicesService().deleteExtra(widget.extra.id);
+
+      widget.onDeleteCb(widget.extra.id);
+
+      navigator.pop();
+      navigator.pop();
+    } on DioException catch (error) {
+      _onError(error.response?.data['message']);
+    } catch (error) {
+      _onError(error.toString());
+    } finally {
+      _toggleLoader(false);
+    }
+  }
+
+  void _onError(String error) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.xmark_circle_fill,
+            color: Colors.red,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Failed'),
+          content: Text(
+            error,
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

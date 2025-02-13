@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
+import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
@@ -56,6 +57,24 @@ class ManageServicesService {
       final response = await api.dio.get('${endpoint.vendorServices}/$id');
 
       return DetailedVendorModel.fromJson(response.data);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateExtra(ServiceExtraModel extra) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put(endpoint.editExtra, data: extra.toJson());
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteExtra(String id) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.delete('${endpoint.deleteExtra}/$id');
     } catch (error) {
       rethrow;
     }

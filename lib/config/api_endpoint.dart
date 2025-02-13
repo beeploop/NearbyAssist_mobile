@@ -53,6 +53,13 @@ class ApiEndpoint {
   String get addService => '$_baseUrl/api/v1/services';
   String get updateService => '$_baseUrl/api/v1/services';
 
+  String get addExtra => '$_baseUrl/api/v1/services/addExtra';
+  String get editExtra => '$_baseUrl/api/v1/services/editExtra';
+  String get deleteExtra => '$_baseUrl/api/v1/services/deleteExtra';
+
+  String get addImage => '$_baseUrl/api/v1/services/addImage';
+  String get deleteImage => '$_baseUrl/api/v1/services/deleteImage';
+
   String get savedServices => '$_baseUrl/api/v1/services/get-saved';
   String get saveService => '$_baseUrl/api/v1/services/save';
   String get unsaveService => '$_baseUrl/api/v1/services/unsave';
