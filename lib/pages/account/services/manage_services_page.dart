@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_item.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
 
 class ManageServices extends StatefulWidget {
@@ -26,13 +23,6 @@ class _ManageServicesState extends State<ManageServices> {
           'Services',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        actions: [
-          IconButton(
-            onPressed: () => context.pushNamed('addService'),
-            icon: const FaIcon(FontAwesomeIcons.plus),
-          ),
-          const SizedBox(width: 10),
-        ],
       ),
       body: Consumer<UserProvider>(
         builder: (context, auth, child) {
@@ -81,12 +71,15 @@ class _ManageServicesState extends State<ManageServices> {
           return _mainContent(auth.user.id);
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.pushNamed('addService'),
+        child: const Icon(CupertinoIcons.plus),
+      ),
     );
   }
 
   Widget _mainContent(String userId) {
     final services = context.watch<ManagedServiceProvider>().getServices();
-    logger.log(prettyJSON(services));
 
     return RefreshIndicator(
       onRefresh: () =>

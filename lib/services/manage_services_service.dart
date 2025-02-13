@@ -5,7 +5,6 @@ import 'package:nearby_assist/models/detailed_vendor_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 
 class ManageServicesService {
   Future<ServiceModel> add(ServiceModel service) async {
@@ -55,7 +54,6 @@ class ManageServicesService {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get('${endpoint.vendorServices}/$id');
-      print('---- ${prettyJSON(response.data)}');
 
       return DetailedVendorModel.fromJson(response.data);
     } catch (error) {

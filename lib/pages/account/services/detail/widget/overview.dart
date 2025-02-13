@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/pages/account/services/detail/edit_page.dart';
+import 'package:nearby_assist/pages/account/services/detail/edit_service_page.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 
 class Overview extends StatefulWidget {
@@ -23,25 +23,6 @@ class _OverviewState extends State<Overview> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Edit Button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.penToSquare),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => EditPage(service: widget.service),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
             // Title
             _label('Title'),
             Text(widget.service.title),
@@ -68,6 +49,33 @@ class _OverviewState extends State<Overview> {
               children: [
                 ...widget.service.tags.map((tag) => _chip(tag.title)),
               ],
+            ),
+            const SizedBox(height: 20),
+
+            // Edit Button
+            FilledButton(
+              style: const ButtonStyle(
+                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+              ),
+              onPressed: () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) =>
+                      EditServicePage(service: widget.service),
+                ),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FaIcon(
+                    FontAwesomeIcons.penToSquare,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  SizedBox(width: 10),
+                  Text('Update', style: TextStyle(color: Colors.white)),
+                ],
+              ),
             ),
 
             // Bottom padding
