@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/add_extra_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
@@ -57,6 +58,15 @@ class ManageServicesService {
       final response = await api.dio.get('${endpoint.vendorServices}/$id');
 
       return DetailedVendorModel.fromJson(response.data);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> addExtra(AddExtraModel extra) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.post(endpoint.addExtra, data: extra.toJson());
     } catch (error) {
       rethrow;
     }

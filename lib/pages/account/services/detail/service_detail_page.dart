@@ -87,7 +87,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                 Overview(service: detail.service),
                 Images(images: detail.images),
                 Extras(
-                  extras: detail.service.extras,
+                  service: detail,
                   onDeleteCb: (String id) {
                     final provider = context.read<ManagedServiceProvider>();
                     detail.service.extras

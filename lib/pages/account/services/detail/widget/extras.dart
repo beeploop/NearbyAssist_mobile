@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/pages/account/services/detail/add_extra_page.dart';
 import 'package:nearby_assist/pages/account/services/detail/view_extra_page.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 
 class Extras extends StatefulWidget {
   const Extras({
     super.key,
-    required this.extras,
+    required this.service,
     required this.onDeleteCb,
     required this.onEditCb,
   });
 
-  final List<ServiceExtraModel> extras;
+  final DetailedServiceModel service;
   final void Function(String id) onDeleteCb;
   final void Function(ServiceExtraModel updated) onEditCb;
 
@@ -31,7 +33,8 @@ class _ExtrasState extends State<Extras> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...widget.extras.map((extra) => _serviceExtra(extra)),
+                ...widget.service.service.extras
+                    .map((extra) => _serviceExtra(extra)),
                 const SizedBox(height: 70),
               ],
             ),
@@ -47,7 +50,14 @@ class _ExtrasState extends State<Extras> {
             style: const ButtonStyle(
               minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
             ),
-            onPressed: () {},
+            onPressed: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => AddExtraPage(
+                  serviceId: widget.service.service.id,
+                ),
+              ),
+            ),
             child: const Text('Add Extra'),
           ),
         ),
