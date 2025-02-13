@@ -23,16 +23,35 @@ class Extras extends StatefulWidget {
 class _ExtrasState extends State<Extras> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...widget.extras.map((extra) => _serviceExtra(extra)),
-          ],
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...widget.extras.map((extra) => _serviceExtra(extra)),
+                const SizedBox(height: 70),
+              ],
+            ),
+          ),
         ),
-      ),
+
+        //
+        Positioned(
+          bottom: 20,
+          left: 20,
+          right: 20,
+          child: FilledButton(
+            style: const ButtonStyle(
+              minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+            ),
+            onPressed: () {},
+            child: const Text('Add Extra'),
+          ),
+        ),
+      ],
     );
   }
 
