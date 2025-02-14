@@ -7,7 +7,7 @@ class DetailedServiceModel {
   final RatingCountModel ratingCount;
   ServiceModel service;
   final VendorModel vendor;
-  final List<ServiceImageModel> images;
+  List<ServiceImageModel> images;
 
   DetailedServiceModel({
     required this.ratingCount,
@@ -40,6 +40,11 @@ class DetailedServiceModel {
 
   DetailedServiceModel copyWithUpdatedService(ServiceModel service) {
     this.service = service;
+    return this;
+  }
+
+  DetailedServiceModel copyWithNewImages(List<ServiceImageModel> images) {
+    this.images = images;
     return this;
   }
 }

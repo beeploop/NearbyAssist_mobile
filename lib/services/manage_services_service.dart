@@ -1,12 +1,16 @@
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http_parser/http_parser.dart';
 
 class ManageServicesService {
   Future<ServiceModel> add(ServiceModel service) async {
@@ -97,6 +101,43 @@ class ManageServicesService {
     try {
       final api = ApiService.authenticated();
       await api.dio.delete('${endpoint.deleteExtra}/$id');
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<ServiceImageModel> uploadServiceImage(
+      String serviceId, Uint8List bytes) async {
+    try {
+      final data = FormData.fromMap({
+        'files': [
+          MultipartFile.fromBytes(
+            bytes,
+            filename: 'image',
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        ],
+      });
+
+      final api = ApiService.authenticated();
+      final response = await api.dio.post(
+        '${endpoint.addImage}/$serviceId',
+        data: data,
+      );
+
+      return ServiceImageModel(
+        id: response.data['imageId'],
+        url: response.data['url'],
+      );
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteServiceImage(String imageId) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.delete('${endpoint.deleteImage}/$imageId');
     } catch (error) {
       rethrow;
     }

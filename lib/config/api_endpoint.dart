@@ -16,6 +16,9 @@ class ApiEndpoint {
 
   String get baseUrl => _baseUrl;
 
+  // Resource URL
+  String get resource => '$_baseUrl/api/v1/resource';
+
   // Health check
   String get healthcheck => '$_baseUrl/api/v1/health/protected';
 

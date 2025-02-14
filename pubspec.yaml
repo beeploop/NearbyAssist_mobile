@@ -63,6 +63,7 @@ dependencies:
   mobile_scanner: ^6.0.5
   onesignal_flutter: ^5.2.9
   intl: ^0.20.2
+  focused_menu: ^1.0.5
 
 dev_dependencies:
   flutter_test:

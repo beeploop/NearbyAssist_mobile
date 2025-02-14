@@ -88,101 +88,152 @@ class ManagedServiceProvider extends ChangeNotifier {
   }
 
   Future<void> addExtra(AddExtraModel newExtra) async {
-    final response = await ManageServicesService().addExtra(newExtra);
+    try {
+      final response = await ManageServicesService().addExtra(newExtra);
 
-    final detail = await getService(newExtra.serviceId);
-    detail.service.extras.add(response);
+      final detail = await getService(newExtra.serviceId);
+      detail.service.extras.add(response);
 
-    final updatedService = ServiceModel(
-      id: detail.service.id,
-      vendorId: detail.service.vendorId,
-      title: detail.service.title,
-      description: detail.service.description,
-      rate: detail.service.rate,
-      extras: detail.service.extras,
-      tags: detail.service.tags,
-      latitude: detail.service.latitude,
-      longitude: detail.service.longitude,
-    );
+      final updatedService = ServiceModel(
+        id: detail.service.id,
+        vendorId: detail.service.vendorId,
+        title: detail.service.title,
+        description: detail.service.description,
+        rate: detail.service.rate,
+        extras: detail.service.extras,
+        tags: detail.service.tags,
+        latitude: detail.service.latitude,
+        longitude: detail.service.longitude,
+      );
 
-    _services[updatedService.id] = updatedService;
+      _services[updatedService.id] = updatedService;
 
-    if (_serviceDetails.containsKey(updatedService.id)) {
-      final old = _serviceDetails[updatedService.id]!;
-      final updated = old.copyWithUpdatedService(updatedService);
-      _serviceDetails[updated.service.id] = updated;
+      if (_serviceDetails.containsKey(updatedService.id)) {
+        final old = _serviceDetails[updatedService.id]!;
+        final updated = old.copyWithUpdatedService(updatedService);
+        _serviceDetails[updated.service.id] = updated;
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
     }
-
-    notifyListeners();
   }
 
   Future<void> deleteServiceExtra(String serviceId, String extraId) async {
-    await ManageServicesService().deleteExtra(extraId);
+    try {
+      await ManageServicesService().deleteExtra(extraId);
 
-    final detail = await getService(serviceId);
+      final detail = await getService(serviceId);
 
-    detail.service.extras.removeWhere((extra) => extra.id == extraId);
+      detail.service.extras.removeWhere((extra) => extra.id == extraId);
 
-    final updatedService = ServiceModel(
-      id: detail.service.id,
-      vendorId: detail.service.vendorId,
-      title: detail.service.title,
-      description: detail.service.description,
-      rate: detail.service.rate,
-      extras: detail.service.extras,
-      tags: detail.service.tags,
-      latitude: detail.service.latitude,
-      longitude: detail.service.longitude,
-    );
+      final updatedService = ServiceModel(
+        id: detail.service.id,
+        vendorId: detail.service.vendorId,
+        title: detail.service.title,
+        description: detail.service.description,
+        rate: detail.service.rate,
+        extras: detail.service.extras,
+        tags: detail.service.tags,
+        latitude: detail.service.latitude,
+        longitude: detail.service.longitude,
+      );
 
-    _services[updatedService.id] = updatedService;
+      _services[updatedService.id] = updatedService;
 
-    if (_serviceDetails.containsKey(updatedService.id)) {
-      final old = _serviceDetails[updatedService.id]!;
-      final updated = old.copyWithUpdatedService(updatedService);
-      _serviceDetails[updated.service.id] = updated;
+      if (_serviceDetails.containsKey(updatedService.id)) {
+        final old = _serviceDetails[updatedService.id]!;
+        final updated = old.copyWithUpdatedService(updatedService);
+        _serviceDetails[updated.service.id] = updated;
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
     }
-
-    notifyListeners();
   }
 
   Future<void> editServiceExtra(
       String serviceId, ServiceExtraModel updatedExtra) async {
-    await ManageServicesService().updateExtra(updatedExtra);
+    try {
+      await ManageServicesService().updateExtra(updatedExtra);
 
-    final detail = await getService(serviceId);
+      final detail = await getService(serviceId);
 
-    final updatedService = ServiceModel(
-      id: detail.service.id,
-      vendorId: detail.service.vendorId,
-      title: detail.service.title,
-      description: detail.service.description,
-      rate: detail.service.rate,
-      tags: detail.service.tags,
-      extras: detail.service.extras.map((extra) {
-        if (extra.id != updatedExtra.id) {
-          return extra;
-        }
+      final updatedService = ServiceModel(
+        id: detail.service.id,
+        vendorId: detail.service.vendorId,
+        title: detail.service.title,
+        description: detail.service.description,
+        rate: detail.service.rate,
+        tags: detail.service.tags,
+        extras: detail.service.extras.map((extra) {
+          if (extra.id != updatedExtra.id) {
+            return extra;
+          }
 
-        return ServiceExtraModel(
-          id: extra.id,
-          title: updatedExtra.title,
-          description: updatedExtra.description,
-          price: updatedExtra.price,
-        );
-      }).toList(),
-      latitude: detail.service.latitude,
-      longitude: detail.service.longitude,
-    );
+          return ServiceExtraModel(
+            id: extra.id,
+            title: updatedExtra.title,
+            description: updatedExtra.description,
+            price: updatedExtra.price,
+          );
+        }).toList(),
+        latitude: detail.service.latitude,
+        longitude: detail.service.longitude,
+      );
 
-    _services[updatedService.id] = updatedService;
+      _services[updatedService.id] = updatedService;
 
-    if (_serviceDetails.containsKey(updatedService.id)) {
-      final old = _serviceDetails[updatedService.id]!;
-      final updated = old.copyWithUpdatedService(updatedService);
-      _serviceDetails[updated.service.id] = updated;
+      if (_serviceDetails.containsKey(updatedService.id)) {
+        final old = _serviceDetails[updatedService.id]!;
+        final updated = old.copyWithUpdatedService(updatedService);
+        _serviceDetails[updated.service.id] = updated;
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
     }
+  }
 
-    notifyListeners();
+  Future<void> uploadServiceImage(String serviceId, Uint8List bytes) async {
+    try {
+      final image =
+          await ManageServicesService().uploadServiceImage(serviceId, bytes);
+
+      final detail = await getService(serviceId);
+      detail.images.add(image);
+
+      if (_serviceDetails.containsKey(serviceId)) {
+        final old = _serviceDetails[serviceId]!;
+        final updated = old.copyWithNewImages(detail.images);
+        _serviceDetails[updated.service.id] = updated;
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteServiceImage(String serviceId, String imageId) async {
+    try {
+      await ManageServicesService().deleteServiceImage(imageId);
+
+      final detail = await getService(serviceId);
+      detail.images.removeWhere((image) => image.id == imageId);
+
+      if (_serviceDetails.containsKey(serviceId)) {
+        final old = _serviceDetails[serviceId]!;
+        final updated = old.copyWithNewImages(detail.images);
+        _serviceDetails[updated.service.id] = updated;
+      }
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 }
