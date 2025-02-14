@@ -8,7 +8,6 @@ import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
-import 'package:nearby_assist/services/manage_services_service.dart';
 import 'package:provider/provider.dart';
 
 class EditServicePage extends StatefulWidget {
@@ -209,22 +208,8 @@ class _EditServicePageState extends State<EditServicePage> {
         longitude: location.longitude,
       );
 
-      await ManageServicesService().update(updatedData);
+      await provider.updateService(updatedData, widget.service.extras);
 
-      // Update the locally saved record
-      provider.update(ServiceModel(
-        id: updatedData.id,
-        vendorId: updatedData.vendorId,
-        title: updatedData.title,
-        description: updatedData.description,
-        rate: updatedData.rate,
-        tags: updatedData.tags,
-        extras: widget.service.extras,
-        latitude: updatedData.latitude,
-        longitude: updatedData.longitude,
-      ));
-
-      // Navigate back
       navigator.pop();
     } on LocationServiceDisabledException catch (_) {
       _showLocationServiceDisabledDialog();

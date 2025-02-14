@@ -2,19 +2,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
-import 'package:nearby_assist/services/manage_services_service.dart';
+import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:provider/provider.dart';
 
 class ViewExtraPage extends StatefulWidget {
   const ViewExtraPage({
     super.key,
+    required this.serviceId,
     required this.extra,
-    required this.onDeleteCb,
-    required this.onEditCb,
   });
 
+  final String serviceId;
   final ServiceExtraModel extra;
-  final void Function(String id) onDeleteCb;
-  final void Function(ServiceExtraModel updated) onEditCb;
 
   @override
   State<ViewExtraPage> createState() => _ViewExtraPageState();
@@ -232,6 +231,7 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
       _toggleLoader(true);
 
       final navigator = Navigator.of(context);
+      final provider = context.read<ManagedServiceProvider>();
 
       if (_titleController.text.isEmpty ||
           _descriptionController.text.isEmpty ||
@@ -240,21 +240,15 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
         return;
       }
 
-      await ManageServicesService().updateExtra(ServiceExtraModel(
+      final newData = ServiceExtraModel(
         id: widget.extra.id,
         title: _titleController.text,
         description: _descriptionController.text,
         price: double.parse(_priceController.text),
-      ));
+      );
 
-      widget.onEditCb(ServiceExtraModel(
-        id: widget.extra.id,
-        title: _titleController.text,
-        description: _descriptionController.text,
-        price: double.parse(_priceController.text),
-      ));
+      await provider.editServiceExtra(widget.serviceId, newData);
 
-      navigator.pop();
       navigator.pop();
     } on DioException catch (error) {
       _onError(error.response?.data['message']);
@@ -270,12 +264,10 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
       _toggleLoader(true);
 
       final navigator = Navigator.of(context);
+      final provider = context.read<ManagedServiceProvider>();
 
-      await ManageServicesService().deleteExtra(widget.extra.id);
+      provider.deleteServiceExtra(widget.serviceId, widget.extra.id);
 
-      widget.onDeleteCb(widget.extra.id);
-
-      navigator.pop();
       navigator.pop();
     } on DioException catch (error) {
       _onError(error.response?.data['message']);

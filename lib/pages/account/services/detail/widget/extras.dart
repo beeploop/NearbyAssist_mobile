@@ -1,22 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/add_extra_page.dart';
 import 'package:nearby_assist/pages/account/services/detail/view_extra_page.dart';
+import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:provider/provider.dart';
 
 class Extras extends StatefulWidget {
-  const Extras({
-    super.key,
-    required this.service,
-    required this.onDeleteCb,
-    required this.onEditCb,
-  });
+  const Extras({super.key, required this.serviceId});
 
-  final DetailedServiceModel service;
-  final void Function(String id) onDeleteCb;
-  final void Function(ServiceExtraModel updated) onEditCb;
+  final String serviceId;
 
   @override
   State<Extras> createState() => _ExtrasState();
@@ -25,6 +20,16 @@ class Extras extends StatefulWidget {
 class _ExtrasState extends State<Extras> {
   @override
   Widget build(BuildContext context) {
+    return Consumer<ManagedServiceProvider>(
+      builder: (context, provider, child) {
+        final details = provider.getServiceUnsafe(widget.serviceId);
+
+        return _mainContent(details.service);
+      },
+    );
+  }
+
+  Stack _mainContent(ServiceModel service) {
     return Stack(
       children: [
         SingleChildScrollView(
@@ -33,8 +38,7 @@ class _ExtrasState extends State<Extras> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...widget.service.service.extras
-                    .map((extra) => _serviceExtra(extra)),
+                ...service.extras.map((extra) => _serviceExtra(extra)),
                 const SizedBox(height: 70),
               ],
             ),
@@ -54,7 +58,7 @@ class _ExtrasState extends State<Extras> {
               context,
               CupertinoPageRoute(
                 builder: (context) => AddExtraPage(
-                  serviceId: widget.service.service.id,
+                  serviceId: service.id,
                 ),
               ),
             ),
@@ -70,11 +74,11 @@ class _ExtrasState extends State<Extras> {
       onTap: () => Navigator.push(
         context,
         CupertinoPageRoute(
-            builder: (context) => ViewExtraPage(
-                  extra: extra,
-                  onDeleteCb: widget.onDeleteCb,
-                  onEditCb: widget.onEditCb,
-                )),
+          builder: (context) => ViewExtraPage(
+            serviceId: widget.serviceId,
+            extra: extra,
+          ),
+        ),
       ),
       leading: const Icon(CupertinoIcons.tags, color: Colors.green),
       title: Text(

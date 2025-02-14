@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/edit_service_page.dart';
+import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:provider/provider.dart';
 
 class Overview extends StatefulWidget {
-  const Overview({super.key, required this.service});
+  const Overview({super.key, required this.serviceId});
 
-  final ServiceModel service;
+  final String serviceId;
 
   @override
   State<Overview> createState() => _OverviewState();
@@ -16,6 +18,16 @@ class Overview extends StatefulWidget {
 class _OverviewState extends State<Overview> {
   @override
   Widget build(BuildContext context) {
+    return Consumer<ManagedServiceProvider>(
+      builder: (context, provider, child) {
+        final details = provider.getServiceUnsafe(widget.serviceId);
+
+        return _mainContent(details.service);
+      },
+    );
+  }
+
+  Stack _mainContent(ServiceModel service) {
     return Stack(
       children: [
         SingleChildScrollView(
@@ -26,18 +38,18 @@ class _OverviewState extends State<Overview> {
               children: [
                 // Title
                 _label('Title'),
-                Text(widget.service.title),
+                Text(service.title),
                 const SizedBox(height: 20),
 
                 // Description
                 _label('Description'),
-                Text(widget.service.description),
+                Text(service.description),
                 const SizedBox(height: 20),
 
                 // Rate
                 _label('Rate'),
                 Text(
-                  formatCurrency(widget.service.rate),
+                  formatCurrency(service.rate),
                   style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 20),
@@ -48,7 +60,7 @@ class _OverviewState extends State<Overview> {
                   spacing: 4,
                   runSpacing: 4,
                   children: [
-                    ...widget.service.tags.map((tag) => _chip(tag.title)),
+                    ...service.tags.map((tag) => _chip(tag.title)),
                   ],
                 ),
 
@@ -71,7 +83,7 @@ class _OverviewState extends State<Overview> {
             onPressed: () => Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => EditServicePage(service: widget.service),
+                builder: (context) => EditServicePage(service: service),
               ),
             ),
             child: const Text('Update'),

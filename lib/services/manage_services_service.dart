@@ -63,10 +63,22 @@ class ManageServicesService {
     }
   }
 
-  Future<void> addExtra(AddExtraModel extra) async {
+  Future<ServiceExtraModel> addExtra(AddExtraModel extra) async {
     try {
       final api = ApiService.authenticated();
-      await api.dio.post(endpoint.addExtra, data: extra.toJson());
+      final response = await api.dio.post(
+        endpoint.addExtra,
+        data: extra.toJson(),
+      );
+
+      final extraId = response.data['extraId'] as String;
+
+      return ServiceExtraModel(
+        id: extraId,
+        title: extra.title,
+        description: extra.description,
+        price: extra.price,
+      );
     } catch (error) {
       rethrow;
     }

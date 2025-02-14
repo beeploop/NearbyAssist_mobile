@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
-import 'package:nearby_assist/models/service_extra_model.dart';
-import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/extras.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/images.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/overview.dart';
@@ -84,58 +82,9 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
           Flexible(
             child: TabBarView(
               children: [
-                Overview(service: detail.service),
-                Images(images: detail.images),
-                Extras(
-                  service: detail,
-                  onDeleteCb: (String id) {
-                    final provider = context.read<ManagedServiceProvider>();
-                    detail.service.extras
-                        .removeWhere((extra) => extra.id == id);
-
-                    final updatedService = ServiceModel(
-                      id: detail.service.id,
-                      vendorId: detail.service.vendorId,
-                      title: detail.service.title,
-                      description: detail.service.description,
-                      rate: detail.service.rate,
-                      extras: detail.service.extras,
-                      tags: detail.service.tags,
-                      latitude: detail.service.latitude,
-                      longitude: detail.service.longitude,
-                    );
-
-                    provider.update(updatedService);
-                  },
-                  onEditCb: (ServiceExtraModel updatedExtra) {
-                    final provider = context.read<ManagedServiceProvider>();
-
-                    final updatedService = ServiceModel(
-                      id: detail.service.id,
-                      vendorId: detail.service.vendorId,
-                      title: detail.service.title,
-                      description: detail.service.description,
-                      rate: detail.service.rate,
-                      tags: detail.service.tags,
-                      extras: detail.service.extras.map((extra) {
-                        if (extra.id != updatedExtra.id) {
-                          return extra;
-                        }
-
-                        return ServiceExtraModel(
-                          id: extra.id,
-                          title: updatedExtra.title,
-                          description: updatedExtra.description,
-                          price: updatedExtra.price,
-                        );
-                      }).toList(),
-                      latitude: detail.service.latitude,
-                      longitude: detail.service.longitude,
-                    );
-
-                    provider.update(updatedService);
-                  },
-                ),
+                Overview(serviceId: detail.service.id),
+                Images(serviceId: detail.service.id),
+                Extras(serviceId: detail.service.id),
                 Rating(rating: detail.ratingCount),
               ],
             ),

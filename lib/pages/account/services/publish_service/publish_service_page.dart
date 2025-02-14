@@ -11,7 +11,6 @@ import 'package:nearby_assist/pages/account/services/publish_service/widget/serv
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
-import 'package:nearby_assist/services/manage_services_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -195,9 +194,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         extras: extras,
       );
 
-      final response = await ManageServicesService().add(service);
-
-      provider.add(response);
+      await provider.addService(service);
 
       _onSuccess();
     } catch (error) {
