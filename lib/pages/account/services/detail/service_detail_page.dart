@@ -75,7 +75,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
             tabs: [
               Tab(child: Text('Overview')),
               Tab(child: Text('Images')),
-              Tab(child: Text('Extras')),
+              Tab(child: Text('Add-ons')),
               Tab(child: Text('Rating')),
             ],
           ),

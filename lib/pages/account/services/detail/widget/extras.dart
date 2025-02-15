@@ -62,7 +62,7 @@ class _ExtrasState extends State<Extras> {
                 ),
               ),
             ),
-            child: const Text('Add Extra'),
+            child: const Text('New add-on'),
           ),
         ),
       ],
@@ -80,14 +80,16 @@ class _ExtrasState extends State<Extras> {
           ),
         ),
       ),
-      leading: const Icon(CupertinoIcons.tags, color: Colors.green),
+      leading: Icon(
+        CupertinoIcons.tags_solid,
+        color: Colors.green.shade900,
+      ),
       title: Text(
         extra.title,
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: Text(
         extra.description,
-        overflow: TextOverflow.ellipsis,
       ),
       trailing: Text(
         formatCurrency(extra.price),

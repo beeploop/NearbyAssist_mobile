@@ -90,7 +90,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 const Divider(),
                 ListTile(
                   onTap: () => _viewExtras(details.service.extras),
-                  title: const Text('Extras'),
+                  title: const Text('Add-ons'),
                   trailing: const Icon(CupertinoIcons.chevron_right, size: 20),
                 ),
                 const SizedBox(height: 10),

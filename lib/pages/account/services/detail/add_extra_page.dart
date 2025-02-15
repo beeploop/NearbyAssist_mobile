@@ -28,7 +28,7 @@ class _AddExtraPageState extends State<AddExtraPage> {
           appBar: AppBar(
             centerTitle: true,
             title: const Text(
-              'Create Extra',
+              'Create Add-on',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
