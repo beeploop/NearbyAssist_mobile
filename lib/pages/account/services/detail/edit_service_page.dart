@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -21,6 +24,7 @@ class EditServicePage extends StatefulWidget {
 
 class _EditServicePageState extends State<EditServicePage> {
   bool _isLoading = false;
+  bool _hasChanged = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _rateController = TextEditingController();
@@ -84,6 +88,17 @@ class _EditServicePageState extends State<EditServicePage> {
             const SizedBox(height: 10),
             TextFormField(
               controller: _titleController,
+              onChanged: (value) {
+                if (value != widget.service.title) {
+                  setState(() {
+                    _hasChanged = true;
+                  });
+                } else {
+                  setState(() {
+                    _hasChanged = false;
+                  });
+                }
+              },
               onTapOutside: (_) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
               decoration: const InputDecoration(
@@ -97,6 +112,17 @@ class _EditServicePageState extends State<EditServicePage> {
             const SizedBox(height: 10),
             TextFormField(
               controller: _descriptionController,
+              onChanged: (value) {
+                if (value != widget.service.description) {
+                  setState(() {
+                    _hasChanged = true;
+                  });
+                } else {
+                  setState(() {
+                    _hasChanged = false;
+                  });
+                }
+              },
               onTapOutside: (_) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
               decoration: const InputDecoration(
@@ -112,6 +138,18 @@ class _EditServicePageState extends State<EditServicePage> {
             const SizedBox(height: 10),
             TextFormField(
               controller: _rateController,
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (double.parse(value) != widget.service.rate) {
+                  setState(() {
+                    _hasChanged = true;
+                  });
+                } else {
+                  setState(() {
+                    _hasChanged = false;
+                  });
+                }
+              },
               onTapOutside: (_) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
               decoration: const InputDecoration(
@@ -128,10 +166,13 @@ class _EditServicePageState extends State<EditServicePage> {
 
             // Save button
             FilledButton(
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+              style: ButtonStyle(
+                minimumSize: const WidgetStatePropertyAll(Size.fromHeight(50)),
+                backgroundColor: WidgetStatePropertyAll(
+                  !_hasChanged ? Colors.grey : null,
+                ),
               ),
-              onPressed: _handleSave,
+              onPressed: _hasChanged ? _handleSave : () {},
               child: const Text('Save'),
             ),
 
@@ -176,8 +217,20 @@ class _EditServicePageState extends State<EditServicePage> {
       compareFn: (tag, selected) => tag.id == selected.id,
       selectedItems: _selectedTags,
       onChanged: (items) {
+        if (const ListEquality().equals(widget.service.tags, items) ||
+            items.isEmpty ||
+            _selectedTags.isEmpty) {
+          setState(() {
+            _hasChanged = false;
+          });
+          return;
+        }
+
         _selectedTags.clear();
         _selectedTags.addAll(items);
+        setState(() {
+          _hasChanged = true;
+        });
       },
     );
   }
@@ -191,6 +244,13 @@ class _EditServicePageState extends State<EditServicePage> {
   Future<void> _handleSave() async {
     try {
       _toggleLoader(true);
+
+      if (_titleController.text.isEmpty ||
+          _descriptionController.text.isEmpty ||
+          _rateController.text.isEmpty ||
+          _selectedTags.isEmpty) {
+        throw "Don't leave empty fields";
+      }
 
       final navigator = Navigator.of(context);
       final provider = context.read<ManagedServiceProvider>();
@@ -213,6 +273,8 @@ class _EditServicePageState extends State<EditServicePage> {
       navigator.pop();
     } on LocationServiceDisabledException catch (_) {
       _showLocationServiceDisabledDialog();
+    } on DioException catch (error) {
+      _onError(error.response?.data['message']);
     } catch (error) {
       _onError(error.toString());
     } finally {
