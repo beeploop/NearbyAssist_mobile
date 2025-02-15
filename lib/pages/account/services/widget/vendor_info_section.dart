@@ -35,7 +35,7 @@ class VendorInfoSection extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.green[200],
+          color: Colors.green.shade100,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -55,6 +55,7 @@ class VendorInfoSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // name
                   Text(
                     vendor.name,
                     style: const TextStyle(
@@ -62,12 +63,8 @@ class VendorInfoSection extends StatelessWidget {
                       fontSize: 18,
                     ),
                   ),
-                  Text(
-                    vendor.email,
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
+
+                  // star ratings
                   RatingBar.builder(
                     initialRating: vendor.rating,
                     allowHalfRating: true,
@@ -79,6 +76,8 @@ class VendorInfoSection extends StatelessWidget {
                     onRatingUpdate: (_) {},
                     ignoreGestures: true,
                   ),
+
+                  // expertise list
                   Wrap(
                     runSpacing: 6,
                     spacing: 6,

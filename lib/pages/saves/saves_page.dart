@@ -65,7 +65,10 @@ class _SavesPageState extends State<SavesPage> {
             saves[index].service.title,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text(saves[index].service.description),
+          subtitle: Text(
+            saves[index].service.description,
+            overflow: TextOverflow.ellipsis,
+          ),
           trailing: const Icon(CupertinoIcons.arrow_right),
         ),
       ),

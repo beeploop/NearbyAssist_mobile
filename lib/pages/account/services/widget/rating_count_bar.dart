@@ -18,15 +18,15 @@ class RatingCountBar extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _ratingRow('5⭐', rating.five),
+        _ratingRow('5 ⭐', rating.five),
         SizedBox(height: spacing),
-        _ratingRow('4⭐', rating.four),
+        _ratingRow('4 ⭐', rating.four),
         SizedBox(height: spacing),
-        _ratingRow('3⭐', rating.three),
+        _ratingRow('3 ⭐', rating.three),
         SizedBox(height: spacing),
-        _ratingRow('2⭐', rating.two),
+        _ratingRow('2 ⭐', rating.two),
         SizedBox(height: spacing),
-        _ratingRow('1⭐', rating.one),
+        _ratingRow('1 ⭐', rating.one),
         SizedBox(height: spacing),
       ],
     );

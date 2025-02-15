@@ -1,80 +1,45 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/service_image_model.dart';
 
 class ImageSection extends StatelessWidget {
-  const ImageSection({super.key});
+  const ImageSection({super.key, required this.images});
+
+  final List<ServiceImageModel> images;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.green[200],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _initialImages(),
-          Center(
-            child: TextButton(
-              onPressed: () => _showMoreImages(context),
-              child: const Text("view more"),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    final height = MediaQuery.of(context).size.width * 0.8;
 
-  Widget _initialImages() {
-    return Wrap(
-      spacing: 10,
-      children: [
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: Container(
-            decoration: BoxDecoration(color: Colors.grey[300]),
+    return SizedBox(
+      height: height,
+      child: ListView.separated(
+        shrinkWrap: true,
+        separatorBuilder: (context, _) => const SizedBox(width: 10),
+        scrollDirection: Axis.horizontal,
+        itemCount: images.length,
+        itemBuilder: (context, idx) => Container(
+          width: height,
+          height: height,
+          decoration: BoxDecoration(
+            border: Border.all(),
           ),
-        ),
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: Container(
-            decoration: BoxDecoration(color: Colors.grey[300]),
-          ),
-        ),
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: Container(
-            decoration: BoxDecoration(color: Colors.grey[300]),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showMoreImages(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.60,
-        width: double.infinity,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: const Column(
-            children: [
-              Text(
-                "Service Photos",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+          child: CachedNetworkImage(
+            imageUrl: '${endpoint.resource}/${images[idx].url}',
+            fit: BoxFit.cover,
+            progressIndicatorBuilder: (context, url, downloadProgress) {
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: CircularProgressIndicator(
+                  value: downloadProgress.progress,
                 ),
-              ),
-            ],
+              );
+            },
+            errorWidget: (context, url, error) => const Icon(
+              CupertinoIcons.photo,
+            ),
           ),
         ),
       ),

@@ -241,6 +241,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _clearData() async {
     await context.read<UserProvider>().clearData();
+    await SecureStorage().clearAll();
     await GoogleAuthService().logout();
 
     if (!mounted) return;

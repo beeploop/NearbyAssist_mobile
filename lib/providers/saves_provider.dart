@@ -17,6 +17,7 @@ class SavesProvider extends ChangeNotifier {
     try {
       final saves = await SavesService().getSaves();
 
+      _saves.clear();
       for (final item in saves) {
         _saves[item.service.id] = item;
       }
