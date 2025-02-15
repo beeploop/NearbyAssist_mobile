@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/booking/booking_page.dart';
@@ -50,7 +51,7 @@ class FloatingCTA extends StatelessWidget {
                           ),
                         );
                       },
-                      child: const Icon(CupertinoIcons.cart),
+                      child: const FaIcon(FontAwesomeIcons.handshakeSimple),
                     ),
                   ),
                   Expanded(
@@ -75,7 +76,7 @@ class FloatingCTA extends StatelessWidget {
                           },
                         );
                       },
-                      child: const Icon(CupertinoIcons.ellipses_bubble),
+                      child: const Icon(CupertinoIcons.ellipses_bubble_fill),
                     ),
                   ),
                 ],
