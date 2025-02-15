@@ -8,7 +8,6 @@ import 'package:nearby_assist/pages/account/services/widget/rating_count_bar.dar
 import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
-import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -63,13 +62,11 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
   }
 
   Widget _showContent(DetailedServiceModel details) {
-    final user = context.read<UserProvider>().user;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Stack(
-        children: [
-          SingleChildScrollView(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -122,14 +119,17 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 // Divider
                 const Divider(),
                 const SizedBox(height: 20),
+
+                // Bottom padding
+                const SizedBox(height: 40),
               ],
             ),
           ),
+        ),
 
-          //
-          if (user.id != details.vendor.id) FloatingCTA(details: details),
-        ],
-      ),
+        // Action Button
+        FloatingCTA(details: details),
+      ],
     );
   }
 
