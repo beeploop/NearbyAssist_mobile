@@ -16,6 +16,7 @@ class AddExtraPage extends StatefulWidget {
 
 class _AddExtraPageState extends State<AddExtraPage> {
   bool _isLoading = false;
+  bool _fieldsHasValues = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
@@ -61,6 +62,7 @@ class _AddExtraPageState extends State<AddExtraPage> {
             const SizedBox(height: 10),
             TextFormField(
               controller: _titleController,
+              onChanged: _listenToInput,
               onTapOutside: (_) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
               decoration: const InputDecoration(
@@ -74,6 +76,7 @@ class _AddExtraPageState extends State<AddExtraPage> {
             const SizedBox(height: 10),
             TextFormField(
               controller: _descriptionController,
+              onChanged: _listenToInput,
               onTapOutside: (_) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
               decoration: const InputDecoration(
@@ -89,6 +92,7 @@ class _AddExtraPageState extends State<AddExtraPage> {
             TextFormField(
               keyboardType: TextInputType.number,
               controller: _priceController,
+              onChanged: _listenToInput,
               onTapOutside: (_) =>
                   FocusManager.instance.primaryFocus?.unfocus(),
               decoration: const InputDecoration(
@@ -99,10 +103,13 @@ class _AddExtraPageState extends State<AddExtraPage> {
 
             // Save button
             FilledButton(
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+              style: ButtonStyle(
+                minimumSize: const WidgetStatePropertyAll(Size.fromHeight(50)),
+                backgroundColor: WidgetStatePropertyAll(
+                  !_fieldsHasValues ? Colors.grey : null,
+                ),
               ),
-              onPressed: _handleSave,
+              onPressed: _fieldsHasValues ? _handleSave : () {},
               child: const Text('Save'),
             ),
 
@@ -114,9 +121,29 @@ class _AddExtraPageState extends State<AddExtraPage> {
     );
   }
 
+  void _listenToInput(String v) {
+    if (_titleController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty &&
+        _priceController.text.isNotEmpty) {
+      setState(() {
+        _fieldsHasValues = true;
+      });
+    } else {
+      setState(() {
+        _fieldsHasValues = false;
+      });
+    }
+  }
+
   Future<void> _handleSave() async {
     try {
       _toggleLoader(true);
+
+      if (_titleController.text.isEmpty ||
+          _descriptionController.text.isEmpty ||
+          _priceController.text.isEmpty) {
+        throw "Don't leave empty fields";
+      }
 
       final navigator = Navigator.of(context);
       final provider = context.read<ManagedServiceProvider>();
