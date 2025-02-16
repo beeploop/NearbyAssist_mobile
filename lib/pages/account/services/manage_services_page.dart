@@ -16,6 +16,8 @@ class ManageServices extends StatefulWidget {
 class _ManageServicesState extends State<ManageServices> {
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().user;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -31,14 +33,28 @@ class _ManageServicesState extends State<ManageServices> {
               child: AlertDialog(
                 icon: const Icon(CupertinoIcons.exclamationmark_triangle),
                 title: const Text('Account not verified'),
-                content: const Text(
-                    'Please verify your account to unlock more features'),
+                content: const Text('Verify your account to unlock feature'),
                 actions: [
                   TextButton(
+                    style: const ButtonStyle(
+                      textStyle: WidgetStatePropertyAll(
+                        TextStyle(color: Colors.red),
+                      ),
+                    ),
                     onPressed: () => context.pop(),
                     child: const Text('Cancel'),
                   ),
                   TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                        Colors.green.shade800,
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
                     onPressed: () => context.pushNamed('verifyAccount'),
                     child: const Text('Verify'),
                   ),
@@ -51,15 +67,30 @@ class _ManageServicesState extends State<ManageServices> {
             return Center(
               child: AlertDialog(
                 icon: const Icon(CupertinoIcons.exclamationmark_triangle),
-                title: const Text('You are not a vendor'),
+                title: const Text("Feature Unavailable"),
                 content: const Text(
-                    'You need to be a vendor to access this feature'),
+                    'You need at least 1 expertise to access this feature'),
                 actions: [
                   TextButton(
+                    style: const ButtonStyle(
+                      textStyle: WidgetStatePropertyAll(
+                        TextStyle(color: Colors.red),
+                      ),
+                    ),
                     onPressed: () => context.pop(),
                     child: const Text('Cancel'),
                   ),
                   TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                        Colors.green.shade800,
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
                     onPressed: () => context.pushNamed('vendorApplication'),
                     child: const Text('Apply'),
                   ),
@@ -72,7 +103,12 @@ class _ManageServicesState extends State<ManageServices> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.pushNamed('addService'),
+        backgroundColor: !user.isVendor ? Colors.grey : null,
+        onPressed: () {
+          if (!user.isVendor) return;
+
+          context.pushNamed('addService');
+        },
         child: const Icon(CupertinoIcons.plus),
       ),
     );

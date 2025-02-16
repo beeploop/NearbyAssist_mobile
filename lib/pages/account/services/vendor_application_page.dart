@@ -75,8 +75,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
         child: AlertDialog(
           icon: const Icon(CupertinoIcons.exclamationmark_triangle),
           title: const Text('Account not verified'),
-          content:
-              const Text('Please verify your account to unlock more features'),
+          content: const Text('Verify your account to unlock feature'),
           actions: [
             TextButton(
               onPressed: () => context.pop(),
