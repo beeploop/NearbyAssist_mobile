@@ -78,12 +78,28 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
           content: const Text('Verify your account to unlock feature'),
           actions: [
             TextButton(
+              style: const ButtonStyle(
+                foregroundColor: WidgetStatePropertyAll(Colors.red),
+              ),
               onPressed: () => context.pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(
+                  Colors.green.shade800,
+                ),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
               onPressed: () => context.pushNamed('verifyAccount'),
-              child: const Text('Verify'),
+              child: const Text(
+                'Verify',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

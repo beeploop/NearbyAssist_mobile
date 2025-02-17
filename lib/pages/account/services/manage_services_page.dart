@@ -37,9 +37,7 @@ class _ManageServicesState extends State<ManageServices> {
                 actions: [
                   TextButton(
                     style: const ButtonStyle(
-                      textStyle: WidgetStatePropertyAll(
-                        TextStyle(color: Colors.red),
-                      ),
+                      foregroundColor: WidgetStatePropertyAll(Colors.red),
                     ),
                     onPressed: () => context.pop(),
                     child: const Text('Cancel'),
@@ -56,7 +54,10 @@ class _ManageServicesState extends State<ManageServices> {
                       ),
                     ),
                     onPressed: () => context.pushNamed('verifyAccount'),
-                    child: const Text('Verify'),
+                    child: const Text(
+                      'Verify',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
