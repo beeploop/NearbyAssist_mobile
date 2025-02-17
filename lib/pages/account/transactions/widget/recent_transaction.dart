@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/transactions/accepted_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
@@ -75,6 +76,15 @@ class _RecentTransactionState extends State<RecentTransaction> {
               CupertinoPageRoute(
                 builder: (context) =>
                     TransactionSummaryPage(transaction: recents[index]),
+              ),
+            );
+            return;
+          } else if (recents[index].status == 'confirmed') {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) =>
+                    AcceptedRequestSummaryPage(transaction: recents[index]),
               ),
             );
             return;
