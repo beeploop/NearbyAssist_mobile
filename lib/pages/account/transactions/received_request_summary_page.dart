@@ -53,6 +53,47 @@ class _ReceivedRequestSummaryPageState
             ],
           ),
           body: _body(context),
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: Row(
+              children: [
+                // Reject button
+                Expanded(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: _onTapReject,
+                    child: const Text(
+                      'Reject',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ),
+
+                // Gap
+                const SizedBox(width: 10),
+
+                // Accept button
+                Expanded(
+                  child: FilledButton(
+                    style: ButtonStyle(
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    onPressed: _onTapAccept,
+                    child: const Text('Accept'),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
 
         // Show loading overlay
@@ -141,83 +182,65 @@ class _ReceivedRequestSummaryPageState
             // Estimated cost
             const SizedBox(height: 20),
             RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
-            const SizedBox(height: 20),
 
-            // Confirm Button
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    icon: const Icon(
-                      CupertinoIcons.question_circle,
-                      color: Colors.green,
-                      size: 40,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    title: const Text('Accept this request?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => _confirmRequest(widget.transaction.id),
-                        child: const Text('Continue'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              style: ButtonStyle(
-                minimumSize: const WidgetStatePropertyAll(Size.fromHeight(50)),
-                backgroundColor: WidgetStatePropertyAll(
-                  Colors.green.shade800,
-                ),
-              ),
-              child: const Text('Confirm'),
-            ),
-
-            // Cancel Button
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    icon: const Icon(
-                      CupertinoIcons.question_circle,
-                      color: Colors.red,
-                      size: 40,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    title: const Text('Reject this request?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => _rejectRequest(widget.transaction.id),
-                        child: const Text('Continue'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                backgroundColor: WidgetStatePropertyAll(Colors.red),
-              ),
-              child: const Text('Reject'),
-            ),
+            // Bottom padding
+            const SizedBox(height: 40),
           ],
         ),
+      ),
+    );
+  }
+
+  void _onTapAccept() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          CupertinoIcons.question_circle,
+          color: Colors.green,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text('Accept this request?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => _confirmRequest(widget.transaction.id),
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onTapReject() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          CupertinoIcons.question_circle,
+          color: Colors.red,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text('Reject this request?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => _rejectRequest(widget.transaction.id),
+            child: const Text('Continue'),
+          ),
+        ],
       ),
     );
   }

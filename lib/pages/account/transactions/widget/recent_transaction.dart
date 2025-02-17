@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/transactions/history_page.dart';
 import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
