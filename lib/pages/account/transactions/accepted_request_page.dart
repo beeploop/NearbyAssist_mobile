@@ -15,8 +15,6 @@ class AcceptedRequestPage extends StatefulWidget {
 class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final confirmed = context.watch<TransactionProvider>().accepted;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -25,9 +23,34 @@ class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchAccepted,
-        child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
+      body: FutureBuilder(
+        future: context.read<TransactionProvider>().fetchAccepted(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: AlertDialog(
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching data, please try again later',
+                ),
+              ),
+            );
+          }
+
+          final confirmed = context.watch<TransactionProvider>().accepted;
+
+          return RefreshIndicator(
+            onRefresh: context.read<TransactionProvider>().fetchAccepted,
+            child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
+          );
+        },
       ),
     );
   }

@@ -16,8 +16,6 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
-    final history = context.watch<TransactionProvider>().history;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -26,10 +24,34 @@ class _HistoryPageState extends State<HistoryPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchHistory,
-        child: history.isEmpty ? _emptyState() : _mainContent(history),
-      ),
+      body: FutureBuilder(
+          future: context.read<TransactionProvider>().fetchHistory(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return const Center(
+                child: AlertDialog(
+                  icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                  title: Text('Something went wrong'),
+                  content: Text(
+                    'An error occurred while fetching data, please try again later',
+                  ),
+                ),
+              );
+            }
+
+            final history = context.watch<TransactionProvider>().history;
+
+            return RefreshIndicator(
+              onRefresh: context.read<TransactionProvider>().fetchHistory,
+              child: history.isEmpty ? _emptyState() : _mainContent(history),
+            );
+          }),
     );
   }
 

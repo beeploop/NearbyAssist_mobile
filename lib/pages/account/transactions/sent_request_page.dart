@@ -15,8 +15,6 @@ class SentRequestPage extends StatefulWidget {
 class _SentRequestPageState extends State<SentRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final requests = context.watch<TransactionProvider>().sentRequests;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -25,9 +23,34 @@ class _SentRequestPageState extends State<SentRequestPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchSentRequests,
-        child: requests.isEmpty ? _emptyState() : _mainContent(requests),
+      body: FutureBuilder(
+        future: context.read<TransactionProvider>().fetchSentRequests(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: AlertDialog(
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching data, please try again later',
+                ),
+              ),
+            );
+          }
+
+          final requests = context.watch<TransactionProvider>().sentRequests;
+
+          return RefreshIndicator(
+            onRefresh: context.read<TransactionProvider>().fetchSentRequests,
+            child: requests.isEmpty ? _emptyState() : _mainContent(requests),
+          );
+        },
       ),
     );
   }
