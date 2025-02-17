@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/transactions/history_page.dart';
+import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -64,11 +68,47 @@ class _RecentTransactionState extends State<RecentTransaction> {
       separatorBuilder: (context, index) => const SizedBox(),
       itemCount: recents.length,
       itemBuilder: (context, index) => ListTile(
+        onTap: () {
+          // Navigate to history summary page if status == 'done'
+          if (recents[index].status == 'done') {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) =>
+                    TransactionSummaryPage(transaction: recents[index]),
+              ),
+            );
+            return;
+          }
+
+          if (recents[index].clientId == user.id) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) =>
+                    SentRequestSummaryPage(transaction: recents[index]),
+              ),
+            );
+            return;
+          } else {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) =>
+                    ReceivedRequestSummaryPage(transaction: recents[index]),
+              ),
+            );
+            return;
+          }
+        },
         dense: true,
         leading: Icon(
           recents[index].clientId == user.id
               ? CupertinoIcons.arrow_up
               : CupertinoIcons.arrow_down,
+          color: recents[index].clientId == user.id
+              ? Colors.teal.shade400
+              : Colors.pink.shade300,
         ),
         title: Text(
           recents[index].clientId == user.id
@@ -76,6 +116,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
               : 'client: ${recents[index].client}',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
         subtitle: Text(
