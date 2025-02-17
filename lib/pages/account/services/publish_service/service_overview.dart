@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -43,105 +44,88 @@ class _ServiceOverviewState extends State<ServiceOverview> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        const AutoSizeText(
           'Overview',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
+        const SizedBox(height: 20),
+
+        // Title
+        const AutoSizeText('Title'),
         const SizedBox(height: 10),
-        _titleField(),
+        TextFormField(
+          controller: widget.titleController,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Description
+        const AutoSizeText('Description'),
         const SizedBox(height: 10),
-        _descriptionField(),
+        TextFormField(
+          controller: widget.descriptionController,
+          onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+          ),
+          minLines: 3,
+          maxLines: 6,
+        ),
+        const SizedBox(height: 20),
+
+        // Tags
+        const AutoSizeText('Tags'),
         const SizedBox(height: 10),
         _tagDropdownField(),
-      ],
-    );
-  }
 
-  Widget _titleField() {
-    return Row(
-      children: [
-        const Text('Title:'),
-        const SizedBox(width: 10),
-        Expanded(
-          child: TextFormField(
-            controller: widget.titleController,
-            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _descriptionField() {
-    return Row(
-      children: [
-        const Text('Description:'),
-        const SizedBox(width: 10),
-        Expanded(
-          child: TextFormField(
-            controller: widget.descriptionController,
-            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-            ),
-            minLines: 2,
-            maxLines: 4,
-          ),
-        ),
+        // Bottom padding
+        const SizedBox(height: 20),
       ],
     );
   }
 
   Widget _tagDropdownField() {
-    return Row(
-      children: [
-        const Text('Search tags'),
-        const SizedBox(width: 10),
-        Expanded(
-          child: DropdownSearch<TagModel>.multiSelection(
-            decoratorProps: const DropDownDecoratorProps(
-              decoration: InputDecoration(
-                hintText: 'select tags',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            popupProps: PopupPropsMultiSelection.modalBottomSheet(
-              containerBuilder: (context, child) {
-                return Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: child,
-                );
-              },
-              modalBottomSheetProps: const ModalBottomSheetProps(
-                showDragHandle: true,
-              ),
-              showSearchBox: true,
-              showSelectedItems: true,
-              searchFieldProps: const TextFieldProps(
-                decoration: InputDecoration(
-                  hintText: 'filter tags',
-                ),
-              ),
-              searchDelay: const Duration(milliseconds: 500),
-            ),
-            autoValidateMode: AutovalidateMode.always,
-            items: (filter, props) => _availableTags,
-            itemAsString: (tag) => tag.title,
-            compareFn: (tag, selected) => tag.id == selected.id,
-            selectedItems: widget.selectedTags,
-            onChanged: (items) {
-              widget.selectedTags.clear();
-              widget.selectedTags.addAll(items);
-            },
+    return DropdownSearch<TagModel>.multiSelection(
+      decoratorProps: const DropDownDecoratorProps(
+        decoration: InputDecoration(
+          hintText: 'select tags',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+        containerBuilder: (context, child) {
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: child,
+          );
+        },
+        modalBottomSheetProps: const ModalBottomSheetProps(
+          showDragHandle: true,
+        ),
+        showSearchBox: true,
+        showSelectedItems: true,
+        searchFieldProps: const TextFieldProps(
+          decoration: InputDecoration(
+            hintText: 'filter tags',
           ),
         ),
-      ],
+        searchDelay: const Duration(milliseconds: 500),
+      ),
+      autoValidateMode: AutovalidateMode.always,
+      items: (filter, props) => _availableTags,
+      itemAsString: (tag) => tag.title,
+      compareFn: (tag, selected) => tag.id == selected.id,
+      selectedItems: widget.selectedTags,
+      onChanged: (items) {
+        widget.selectedTags.clear();
+        widget.selectedTags.addAll(items);
+      },
     );
   }
 }
