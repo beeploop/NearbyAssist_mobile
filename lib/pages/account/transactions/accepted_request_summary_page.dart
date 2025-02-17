@@ -62,6 +62,22 @@ class _AcceptedRequestSummaryPageState
             ],
           ),
           body: buildPadding(),
+          bottomNavigationBar: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: FilledButton(
+              onPressed: () {
+                _completeTransaction();
+              },
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              child: const Text('Complete'),
+            ),
+          ),
         ),
 
         // Show loading overlay
@@ -150,19 +166,9 @@ class _AcceptedRequestSummaryPageState
             // Estimated cost
             const SizedBox(height: 20),
             RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
-            const SizedBox(height: 20),
 
             // Complete Button
-            const SizedBox(height: 20),
-            FilledButton(
-              onPressed: () {
-                _completeTransaction();
-              },
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-              ),
-              child: const Text('Complete'),
-            ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
