@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
@@ -50,19 +51,15 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
 
               // Extras
               const SizedBox(height: 20),
-              Text(
-                widget.transaction.service.title,
-                style: const TextStyle(fontSize: 16),
-              ),
+              AutoSizeText(widget.transaction.service.title),
               const SizedBox(height: 10),
               RowTile(
                   label: 'Base Rate:',
                   text: '₱ ${widget.transaction.service.rate}'),
               const SizedBox(height: 20),
-              const Text(
+              const AutoSizeText(
                 'Extras:',
                 style: TextStyle(
-                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
