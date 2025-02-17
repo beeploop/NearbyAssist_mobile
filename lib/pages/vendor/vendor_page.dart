@@ -87,7 +87,10 @@ class _VendorPageState extends State<VendorPage> {
                   size: 26,
                   grade: 10,
                 ),
-                title: Text(service.description),
+                title: Text(
+                  service.description,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 trailing: const Icon(CupertinoIcons.arrow_right),
               ),
             ),
