@@ -79,6 +79,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
               Tab(child: Text('Rating')),
             ],
           ),
+          const SizedBox(height: 10),
           Flexible(
             child: TabBarView(
               children: [

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class GridItem extends StatelessWidget {
@@ -24,23 +25,25 @@ class GridItem extends StatelessWidget {
           color: background,
           borderRadius: BorderRadius.circular(10),
         ),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             const Spacer(),
-            Icon(
-              icon,
-              color: Colors.white,
-              size: 40,
+            FittedBox(
+              fit: BoxFit.contain,
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 30,
+              ),
             ),
             const SizedBox(height: 5),
             FittedBox(
               fit: BoxFit.fitWidth,
-              child: Text(
+              child: AutoSizeText(
                 label,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
                 ),
               ),
             ),

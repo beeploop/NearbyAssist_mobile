@@ -17,11 +17,10 @@ class ExpertiseSection extends StatelessWidget {
         const Divider(),
         Row(
           children: [
-            const Text('Expertise',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                )),
+            const Text(
+              'Expertise',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const Spacer(),
             TextButton.icon(
               onPressed: () {
@@ -30,7 +29,7 @@ class ExpertiseSection extends StatelessWidget {
                 );
               },
               icon: const Icon(CupertinoIcons.add, size: 14),
-              label: const Text('Add Expertise'),
+              label: const Text('Add'),
             ),
           ],
         ),

@@ -51,57 +51,58 @@ class VendorInfoSection extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            SizedBox(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // name
-                  Text(
-                    vendor.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+            Expanded(
+              child: SizedBox(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // name
+                    Text(
+                      vendor.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
 
-                  // star ratings
-                  RatingBar.builder(
-                    initialRating: vendor.rating,
-                    allowHalfRating: true,
-                    itemSize: 20,
-                    itemBuilder: (context, _) => const Icon(
-                      Icons.star,
-                      color: Colors.yellow,
+                    // star ratings
+                    RatingBar.builder(
+                      initialRating: vendor.rating,
+                      allowHalfRating: true,
+                      itemSize: 20,
+                      itemBuilder: (context, _) => const Icon(
+                        Icons.star,
+                        color: Colors.yellow,
+                      ),
+                      onRatingUpdate: (_) {},
+                      ignoreGestures: true,
                     ),
-                    onRatingUpdate: (_) {},
-                    ignoreGestures: true,
-                  ),
 
-                  // expertise list
-                  Wrap(
-                    runSpacing: 6,
-                    spacing: 6,
-                    children: vendor.expertise
-                        .map((e) => Chip(
-                              label: Text(e),
-                              labelStyle: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              visualDensity: VisualDensity.compact,
-                              padding: const EdgeInsets.all(2),
-                              backgroundColor: Colors.green.shade800,
-                              shape: const RoundedRectangleBorder(
-                                side: BorderSide(color: Colors.transparent),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
+                    // expertise list
+                    Wrap(
+                      runSpacing: 6,
+                      spacing: 6,
+                      children: vendor.expertise
+                          .map((e) => Chip(
+                                label: Text(e),
+                                labelStyle: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                ],
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.all(2),
+                                backgroundColor: Colors.green.shade800,
+                                shape: const RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.transparent),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

@@ -31,25 +31,25 @@ class GridSection extends StatelessWidget {
         GridItem(
           background: Colors.pink.shade300,
           icon: CupertinoIcons.arrow_down_circle,
-          label: 'Received Requests',
+          label: 'Received',
           onTap: () => _handleClientRequestTap(context),
         ),
         GridItem(
           background: Colors.teal.shade400,
           icon: CupertinoIcons.arrow_up_circle,
-          label: 'Sent Requests',
+          label: 'Sent',
           onTap: () => _handleMyRequestTap(context),
         ),
         GridItem(
           background: Colors.cyan.shade400,
           icon: CupertinoIcons.checkmark_circle,
-          label: 'Accepted Requests',
+          label: 'Accepted',
           onTap: () => _handleConfirmedTap(context),
         ),
         GridItem(
           background: Colors.purple.shade700,
           icon: CupertinoIcons.chart_pie,
-          label: 'Requests History',
+          label: 'History',
           onTap: () => _handleHistoryTap(context),
         ),
         GridItem(
