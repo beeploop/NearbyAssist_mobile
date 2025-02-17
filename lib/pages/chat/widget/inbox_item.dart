@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -29,11 +30,10 @@ class InboxItem extends StatelessWidget {
             backgroundImage: const AssetImage('assets/images/profile.png'),
           ),
         ),
-        title: Text(
+        title: AutoSizeText(
           conversation.recipient,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
             overflow: TextOverflow.ellipsis,
           ),
         ),
