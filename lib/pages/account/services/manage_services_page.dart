@@ -116,30 +116,53 @@ class _ManageServicesState extends State<ManageServices> {
   }
 
   Widget _mainContent(String userId) {
-    final services = context.watch<ManagedServiceProvider>().getServices();
+    return FutureBuilder(
+        future: context.read<ManagedServiceProvider>().refreshServices(userId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-    return RefreshIndicator(
-      onRefresh: () =>
-          context.read<ManagedServiceProvider>().refreshServices(userId),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: services.isEmpty
-            ? _emptyState()
-            : ListView.separated(
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 10),
-                itemCount: services.length,
-                itemBuilder: (context, index) {
-                  final hasPadding = index == (services.length - 1);
-
-                  return ServiceItem(
-                    service: services[index],
-                    paddingBottom: hasPadding,
-                  );
-                },
+          if (snapshot.hasError) {
+            return const Center(
+              child: AlertDialog(
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching data, please try again later',
+                ),
               ),
-      ),
-    );
+            );
+          }
+
+          final services =
+              context.watch<ManagedServiceProvider>().getServices();
+
+          return RefreshIndicator(
+            onRefresh: () =>
+                context.read<ManagedServiceProvider>().refreshServices(userId),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: services.isEmpty
+                  ? _emptyState()
+                  : ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
+                      itemCount: services.length,
+                      itemBuilder: (context, index) {
+                        final hasPadding = index == (services.length - 1);
+
+                        return ServiceItem(
+                          service: services[index],
+                          paddingBottom: hasPadding,
+                        );
+                      },
+                    ),
+            ),
+          );
+        });
   }
 
   Widget _emptyState() {
