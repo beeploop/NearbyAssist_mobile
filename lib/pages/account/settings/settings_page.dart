@@ -90,55 +90,55 @@ class _SettingsPageState extends State<SettingsPage> {
           endIcon: false,
           onPress: _disableAccount,
         ),
-        AccountTileWidget(
-          title: "Delete Account",
-          textColor: Colors.red,
-          subtitle: "Delete your account and saved data",
-          icon: CupertinoIcons.trash,
-          iconColor: Colors.red,
-          endIcon: false,
-          onPress: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                icon: const Icon(
-                  CupertinoIcons.exclamationmark_triangle,
-                  color: Colors.amber,
-                  size: 30,
-                ),
-                title: const Text('Delete Account'),
-                content: const Text(
-                  'This action will delete all your user data. This action is not reversible, are you sure?',
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      _deleteAccount();
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: const WidgetStatePropertyAll(Colors.red),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    child: const Text('Continue'),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+        // AccountTileWidget(
+        //   title: "Delete Account",
+        //   textColor: Colors.red,
+        //   subtitle: "Delete your account and saved data",
+        //   icon: CupertinoIcons.trash,
+        //   iconColor: Colors.red,
+        //   endIcon: false,
+        //   onPress: () {
+        //     showDialog(
+        //       context: context,
+        //       builder: (context) => AlertDialog(
+        //         icon: const Icon(
+        //           CupertinoIcons.exclamationmark_triangle,
+        //           color: Colors.amber,
+        //           size: 30,
+        //         ),
+        //         title: const Text('Delete Account'),
+        //         content: const Text(
+        //           'This action will delete all your user data. This action is not reversible, are you sure?',
+        //         ),
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.circular(10),
+        //         ),
+        //         actions: [
+        //           TextButton(
+        //             onPressed: () {
+        //               Navigator.of(context).pop();
+        //             },
+        //             child: const Text('Cancel'),
+        //           ),
+        //           FilledButton(
+        //             onPressed: () {
+        //               _deleteAccount();
+        //             },
+        //             style: ButtonStyle(
+        //               backgroundColor: const WidgetStatePropertyAll(Colors.red),
+        //               shape: WidgetStatePropertyAll(
+        //                 RoundedRectangleBorder(
+        //                   borderRadius: BorderRadius.circular(10),
+        //                 ),
+        //               ),
+        //             ),
+        //             child: const Text('Continue'),
+        //           ),
+        //         ],
+        //       ),
+        //     );
+        //   },
+        // ),
       ],
     );
   }
