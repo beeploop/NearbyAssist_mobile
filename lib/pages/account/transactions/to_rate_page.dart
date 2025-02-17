@@ -16,8 +16,6 @@ class ToRatePage extends StatefulWidget {
 class _ToRatePageState extends State<ToRatePage> {
   @override
   Widget build(BuildContext context) {
-    final reviewables = context.watch<TransactionProvider>().toReviews;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -26,10 +24,36 @@ class _ToRatePageState extends State<ToRatePage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh:
-            context.read<TransactionProvider>().fetchToReviewTransactions,
-        child: reviewables.isEmpty ? _emptyState() : _buildBody(reviewables),
+      body: FutureBuilder(
+        future: context.read<TransactionProvider>().fetchToReviewTransactions(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
+              child: AlertDialog(
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching data, please try again later',
+                ),
+              ),
+            );
+          }
+
+          final reviewables = context.watch<TransactionProvider>().toReviews;
+
+          return RefreshIndicator(
+            onRefresh:
+                context.read<TransactionProvider>().fetchToReviewTransactions,
+            child:
+                reviewables.isEmpty ? _emptyState() : _buildBody(reviewables),
+          );
+        },
       ),
     );
   }
