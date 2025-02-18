@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class MapPage extends StatelessWidget {
   const MapPage({super.key});
@@ -24,20 +23,13 @@ class MapPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: DropdownSearchBar(
-                  onSearchFinished: () => _handleSearch(context),
+                  onSearchFinished: () {},
                 ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  void _handleSearch(BuildContext context) {
-    showCustomSnackBar(
-      context,
-      'showing new results',
     );
   }
 }

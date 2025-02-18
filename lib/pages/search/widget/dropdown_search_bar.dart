@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -95,12 +96,11 @@ class _DropdownSearchBarState extends State<DropdownSearchBar> {
       serviceProvider.replaceAll(services);
 
       widget.onSearchFinished();
+    } on DioException catch (error) {
+      _showErrorModal(error.response?.data['message']);
+    } on LocationServiceDisabledException catch (_) {
+      _showLocationServiceDisabledDialog();
     } catch (error) {
-      if (error == LocationServiceDisabledException) {
-        _showLocationServiceDisabledDialog();
-        return;
-      }
-
       _showErrorModal(error.toString());
     }
   }
