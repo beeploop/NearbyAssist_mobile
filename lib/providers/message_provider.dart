@@ -95,6 +95,21 @@ class MessageProvider extends ChangeNotifier {
         _messages[message.receiver]!.insert(0, newPlainMessage);
       }
 
+      // Update the conversations list
+      final idx = _conversations.indexWhere(
+          (conversation) => conversation.recipientId == message.receiver);
+      if (idx == -1) {
+        // NOTE: Could be better, instead of refetching we can update the
+        // conversations list, but message would need to have the receiver's
+        // image Url, id, and name. Too much work for now.
+        refreshConversations();
+      } else {
+        final conversation = _conversations[idx];
+        conversation.lastMessage = message.content;
+        conversation.date = DateTime.now().toIso8601String();
+        _conversations.insert(0, conversation);
+      }
+
       notifyListeners();
 
       final encrypted = await _encrypt(message.content, message.receiver);
@@ -167,6 +182,7 @@ class MessageProvider extends ChangeNotifier {
       }
     }
 
+    refreshConversations(); // lazily trigger refetch converstions
     notifyListeners();
   }
 
