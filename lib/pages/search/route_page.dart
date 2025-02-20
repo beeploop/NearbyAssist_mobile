@@ -93,13 +93,11 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
         .map((coord) => LatLng(coord[0].toDouble(), coord[1].toDouble()))
         .toList();
 
-    final userPos = LatLng(route[0][0].toDouble(), route[0][1].toDouble());
-
     return FlutterMap(
       mapController: _controller.mapController,
       options: MapOptions(
         initialZoom: 15,
-        initialCenter: userPos,
+        initialCenter: coordinates.first,
         onMapReady: () => _fitMarkers(coordinates),
       ),
       children: [
@@ -122,7 +120,7 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
             Marker(
               rotate: true,
               alignment: Alignment.topCenter,
-              point: userPos,
+              point: coordinates.first,
               child: const Icon(
                 Icons.person_pin,
                 size: 30.0,
@@ -144,6 +142,8 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
       cameraFit: CameraFit.coordinates(
         coordinates: coordinates,
         padding: const EdgeInsets.all(50),
+        maxZoom: 20,
+        minZoom: 16,
       ),
     );
   }
