@@ -79,15 +79,6 @@ class _RecentTransactionState extends State<RecentTransaction> {
               ),
             );
             return;
-          } else if (recents[index].status == 'confirmed') {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) =>
-                    AcceptedRequestSummaryPage(transaction: recents[index]),
-              ),
-            );
-            return;
           }
 
           if (recents[index].clientId == user.id) {
@@ -100,6 +91,17 @@ class _RecentTransactionState extends State<RecentTransaction> {
             );
             return;
           } else {
+            if (recents[index].status == 'confirmed') {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) =>
+                      AcceptedRequestSummaryPage(transaction: recents[index]),
+                ),
+              );
+              return;
+            }
+
             Navigator.push(
               context,
               CupertinoPageRoute(

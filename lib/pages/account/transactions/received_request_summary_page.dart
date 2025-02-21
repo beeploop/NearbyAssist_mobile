@@ -62,15 +62,25 @@ class _ReceivedRequestSummaryPageState
                 Expanded(
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.red),
+                      side: BorderSide(
+                        color: widget.transaction.status == 'cancelled'
+                            ? Colors.grey
+                            : Colors.red,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: _onTapReject,
-                    child: const Text(
+                    onPressed: widget.transaction.status != 'cancelled'
+                        ? _onTapReject
+                        : () {},
+                    child: Text(
                       'Reject',
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(
+                        color: widget.transaction.status == 'cancelled'
+                            ? Colors.grey
+                            : Colors.red,
+                      ),
                     ),
                   ),
                 ),
@@ -82,13 +92,20 @@ class _ReceivedRequestSummaryPageState
                 Expanded(
                   child: FilledButton(
                     style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                        widget.transaction.status == 'cancelled'
+                            ? Colors.grey
+                            : null,
+                      ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
-                    onPressed: _onTapAccept,
+                    onPressed: widget.transaction.status != 'cancelled'
+                        ? _onTapAccept
+                        : () {},
                     child: const Text('Accept'),
                   ),
                 ),
