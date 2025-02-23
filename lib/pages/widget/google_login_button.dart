@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -55,6 +56,8 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton> {
       _onLoginSuccess(user);
     } on GoogleNullUserException catch (error) {
       _onError(error.message);
+    } on DioException catch (error) {
+      _onError(error.response?.data['message']);
     } catch (error) {
       _onError(error.toString());
     }
