@@ -5,10 +5,12 @@ class VerifyAccountInputField extends StatefulWidget {
     super.key,
     required this.controller,
     required this.labelText,
+    this.inputType = TextInputType.text,
   });
 
   final TextEditingController controller;
   final String labelText;
+  final TextInputType inputType;
 
   @override
   State<VerifyAccountInputField> createState() =>
@@ -21,6 +23,7 @@ class _VerifyAccountInputFieldState extends State<VerifyAccountInputField> {
     return TextFormField(
       controller: widget.controller,
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
+      keyboardType: widget.inputType,
       decoration: InputDecoration(
         labelText: widget.labelText,
         border: const OutlineInputBorder(),

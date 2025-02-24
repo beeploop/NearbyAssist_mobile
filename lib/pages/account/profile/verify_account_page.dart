@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   bool _isLoading = false;
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _idNumberController = TextEditingController();
   final _frontIdController = FillableImageContainerController();
   final _faceController = FillableImageContainerController();
@@ -82,13 +84,28 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
+
+            // Name
             VerifyAccountInputField(
               controller: _nameController,
               labelText: 'Complete name',
+              inputType: TextInputType.name,
             ),
             const SizedBox(height: 20),
+
+            // Phone number
+            VerifyAccountInputField(
+              controller: _phoneController,
+              labelText: 'Phone Number',
+              inputType: TextInputType.phone,
+            ),
+            const SizedBox(height: 20),
+
+            // Address
             AddressInput(onLocationPicked: _onLocationPicked),
             const SizedBox(height: 20),
+
+            // ID Type
             DropdownSearch<ValidID>(
               decoratorProps: const DropDownDecoratorProps(
                 decoration: InputDecoration(
@@ -105,11 +122,15 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               ),
             ),
             const SizedBox(height: 20),
+
+            // ID Number
             VerifyAccountInputField(
               controller: _idNumberController,
               labelText: 'ID Number',
             ),
             const SizedBox(height: 20),
+
+            // ID Images
             Row(
               children: [
                 FillableImageContainer(
@@ -126,8 +147,12 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               ],
             ),
             const SizedBox(height: 20),
+
+            // Divider
             const Divider(),
             const SizedBox(height: 20),
+
+            // Selfie
             Row(
               children: [
                 FillableImageContainer(
@@ -140,6 +165,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               ],
             ),
             const SizedBox(height: 20),
+
+            // Submit button
             FilledButton(
               style: const ButtonStyle(
                 minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
@@ -178,6 +205,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     _showLoader();
 
     final name = _nameController.text;
+    final phone = _phoneController.text;
     final address = _addressController.text;
     final idType = _selectedID;
     final idNumber = _idNumberController.text;
@@ -191,6 +219,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       final service = VerifyAccountService();
       await service.verify(
         name: name,
+        phone: phone,
         address: address,
         latitude: location.latitude,
         longitude: location.longitude,
@@ -205,6 +234,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     } on LocationServiceDisabledException catch (error) {
       logger.log('Error on verify account: ${error.toString()}');
       _showLocationServiceDisabledDialog();
+    } on DioException catch (error) {
+      _onError(error.response?.data['message']);
     } catch (error) {
       _onError(error.toString());
     } finally {

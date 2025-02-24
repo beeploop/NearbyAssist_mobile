@@ -8,6 +8,7 @@ class UserModel {
   bool isVerified;
   bool isVendor;
   String? address;
+  String? phone;
   double? latitude;
   double? longitude;
   List<ExpertiseModel> expertise;
@@ -20,6 +21,7 @@ class UserModel {
     required this.isVerified,
     required this.isVendor,
     this.address,
+    this.phone,
     this.latitude,
     this.longitude,
     required this.expertise,
@@ -34,6 +36,7 @@ class UserModel {
       isVerified: json['isVerified'],
       isVendor: json['isVendor'],
       address: json['address'] == "" ? null : json['address'],
+      phone: json['phone'] == "" ? null : json['phone'],
       latitude: json['latitude'] == 0 ? null : json['latitude'],
       longitude: json['longitude'] == 0 ? null : json['longitude'],
       expertise: json['expertises'] == null
@@ -53,6 +56,7 @@ class UserModel {
       'isVerified': isVerified,
       'isVendor': isVendor,
       'address': address,
+      'phone': phone,
       'latitude': latitude,
       'longitude': longitude,
       'expertises': expertise.map((e) => e.toJson()).toList(),

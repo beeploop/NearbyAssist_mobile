@@ -9,6 +9,7 @@ import 'package:http_parser/http_parser.dart';
 class VerifyAccountService {
   Future<void> verify({
     required String name,
+    required String phone,
     required String address,
     required double latitude,
     required double longitude,
@@ -21,6 +22,7 @@ class VerifyAccountService {
     try {
       if (!_isValid(
         name: name,
+        phone: phone,
         address: address,
         latitude: latitude,
         longitude: longitude,
@@ -35,6 +37,7 @@ class VerifyAccountService {
 
       final data = FormData.fromMap({
         'name': name,
+        'phone': phone,
         'address': address,
         'latitude': latitude,
         'longitude': longitude,
@@ -76,6 +79,7 @@ class VerifyAccountService {
 
   bool _isValid({
     required String name,
+    required String phone,
     required String address,
     required double latitude,
     required double longitude,
@@ -106,11 +110,16 @@ class VerifyAccountService {
     }
 
     if (name.isEmpty ||
+        phone.isEmpty ||
         address.isEmpty ||
         idNumber.isEmpty ||
         frontId.isEmpty ||
         backId.isEmpty ||
         face.isEmpty) {
+      return false;
+    }
+
+    if (phone.length != 11) {
       return false;
     }
 
