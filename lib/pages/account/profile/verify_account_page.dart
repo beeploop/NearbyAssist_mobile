@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
@@ -25,7 +26,6 @@ class VerifyAccountPage extends StatefulWidget {
 }
 
 class _VerifyAccountPageState extends State<VerifyAccountPage> {
-  bool _isLoading = false;
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -50,30 +50,17 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Verify Account',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Verify Account',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: buildBody(),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+        body: buildBody(),
+      ),
     );
   }
 
@@ -183,18 +170,6 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     );
   }
 
-  void _showLoader() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void _hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   void _onLocationPicked(String address) {
     setState(() {
       _addressController.text = address;
@@ -202,7 +177,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   }
 
   void _submit() async {
-    _showLoader();
+    final loader = context.loaderOverlay;
+    loader.show();
 
     final name = _nameController.text;
     final phone = _phoneController.text;
@@ -239,7 +215,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _hideLoader();
+      loader.hide();
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
@@ -20,32 +21,17 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(),
-          body: buildListView(context),
-        ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(),
+        body: buildListView(),
+      ),
     );
   }
 
-  ListView buildListView(BuildContext context) {
+  ListView buildListView() {
     return ListView(
       children: [
         Consumer<UserProvider>(
@@ -89,81 +75,22 @@ class _SettingsPageState extends State<SettingsPage> {
           endIcon: false,
           onPress: _disableAccount,
         ),
-        // AccountTileWidget(
-        //   title: "Delete Account",
-        //   textColor: Colors.red,
-        //   subtitle: "Delete your account and saved data",
-        //   icon: CupertinoIcons.trash,
-        //   iconColor: Colors.red,
-        //   endIcon: false,
-        //   onPress: () {
-        //     showDialog(
-        //       context: context,
-        //       builder: (context) => AlertDialog(
-        //         icon: const Icon(
-        //           CupertinoIcons.exclamationmark_triangle,
-        //           color: Colors.amber,
-        //           size: 30,
-        //         ),
-        //         title: const Text('Delete Account'),
-        //         content: const Text(
-        //           'This action will delete all your user data. This action is not reversible, are you sure?',
-        //         ),
-        //         shape: RoundedRectangleBorder(
-        //           borderRadius: BorderRadius.circular(10),
-        //         ),
-        //         actions: [
-        //           TextButton(
-        //             onPressed: () {
-        //               Navigator.of(context).pop();
-        //             },
-        //             child: const Text('Cancel'),
-        //           ),
-        //           FilledButton(
-        //             onPressed: () {
-        //               _deleteAccount();
-        //             },
-        //             style: ButtonStyle(
-        //               backgroundColor: const WidgetStatePropertyAll(Colors.red),
-        //               shape: WidgetStatePropertyAll(
-        //                 RoundedRectangleBorder(
-        //                   borderRadius: BorderRadius.circular(10),
-        //                 ),
-        //               ),
-        //             ),
-        //             child: const Text('Continue'),
-        //           ),
-        //         ],
-        //       ),
-        //     );
-        //   },
-        // ),
       ],
     );
   }
 
-  void showLoader() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   Future<void> _syncAccount(UserProvider auth) async {
+    final loader = context.loaderOverlay;
+
     try {
-      showLoader();
+      loader.show();
 
       await context.read<UserProvider>().syncAccount();
       _showSuccessModal('Account information synced');
     } catch (error) {
       _showErrorModal(error.toString());
     } finally {
-      hideLoader();
+      loader.hide();
     }
   }
 
@@ -177,8 +104,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _updateTags() async {
+    final loader = context.loaderOverlay;
+
     try {
-      showLoader();
+      loader.show();
 
       final provider = context.read<ExpertiseProvider>();
 
@@ -192,13 +121,15 @@ class _SettingsPageState extends State<SettingsPage> {
     } catch (error) {
       _showErrorModal(error.toString());
     } finally {
-      hideLoader();
+      loader.hide();
     }
   }
 
   void _healthcheck() async {
+    final loader = context.loaderOverlay;
+
     try {
-      showLoader();
+      loader.show();
 
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.healthcheck);
@@ -225,7 +156,7 @@ class _SettingsPageState extends State<SettingsPage> {
     } catch (error) {
       logger.log(error.toString());
     } finally {
-      hideLoader();
+      loader.hide();
     }
   }
 

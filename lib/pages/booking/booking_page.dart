@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
@@ -23,7 +24,6 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  bool _isLoading = false;
   final List<ServiceExtraModel> _selectedExtras = [];
   String _clientAddress = '';
 
@@ -40,30 +40,17 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Booking',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Booking',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: _buildBody(),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+        body: _buildBody(),
+      ),
     );
   }
 
@@ -206,20 +193,9 @@ class _BookingPageState extends State<BookingPage> {
     return true;
   }
 
-  void _showLoader() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void _hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   Future<void> _book() async {
-    _showLoader();
+    final loader = context.loaderOverlay;
+    loader.show();
 
     final booking = BookingRequestModel(
       vendorId: widget.details.vendor.id,
@@ -238,7 +214,7 @@ class _BookingPageState extends State<BookingPage> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _hideLoader();
+      loader.hide();
     }
   }
 

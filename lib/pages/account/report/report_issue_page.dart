@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/services/report_issue_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -15,37 +16,23 @@ class ReportIssuePage extends StatefulWidget {
 }
 
 class _ReportIssuePageState extends State<ReportIssuePage> {
-  bool _isLoading = false;
   List<Uint8List> _images = [];
   final _titleController = TextEditingController();
   final _detailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Report Issue',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Report Issue',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: _buildBody(),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+        body: _buildBody(),
+      ),
     );
   }
 
@@ -190,21 +177,11 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
     });
   }
 
-  void _showLoader() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void _hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   Future<void> _submit() async {
+    final loader = context.loaderOverlay;
+
     try {
-      _showLoader();
+      loader.show();
 
       final service = ReportIssueService();
       await service.reportIssue(
@@ -217,7 +194,7 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
     } catch (error) {
       _showErrorModal(error.toString());
     } finally {
-      _hideLoader();
+      loader.hide();
     }
   }
 

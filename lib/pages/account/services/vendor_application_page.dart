@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
@@ -22,7 +23,6 @@ class VendorApplicationPage extends StatefulWidget {
 }
 
 class _VendorApplicationPageState extends State<VendorApplicationPage> {
-  bool _isLoading = false;
   List<ExpertiseModel> _expertiseList = [];
   ExpertiseModel? _selectedExpertise;
   List<String> _unlockables = [];
@@ -40,30 +40,17 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Vendor Application',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Vendor Application',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: buildBody(),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+        body: buildBody(),
+      ),
     );
   }
 
@@ -246,19 +233,9 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
     );
   }
 
-  void _showLoader() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void _hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   void _handleSubmit() async {
+    final loader = context.loaderOverlay;
+
     if (!_hasAgreedToTAC) {
       _showErrorModal('You did not agreed to the terms and conditions');
       return;
@@ -275,7 +252,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
       return;
     }
 
-    _showLoader();
+    loader.show();
 
     try {
       final service = VendorApplicationService();
@@ -289,7 +266,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
     } catch (error) {
       _showErrorModal(error.toString());
     } finally {
-      _hideLoader();
+      loader.hide();
     }
   }
 

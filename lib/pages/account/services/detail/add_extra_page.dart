@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,6 @@ class AddExtraPage extends StatefulWidget {
 }
 
 class _AddExtraPageState extends State<AddExtraPage> {
-  bool _isLoading = false;
   bool _fieldsHasValues = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -23,30 +23,17 @@ class _AddExtraPageState extends State<AddExtraPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Create Add-on',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Create Add-on',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: _body(),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+        body: _body(),
+      ),
     );
   }
 
@@ -136,8 +123,10 @@ class _AddExtraPageState extends State<AddExtraPage> {
   }
 
   Future<void> _handleSave() async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
 
       if (_titleController.text.isEmpty ||
           _descriptionController.text.isEmpty ||
@@ -163,14 +152,8 @@ class _AddExtraPageState extends State<AddExtraPage> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
-  }
-
-  void _toggleLoader(bool state) {
-    setState(() {
-      _isLoading = state;
-    });
   }
 
   void _onError(String error) {

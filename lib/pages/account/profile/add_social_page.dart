@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -12,79 +13,61 @@ class AddSocialPage extends StatefulWidget {
 }
 
 class _AddSocialPageState extends State<AddSocialPage> {
-  bool _isLoading = false;
   final _socialUrlController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            title: const Text('Add Social'),
-            centerTitle: true,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _socialUrlController,
-                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                    decoration: const InputDecoration(
-                      labelText: 'Social URL',
-                      border: OutlineInputBorder(),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Add Social'),
+          centerTitle: true,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _socialUrlController,
+                  onTapOutside: (event) => FocusScope.of(context).unfocus(),
+                  decoration: const InputDecoration(
+                    labelText: 'Social URL',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Submit button
+                FilledButton(
+                  onPressed: _handleSubmit,
+                  style: ButtonStyle(
+                    minimumSize: const WidgetStatePropertyAll(
+                      Size.fromHeight(50),
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  child: const Text('Submit'),
+                ),
 
-                  // Submit button
-                  FilledButton(
-                    onPressed: _handleSubmit,
-                    style: ButtonStyle(
-                      minimumSize: const WidgetStatePropertyAll(
-                        Size.fromHeight(50),
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
-                    child: const Text('Submit'),
-                  ),
-
-                  // Bottom padding
-                  const SizedBox(height: 20),
-                ],
-              ),
+                // Bottom padding
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+      ),
     );
   }
 
-  void _toggleLoader(bool state) {
-    setState(() {
-      _isLoading = state;
-    });
-  }
-
   Future<void> _handleSubmit() async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
 
       if (_socialUrlController.text.isEmpty) return;
 
@@ -97,7 +80,7 @@ class _AddSocialPageState extends State<AddSocialPage> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
   }
 

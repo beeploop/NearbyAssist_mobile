@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
@@ -17,37 +18,23 @@ class RatePage extends StatefulWidget {
 }
 
 class _RatePageState extends State<RatePage> {
-  bool _isLoading = false;
   final double _minimumRating = 1;
   double _rating = 1;
   final TextEditingController _reviewController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Rate Service',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Rate Service',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: buildBody(),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+        body: buildBody(),
+      ),
     );
   }
 
@@ -124,21 +111,11 @@ class _RatePageState extends State<RatePage> {
     );
   }
 
-  void _showLoader() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void _hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   Future<void> _handleSubmit() async {
+    final loader = context.loaderOverlay;
+
     try {
-      _showLoader();
+      loader.show();
 
       if (_reviewController.text.isEmpty) {
         throw 'Please leave a message';
@@ -157,7 +134,7 @@ class _RatePageState extends State<RatePage> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _hideLoader();
+      loader.hide();
     }
   }
 

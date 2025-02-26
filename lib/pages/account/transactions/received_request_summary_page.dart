@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
@@ -23,108 +24,93 @@ class ReceivedRequestSummaryPage extends StatefulWidget {
 
 class _ReceivedRequestSummaryPageState
     extends State<ReceivedRequestSummaryPage> {
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Received',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  context.pushNamed(
-                    'chat',
-                    queryParameters: {
-                      'recipientId': widget.transaction.clientId,
-                      'recipient': widget.transaction.client,
-                    },
-                  );
-                },
-                icon: const Icon(CupertinoIcons.ellipses_bubble),
-              ),
-              const SizedBox(width: 20),
-            ],
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Received',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: _body(context),
-          bottomNavigationBar: Container(
-            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-            child: Row(
-              children: [
-                // Reject button
-                Expanded(
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: widget.transaction.status == 'cancelled'
-                            ? Colors.grey
-                            : Colors.red,
-                      ),
-                      shape: RoundedRectangleBorder(
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.pushNamed(
+                  'chat',
+                  queryParameters: {
+                    'recipientId': widget.transaction.clientId,
+                    'recipient': widget.transaction.client,
+                  },
+                );
+              },
+              icon: const Icon(CupertinoIcons.ellipses_bubble),
+            ),
+            const SizedBox(width: 20),
+          ],
+        ),
+        body: _body(context),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+          child: Row(
+            children: [
+              // Reject button
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: widget.transaction.status == 'cancelled'
+                          ? Colors.grey
+                          : Colors.red,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: widget.transaction.status != 'cancelled'
+                      ? _onTapReject
+                      : () {},
+                  child: Text(
+                    'Reject',
+                    style: TextStyle(
+                      color: widget.transaction.status == 'cancelled'
+                          ? Colors.grey
+                          : Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Gap
+              const SizedBox(width: 10),
+
+              // Accept button
+              Expanded(
+                child: FilledButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      widget.transaction.status == 'cancelled'
+                          ? Colors.grey
+                          : null,
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: widget.transaction.status != 'cancelled'
-                        ? _onTapReject
-                        : () {},
-                    child: Text(
-                      'Reject',
-                      style: TextStyle(
-                        color: widget.transaction.status == 'cancelled'
-                            ? Colors.grey
-                            : Colors.red,
-                      ),
-                    ),
                   ),
+                  onPressed: widget.transaction.status != 'cancelled'
+                      ? _onTapAccept
+                      : () {},
+                  child: const Text('Accept'),
                 ),
-
-                // Gap
-                const SizedBox(width: 10),
-
-                // Accept button
-                Expanded(
-                  child: FilledButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(
-                        widget.transaction.status == 'cancelled'
-                            ? Colors.grey
-                            : null,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    onPressed: widget.transaction.status != 'cancelled'
-                        ? _onTapAccept
-                        : () {},
-                    child: const Text('Accept'),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+      ),
     );
   }
 
@@ -259,15 +245,11 @@ class _ReceivedRequestSummaryPageState
     );
   }
 
-  void _toggleLoader(bool state) {
-    setState(() {
-      _isLoading = state;
-    });
-  }
-
   Future<void> _confirmRequest(String id) async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
 
       Navigator.pop(context);
 
@@ -280,13 +262,15 @@ class _ReceivedRequestSummaryPageState
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
   }
 
   Future<void> _rejectRequest(String id) async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
 
       Navigator.pop(context);
 
@@ -297,7 +281,7 @@ class _ReceivedRequestSummaryPageState
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
   }
 

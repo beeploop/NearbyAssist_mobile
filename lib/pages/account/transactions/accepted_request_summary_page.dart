@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
@@ -31,67 +32,52 @@ class AcceptedRequestSummaryPage extends StatefulWidget {
 
 class _AcceptedRequestSummaryPageState
     extends State<AcceptedRequestSummaryPage> {
-  bool _isLoading = false;
-
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Transaction Summary',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            actions: [
-              if (widget.showChatIcon)
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    context.pushNamed(
-                      'chat',
-                      queryParameters: {
-                        'recipientId': widget.transaction.vendorId,
-                        'recipient': widget.transaction.vendor,
-                      },
-                    );
-                  },
-                  icon: const Icon(CupertinoIcons.ellipses_bubble),
-                ),
-              const SizedBox(width: 20),
-            ],
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Transaction Summary',
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          body: buildPadding(),
-          bottomNavigationBar: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: FilledButton(
-              onPressed: () {
-                _completeTransaction();
-              },
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+          actions: [
+            if (widget.showChatIcon)
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.pushNamed(
+                    'chat',
+                    queryParameters: {
+                      'recipientId': widget.transaction.vendorId,
+                      'recipient': widget.transaction.vendor,
+                    },
+                  );
+                },
+                icon: const Icon(CupertinoIcons.ellipses_bubble),
+              ),
+            const SizedBox(width: 20),
+          ],
+        ),
+        body: buildPadding(),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: FilledButton(
+            onPressed: () {
+              _completeTransaction();
+            },
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Text('Complete'),
             ),
+            child: const Text('Complete'),
           ),
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+      ),
     );
   }
 
@@ -202,11 +188,14 @@ class _AcceptedRequestSummaryPageState
   }
 
   void _onQRDetect(BarcodeCapture capture) async {
+    final loader = context.loaderOverlay;
+
     try {
+      loader.show();
+
       final requestProvider = context.read<TransactionProvider>();
 
       Navigator.pop(context); // Called to close the dialog for the camera
-      _showLoader();
 
       final detectedValue = capture.barcodes.first.rawValue;
       if (detectedValue == null) {
@@ -233,20 +222,8 @@ class _AcceptedRequestSummaryPageState
     } catch (error) {
       _onError('Invalid QR');
     } finally {
-      _hideLoader();
+      loader.hide();
     }
-  }
-
-  void _showLoader() {
-    setState(() {
-      _isLoading = true;
-    });
-  }
-
-  void _hideLoader() {
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   void _onSuccess() {

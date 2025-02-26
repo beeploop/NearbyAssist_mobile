@@ -65,6 +65,7 @@ dependencies:
   intl: ^0.20.2
   focused_menu: ^1.0.5
   auto_size_text: ^3.0.0
+  loader_overlay: ^4.0.4+1
 
 dev_dependencies:
   flutter_test:

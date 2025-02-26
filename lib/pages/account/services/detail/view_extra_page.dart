@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,6 @@ class ViewExtraPage extends StatefulWidget {
 }
 
 class _ViewExtraPageState extends State<ViewExtraPage> {
-  bool _isLoading = false;
   bool _hasChanged = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -37,79 +37,66 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Edit',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(CupertinoIcons.trash),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      icon: const Icon(
-                        CupertinoIcons.exclamationmark_triangle,
-                        color: Colors.amber,
-                        size: 30,
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Edit',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(CupertinoIcons.trash),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    icon: const Icon(
+                      CupertinoIcons.exclamationmark_triangle,
+                      color: Colors.amber,
+                      size: 30,
+                    ),
+                    title: const Text('Delete Extra'),
+                    content: const Text(
+                      'This is a permanent action. This will fail if there are active transactions using this extra. Are you sure?',
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
                       ),
-                      title: const Text('Delete Extra'),
-                      content: const Text(
-                        'This is a permanent action. This will fail if there are active transactions using this extra. Are you sure?',
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        FilledButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            _handleDelete();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                const WidgetStatePropertyAll(Colors.red),
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                      FilledButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _handleDelete();
+                        },
+                        style: ButtonStyle(
+                          backgroundColor:
+                              const WidgetStatePropertyAll(Colors.red),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          child: const Text('Continue'),
                         ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(width: 10),
-            ],
-          ),
-          body: _body(),
+                        child: const Text('Continue'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 10),
+          ],
         ),
-
-        // Show loading overlay
-        if (_isLoading)
-          const Opacity(
-            opacity: 0.8,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
-        if (_isLoading)
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-      ],
+        body: _body(),
+      ),
     );
   }
 
@@ -220,15 +207,11 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
     );
   }
 
-  void _toggleLoader(bool state) {
-    setState(() {
-      _isLoading = state;
-    });
-  }
-
   Future<void> _handleSave() async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
 
       final navigator = Navigator.of(context);
       final provider = context.read<ManagedServiceProvider>();
@@ -255,13 +238,15 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
   }
 
   Future<void> _handleDelete() async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
 
       final navigator = Navigator.of(context);
       final provider = context.read<ManagedServiceProvider>();
@@ -274,7 +259,7 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
@@ -21,7 +22,6 @@ class Images extends StatefulWidget {
 }
 
 class _ImagesState extends State<Images> {
-  bool _isLoading = false;
   final _fillableImageController = FillableImageContainerController();
 
   @override
@@ -30,82 +30,72 @@ class _ImagesState extends State<Images> {
       builder: (context, provider, child) {
         final details = provider.getServiceUnsafe(widget.serviceId);
 
-        return Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: GridView(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
+        return LoaderOverlay(
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                  ),
+                  children: [
+                    ...details.images.map((image) => _imageWidget(image)),
+                  ],
                 ),
-                children: [
-                  ...details.images.map((image) => _imageWidget(image)),
-                ],
               ),
-            ),
-
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: FilledButton(
-                style: const ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                ),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    showDragHandle: true,
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    builder: (context) => SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            FillableImageContainer(
-                              controller: _fillableImageController,
-                              icon: CupertinoIcons.photo,
-                              labelText: 'Tap to upload',
-                            ),
-                            const SizedBox(height: 10),
-
-                            // Upload button
-                            FilledButton(
-                              style: const ButtonStyle(
-                                minimumSize:
-                                    WidgetStatePropertyAll(Size.fromHeight(50)),
+              Positioned(
+                bottom: 20,
+                left: 20,
+                right: 20,
+                child: FilledButton(
+                  style: const ButtonStyle(
+                    minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      builder: (context) => SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              FillableImageContainer(
+                                controller: _fillableImageController,
+                                icon: CupertinoIcons.photo,
+                                labelText: 'Tap to upload',
                               ),
-                              onPressed: _handleUpload,
-                              child: const Text('upload'),
-                            ),
-                            const SizedBox(height: 20),
-                          ],
+                              const SizedBox(height: 10),
+
+                              // Upload button
+                              FilledButton(
+                                style: const ButtonStyle(
+                                  minimumSize: WidgetStatePropertyAll(
+                                      Size.fromHeight(50)),
+                                ),
+                                onPressed: _handleUpload,
+                                child: const Text('upload'),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                child: const Text('Add New'),
+                    );
+                  },
+                  child: const Text('Add New'),
+                ),
               ),
-            ),
-
-            // Show loading overlay
-            if (_isLoading)
-              const Opacity(
-                opacity: 0.8,
-                child: ModalBarrier(dismissible: false, color: Colors.black),
-              ),
-            if (_isLoading)
-              const Center(
-                child: CircularProgressIndicator(),
-              ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -152,15 +142,11 @@ class _ImagesState extends State<Images> {
     );
   }
 
-  void _toggleLoader(bool state) {
-    setState(() {
-      _isLoading = state;
-    });
-  }
-
   Future<void> _handleUpload() async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
 
       Navigator.pop(context);
       final provider = context.read<ManagedServiceProvider>();
@@ -178,13 +164,16 @@ class _ImagesState extends State<Images> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
   }
 
   Future<void> _handleDeleteImage(String imageId) async {
+    final loader = context.loaderOverlay;
+
     try {
-      _toggleLoader(true);
+      loader.show();
+
       final provider = context.read<ManagedServiceProvider>();
       await provider.deleteServiceImage(widget.serviceId, imageId);
     } on DioException catch (error) {
@@ -192,7 +181,7 @@ class _ImagesState extends State<Images> {
     } catch (error) {
       _onError(error.toString());
     } finally {
-      _toggleLoader(false);
+      loader.hide();
     }
   }
 
