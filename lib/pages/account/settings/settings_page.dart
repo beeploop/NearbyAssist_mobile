@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -159,16 +158,7 @@ class _SettingsPageState extends State<SettingsPage> {
     try {
       showLoader();
 
-      final api = ApiService.authenticated();
-      final response = await api.dio.get(endpoint.me);
-
-      final user = UserModel.fromJson(response.data['user']);
-
-      final store = SecureStorage();
-      await store.saveUser(user);
-
-      await auth.login(user);
-
+      await context.read<UserProvider>().syncAccount();
       _showSuccessModal('Account information synced');
     } catch (error) {
       _showErrorModal(error.toString());
@@ -253,15 +243,6 @@ class _SettingsPageState extends State<SettingsPage> {
       backgroundColor: Colors.red,
       duration: const Duration(seconds: 2),
       closeIconColor: Colors.white,
-    );
-  }
-
-  void _deleteAccount() async {
-    showCustomSnackBar(
-      context,
-      "This feature is under development",
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.yellow[300],
     );
   }
 

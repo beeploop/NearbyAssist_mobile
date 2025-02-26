@@ -23,6 +23,22 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> syncAccount() async {
+    try {
+      final service = UserAccountService();
+      final user = await service.syncAccount();
+
+      final store = SecureStorage();
+      await store.saveUser(user);
+
+      _user = user;
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<void> addSocial(String url) async {
     try {
       if (_user == null) {
