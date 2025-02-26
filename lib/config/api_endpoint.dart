@@ -34,6 +34,7 @@ class ApiEndpoint {
   String get getPublicKey => '$_baseUrl/api/v1/e2ee/key';
 
   String get me => '$_baseUrl/api/v1/user/protected/me';
+  String get addSocial => '$_baseUrl/api/v1/user/protected/socials';
 
   String get privacyPolicy => '$_baseUrl/privacy_policy';
   String get termsAndConditions => '$_baseUrl/terms_and_conditions';

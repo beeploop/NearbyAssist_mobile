@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -6,6 +7,7 @@ import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
 import 'package:nearby_assist/providers/vendor_provider.dart';
+import 'package:nearby_assist/utils/url_icon_generator.dart';
 import 'package:provider/provider.dart';
 
 class VendorPage extends StatefulWidget {
@@ -60,41 +62,99 @@ class _VendorPageState extends State<VendorPage> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ListView(
         children: [
+          // Vendor info
           _header(data.vendor),
           const SizedBox(height: 10),
+
+          // Contacts
+          const AutoSizeText(
+            'Contact',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Mail
+          Row(
+            children: [
+              const Icon(CupertinoIcons.mail, size: 20),
+              const SizedBox(width: 10),
+              AutoSizeText(
+                data.vendor.email,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Phone
+          Row(
+            children: [
+              const Icon(CupertinoIcons.phone, size: 20),
+              const SizedBox(width: 10),
+              AutoSizeText(
+                data.vendor.phone,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Socials
+          const AutoSizeText(
+            'Socials',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          ...data.vendor.socials.map((social) => Row(
+                children: [
+                  Icon(iconFromURL(social), size: 20),
+                  const SizedBox(width: 10),
+                  AutoSizeText(
+                    social,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              )),
+
+          // Divider
           const Divider(),
           const SizedBox(height: 10),
-          const Text(
+
+          // More services
+          const AutoSizeText(
             'More Services',
             style: TextStyle(fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
-          ...data.services.map(
-            (service) => Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.green[100],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: ListTile(
-                onTap: () => context.pushNamed(
-                  'viewService',
-                  queryParameters: {'serviceId': service.id},
+          ...data.services.map((service) => Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.green[100],
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                leading: Icon(
-                  _icon(service.tags.first.title),
-                  size: 26,
-                  grade: 10,
+                child: ListTile(
+                  onTap: () => context.pushNamed(
+                    'viewService',
+                    queryParameters: {'serviceId': service.id},
+                  ),
+                  leading: Icon(
+                    _icon(service.tags.first.title),
+                    size: 26,
+                    grade: 10,
+                  ),
+                  title: Text(
+                    service.description,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: const Icon(CupertinoIcons.arrow_right),
                 ),
-                title: Text(
-                  service.description,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                trailing: const Icon(CupertinoIcons.arrow_right),
-              ),
-            ),
-          ),
+              )),
         ],
       ),
     );
@@ -119,16 +179,12 @@ class _VendorPageState extends State<VendorPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                AutoSizeText(
                   vendor.name,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),
-                ),
-                Text(
-                  vendor.email,
-                  style: const TextStyle(fontSize: 14),
                 ),
                 RatingBar.builder(
                   initialRating: vendor.rating,

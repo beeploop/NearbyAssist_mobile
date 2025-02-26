@@ -20,6 +20,7 @@ final placeHolderUser = UserModel(
   isVendor: false,
   isVerified: false,
   expertise: [],
+  socials: [],
 );
 
 const serviceTags = [

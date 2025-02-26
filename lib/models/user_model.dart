@@ -12,6 +12,7 @@ class UserModel {
   double? latitude;
   double? longitude;
   List<ExpertiseModel> expertise;
+  List<String> socials;
 
   UserModel({
     required this.id,
@@ -25,6 +26,7 @@ class UserModel {
     this.latitude,
     this.longitude,
     required this.expertise,
+    required this.socials,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,8 @@ class UserModel {
           : (json['expertises'] as List)
               .map((e) => ExpertiseModel.fromJson(e))
               .toList(),
+      socials:
+          json['socials'] == null ? [] : List<String>.from(json['socials']),
     );
   }
 
@@ -60,6 +64,7 @@ class UserModel {
       'latitude': latitude,
       'longitude': longitude,
       'expertises': expertise.map((e) => e.toJson()).toList(),
+      'socials': socials,
     };
   }
 }

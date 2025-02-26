@@ -14,7 +14,6 @@ class ExpertiseSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Divider(),
         Row(
           children: [
             const Text(
