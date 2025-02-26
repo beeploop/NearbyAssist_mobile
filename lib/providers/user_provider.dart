@@ -56,6 +56,23 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> removeSocial(String url) async {
+    try {
+      if (_user == null) {
+        throw 'null user';
+      }
+
+      final service = UserAccountService();
+      await service.removeSocial(url);
+
+      _user!.socials.removeWhere((social) => social == url);
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<void> logout() async {
     _user = null;
     OneSignalService().updateUser(null);

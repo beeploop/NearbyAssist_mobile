@@ -16,6 +16,19 @@ class UserAccountService {
     }
   }
 
+  Future<void> removeSocial(String url) async {
+    try {
+      final api = ApiService.authenticated();
+
+      await api.dio.delete(
+        endpoint.deleteSocial,
+        data: {'url': url},
+      );
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<UserModel> syncAccount() async {
     try {
       final api = ApiService.authenticated();
