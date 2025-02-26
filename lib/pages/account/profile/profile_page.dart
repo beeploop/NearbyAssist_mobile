@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/pages/account/profile/add_social_page.dart';
 import 'package:nearby_assist/pages/account/profile/widget/expertise_section.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -138,14 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         const Spacer(),
                         TextButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => const AddSocialPage(),
-                              ),
-                            );
-                          },
+                          onPressed: _addSocial,
                           icon: const Icon(CupertinoIcons.plus, size: 14),
                           label: const Text('Add'),
                         ),
@@ -189,6 +181,61 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _addSocial() {
+    final socialUrlController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Social Link', textAlign: TextAlign.center),
+        content: TextFormField(
+          controller: socialUrlController,
+          onTapOutside: (event) => FocusScope.of(context).unfocus(),
+          decoration: const InputDecoration(
+            labelText: 'Social URL',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () async {
+              final loader = context.loaderOverlay;
+
+              try {
+                loader.show();
+                Navigator.of(context).pop();
+
+                if (socialUrlController.text.isEmpty) return;
+
+                final provider = context.read<UserProvider>();
+
+                await provider.addSocial(socialUrlController.text);
+              } on DioException catch (error) {
+                _onError(error.response?.data['message']);
+              } catch (error) {
+                _onError(error.toString());
+              } finally {
+                loader.hide();
+              }
+            },
+            style: ButtonStyle(
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
+              ),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _deleteSocial(String url) {
     showDialog(
       context: context,
@@ -225,10 +272,8 @@ class _ProfilePageState extends State<ProfilePage> {
               try {
                 loader.show();
 
-                final navigator = Navigator.of(context);
+                Navigator.of(context).pop();
                 await context.read<UserProvider>().removeSocial(url);
-
-                navigator.pop();
               } on DioException catch (error) {
                 _onError(error.response?.data['message']);
               } catch (error) {
