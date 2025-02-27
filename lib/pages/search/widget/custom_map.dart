@@ -7,8 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
+import 'package:nearby_assist/pages/search/widget/service_sorting_method.dart';
+import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/utils/search_result_sorter.dart';
 import 'package:provider/provider.dart';
 
 class CustomMap extends StatefulWidget {
@@ -19,6 +22,7 @@ class CustomMap extends StatefulWidget {
 }
 
 class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
+  final _overlayController = OverlayPortalController();
   late final _controller = AnimatedMapController(vsync: this);
   LatLng _location = defaultLocation;
 
@@ -39,9 +43,9 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ServiceProvider>(
-      builder: (context, provider, child) {
-        final services = provider.getServices();
+    return Consumer2<ServiceProvider, SearchProvider>(
+      builder: (context, serviceProvider, searchProvider, child) {
+        final services = serviceProvider.getServices();
         _fitMarkers(services);
 
         return Stack(
@@ -78,18 +82,10 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                     ),
 
                     // Display markers for the services
-                    ...services.map((service) {
-                      return _createMarker(
-                        point: LatLng(service.latitude, service.longitude),
-                        rank: service.rank,
-                        icon: CupertinoIcons.location_solid,
-                        color: Colors.red,
-                        onTap: () => context.pushNamed(
-                          'viewService',
-                          queryParameters: {'serviceId': service.id},
-                        ),
-                      );
-                    }),
+                    ..._displayServices(
+                      services,
+                      searchProvider.sortingMethod,
+                    ),
                   ],
                 ),
               ],
@@ -97,12 +93,34 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
             Positioned(
               bottom: 20,
               right: 20,
-              child: FloatingActionButton(
-                onPressed: () => _fitMarkers(services),
-                backgroundColor: Colors.green,
-                child: const Icon(
-                  CupertinoIcons.map_pin_ellipse,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
                   color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: const [
+                    BoxShadow(
+                      offset: Offset(-6, 6),
+                      color: Colors.grey,
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      icon: _orderPreference(searchProvider),
+                      onPressed: () => _overlayController.toggle(),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        CupertinoIcons.map_pin_ellipse,
+                        color: Colors.green.shade800,
+                      ),
+                      onPressed: () => _fitMarkers(services),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -112,13 +130,122 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
+  OverlayPortal _orderPreference(SearchProvider searchProvider) {
+    return OverlayPortal(
+      controller: _overlayController,
+      child: Icon(CupertinoIcons.list_bullet, color: Colors.green.shade800),
+      overlayChildBuilder: (context) {
+        return Positioned(
+          right: 90,
+          bottom: 90,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(20),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  offset: Offset(-6, 6),
+                  color: Colors.grey,
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Ordering Preference'),
+                const SizedBox(height: 20),
+
+                // Actions
+                _orderPreferenceItem(
+                  searchProvider,
+                  ServiceSortingMethod.suggestionScore,
+                  CupertinoIcons.sparkles,
+                ),
+                _orderPreferenceItem(
+                  searchProvider,
+                  ServiceSortingMethod.rate,
+                  CupertinoIcons.money_dollar,
+                ),
+                _orderPreferenceItem(
+                  searchProvider,
+                  ServiceSortingMethod.rating,
+                  CupertinoIcons.star,
+                ),
+                _orderPreferenceItem(
+                  searchProvider,
+                  ServiceSortingMethod.completedTransactions,
+                  CupertinoIcons.checkmark,
+                ),
+                _orderPreferenceItem(
+                  searchProvider,
+                  ServiceSortingMethod.distance,
+                  CupertinoIcons.map,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  GestureDetector _orderPreferenceItem(SearchProvider searchProvider,
+      ServiceSortingMethod method, IconData icon) {
+    return GestureDetector(
+      onTap: () {
+        searchProvider.changeSortingMethod(method);
+        _overlayController.toggle();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(icon, size: 20, color: Colors.green.shade800),
+            const SizedBox(width: 20),
+            Text(method.name),
+          ],
+        ),
+      ),
+    );
+  }
+
   TileProvider _tileProvider() {
     return CancellableNetworkTileProvider();
   }
 
+  List<Marker> _displayServices(
+      List<SearchResultModel> services, ServiceSortingMethod method) {
+    final sorted =
+        SearchResultSorter(method: method, services: services).sort();
+
+    List<Marker> markers = [];
+    for (int i = 0; i < sorted.length; i++) {
+      markers.add(_createMarker(
+        point: LatLng(sorted[i].latitude, sorted[i].longitude),
+        order: i + 1,
+        icon: CupertinoIcons.location_solid,
+        color: Colors.red,
+        onTap: () => context.pushNamed(
+          'viewService',
+          queryParameters: {'serviceId': sorted[i].id},
+        ),
+      ));
+    }
+
+    return markers;
+  }
+
   Marker _createMarker({
     required LatLng point,
-    required int rank,
+    required int order,
     required IconData icon,
     required Color color,
     required void Function() onTap,
@@ -137,7 +264,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
               color: Colors.red,
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
               child: Text(
-                '$rank',
+                '$order',
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -183,7 +310,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       _controller.animatedFitCamera(
         cameraFit: CameraFit.bounds(
           bounds: bounds,
-          padding: const EdgeInsets.fromLTRB(40, 180, 40, 40),
+          padding: const EdgeInsets.fromLTRB(80, 180, 80, 80),
         ),
       );
     });
