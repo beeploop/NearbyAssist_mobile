@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/search/widget/custom_map.dart';
-import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
+import 'package:nearby_assist/pages/search/widget/custom_searchbar.dart';
 
 class MapPage extends StatelessWidget {
   const MapPage({super.key});
@@ -16,15 +16,8 @@ class MapPage extends StatelessWidget {
               top: 20,
               left: 20,
               right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: DropdownSearchBar(
-                  onSearchFinished: () {},
-                ),
+              child: CustomSearchbar(
+                onSearchFinished: () {},
               ),
             ),
           ],
