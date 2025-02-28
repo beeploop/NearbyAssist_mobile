@@ -155,17 +155,6 @@ class _AccountPageState extends State<AccountPage> {
               icon: CupertinoIcons.exclamationmark_bubble,
               onPress: () => context.pushNamed("reportIssue")),
           AccountTileWidget(
-              title: "Contact Support",
-              icon: CupertinoIcons.bubble_left_bubble_right,
-              onPress: () {
-                showCustomSnackBar(
-                  context,
-                  "This feature is under development",
-                  duration: const Duration(seconds: 2),
-                  backgroundColor: Colors.yellow[300],
-                );
-              }),
-          AccountTileWidget(
               title: "Information & Licenses",
               icon: CupertinoIcons.info,
               onPress: () => context.pushNamed("information")),

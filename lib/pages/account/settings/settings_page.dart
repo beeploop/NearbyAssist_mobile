@@ -68,13 +68,6 @@ class _SettingsPageState extends State<SettingsPage> {
           endIcon: false,
           onPress: _clearData,
         ),
-        AccountTileWidget(
-          title: "Disable Account",
-          subtitle: "Temporarily disable your account",
-          icon: CupertinoIcons.nosign,
-          endIcon: false,
-          onPress: _disableAccount,
-        ),
       ],
     );
   }
@@ -92,15 +85,6 @@ class _SettingsPageState extends State<SettingsPage> {
     } finally {
       loader.hide();
     }
-  }
-
-  void _disableAccount() async {
-    showCustomSnackBar(
-      context,
-      "This feature is under development",
-      duration: const Duration(seconds: 2),
-      backgroundColor: Colors.yellow[300],
-    );
   }
 
   void _updateTags() async {
