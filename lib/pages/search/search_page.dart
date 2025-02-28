@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/pages/search/widget/dropdown_search_bar.dart';
+import 'package:nearby_assist/pages/search/widget/custom_searchbar.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
 
 class SearchPage extends StatelessWidget {
@@ -19,7 +19,7 @@ class SearchPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            DropdownSearchBar(
+            CustomSearchbar(
               onSearchFinished: () => context.pushNamed('map'),
             ),
             Expanded(

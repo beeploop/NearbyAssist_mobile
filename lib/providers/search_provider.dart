@@ -5,39 +5,37 @@ import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
 class SearchProvider extends ChangeNotifier {
-  ServiceSortingMethod _sortingMethod = ServiceSortingMethod.suggestionScore;
-  List<String> _queries = [];
   bool _searching = false;
+  String _latestSearchTerm = '';
+  ServiceSortingMethod _sortingMethod = ServiceSortingMethod.suggestionScore;
 
-  List<String> get queries => _queries;
   ServiceSortingMethod get sortingMethod => _sortingMethod;
 
   bool get searching => _searching;
-
-  void setQueries(List<String> queries) {
-    _queries = queries;
-    notifyListeners();
-  }
+  String get latestSearchTerm => _latestSearchTerm;
 
   void changeSortingMethod(ServiceSortingMethod method) {
     _sortingMethod = method;
     notifyListeners();
   }
 
-  Future<List<SearchResultModel>> search() async {
+  Future<List<SearchResultModel>> search(String searchTerm) async {
     try {
-      if (_queries.isEmpty) {
-        return Future.error('Select at least one tag');
+      _searching = true;
+      _latestSearchTerm = searchTerm;
+      notifyListeners();
+
+      if (searchTerm.isEmpty) {
+        throw 'Invalid term';
       }
 
-      _searching = true;
-      notifyListeners();
+      final queries = searchTerm.split(",");
 
       final location = await LocationService().getLocation();
 
       return await SearchService().findServices(
         location: location,
-        tags: _queries,
+        tags: queries,
       );
     } catch (error) {
       rethrow;
