@@ -1,3 +1,4 @@
+import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -20,6 +21,7 @@ import 'package:nearby_assist/services/logger.dart';
 import 'package:provider/provider.dart';
 
 final logger = ConsoleLogger();
+final cron = Cron();
 late ApiEndpoint endpoint;
 
 void main() async {
@@ -89,7 +91,16 @@ class _App extends State<App> {
     final userProvider = context.read<UserProvider>();
     final websocketProvider = context.read<WebsocketProvider>();
     final messageProvider = context.read<MessageProvider>();
+    final notificationProvider = context.read<NotificationsProvider>();
+
     websocketProvider.setMessageProvider(messageProvider);
+
+    cron.schedule(Schedule.parse("*/1 * * * *"), () async {
+      if (userProvider.status == AuthStatus.authenticated) {
+        userProvider.syncAccount();
+        notificationProvider.fetchNotifications();
+      }
+    });
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
