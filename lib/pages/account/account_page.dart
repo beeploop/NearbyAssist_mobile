@@ -151,7 +151,7 @@ class _AccountPageState extends State<AccountPage> {
         children: [
           const Text("Other", style: TextStyle(fontSize: 20)),
           AccountTileWidget(
-              title: "Report and Feedback",
+              title: "Report Bug",
               icon: CupertinoIcons.exclamationmark_bubble,
               onPress: () => context.pushNamed("reportIssue")),
           AccountTileWidget(

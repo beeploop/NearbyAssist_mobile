@@ -27,7 +27,7 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            'Report Issue',
+            'Bug Report',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -53,7 +53,7 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
             // Details
             InputField(
               controller: _detailController,
-              hintText: 'Describe the issue in more detail',
+              hintText: 'Describe the bug you encountered',
               minLines: 4,
               maxLines: 8,
             ),
