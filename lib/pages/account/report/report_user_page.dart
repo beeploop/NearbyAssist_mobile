@@ -251,12 +251,13 @@ class _ReportUserPageState extends State<ReportUserPage> {
           ),
           title: const Text('Submitted'),
           content: const Text(
-            'Thank you for your feedback. We will take this into consideration.',
+            'Your report has been submitted. We will review and investigate.',
             textAlign: TextAlign.center,
           ),
           actions: [
             TextButton(
               onPressed: () {
+                Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
               },
