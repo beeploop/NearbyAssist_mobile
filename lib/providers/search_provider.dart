@@ -29,7 +29,12 @@ class SearchProvider extends ChangeNotifier {
         throw 'Invalid term';
       }
 
-      final queries = searchTerm.split(",");
+      final queries = searchTerm
+          .trim()
+          .split(",")
+          .map((term) => term.trim())
+          .where((term) => term.isNotEmpty)
+          .toList();
 
       final location = await LocationService().getLocation();
 
