@@ -35,7 +35,7 @@ class _ChatPageState extends State<ChatPage> {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
-            Menu(vendorId: widget.recipientId),
+            Menu(userId: widget.recipientId),
             const SizedBox(width: 10),
           ]),
       body: context.read<UserProvider>().user.isVerified == false

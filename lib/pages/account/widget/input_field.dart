@@ -33,6 +33,7 @@ class _InputFieldState extends State<InputField> {
         labelText: widget.labelText,
         border: const OutlineInputBorder(),
         hintText: widget.hintText,
+        hintStyle: const TextStyle(color: Colors.grey),
       ),
       minLines: widget.minLines,
       maxLines: widget.maxLines,

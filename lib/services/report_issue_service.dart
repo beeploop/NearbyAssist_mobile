@@ -29,10 +29,36 @@ class ReportIssueService {
       });
 
       final api = ApiService.unauthenticated();
-      await api.dio.post(
-        endpoint.reportIssue,
-        data: data,
-      );
+      await api.dio.post(endpoint.reportBug, data: data);
+    } on DioException catch (error) {
+      throw error.response?.data['message'];
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> reportUser({
+    required String userId,
+    required String reason,
+    required String detail,
+    required List<Uint8List> images,
+  }) async {
+    try {
+      final data = FormData.fromMap({
+        'userId': userId,
+        'reason': reason,
+        'detail': detail,
+        'files': [
+          ...images.map((image) => MultipartFile.fromBytes(
+                image,
+                filename: 'image',
+                contentType: MediaType('image', 'jpeg'),
+              )),
+        ],
+      });
+
+      final api = ApiService.authenticated();
+      await api.dio.post(endpoint.reportUser, data: data);
     } on DioException catch (error) {
       throw error.response?.data['message'];
     } catch (error) {

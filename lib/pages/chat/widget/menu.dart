@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/pages/account/report/report_user_reason_page.dart';
 
 class Menu extends StatelessWidget {
-  const Menu({super.key, required this.vendorId});
+  const Menu({super.key, required this.userId});
 
-  final String vendorId;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -16,14 +17,21 @@ class Menu extends StatelessWidget {
           context,
           onTap: () => context.pushNamed(
             'vendorPage',
-            queryParameters: {'vendorId': vendorId},
+            queryParameters: {'vendorId': userId},
           ),
           icon: CupertinoIcons.person,
           text: 'View profile',
         ),
         _popupItem(
           context,
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => ReportUserReasonPage(userId: userId),
+              ),
+            );
+          },
           icon: CupertinoIcons.nosign,
           text: 'Report user',
         ),
