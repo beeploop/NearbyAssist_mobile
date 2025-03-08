@@ -53,10 +53,14 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
             FlutterMap(
               mapController: _controller.mapController,
               options: MapOptions(
-                initialCenter: LatLng(_location.latitude, _location.longitude),
-                initialZoom: 13.0,
-                onMapReady: _mapReady,
-              ),
+                  initialCenter:
+                      LatLng(_location.latitude, _location.longitude),
+                  initialZoom: 13.0,
+                  onMapReady: _mapReady,
+                  onTap: (tapPos, latlng) {
+                    // Remove focus from the searchbar
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }),
               children: [
                 TileLayer(
                   urlTemplate: tileMapProvider,

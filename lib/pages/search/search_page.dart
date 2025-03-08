@@ -8,27 +8,33 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: const [
-          NotificationBell(),
-          SizedBox(width: 10),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            CustomSearchbar(
-              onSearchFinished: () => context.pushNamed('map'),
-            ),
-            Expanded(
-              child: Image.asset(
-                'assets/images/visualization.png',
-                width: 200,
-              ),
-            ),
+    return GestureDetector(
+      onTap: () {
+        // Remove focus from the searchbar
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: const [
+            NotificationBell(),
+            SizedBox(width: 10),
           ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              CustomSearchbar(
+                onSearchFinished: () => context.pushNamed('map'),
+              ),
+              Expanded(
+                child: Image.asset(
+                  'assets/images/visualization.png',
+                  width: 200,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
