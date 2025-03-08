@@ -22,7 +22,7 @@ class CustomMap extends StatefulWidget {
 }
 
 class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
-  final _overlayController = OverlayPortalController();
+  OverlayEntry? orderingPreferenceOverlay;
   late final _controller = AnimatedMapController(vsync: this);
   LatLng _location = defaultLocation;
 
@@ -110,8 +110,17 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                 child: Column(
                   children: [
                     IconButton(
-                      icon: _orderPreference(searchProvider),
-                      onPressed: () => _overlayController.toggle(),
+                      icon: Icon(
+                        CupertinoIcons.list_bullet,
+                        color: Colors.green.shade800,
+                      ),
+                      onPressed: () {
+                        if (orderingPreferenceOverlay == null) {
+                          _showOrderingPreference();
+                        } else {
+                          _hideOrderingPreference();
+                        }
+                      },
                     ),
                     IconButton(
                       icon: Icon(
@@ -130,90 +139,85 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
-  OverlayPortal _orderPreference(SearchProvider searchProvider) {
-    return OverlayPortal(
-      controller: _overlayController,
-      child: Icon(CupertinoIcons.list_bullet, color: Colors.green.shade800),
-      overlayChildBuilder: (context) {
-        return Positioned(
-          right: 90,
-          bottom: 90,
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-                bottomLeft: Radius.circular(20),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  offset: Offset(-6, 6),
-                  color: Colors.grey,
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Ordering Preference'),
-                const SizedBox(height: 20),
+  void _showOrderingPreference() {
+    final overlay = Overlay.of(context);
+    final size = MediaQuery.of(context).size.width * 0.5;
 
-                // Actions
-                _orderPreferenceItem(
-                  searchProvider,
-                  ServiceSortingMethod.suggestionScore,
-                  CupertinoIcons.sparkles,
-                ),
-                _orderPreferenceItem(
-                  searchProvider,
-                  ServiceSortingMethod.rate,
-                  CupertinoIcons.money_dollar,
-                ),
-                _orderPreferenceItem(
-                  searchProvider,
-                  ServiceSortingMethod.rating,
-                  CupertinoIcons.star,
-                ),
-                _orderPreferenceItem(
-                  searchProvider,
-                  ServiceSortingMethod.completedTransactions,
-                  CupertinoIcons.checkmark,
-                ),
-                _orderPreferenceItem(
-                  searchProvider,
-                  ServiceSortingMethod.distance,
-                  CupertinoIcons.map,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    orderingPreferenceOverlay = OverlayEntry(
+      builder: (context) => Positioned(
+        right: 86,
+        bottom: 90,
+        width: size,
+        child: _buildOrderingPreference(),
+      ),
     );
+
+    overlay.insert(orderingPreferenceOverlay!);
   }
 
-  GestureDetector _orderPreferenceItem(SearchProvider searchProvider,
-      ServiceSortingMethod method, IconData icon) {
-    return GestureDetector(
-      onTap: () {
-        searchProvider.changeSortingMethod(method);
-        _overlayController.toggle();
-      },
+  void _hideOrderingPreference() {
+    orderingPreferenceOverlay?.remove();
+    orderingPreferenceOverlay = null;
+  }
+
+  Widget _buildOrderingPreference() {
+    final searchProvider = context.read<SearchProvider>();
+
+    return Material(
+      elevation: 8,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 20, color: Colors.green.shade800),
-            const SizedBox(width: 20),
-            Text(method.name),
+            // Title
+            const Text('Ordering Preference'),
+            const SizedBox(height: 10),
+
+            _orderPreferenceItem(
+              searchProvider,
+              ServiceSortingMethod.suggestionScore,
+              CupertinoIcons.sparkles,
+            ),
+            _orderPreferenceItem(
+              searchProvider,
+              ServiceSortingMethod.rate,
+              CupertinoIcons.money_dollar,
+            ),
+            _orderPreferenceItem(
+              searchProvider,
+              ServiceSortingMethod.rating,
+              CupertinoIcons.star,
+            ),
+            _orderPreferenceItem(
+              searchProvider,
+              ServiceSortingMethod.completedTransactions,
+              CupertinoIcons.checkmark,
+            ),
+            _orderPreferenceItem(
+              searchProvider,
+              ServiceSortingMethod.distance,
+              CupertinoIcons.map,
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _orderPreferenceItem(
+    SearchProvider searchProvider,
+    ServiceSortingMethod method,
+    IconData icon,
+  ) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(method.name),
+      dense: true,
+      onTap: () {
+        searchProvider.changeSortingMethod(method);
+        _hideOrderingPreference();
+      },
     );
   }
 
