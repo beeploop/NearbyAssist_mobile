@@ -4,7 +4,6 @@ import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 
 class TransactionService {
   Future<List<BookingModel>> fetchRecent() async {
@@ -122,9 +121,7 @@ class TransactionService {
   Future<void> fetchTransaction(String id) async {
     try {
       final api = ApiService.authenticated();
-      final response = await api.dio.get('${endpoint.getTransaction}/$id');
-
-      logger.log(prettyJSON(response.data));
+      await api.dio.get('${endpoint.getTransaction}/$id');
     } catch (error) {
       logger.log('Error fetching transaction: ${error.toString()}');
       rethrow;

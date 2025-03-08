@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
@@ -11,7 +10,6 @@ import 'package:nearby_assist/pages/booking/widget/summary_section.dart';
 import 'package:nearby_assist/pages/booking/widget/user_information_section.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
 
 class BookingPage extends StatefulWidget {
@@ -204,8 +202,6 @@ class _BookingPageState extends State<BookingPage> {
       extras: _selectedExtras,
       totalCost: _computeTotal().toString(),
     );
-
-    logger.log(prettyJSON(booking));
 
     try {
       await context.read<TransactionProvider>().createTransaction(booking);

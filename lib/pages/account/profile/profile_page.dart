@@ -9,7 +9,6 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/pages/account/profile/widget/expertise_section.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:nearby_assist/utils/url_icon_generator.dart';
 import 'package:provider/provider.dart';
 
@@ -168,9 +167,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     const ExpertiseSection(),
                     const Divider(),
                     const SizedBox(height: 20),
-
-                    //
-                    Text(prettyJSON(auth.user)),
                   ],
                 ),
               ),

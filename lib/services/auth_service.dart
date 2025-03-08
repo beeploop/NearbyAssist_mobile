@@ -6,7 +6,6 @@ import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 
 class AuthService {
   Future<UserModel> login(LoginPayloadModel payload) async {
@@ -44,8 +43,6 @@ class AuthService {
       final store = SecureStorage();
       await store.saveToken(TokenType.accessToken, accessToken);
       await store.saveToken(TokenType.refreshToken, refreshToken);
-
-      logger.log(prettyJSON(response.data['user']));
 
       return UserModel.fromJson(response.data['user']);
     } catch (error) {
