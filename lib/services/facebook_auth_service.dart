@@ -1,8 +1,8 @@
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'package:nearby_assist/models/login_payload_model.dart';
+import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 
 class FacebookAuthService {
-  Future<LoginPayloadModel> login() async {
+  Future<ThirdPartyLoginPayloadModel> login() async {
     try {
       final result = await FacebookAuth.instance.login(
         loginBehavior: LoginBehavior.dialogOnly,
@@ -13,7 +13,7 @@ class FacebookAuthService {
 
       final userData = await FacebookAuth.instance.getUserData();
 
-      return LoginPayloadModel.fromFacebook(userData);
+      return ThirdPartyLoginPayloadModel.fromFacebook(userData);
     } catch (error) {
       rethrow;
     }

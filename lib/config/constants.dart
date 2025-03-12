@@ -1,5 +1,5 @@
 import 'package:latlong2/latlong.dart';
-import 'package:nearby_assist/models/login_payload_model.dart';
+import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 
 const appVersion = "v0.10.3-alpha";
@@ -31,7 +31,7 @@ const serviceTags = [
   'cuddle',
 ];
 
-final fakeUser = LoginPayloadModel(
+final fakeUser = ThirdPartyLoginPayloadModel(
   name: 'John Doe',
   email: 'johndoe@email.com',
   imageUrl: 'assets/images/profile.png',

@@ -1,16 +1,17 @@
-class LoginPayloadModel {
+class ThirdPartyLoginPayloadModel {
   String name;
   String email;
   String imageUrl;
 
-  LoginPayloadModel({
+  ThirdPartyLoginPayloadModel({
     required this.name,
     required this.email,
     required this.imageUrl,
   });
 
-  factory LoginPayloadModel.fromFacebook(Map<String, dynamic> response) {
-    return LoginPayloadModel(
+  factory ThirdPartyLoginPayloadModel.fromFacebook(
+      Map<String, dynamic> response) {
+    return ThirdPartyLoginPayloadModel(
       name: response['name'],
       email: response['email'],
       imageUrl: response['picture']['data']['url'],

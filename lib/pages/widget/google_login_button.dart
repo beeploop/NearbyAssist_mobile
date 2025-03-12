@@ -51,7 +51,7 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton> {
       final gUser = await gAuth.login();
 
       final auth = AuthService();
-      final user = await auth.login(gUser);
+      final user = await auth.thirdPartyLogin(gUser);
 
       _onLoginSuccess(user);
     } on GoogleNullUserException catch (error) {
