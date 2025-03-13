@@ -6,16 +6,19 @@ import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class Images extends StatefulWidget {
-  const Images({super.key, required this.serviceId});
+  const Images({super.key, required this.service});
 
-  final String serviceId;
+  final DetailedServiceModel service;
 
   @override
   State<Images> createState() => _ImagesState();
@@ -26,10 +29,8 @@ class _ImagesState extends State<Images> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ManagedServiceProvider>(
-      builder: (context, provider, child) {
-        final details = provider.getServiceUnsafe(widget.serviceId);
-
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
         return LoaderOverlay(
           child: Stack(
             children: [
@@ -42,7 +43,8 @@ class _ImagesState extends State<Images> {
                     crossAxisSpacing: 10,
                   ),
                   children: [
-                    ...details.images.map((image) => _imageWidget(image)),
+                    ...widget.service.images
+                        .map((image) => _imageWidget(image)),
                   ],
                 ),
               ),
@@ -55,6 +57,11 @@ class _ImagesState extends State<Images> {
                     minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
                   ),
                   onPressed: () {
+                    if (userProvider.user.isRestricted) {
+                      showAccountRestrictedModal(context);
+                      return;
+                    }
+
                     showModalBottomSheet(
                       context: context,
                       showDragHandle: true,
@@ -102,11 +109,20 @@ class _ImagesState extends State<Images> {
   }
 
   Widget _imageWidget(ServiceImageModel image) {
+    final user = context.watch<UserProvider>().user;
+
     return FocusedMenuHolder(
       onPressed: () {},
       menuItems: [
         FocusedMenuItem(
-          onPressed: () => _handleDeleteImage(image.id),
+          onPressed: () {
+            if (user.isRestricted) {
+              showAccountRestrictedModal(context);
+              return;
+            }
+
+            _handleDeleteImage(image.id);
+          },
           title: const Text('Delete', style: TextStyle(color: Colors.white)),
           trailingIcon: const Icon(
             CupertinoIcons.trash,
@@ -156,7 +172,7 @@ class _ImagesState extends State<Images> {
       }
 
       await provider.uploadServiceImage(
-        widget.serviceId,
+        widget.service.service.id,
         _fillableImageController.image!,
       );
     } on DioException catch (error) {
@@ -175,7 +191,7 @@ class _ImagesState extends State<Images> {
       loader.show();
 
       final provider = context.read<ManagedServiceProvider>();
-      await provider.deleteServiceImage(widget.serviceId, imageId);
+      await provider.deleteServiceImage(widget.service.service.id, imageId);
     } on DioException catch (error) {
       _onError(error.response?.data['message']);
     } catch (error) {

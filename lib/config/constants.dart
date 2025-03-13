@@ -19,6 +19,7 @@ final placeHolderUser = UserModel(
   imageUrl: '',
   isVendor: false,
   isVerified: false,
+  isRestricted: false,
   expertise: [],
   socials: [],
 );

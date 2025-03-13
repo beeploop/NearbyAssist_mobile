@@ -3,7 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class ViewExtraPage extends StatefulWidget {
@@ -25,6 +28,7 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
+  late UserModel user;
 
   @override
   void initState() {
@@ -33,6 +37,8 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
     _titleController.text = widget.extra.title;
     _descriptionController.text = widget.extra.description;
     _priceController.text = widget.extra.price.toString();
+
+    user = Provider.of<UserProvider>(context, listen: false).user;
   }
 
   @override
@@ -49,6 +55,11 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
             IconButton(
               icon: const Icon(CupertinoIcons.trash),
               onPressed: () {
+                if (user.isRestricted) {
+                  showAccountRestrictedModal(context);
+                  return;
+                }
+
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
@@ -190,6 +201,11 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
                 ),
               ),
               onPressed: () {
+                if (user.isRestricted) {
+                  showAccountRestrictedModal(context);
+                  return;
+                }
+
                 if (!_hasChanged) {
                   return;
                 }

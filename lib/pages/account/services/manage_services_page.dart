@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_item.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class ManageServices extends StatefulWidget {
@@ -107,6 +108,10 @@ class _ManageServicesState extends State<ManageServices> {
         backgroundColor: !user.isVendor ? Colors.grey : null,
         onPressed: () {
           if (!user.isVendor) return;
+          if (user.isRestricted) {
+            showAccountRestrictedModal(context);
+            return;
+          }
 
           context.pushNamed('addService');
         },

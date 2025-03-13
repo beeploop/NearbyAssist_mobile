@@ -2,16 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/add_extra_page.dart';
 import 'package:nearby_assist/pages/account/services/detail/view_extra_page.dart';
-import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class Extras extends StatefulWidget {
-  const Extras({super.key, required this.serviceId});
+  const Extras({super.key, required this.service});
 
-  final String serviceId;
+  final ServiceModel service;
 
   @override
   State<Extras> createState() => _ExtrasState();
@@ -20,16 +22,14 @@ class Extras extends StatefulWidget {
 class _ExtrasState extends State<Extras> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ManagedServiceProvider>(
-      builder: (context, provider, child) {
-        final details = provider.getServiceUnsafe(widget.serviceId);
-
-        return _mainContent(details.service);
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
+        return _mainContent(userProvider.user);
       },
     );
   }
 
-  Stack _mainContent(ServiceModel service) {
+  Stack _mainContent(UserModel user) {
     return Stack(
       children: [
         SingleChildScrollView(
@@ -38,7 +38,7 @@ class _ExtrasState extends State<Extras> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...service.extras.map((extra) => _serviceExtra(extra)),
+                ...widget.service.extras.map((extra) => _serviceExtra(extra)),
                 const SizedBox(height: 70),
               ],
             ),
@@ -54,14 +54,21 @@ class _ExtrasState extends State<Extras> {
             style: const ButtonStyle(
               minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
             ),
-            onPressed: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => AddExtraPage(
-                  serviceId: service.id,
+            onPressed: () {
+              if (user.isRestricted) {
+                showAccountRestrictedModal(context);
+                return;
+              }
+
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => AddExtraPage(
+                    serviceId: widget.service.id,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
             child: const Text('New add-on'),
           ),
         ),
@@ -75,7 +82,7 @@ class _ExtrasState extends State<Extras> {
         context,
         CupertinoPageRoute(
           builder: (context) => ViewExtraPage(
-            serviceId: widget.serviceId,
+            serviceId: widget.service.id,
             extra: extra,
           ),
         ),

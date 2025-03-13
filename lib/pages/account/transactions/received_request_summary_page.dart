@@ -7,6 +7,8 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class ReceivedRequestSummaryPage extends StatefulWidget {
@@ -192,6 +194,13 @@ class _ReceivedRequestSummaryPageState
   }
 
   void _onTapAccept() {
+    final user = context.watch<UserProvider>().user;
+
+    if (user.isRestricted) {
+      showAccountRestrictedModal(context);
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -219,6 +228,13 @@ class _ReceivedRequestSummaryPageState
   }
 
   void _onTapReject() {
+    final user = context.watch<UserProvider>().user;
+
+    if (user.isRestricted) {
+      showAccountRestrictedModal(context);
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

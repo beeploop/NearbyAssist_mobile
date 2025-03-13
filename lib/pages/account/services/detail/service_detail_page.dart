@@ -83,9 +83,9 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
           Flexible(
             child: TabBarView(
               children: [
-                Overview(serviceId: detail.service.id),
-                Images(serviceId: detail.service.id),
-                Extras(serviceId: detail.service.id),
+                Overview(service: detail.service),
+                Images(service: detail),
+                Extras(service: detail.service),
                 Rating(rating: detail.ratingCount),
               ],
             ),

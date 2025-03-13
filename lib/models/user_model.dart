@@ -7,6 +7,7 @@ class UserModel {
   String imageUrl;
   bool isVerified;
   bool isVendor;
+  bool isRestricted;
   String? address;
   String? phone;
   double? latitude;
@@ -21,6 +22,7 @@ class UserModel {
     required this.imageUrl,
     required this.isVerified,
     required this.isVendor,
+    required this.isRestricted,
     this.address,
     this.phone,
     this.latitude,
@@ -37,6 +39,7 @@ class UserModel {
       imageUrl: json['imageUrl'],
       isVerified: json['isVerified'],
       isVendor: json['isVendor'],
+      isRestricted: json['isRestricted'],
       address: json['address'] == "" ? null : json['address'],
       phone: json['phone'] == "" ? null : json['phone'],
       latitude: json['latitude'] == 0 ? null : json['latitude'],
@@ -59,6 +62,7 @@ class UserModel {
       'imageUrl': imageUrl,
       'isVerified': isVerified,
       'isVendor': isVendor,
+      'isRestricted': isRestricted,
       'address': address,
       'phone': phone,
       'latitude': latitude,

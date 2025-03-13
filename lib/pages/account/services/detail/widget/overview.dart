@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/edit_service_page.dart';
-import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class Overview extends StatefulWidget {
-  const Overview({super.key, required this.serviceId});
+  const Overview({super.key, required this.service});
 
-  final String serviceId;
+  final ServiceModel service;
 
   @override
   State<Overview> createState() => _OverviewState();
@@ -18,16 +20,14 @@ class Overview extends StatefulWidget {
 class _OverviewState extends State<Overview> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ManagedServiceProvider>(
-      builder: (context, provider, child) {
-        final details = provider.getServiceUnsafe(widget.serviceId);
-
-        return _mainContent(details.service);
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) {
+        return _mainContent(userProvider.user);
       },
     );
   }
 
-  Stack _mainContent(ServiceModel service) {
+  Stack _mainContent(UserModel user) {
     return Stack(
       children: [
         SingleChildScrollView(
@@ -38,18 +38,18 @@ class _OverviewState extends State<Overview> {
               children: [
                 // Title
                 _label('Title'),
-                Text(service.title),
+                Text(widget.service.title),
                 const SizedBox(height: 20),
 
                 // Description
                 _label('Description'),
-                Text(service.description),
+                Text(widget.service.description),
                 const SizedBox(height: 20),
 
                 // Rate
                 _label('Rate'),
                 Text(
-                  formatCurrency(service.rate),
+                  formatCurrency(widget.service.rate),
                   style: const TextStyle(fontSize: 18),
                 ),
                 const SizedBox(height: 20),
@@ -60,7 +60,7 @@ class _OverviewState extends State<Overview> {
                   spacing: 4,
                   runSpacing: 4,
                   children: [
-                    ...service.tags.map((tag) => _chip(tag.title)),
+                    ...widget.service.tags.map((tag) => _chip(tag.title)),
                   ],
                 ),
 
@@ -80,12 +80,20 @@ class _OverviewState extends State<Overview> {
             style: const ButtonStyle(
               minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
             ),
-            onPressed: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => EditServicePage(service: service),
-              ),
-            ),
+            onPressed: () {
+              if (user.isRestricted) {
+                showAccountRestrictedModal(context);
+                return;
+              }
+
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) =>
+                      EditServicePage(service: widget.service),
+                ),
+              );
+            },
             child: const Text('Update'),
           ),
         ),

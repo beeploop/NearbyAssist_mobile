@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/booking/booking_page.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class FloatingCTA extends StatelessWidget {
@@ -24,7 +24,7 @@ class FloatingCTA extends StatelessWidget {
       right: 0,
       child: Container(
         decoration: const BoxDecoration(color: Colors.white),
-        height: 40,
+        height: 46,
         child: Row(
           children: [
             Expanded(
@@ -33,14 +33,10 @@ class FloatingCTA extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        if (user.id == details.vendor.id) {
-                          showCustomSnackBar(
-                            context,
-                            "You can't book your own service",
-                            backgroundColor: Colors.red,
-                            closeIconColor: Colors.white,
-                            textColor: Colors.white,
-                          );
+                        if (user.id == details.vendor.id) return;
+
+                        if (user.isRestricted) {
+                          showAccountRestrictedModal(context);
                           return;
                         }
 
@@ -51,22 +47,17 @@ class FloatingCTA extends StatelessWidget {
                           ),
                         );
                       },
-                      child: const FaIcon(FontAwesomeIcons.handshakeSimple),
+                      child: FaIcon(
+                        FontAwesomeIcons.handshakeSimple,
+                        color:
+                            user.id == details.vendor.id ? Colors.grey : null,
+                      ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        if (user.id == details.vendor.id) {
-                          showCustomSnackBar(
-                            context,
-                            "You can't message yourself",
-                            backgroundColor: Colors.red,
-                            closeIconColor: Colors.white,
-                            textColor: Colors.white,
-                          );
-                          return;
-                        }
+                        if (user.id == details.vendor.id) return;
 
                         context.pushNamed(
                           'chat',
@@ -76,7 +67,11 @@ class FloatingCTA extends StatelessWidget {
                           },
                         );
                       },
-                      child: const Icon(CupertinoIcons.ellipses_bubble_fill),
+                      child: Icon(
+                        CupertinoIcons.ellipses_bubble_fill,
+                        color:
+                            user.id == details.vendor.id ? Colors.grey : null,
+                      ),
                     ),
                   ),
                 ],

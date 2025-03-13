@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/widget/clickable_text.dart';
@@ -12,6 +13,7 @@ import 'package:nearby_assist/pages/widget/divider_with_text.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/vendor_application_service.dart';
+import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -55,9 +57,9 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
   }
 
   Widget buildBody() {
-    final isVerified = context.read<UserProvider>().user.isVerified;
+    final user = context.read<UserProvider>().user;
 
-    if (isVerified == false) {
+    if (user.isVerified == false) {
       return Center(
         child: AlertDialog(
           icon: const Icon(CupertinoIcons.exclamationmark_triangle),
@@ -98,7 +100,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            _tagsDropdown(),
+            _tagsDropdown(user.expertise),
             const SizedBox(height: 20),
             const Text('Selected expertise will unlock the following tags:'),
             Text(
@@ -151,7 +153,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
               style: const ButtonStyle(
                 minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
               ),
-              onPressed: _handleSubmit,
+              onPressed: () => _handleSubmit(user),
               child: const Text('Submit'),
             ),
 
@@ -163,9 +165,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
     );
   }
 
-  Widget _tagsDropdown() {
-    final userExpertise = context.watch<UserProvider>().user.expertise;
-
+  Widget _tagsDropdown(List<ExpertiseModel> expertise) {
     return DropdownSearch<ExpertiseModel>(
       decoratorProps: const DropDownDecoratorProps(
         decoration: InputDecoration(
@@ -194,7 +194,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
       ),
       autoValidateMode: AutovalidateMode.always,
       items: (filter, props) => _expertiseList
-          .where((entry) => !userExpertise.map((e) => e.id).contains(entry.id))
+          .where((entry) => !expertise.map((e) => e.id).contains(entry.id))
           .toList(),
       itemAsString: (expertise) => expertise.title,
       compareFn: (expertise, selected) => expertise.id == selected.id,
@@ -233,8 +233,13 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
     );
   }
 
-  void _handleSubmit() async {
+  void _handleSubmit(UserModel user) async {
     final loader = context.loaderOverlay;
+
+    if (user.isRestricted) {
+      showAccountRestrictedModal(context);
+      return;
+    }
 
     if (!_hasAgreedToTAC) {
       _showErrorModal('You did not agreed to the terms and conditions');
