@@ -27,18 +27,21 @@ class _NotificationBellState extends State<NotificationBell> {
           Positioned(
             top: 6,
             left: 8,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.red,
-                border: Border.all(
+            child: GestureDetector(
+              onTap: _handlePress,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
                   color: Colors.red,
+                  border: Border.all(
+                    color: Colors.red,
+                  ),
                 ),
-              ),
-              child: Text(
-                '$notificationCount',
-                style: const TextStyle(color: Colors.white),
+                child: Text(
+                  '$notificationCount',
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ),
