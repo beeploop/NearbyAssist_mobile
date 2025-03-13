@@ -22,7 +22,11 @@ class GenericNotification extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // title
+            // Icon
+            _buildIcon(),
+            const SizedBox(height: 20),
+
+            // Title
             Text(
               notification.title,
               style: const TextStyle(
@@ -30,10 +34,6 @@ class GenericNotification extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-            const SizedBox(height: 20),
-
-            //
-            _buildIcon(),
             const SizedBox(height: 20),
 
             // content
