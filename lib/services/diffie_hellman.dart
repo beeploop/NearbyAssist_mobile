@@ -8,31 +8,21 @@ import 'package:nearby_assist/services/secure_storage.dart';
 class DiffieHellman {
   /// checks for locally saved keypair. generate keypair if no keypair is found and saves them locally and to the server.
   Future<DhKeyPair> register() async {
-    DhKeyPair? keypair;
     try {
+      DhKeyPair? keypair;
+
       keypair = await _getSavedKeys();
-    } catch (error) {
-      logger.log('No locally saved keys: $error');
-    }
+      keypair ??= await _getKeysFromServer();
+      keypair ??= _generateKeyPair();
 
-    if (keypair == null) {
-      try {
-        keypair = await _getKeysFromServer();
-      } catch (error) {
-        logger.log('No keys found on server: $error');
-      }
-    }
-
-    keypair ??= _generateKeyPair();
-    try {
       await _saveKeysToServer(keypair);
+      await _saveLocally(keypair);
+
+      return keypair;
     } catch (error) {
-      logger.log('Error saving keys to server: $error');
+      logger.log('--- generic error in DiffieHellman: ${error.toString()}');
+      rethrow;
     }
-
-    _saveLocally(keypair);
-
-    return keypair;
   }
 
   /// retrieves the public key of the specified user
@@ -49,16 +39,18 @@ class DiffieHellman {
 
   /// computes a shared secret. throws error if there are no locally saved keypair.
   Future<BigInt> computeSharedSecret(DhPublicKey otherUserPublicKey) async {
-    DhKeyPair keyPair;
     try {
-      keyPair = await _getSavedKeys();
+      final keyPair = await _getSavedKeys();
+      if (keyPair == null) {
+        throw LocalKeysNotFoundException();
+      }
+
+      final engine = DhPkcs3Engine.fromKeyPair(keyPair);
+      return engine.computeSecretKey(otherUserPublicKey.value);
     } catch (error) {
-      logger.log('No saved keys: $error');
+      logger.log('--- could not computer shared secret because keys are null');
       rethrow;
     }
-
-    final engine = DhPkcs3Engine.fromKeyPair(keyPair);
-    return engine.computeSecretKey(otherUserPublicKey.value);
   }
 
   DhKeyPair _generateKeyPair() {
@@ -66,13 +58,13 @@ class DiffieHellman {
     return engine.generateKeyPair();
   }
 
-  Future<DhKeyPair> _getSavedKeys() async {
+  Future<DhKeyPair?> _getSavedKeys() async {
     try {
       final store = SecureStorage();
       final privatePem = await store.getKey(KeyType.privateKey);
       final publicPem = await store.getKey(KeyType.publicKey);
       if (privatePem == null || publicPem == null) {
-        throw Exception('NoSavedKeys');
+        return null;
       }
 
       final privateKey = DhPrivateKey.fromPem(privatePem);
@@ -81,11 +73,12 @@ class DiffieHellman {
       final keypair = DhKeyPair(privateKey: privateKey, publicKey: publicKey);
       return keypair;
     } catch (error) {
-      rethrow;
+      logger.log('--- error retrieving saved keys: ${error.toString()}');
+      return null;
     }
   }
 
-  Future<DhKeyPair> _getKeysFromServer() async {
+  Future<DhKeyPair?> _getKeysFromServer() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.getKeys);
@@ -95,7 +88,8 @@ class DiffieHellman {
       final privateKey = DhPrivateKey.fromPem(keys["privateKey"]);
       return DhKeyPair(publicKey: publicKey, privateKey: privateKey);
     } catch (error) {
-      rethrow;
+      logger.log('--- error retrieving server keys: ${error.toString()}');
+      return null;
     }
   }
 
@@ -128,3 +122,5 @@ class DiffieHellman {
     await store.saveKey(KeyType.privateKey, privateKeyPem);
   }
 }
+
+class LocalKeysNotFoundException implements Exception {}

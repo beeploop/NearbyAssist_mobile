@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/config/constants.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
@@ -87,7 +86,6 @@ class UserProvider extends ChangeNotifier {
 
       login(user);
     } catch (error) {
-      logger.log('No logged in user');
       rethrow;
     }
   }

@@ -50,7 +50,7 @@ GoRouter generateRoutes(
 
       await websocketProvider.connect();
 
-      return null;
+      return state.uri.path;
     },
     routes: [
       GoRoute(

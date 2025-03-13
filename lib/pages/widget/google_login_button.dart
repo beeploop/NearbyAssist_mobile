@@ -47,11 +47,15 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton> {
 
   Future<void> _handleLoginWithGoogle() async {
     try {
+      final userProvider = context.read<UserProvider>();
+
       final gAuth = GoogleAuthService();
       final gUser = await gAuth.login();
 
       final auth = AuthService();
       final user = await auth.thirdPartyLogin(gUser);
+
+      await userProvider.login(user);
 
       _onLoginSuccess(user);
     } on GoogleNullUserException catch (error) {
@@ -64,7 +68,6 @@ class _GoogleLoginButtonState extends State<GoogleLoginButton> {
   }
 
   void _onLoginSuccess(UserModel user) {
-    context.read<UserProvider>().login(user);
     context.goNamed('search');
   }
 
