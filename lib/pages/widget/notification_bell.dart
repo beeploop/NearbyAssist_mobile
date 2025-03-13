@@ -14,8 +14,7 @@ class NotificationBell extends StatefulWidget {
 class _NotificationBellState extends State<NotificationBell> {
   @override
   Widget build(BuildContext context) {
-    final notificationCount =
-        context.watch<NotificationsProvider>().notifications.length;
+    final count = context.watch<NotificationsProvider>().unreadCount;
 
     return Stack(
       children: [
@@ -23,7 +22,7 @@ class _NotificationBellState extends State<NotificationBell> {
           icon: const Icon(CupertinoIcons.bell),
           onPressed: _handlePress,
         ),
-        if (notificationCount >= 1)
+        if (count >= 1)
           Positioned(
             top: 6,
             left: 8,
@@ -39,7 +38,7 @@ class _NotificationBellState extends State<NotificationBell> {
                   ),
                 ),
                 child: Text(
-                  '$notificationCount',
+                  '$count',
                   style: const TextStyle(color: Colors.white),
                 ),
               ),

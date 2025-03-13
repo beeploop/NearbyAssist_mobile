@@ -11,6 +11,7 @@ class NotificationModel {
   final NotificationType type;
   final String title;
   final String content;
+  bool isRead;
 
   NotificationModel({
     required this.id,
@@ -18,6 +19,7 @@ class NotificationModel {
     required this.type,
     required this.title,
     required this.content,
+    required this.isRead,
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class NotificationModel {
             return NotificationType.generic;
         }
       }(),
+      isRead: json['isRead'],
     );
   }
 }

@@ -8,6 +8,9 @@ class NotificationsProvider extends ChangeNotifier {
 
   List<NotificationModel> get notifications => _notifications;
 
+  int get unreadCount =>
+      _notifications.where((notif) => !notif.isRead).toList().length;
+
   Future<void> fetchNotifications() async {
     try {
       final service = NotificationService();
@@ -20,10 +23,20 @@ class NotificationsProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> readNotification(String id) async {
+  Future<void> readNotification(NotificationModel notification) async {
     try {
-      await NotificationService().markNotificationRead(id);
-      _notifications.removeWhere((notification) => notification.id == id);
+      if (notification.isRead) return;
+
+      await NotificationService().markNotificationRead(notification.id);
+      final updated = _notifications.map((n) {
+        if (n.id == notification.id) {
+          n.isRead = true;
+        }
+
+        return n;
+      }).toList();
+
+      _notifications = updated;
       notifyListeners();
     } catch (error) {
       logger.log('----- Error reading notification: ${error.toString()}');

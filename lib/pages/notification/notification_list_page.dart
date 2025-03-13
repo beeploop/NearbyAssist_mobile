@@ -89,43 +89,55 @@ class _NotificationListPageState extends State<NotificationListPage> {
 
   Widget _mainContent(List<NotificationModel> notifications) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
       child: ListView.separated(
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemCount: notifications.length,
-        itemBuilder: (context, idx) => Container(
-          decoration: BoxDecoration(
-            color: Colors.grey.shade300,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          padding: const EdgeInsets.all(10),
-          child: ListTile(
-            onTap: () {
-              context
-                  .read<NotificationsProvider>()
-                  .readNotification(notifications[idx].id);
+        itemBuilder: (context, idx) {
+          final notification = notifications[idx];
 
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => NotificationPage(
-                    notification: notifications[idx],
+          return Container(
+            decoration: BoxDecoration(
+              color: notification.isRead
+                  ? Colors.grey.shade200
+                  : Colors.grey.shade300,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(10),
+            child: ListTile(
+              onTap: () {
+                context
+                    .read<NotificationsProvider>()
+                    .readNotification(notification);
+
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => NotificationPage(
+                      notification: notification,
+                    ),
                   ),
+                );
+              },
+              leading: const Icon(CupertinoIcons.bell_circle, size: 40),
+              title: Text(
+                notifications[idx].title,
+                style: TextStyle(
+                  fontWeight:
+                      notification.isRead ? FontWeight.normal : FontWeight.bold,
                 ),
-              );
-            },
-            leading: const Icon(CupertinoIcons.bell_circle, size: 40),
-            title: Text(
-              notifications[idx].title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                notifications[idx].content,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight:
+                      notification.isRead ? FontWeight.normal : FontWeight.bold,
+                ),
+              ),
             ),
-            subtitle: Text(
-              notifications[idx].content,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
