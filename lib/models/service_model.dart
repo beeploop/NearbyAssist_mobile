@@ -1,4 +1,5 @@
 import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 
 class ServiceModel {
@@ -11,6 +12,7 @@ class ServiceModel {
   final double longitude;
   final List<TagModel> tags;
   final List<ServiceExtraModel> extras;
+  List<ServiceImageModel> images;
 
   ServiceModel({
     this.id = '',
@@ -22,6 +24,7 @@ class ServiceModel {
     required this.longitude,
     this.tags = const [],
     this.extras = const [],
+    this.images = const [],
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -33,16 +36,16 @@ class ServiceModel {
       rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
       latitude: json['latitude'] ?? 0.0,
       longitude: json['longitude'] ?? 0.0,
-      tags: json['tags'] == null
-          ? []
-          : (json['tags'] as List)
-              .map((tag) => TagModel.fromJson(tag))
-              .toList(),
+      tags:
+          (json['tags'] as List).map((tag) => TagModel.fromJson(tag)).toList(),
       extras: json['extras'] == null
           ? []
           : (json['extras'] as List)
               .map((extra) => ServiceExtraModel.fromJson(extra))
               .toList(),
+      images: (json['images'] as List)
+          .map((image) => ServiceImageModel.fromJson(image))
+          .toList(),
     );
   }
 
@@ -56,6 +59,7 @@ class ServiceModel {
       'longitude': longitude,
       'tags': tags.map((extra) => extra.title).toList(),
       'extras': extras.map((extra) => extra.toJson()).toList(),
+      'images': images.map((image) => image.toJson()).toList(),
     };
   }
 
@@ -70,6 +74,7 @@ class ServiceModel {
       longitude: longitude,
       tags: tags,
       extras: extras,
+      images: images,
     );
   }
 }

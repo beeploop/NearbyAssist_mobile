@@ -8,7 +8,7 @@ class SavesService {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.savedServices);
 
-      return (response.data['services'] as List).map((service) {
+      return (response.data['saves'] as List).map((service) {
         return DetailedServiceModel.fromJson(service);
       }).toList();
     } catch (error) {

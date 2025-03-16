@@ -6,8 +6,8 @@ import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/providers/managed_service_provider.dart';
@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 class Images extends StatefulWidget {
   const Images({super.key, required this.service});
 
-  final DetailedServiceModel service;
+  final ServiceModel service;
 
   @override
   State<Images> createState() => _ImagesState();
@@ -172,7 +172,7 @@ class _ImagesState extends State<Images> {
       }
 
       await provider.uploadServiceImage(
-        widget.service.service.id,
+        widget.service.id,
         _fillableImageController.image!,
       );
     } on DioException catch (error) {
@@ -191,7 +191,7 @@ class _ImagesState extends State<Images> {
       loader.show();
 
       final provider = context.read<ManagedServiceProvider>();
-      await provider.deleteServiceImage(widget.service.service.id, imageId);
+      await provider.deleteServiceImage(widget.service.id, imageId);
     } on DioException catch (error) {
       _onError(error.response?.data['message']);
     } catch (error) {

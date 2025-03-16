@@ -7,23 +7,18 @@ class DetailedServiceModel {
   final RatingCountModel ratingCount;
   ServiceModel service;
   final VendorModel vendor;
-  List<ServiceImageModel> images;
 
   DetailedServiceModel({
     required this.ratingCount,
     required this.service,
     required this.vendor,
-    required this.images,
   });
 
   factory DetailedServiceModel.fromJson(Map<String, dynamic> json) {
     return DetailedServiceModel(
       ratingCount: RatingCountModel.fromJson(json['countPerRating']),
-      service: ServiceModel.fromJson(json['serviceInfo']),
-      vendor: VendorModel.fromJson(json['vendorInfo']),
-      images: (json['serviceImages'] as List)
-          .map((image) => ServiceImageModel.fromJson(image))
-          .toList(),
+      service: ServiceModel.fromJson(json['service']),
+      vendor: VendorModel.fromJson(json['vendor']),
     );
   }
 
@@ -32,9 +27,6 @@ class DetailedServiceModel {
       'ratingCount': ratingCount.toJson(),
       'service': service.toJson(),
       'vendor': vendor.toJson(),
-      'images': List.from(
-        images.map((image) => image.toJson()).toList(),
-      )
     };
   }
 
@@ -44,7 +36,7 @@ class DetailedServiceModel {
   }
 
   DetailedServiceModel copyWithNewImages(List<ServiceImageModel> images) {
-    this.images = images;
+    service.images = images;
     return this;
   }
 }

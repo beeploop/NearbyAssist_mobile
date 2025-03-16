@@ -76,7 +76,8 @@ class ManagedServiceProvider extends ChangeNotifier {
       final response = await service.fetchServices(id);
 
       for (var service in response.services) {
-        _services[service.id] = service.toServiceModel(response.vendor.id);
+        _services[service.id] =
+            service.toServiceModel(response.vendor.vendorId);
       }
 
       _serviceDetails = {};
@@ -204,11 +205,11 @@ class ManagedServiceProvider extends ChangeNotifier {
           await ManageServicesService().uploadServiceImage(serviceId, bytes);
 
       final detail = await getService(serviceId);
-      detail.images.add(image);
+      detail.service.images.add(image);
 
       if (_serviceDetails.containsKey(serviceId)) {
         final old = _serviceDetails[serviceId]!;
-        final updated = old.copyWithNewImages(detail.images);
+        final updated = old.copyWithNewImages(detail.service.images);
         _serviceDetails[updated.service.id] = updated;
       }
 
@@ -223,11 +224,11 @@ class ManagedServiceProvider extends ChangeNotifier {
       await ManageServicesService().deleteServiceImage(imageId);
 
       final detail = await getService(serviceId);
-      detail.images.removeWhere((image) => image.id == imageId);
+      detail.service.images.removeWhere((image) => image.id == imageId);
 
       if (_serviceDetails.containsKey(serviceId)) {
         final old = _serviceDetails[serviceId]!;
-        final updated = old.copyWithNewImages(detail.images);
+        final updated = old.copyWithNewImages(detail.service.images);
         _serviceDetails[updated.service.id] = updated;
       }
 

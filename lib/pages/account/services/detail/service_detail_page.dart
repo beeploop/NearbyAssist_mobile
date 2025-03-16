@@ -84,7 +84,7 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
             child: TabBarView(
               children: [
                 Overview(service: detail.service),
-                Images(service: detail),
+                Images(service: detail.service),
                 Extras(service: detail.service),
                 Rating(rating: detail.ratingCount),
               ],

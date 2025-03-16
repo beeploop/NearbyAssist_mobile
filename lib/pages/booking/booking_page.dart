@@ -196,7 +196,7 @@ class _BookingPageState extends State<BookingPage> {
     loader.show();
 
     final booking = BookingRequestModel(
-      vendorId: widget.details.vendor.id,
+      vendorId: widget.details.vendor.vendorId,
       clientId: context.read<UserProvider>().user.id,
       serviceId: widget.details.service.id,
       extras: _selectedExtras,

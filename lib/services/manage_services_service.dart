@@ -50,7 +50,7 @@ class ManageServicesService {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get('${endpoint.serviceDetails}/$id');
-      return DetailedServiceModel.fromJson(response.data);
+      return DetailedServiceModel.fromJson(response.data['detail']);
     } catch (error) {
       rethrow;
     }

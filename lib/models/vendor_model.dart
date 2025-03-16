@@ -1,5 +1,5 @@
 class VendorModel {
-  final String id;
+  final String vendorId;
   final String name;
   final String email;
   final String phone;
@@ -10,7 +10,7 @@ class VendorModel {
   final List<String> socials;
 
   VendorModel({
-    required this.id,
+    required this.vendorId,
     required this.name,
     required this.email,
     required this.phone,
@@ -23,13 +23,13 @@ class VendorModel {
 
   factory VendorModel.fromJson(Map<String, dynamic> json) {
     return VendorModel(
-      id: json['id'],
+      vendorId: json['vendorId'],
       name: json['name'],
       email: json['email'],
       phone: json['phone'],
       imageUrl: json['imageUrl'],
       rating: double.parse(json['rating']),
-      isRestricted: json['isRestricted'] == 1 ? true : false,
+      isRestricted: json['restricted'] == 1 ? true : false,
       expertise:
           json['expertise'] == null ? [] : List<String>.from(json['expertise']),
       socials:
@@ -39,7 +39,7 @@ class VendorModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'vendorId': vendorId,
       'name': name,
       'email': email,
       'imageUrl': imageUrl,

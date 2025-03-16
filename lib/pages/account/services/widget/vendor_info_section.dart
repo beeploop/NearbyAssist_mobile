@@ -22,14 +22,14 @@ class VendorInfoSection extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (vendor.id == user.id) {
+        if (vendor.vendorId == user.id) {
           context.pushNamed('manage');
           return;
         }
 
         context.pushNamed(
           'vendorPage',
-          queryParameters: {'vendorId': vendor.id},
+          queryParameters: {'vendorId': vendor.vendorId},
         );
       },
       child: Container(

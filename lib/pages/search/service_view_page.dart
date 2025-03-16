@@ -70,7 +70,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ImageSection(images: details.images),
+                ImageSection(images: details.service.images),
                 const SizedBox(height: 10),
 
                 // Vendor info

@@ -33,7 +33,7 @@ class FloatingCTA extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        if (user.id == details.vendor.id) return;
+                        if (user.id == details.vendor.vendorId) return;
 
                         if (user.isRestricted) {
                           showAccountRestrictedModal(context);
@@ -49,28 +49,30 @@ class FloatingCTA extends StatelessWidget {
                       },
                       child: FaIcon(
                         FontAwesomeIcons.handshakeSimple,
-                        color:
-                            user.id == details.vendor.id ? Colors.grey : null,
+                        color: user.id == details.vendor.vendorId
+                            ? Colors.grey
+                            : null,
                       ),
                     ),
                   ),
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        if (user.id == details.vendor.id) return;
+                        if (user.id == details.vendor.vendorId) return;
 
                         context.pushNamed(
                           'chat',
                           queryParameters: {
-                            'recipientId': details.vendor.id,
+                            'recipientId': details.vendor.vendorId,
                             'recipient': details.vendor.name,
                           },
                         );
                       },
                       child: Icon(
                         CupertinoIcons.ellipses_bubble_fill,
-                        color:
-                            user.id == details.vendor.id ? Colors.grey : null,
+                        color: user.id == details.vendor.vendorId
+                            ? Colors.grey
+                            : null,
                       ),
                     ),
                   ),
