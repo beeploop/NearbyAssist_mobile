@@ -13,14 +13,14 @@ import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:provider/provider.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+class AppSettingPage extends StatefulWidget {
+  const AppSettingPage({super.key});
 
   @override
-  State<SettingsPage> createState() => _SettingsPageState();
+  State<AppSettingPage> createState() => _AppSettingPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _AppSettingPageState extends State<AppSettingPage> {
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(

@@ -8,7 +8,7 @@ import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
 import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/publish_service_page.dart';
 import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
-import 'package:nearby_assist/pages/account/settings/settings_page.dart';
+import 'package:nearby_assist/pages/account/settings/app_settings_page.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_page.dart';
 import 'package:nearby_assist/pages/notification/notification_list_page.dart';
 import 'package:nearby_assist/pages/saves/saves_page.dart';
@@ -140,7 +140,7 @@ GoRouter generateRoutes(
       GoRoute(
           path: RoutePath.settings.path,
           name: RoutePath.settings.name,
-          builder: (context, state) => const SettingsPage()),
+          builder: (context, state) => const AppSettingPage()),
       GoRoute(
           path: RoutePath.manage.path,
           name: RoutePath.manage.name,
