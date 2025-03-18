@@ -48,14 +48,14 @@ class ApiEndpoint {
   String get getKeys => '$_baseUrl/api/v1/e2ee/keys';
   String get getPublicKey => '$_baseUrl/api/v1/e2ee/key';
 
-  String get me => '$_baseUrl/api/v1/user/me';
+  String get me => '$_baseUrl/api/v1/user';
   String get addSocial => '$_baseUrl/api/v1/user/socials';
   String get deleteSocial => '$_baseUrl/api/v1/user/socials';
 
   String get privacyPolicy => '$_baseUrl/privacy_policy';
   String get termsAndConditions => '$_baseUrl/terms_and_conditions';
 
-  String get verifyAccount => '$_baseUrl/api/v1/verification/identity';
+  String get verifyAccount => '$_baseUrl/api/v1/user/verify';
   String get vendorApplication => '$_baseUrl/api/v1/applications';
 
   String get search => '$_baseUrl/api/v1/services/search';
