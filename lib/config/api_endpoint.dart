@@ -1,8 +1,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiEndpoint {
-  final String _baseUrl;
-  final String _wsUrl;
+  String _baseUrl;
+  String _wsUrl;
 
   ApiEndpoint({required String baseUrl, required String wsUrl})
       : _baseUrl = baseUrl,
@@ -12,6 +12,21 @@ class ApiEndpoint {
     final baseUrl = dotenv.get('API_URL', fallback: 'http://localhost:3000');
     final wsUrl = dotenv.get('WS_URL', fallback: 'ws://localhost:3000');
     return ApiEndpoint(baseUrl: baseUrl, wsUrl: wsUrl);
+  }
+
+  void changeURL(String url) {
+    const http = "http://";
+    const https = "https://";
+
+    if (url.startsWith(http)) {
+      final addr = url.substring(http.length);
+      _baseUrl = http + addr;
+      _wsUrl = 'ws://$addr';
+    } else if (url.startsWith(https)) {
+      final addr = url.substring(https.length);
+      _baseUrl = https + addr;
+      _wsUrl = 'wss://$addr';
+    }
   }
 
   String get baseUrl => _baseUrl;
@@ -25,17 +40,17 @@ class ApiEndpoint {
   String get reverseGeocoding => 'https://nominatim.openstreetmap.org/reverse';
 
   // Auth Routes
-  String get thirdPartyLogin => '$_baseUrl/api/v1/user/thirdPartyLogin';
-  String get logout => '$_baseUrl/api/v1/user/logout';
-  String get refresh => '$_baseUrl/api/v1/user/refresh';
+  String get thirdPartyLogin => '$_baseUrl/api/v1/auth/thirdPartyLogin';
+  String get logout => '$_baseUrl/api/v1/auth/logout';
+  String get refresh => '$_baseUrl/api/v1/auth/refresh';
 
   String get saveKeys => '$_baseUrl/api/v1/e2ee';
   String get getKeys => '$_baseUrl/api/v1/e2ee/keys';
   String get getPublicKey => '$_baseUrl/api/v1/e2ee/key';
 
-  String get me => '$_baseUrl/api/v1/user/protected/me';
-  String get addSocial => '$_baseUrl/api/v1/user/protected/socials';
-  String get deleteSocial => '$_baseUrl/api/v1/user/protected/socials';
+  String get me => '$_baseUrl/api/v1/user/me';
+  String get addSocial => '$_baseUrl/api/v1/user/socials';
+  String get deleteSocial => '$_baseUrl/api/v1/user/socials';
 
   String get privacyPolicy => '$_baseUrl/privacy_policy';
   String get termsAndConditions => '$_baseUrl/terms_and_conditions';

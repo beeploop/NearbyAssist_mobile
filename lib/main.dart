@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
+import 'package:nearby_assist/providers/system_setting_provider.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/config/api_endpoint.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
@@ -18,11 +19,13 @@ import 'package:nearby_assist/providers/vendor_provider.dart';
 import 'package:nearby_assist/providers/websocket_provider.dart';
 import 'package:nearby_assist/routing/app_router.dart';
 import 'package:nearby_assist/services/logger.dart';
+import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:provider/provider.dart';
 
 final logger = ConsoleLogger();
 final cron = Cron();
 late ApiEndpoint endpoint;
+late SystemSettingProvider systemSettings;
 
 void main() async {
   WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +33,9 @@ void main() async {
 
   // Load environment variables
   await dotenv.load(fileName: '.env');
+
+  // Initialize systemSettings
+  systemSettings = SystemSettingProvider();
 
   // Initialize the API endpoints
   endpoint = ApiEndpoint.fromEnv();
@@ -73,17 +79,33 @@ class _App extends State<App> {
 
   Future<void> initialization() async {
     try {
-      await context.read<UserProvider>().tryLoadUser();
+      await loadSystemSetting();
+      await loadUser();
       await loadTags();
     } catch (error) {
-      logger.log(error.toString());
+      logger.log('--- error occurred on initialization: ${error.toString()}');
     } finally {
       FlutterNativeSplash.remove();
     }
   }
 
+  Future<void> loadUser() async {
+    await context.read<UserProvider>().tryLoadUser();
+  }
+
   Future<void> loadTags() async {
     await context.read<ExpertiseProvider>().tryLoadLocal();
+  }
+
+  Future<void> loadSystemSetting() async {
+    final storage = SecureStorage();
+    final serverURL = await storage.getServeURL();
+    switch (serverURL) {
+      case null:
+        systemSettings.changeServerURL(endpoint.baseUrl);
+      default:
+        systemSettings.changeServerURL(serverURL);
+    }
   }
 
   @override

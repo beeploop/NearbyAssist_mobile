@@ -23,6 +23,7 @@ enum KeyType {
 class SecureStorage {
   final String _userKey = 'userKey';
   final String _expertiseKey = 'expertiseKey';
+  final String _serverURLKey = 'serverURL';
   late FlutterSecureStorage _storage;
 
   SecureStorage() {
@@ -85,6 +86,14 @@ class SecureStorage {
       logger.log('Error on get tags: ${error.toString()}');
       rethrow;
     }
+  }
+
+  Future<String?> getServeURL() async {
+    return await _storage.read(key: _serverURLKey);
+  }
+
+  Future<void> updateServerURL(String url) async {
+    await _storage.write(key: _serverURLKey, value: url);
   }
 
   Future<void> clearAll() async {

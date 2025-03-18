@@ -11,7 +11,7 @@ class ApiService {
   factory ApiService.authenticated() => _authInstance;
 
   final _options = BaseOptions(
-    baseUrl: endpoint.baseUrl,
+    baseUrl: systemSettings.serverURL,
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(minutes: 10),
     sendTimeout: const Duration(minutes: 10),
