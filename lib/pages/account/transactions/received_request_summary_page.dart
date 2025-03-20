@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -17,7 +17,7 @@ class ReceivedRequestSummaryPage extends StatefulWidget {
     required this.transaction,
   });
 
-  final BookingModel transaction;
+  final TransactionModel transaction;
 
   @override
   State<ReceivedRequestSummaryPage> createState() =>

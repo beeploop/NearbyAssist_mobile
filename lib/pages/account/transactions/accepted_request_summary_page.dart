@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/transaction_qr_code_data.dart';
 import 'package:nearby_assist/pages/account/transactions/widget/qr_reader.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
@@ -22,7 +22,7 @@ class AcceptedRequestSummaryPage extends StatefulWidget {
     this.showChatIcon = false,
   });
 
-  final BookingModel transaction;
+  final TransactionModel transaction;
   final bool showChatIcon;
 
   @override

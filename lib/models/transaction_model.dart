@@ -1,7 +1,7 @@
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 
-class BookingModel {
+class TransactionModel {
   String id;
   String vendor;
   String client;
@@ -12,7 +12,7 @@ class BookingModel {
   List<ServiceExtraModel> extras;
   ServiceModel service;
 
-  BookingModel({
+  TransactionModel({
     required this.id,
     required this.vendor,
     required this.client,
@@ -24,8 +24,8 @@ class BookingModel {
     required this.service,
   });
 
-  factory BookingModel.fromJson(Map<String, dynamic> json) {
-    return BookingModel(
+  factory TransactionModel.fromJson(Map<String, dynamic> json) {
+    return TransactionModel(
       id: json['id'],
       vendor: json['vendor'],
       client: json['client'],
@@ -33,7 +33,7 @@ class BookingModel {
       clientId: json['clientId'],
       cost: double.tryParse(json['cost'].toString()) ?? 0.0,
       status: json['status'],
-      extras: json['extras']
+      extras: (json['extras'] as List)
           .map<ServiceExtraModel>((extra) => ServiceExtraModel.fromJson(extra))
           .toList(),
       service: ServiceModel.fromJson(json['service']),

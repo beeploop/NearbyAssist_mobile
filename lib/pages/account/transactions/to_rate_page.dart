@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/account/transactions/rate_page.dart';
 import 'package:nearby_assist/pages/account/transactions/to_rate_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
@@ -58,7 +58,7 @@ class _ToRatePageState extends State<ToRatePage> {
     );
   }
 
-  Widget _buildBody(List<BookingModel> transactions) {
+  Widget _buildBody(List<TransactionModel> transactions) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ListView.separated(

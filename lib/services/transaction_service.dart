@@ -1,18 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 
 class TransactionService {
-  Future<List<BookingModel>> fetchRecent() async {
+  Future<List<TransactionModel>> fetchRecent() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.recent);
 
       return (response.data['transactions'] as List)
-          .map((transaction) => BookingModel.fromJson(transaction))
+          .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
       logger.log('Error fetching recent transaction: ${error.toString()}');
@@ -20,13 +20,13 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchHistory() async {
+  Future<List<TransactionModel>> fetchHistory() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.history);
 
       return (response.data['history'] as List)
-          .map((transaction) => BookingModel.fromJson(transaction))
+          .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
       logger.log('Error fetching transaction history: ${error.toString()}');
@@ -34,13 +34,13 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchAccepted() async {
+  Future<List<TransactionModel>> fetchAccepted() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.confirmed);
 
       return (response.data['transactions'] as List)
-          .map((transaction) => BookingModel.fromJson(transaction))
+          .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
       logger.log('Error fetching confirmed transactions: ${error.toString()}');
@@ -48,7 +48,7 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchReceivedRequests() async {
+  Future<List<TransactionModel>> fetchReceivedRequests() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(
@@ -57,7 +57,7 @@ class TransactionService {
       );
 
       return (response.data['transactions'] as List)
-          .map((transaction) => BookingModel.fromJson(transaction))
+          .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
       logger.log('Error fetching client transactions: ${error.toString()}');
@@ -65,7 +65,7 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchSentRequests() async {
+  Future<List<TransactionModel>> fetchSentRequests() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(
@@ -74,7 +74,7 @@ class TransactionService {
       );
 
       return (response.data['transactions'] as List)
-          .map((transaction) => BookingModel.fromJson(transaction))
+          .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
       logger.log('Error fetching my request transactions: ${error.toString()}');
@@ -82,13 +82,13 @@ class TransactionService {
     }
   }
 
-  Future<List<BookingModel>> fetchToReviewTransactions() async {
+  Future<List<TransactionModel>> fetchToReviewTransactions() async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.toReviews);
 
       return (response.data['reviewables'] as List)
-          .map((transaction) => BookingModel.fromJson(transaction))
+          .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
       logger.log('Error fetching reviewable transactions: ${error.toString()}');

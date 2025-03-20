@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -55,7 +55,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _mainContent(List<BookingModel> requests) {
+  Widget _mainContent(List<TransactionModel> requests) {
     final user = context.read<UserProvider>().user;
 
     return Padding(

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +57,7 @@ class _ReceivedRequestPageState extends State<ReceivedRequestPage> {
     );
   }
 
-  Widget _mainContent(List<BookingModel> requests) {
+  Widget _mainContent(List<TransactionModel> requests) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ListView.separated(

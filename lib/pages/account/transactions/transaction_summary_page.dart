@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +14,7 @@ class TransactionSummaryPage extends StatefulWidget {
     this.showChatIcon = false,
   });
 
-  final BookingModel transaction;
+  final TransactionModel transaction;
   final bool showChatIcon;
 
   @override

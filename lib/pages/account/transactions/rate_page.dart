@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class RatePage extends StatefulWidget {
   const RatePage({super.key, required this.transaction});
 
-  final BookingModel transaction;
+  final TransactionModel transaction;
 
   @override
   State<RatePage> createState() => _RatePageState();

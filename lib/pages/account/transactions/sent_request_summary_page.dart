@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/transaction_qr_code_data.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
@@ -20,7 +20,7 @@ class SentRequestSummaryPage extends StatefulWidget {
     this.showChatIcon = false,
   });
 
-  final BookingModel transaction;
+  final TransactionModel transaction;
   final bool showChatIcon;
 
   @override
@@ -229,7 +229,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
     return total;
   }
 
-  Widget _displayQR(BookingModel transaction, String signature) {
+  Widget _displayQR(TransactionModel transaction, String signature) {
     final data = TransactionQrCodeData(
       clientId: transaction.clientId,
       vendorId: transaction.vendorId,
@@ -273,7 +273,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
     }
   }
 
-  Future<String> _getTransactionSignature(BookingModel transaction) async {
+  Future<String> _getTransactionSignature(TransactionModel transaction) async {
     if (transaction.status.toLowerCase() != 'confirmed') {
       return '';
     }

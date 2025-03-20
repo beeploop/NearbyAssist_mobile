@@ -1,23 +1,24 @@
 import 'package:flutter/foundation.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/services/transaction_service.dart';
 
 class TransactionProvider extends ChangeNotifier {
-  List<BookingModel> _recents = [];
-  List<BookingModel> _history = [];
-  List<BookingModel> _accepted = [];
-  List<BookingModel> _sentRequests = [];
-  List<BookingModel> _receivedRequests = [];
-  List<BookingModel> _toReviewTransactions = [];
+  List<TransactionModel> _recents = [];
+  List<TransactionModel> _history = [];
+  List<TransactionModel> _accepted = [];
+  List<TransactionModel> _sentRequests = [];
+  List<TransactionModel> _receivedRequests = [];
+  List<TransactionModel> _toReviewTransactions = [];
 
-  List<BookingModel> get recents => _recents;
-  List<BookingModel> get history => _history;
-  List<BookingModel> get accepted => _accepted;
-  List<BookingModel> get sentRequests => _sentRequests;
-  List<BookingModel> get receivedRequests => _receivedRequests;
-  List<BookingModel> get toReviews => _toReviewTransactions;
+  List<TransactionModel> get recents => _recents;
+  List<TransactionModel> get history => _history;
+  List<TransactionModel> get accepted => _accepted;
+  List<TransactionModel> get sentRequests => _sentRequests;
+  List<TransactionModel> get receivedRequests => _receivedRequests;
+  List<TransactionModel> get toReviews => _toReviewTransactions;
 
   Future<void> fetchRecent() async {
     try {
@@ -27,6 +28,7 @@ class TransactionProvider extends ChangeNotifier {
       _recents = response;
       notifyListeners();
     } catch (error) {
+      logger.log('--- ${error.toString()}');
       rethrow;
     }
   }

@@ -1,14 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/account/transactions/rate_page.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 
 class ToRateSummaryPage extends StatefulWidget {
   const ToRateSummaryPage({super.key, required this.transaction});
 
-  final BookingModel transaction;
+  final TransactionModel transaction;
 
   @override
   State<ToRateSummaryPage> createState() => _ToRateSummaryPageState();

@@ -16,7 +16,7 @@ class ServiceExtraModel {
       id: json['id'],
       title: json['title'],
       description: json['description'],
-      price: double.tryParse(json['price'].toString()) ?? 0,
+      price: double.tryParse(json['price'].toString()) ?? 0.0,
     );
   }
 

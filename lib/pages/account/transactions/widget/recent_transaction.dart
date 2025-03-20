@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/account/transactions/accepted_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
@@ -60,7 +60,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
     );
   }
 
-  Widget _buildList(List<BookingModel> recents) {
+  Widget _buildList(List<TransactionModel> recents) {
     final user = context.read<UserProvider>().user;
 
     return ListView.separated(
