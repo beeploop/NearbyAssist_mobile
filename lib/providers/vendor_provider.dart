@@ -6,17 +6,18 @@ import 'package:nearby_assist/services/api_service.dart';
 class VendorProvider extends ChangeNotifier {
   final Map<String, DetailedVendorModel> _vendors = {};
 
-  Future<DetailedVendorModel> getVendor(String id) async {
+  Future<DetailedVendorModel> getVendor(String vendorId) async {
     try {
-      if (_vendors.containsKey(id)) {
-        return _vendors[id]!;
+      if (_vendors.containsKey(vendorId)) {
+        return _vendors[vendorId]!;
       }
 
       final api = ApiService.authenticated();
-      final response = await api.dio.get('${endpoint.vendorServices}/$id');
+      final response =
+          await api.dio.get('${endpoint.vendorServices}/$vendorId');
 
       final data = DetailedVendorModel.fromJson(response.data);
-      _vendors[id] = data;
+      _vendors[vendorId] = data;
 
       return data;
     } catch (error) {

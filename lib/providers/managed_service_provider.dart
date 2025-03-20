@@ -70,14 +70,13 @@ class ManagedServiceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> refreshServices(String id) async {
+  Future<void> refreshServices(String vendorId) async {
     try {
       final service = ManageServicesService();
-      final response = await service.fetchServices(id);
+      final vendorData = await service.fetchServices(vendorId);
 
-      for (var service in response.services) {
-        _services[service.id] =
-            service.toServiceModel(response.vendor.vendorId);
+      for (var service in vendorData.services) {
+        _services[service.id] = service;
       }
 
       _serviceDetails = {};

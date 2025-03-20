@@ -27,7 +27,7 @@ class ServiceItem extends StatelessWidget {
           Navigator.push(
             context,
             CupertinoPageRoute(
-              builder: (context) => ServiceDetailPage(serviceId: service.id),
+              builder: (context) => ServiceDetailPage(service: service),
             ),
           );
         },

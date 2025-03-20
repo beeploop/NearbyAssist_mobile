@@ -56,10 +56,11 @@ class ManageServicesService {
     }
   }
 
-  Future<DetailedVendorModel> fetchServices(String id) async {
+  Future<DetailedVendorModel> fetchServices(String vendorId) async {
     try {
       final api = ApiService.authenticated();
-      final response = await api.dio.get('${endpoint.vendorServices}/$id');
+      final response =
+          await api.dio.get('${endpoint.vendorServices}/$vendorId');
 
       return DetailedVendorModel.fromJson(response.data);
     } catch (error) {
