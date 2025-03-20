@@ -38,6 +38,11 @@ class TransactionModel {
       service: MinimalServiceModel.fromJson(json['service']),
     );
   }
+
+  TransactionModel copyWithNewStatus(String status) {
+    this.status = status;
+    return this;
+  }
 }
 
 class MinimalServiceModel {

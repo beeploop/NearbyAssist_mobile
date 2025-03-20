@@ -112,6 +112,14 @@ class TransactionProvider extends ChangeNotifier {
       await TransactionService().cancelTransaction(id);
 
       _sentRequests.removeWhere((request) => request.id == id);
+
+      final updated = _recents
+          .map((transaction) => transaction.id == id
+              ? transaction.copyWithNewStatus("cancelled")
+              : transaction)
+          .toList();
+      _recents = updated;
+
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -122,6 +130,14 @@ class TransactionProvider extends ChangeNotifier {
     try {
       await TransactionService().acceptRequest(id);
       _receivedRequests.removeWhere((request) => request.id == id);
+
+      final updated = _recents
+          .map((transaction) => transaction.id == id
+              ? transaction.copyWithNewStatus("confirmed")
+              : transaction)
+          .toList();
+      _recents = updated;
+
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -132,6 +148,14 @@ class TransactionProvider extends ChangeNotifier {
     try {
       await TransactionService().rejectRequest(id);
       _receivedRequests.removeWhere((request) => request.id == id);
+
+      final updated = _recents
+          .map((transaction) => transaction.id == id
+              ? transaction.copyWithNewStatus("rejected")
+              : transaction)
+          .toList();
+      _recents = updated;
+
       notifyListeners();
     } catch (error) {
       rethrow;
