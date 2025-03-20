@@ -36,14 +36,13 @@ class ServiceModel {
       rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
       latitude: json['latitude'] ?? 0.0,
       longitude: json['longitude'] ?? 0.0,
-      tags:
-          (json['tags'] as List).map((tag) => TagModel.fromJson(tag)).toList(),
-      extras: json['extras'] == null
-          ? []
-          : (json['extras'] as List)
-              .map((extra) => ServiceExtraModel.fromJson(extra))
-              .toList(),
-      images: (json['images'] as List)
+      tags: ((json['tags'] ?? []) as List)
+          .map((tag) => TagModel.fromJson(tag))
+          .toList(),
+      extras: ((json['extras'] ?? []) as List)
+          .map((extra) => ServiceExtraModel.fromJson(extra))
+          .toList(),
+      images: ((json['images'] ?? []) as List)
           .map((image) => ServiceImageModel.fromJson(image))
           .toList(),
     );

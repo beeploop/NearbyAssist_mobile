@@ -1,5 +1,4 @@
 import 'package:nearby_assist/models/service_extra_model.dart';
-import 'package:nearby_assist/models/service_model.dart';
 
 class TransactionModel {
   String id;
@@ -10,7 +9,7 @@ class TransactionModel {
   double cost;
   String status;
   List<ServiceExtraModel> extras;
-  ServiceModel service;
+  MinimalServiceModel service;
 
   TransactionModel({
     required this.id,
@@ -33,10 +32,65 @@ class TransactionModel {
       clientId: json['clientId'],
       cost: double.tryParse(json['cost'].toString()) ?? 0.0,
       status: json['status'],
-      extras: (json['extras'] as List)
+      extras: ((json['extras'] ?? []) as List)
           .map<ServiceExtraModel>((extra) => ServiceExtraModel.fromJson(extra))
           .toList(),
-      service: ServiceModel.fromJson(json['service']),
+      service: MinimalServiceModel.fromJson(json['service']),
+    );
+  }
+}
+
+class MinimalServiceModel {
+  final String id;
+  final String vendorId;
+  final String title;
+  final String description;
+  final double rate;
+  final double latitude;
+  final double longitude;
+
+  MinimalServiceModel({
+    this.id = '',
+    required this.vendorId,
+    required this.title,
+    required this.description,
+    required this.rate,
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory MinimalServiceModel.fromJson(Map<String, dynamic> json) {
+    return MinimalServiceModel(
+      id: json['id'],
+      vendorId: json['vendorId'],
+      title: json['title'],
+      description: json['description'],
+      rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
+      latitude: json['latitude'] ?? 0.0,
+      longitude: json['longitude'] ?? 0.0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'vendorId': vendorId,
+      'title': title,
+      'description': description,
+      'rate': rate.toString(),
+      'latitude': latitude,
+      'longitude': longitude,
+    };
+  }
+
+  MinimalServiceModel copyWithNewId(String newId) {
+    return MinimalServiceModel(
+      id: newId,
+      vendorId: vendorId,
+      title: title,
+      description: description,
+      rate: rate,
+      latitude: latitude,
+      longitude: longitude,
     );
   }
 }
