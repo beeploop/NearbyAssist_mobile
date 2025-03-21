@@ -7,10 +7,10 @@ import 'package:provider/provider.dart';
 class UserInformationSection extends StatefulWidget {
   const UserInformationSection({
     super.key,
-    required this.onAddressLocated,
+    required this.addressController,
   });
 
-  final void Function(String) onAddressLocated;
+  final TextEditingController addressController;
 
   @override
   State<UserInformationSection> createState() => _UserInformationSectionState();
@@ -58,7 +58,7 @@ class _UserInformationSectionState extends State<UserInformationSection> {
           labelText: 'Email',
         ),
         const SizedBox(height: 20),
-        AddressInput(onLocationPicked: widget.onAddressLocated, readOnly: true),
+        AddressInput(controller: widget.addressController, readOnly: true),
       ],
     );
   }

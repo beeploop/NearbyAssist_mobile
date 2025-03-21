@@ -15,12 +15,12 @@ import 'package:provider/provider.dart';
 class AddressInput extends StatefulWidget {
   const AddressInput({
     super.key,
-    required this.onLocationPicked,
+    required this.controller,
     this.initialLocation,
     this.readOnly = false,
   });
 
-  final void Function(String) onLocationPicked;
+  final TextEditingController controller;
   final LatLng? initialLocation;
   final bool readOnly;
 
@@ -29,7 +29,7 @@ class AddressInput extends StatefulWidget {
 }
 
 class _AddressInputState extends State<AddressInput> {
-  final _addressController = TextEditingController();
+  //final _addressController = TextEditingController();
   final _mapController = MapController();
   late LocationEditingController _locationController;
 
@@ -48,7 +48,7 @@ class _AddressInputState extends State<AddressInput> {
     }
 
     if (user.address != null) {
-      _addressController.text = user.address!;
+      widget.controller.text = user.address!;
     }
   }
 
@@ -58,7 +58,7 @@ class _AddressInputState extends State<AddressInput> {
       children: [
         Expanded(
           child: InputField(
-            controller: _addressController,
+            controller: widget.controller,
             hintText: 'your address',
             labelText: 'Address',
             minLines: 1,
@@ -102,11 +102,7 @@ class _AddressInputState extends State<AddressInput> {
         _locationController.location.longitude,
       );
 
-      setState(() {
-        _addressController.text = response.displayName;
-      });
-
-      widget.onLocationPicked(response.displayName);
+      widget.controller.text = response.displayName;
 
       if (!mounted) return;
       context.pop();

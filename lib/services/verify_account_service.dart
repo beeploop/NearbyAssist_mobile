@@ -20,19 +20,27 @@ class VerifyAccountService {
     required Uint8List? face,
   }) async {
     try {
-      if (!_isValid(
-        name: name,
-        phone: phone,
-        address: address,
-        latitude: latitude,
-        longitude: longitude,
-        idType: idType,
-        idNumber: idNumber,
-        frontId: frontId,
-        backId: backId,
-        face: face,
-      )) {
-        throw Exception('InvalidInput');
+      if (idType == ValidID.none) {
+        throw Exception('Select an ID Type');
+      }
+
+      if (frontId == null || backId == null || face == null) {
+        throw Exception('Select images');
+      }
+
+      if (latitude == 0 || longitude == 0) {
+        throw Exception('Problem retrieving geolocation');
+      }
+
+      if (name.isEmpty ||
+          phone.isEmpty ||
+          address.isEmpty ||
+          idNumber.isEmpty) {
+        throw Exception("Don't leave empty fields");
+      }
+
+      if (phone.length != 11) {
+        throw Exception('Invalid phone');
       }
 
       final data = FormData.fromMap({
@@ -45,16 +53,16 @@ class VerifyAccountService {
         'idNumber': idNumber,
         'files': [
           MultipartFile.fromBytes(
-            frontId!,
+            frontId,
             filename: 'frontId',
             contentType: MediaType('image', 'jpeg'),
           ),
           MultipartFile.fromBytes(
-            backId!,
+            backId,
             filename: 'backId',
           ),
           MultipartFile.fromBytes(
-            face!,
+            face,
             filename: 'face',
           ),
         ]
@@ -75,54 +83,5 @@ class VerifyAccountService {
       logger.log('Error submitting account verification: ${error.toString()}');
       rethrow;
     }
-  }
-
-  bool _isValid({
-    required String name,
-    required String phone,
-    required String address,
-    required double latitude,
-    required double longitude,
-    required ValidID idType,
-    required String idNumber,
-    required Uint8List? frontId,
-    required Uint8List? backId,
-    required Uint8List? face,
-  }) {
-    if (idType == ValidID.none) {
-      return false;
-    }
-
-    if (frontId == null) {
-      return false;
-    }
-
-    if (backId == null) {
-      return false;
-    }
-
-    if (face == null) {
-      return false;
-    }
-
-    if (latitude == 0 || longitude == 0) {
-      return false;
-    }
-
-    if (name.isEmpty ||
-        phone.isEmpty ||
-        address.isEmpty ||
-        idNumber.isEmpty ||
-        frontId.isEmpty ||
-        backId.isEmpty ||
-        face.isEmpty) {
-      return false;
-    }
-
-    if (phone.length != 11) {
-      return false;
-    }
-
-    return true;
   }
 }

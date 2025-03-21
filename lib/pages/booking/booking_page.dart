@@ -23,7 +23,7 @@ class BookingPage extends StatefulWidget {
 
 class _BookingPageState extends State<BookingPage> {
   final List<ServiceExtraModel> _selectedExtras = [];
-  String _clientAddress = '';
+  final _addressController = TextEditingController();
 
   int _currentStep = 0;
 
@@ -32,7 +32,7 @@ class _BookingPageState extends State<BookingPage> {
     super.initState();
     final user = Provider.of<UserProvider>(context, listen: false).user;
     if (user.address != null) {
-      _clientAddress = user.address!;
+      _addressController.text = user.address!;
     }
   }
 
@@ -112,7 +112,7 @@ class _BookingPageState extends State<BookingPage> {
         isActive: _currentStep >= 1,
         title: const Text('Step 2'),
         content: UserInformationSection(
-          onAddressLocated: _onAddressLocated,
+          addressController: _addressController,
         ),
       ),
       Step(
@@ -120,7 +120,7 @@ class _BookingPageState extends State<BookingPage> {
         title: const Text('Step 3'),
         content: SummarySection(
           detail: widget.details,
-          clientAddress: _clientAddress,
+          clientAddress: _addressController.text,
           selectedExtras: _selectedExtras,
         ),
       ),
@@ -179,12 +179,6 @@ class _BookingPageState extends State<BookingPage> {
         ],
       ),
     );
-  }
-
-  void _onAddressLocated(String address) {
-    setState(() {
-      _clientAddress = address;
-    });
   }
 
   bool _isValid() {

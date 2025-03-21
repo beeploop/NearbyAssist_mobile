@@ -89,7 +89,9 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
             const SizedBox(height: 20),
 
             // Address
-            AddressInput(onLocationPicked: _onLocationPicked),
+            AddressInput(
+              controller: _addressController,
+            ),
             const SizedBox(height: 20),
 
             // ID Type
@@ -168,12 +170,6 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         ),
       ),
     );
-  }
-
-  void _onLocationPicked(String address) {
-    setState(() {
-      _addressController.text = address;
-    });
   }
 
   void _submit() async {
