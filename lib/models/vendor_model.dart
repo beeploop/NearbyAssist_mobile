@@ -29,7 +29,7 @@ class VendorModel {
       phone: json['phone'],
       imageUrl: json['imageUrl'],
       rating: double.parse(json['rating']),
-      isRestricted: json['restricted'] == 1 ? true : false,
+      isRestricted: json['restricted'],
       expertise:
           json['expertise'] == null ? [] : List<String>.from(json['expertise']),
       socials:
