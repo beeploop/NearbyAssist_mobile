@@ -264,7 +264,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
       await service.apply(
         expertise: _selectedExpertise!,
         supportingDoc: _supportingDocController.imageBytes!,
-        policeClearance: _supportingDocController.imageBytes!,
+        policeClearance: _policeClearanceController.imageBytes!,
       );
 
       _showSuccessModal();
