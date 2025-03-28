@@ -5,6 +5,8 @@ import 'package:nearby_assist/services/api_service.dart';
 class GeocodingService {
   Future<ReverseGeocodingModel> lookupAddress(
       double latitude, double longitude) async {
+    logger.logDebug('called lookupAddress in geocoding_service.dart');
+
     try {
       final api = ApiService.unauthenticated();
       final response = await api.dio.get(
@@ -20,7 +22,7 @@ class GeocodingService {
 
       return ReverseGeocodingModel.fromJson(response.data);
     } catch (error) {
-      logger.log('Error locating address: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

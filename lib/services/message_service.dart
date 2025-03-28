@@ -6,16 +6,20 @@ import 'package:nearby_assist/services/api_service.dart';
 
 class MessageService {
   Future<void> send(PartialMessageModel message) async {
+    logger.logDebug('called send in message_service.dart');
+
     try {
       final api = ApiService.authenticated();
       await api.dio.post(endpoint.sendMessage, data: message.toJson());
     } catch (error) {
-      logger.log('Error sending message: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<List<MessageModel>> fetchMessages(String recipeintId) async {
+    logger.logDebug('called fetchMessages in message_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response =
@@ -25,12 +29,14 @@ class MessageService {
           .map((message) => MessageModel.fromJson(message))
           .toList();
     } catch (error) {
-      logger.log('Error fetching messages: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<List<ConversationModel>> fetchConversations() async {
+    logger.logDebug('called fetchConversations in message_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.conversations);
@@ -39,7 +45,7 @@ class MessageService {
           .map((conversation) => ConversationModel.fromJson(conversation))
           .toList();
     } catch (error) {
-      logger.log('Error fetching conversations: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

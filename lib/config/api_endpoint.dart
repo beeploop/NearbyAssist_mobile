@@ -62,7 +62,7 @@ class ApiEndpoint {
   String get serviceDetails => '$_baseUrl/api/v1/services';
   String get findRoute => '$_baseUrl/api/v1/services/route';
 
-  String get websocket => '$_wsUrl/api/v1/chat/ws';
+  String get websocket => '$_wsUrl/api/v1/ws';
   String get conversations => '$_baseUrl/api/v1/chat/conversations';
   String get getMessages => '$_baseUrl/api/v1/chat/messages';
   String get sendMessage => '$_baseUrl/api/v1/chat/send';

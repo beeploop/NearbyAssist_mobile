@@ -110,6 +110,8 @@ class _AppSettingPageState extends State<AppSettingPage> {
   }
 
   void _healthcheck() async {
+    logger.logDebug('called healtCheck in app_settings_page.dart');
+
     final loader = context.loaderOverlay;
 
     try {
@@ -138,7 +140,7 @@ class _AppSettingPageState extends State<AppSettingPage> {
         ),
       );
     } catch (error) {
-      logger.log(error.toString());
+      logger.logError(error.toString());
     } finally {
       loader.hide();
     }

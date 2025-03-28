@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/account_page.dart';
 import 'package:nearby_assist/pages/account/information_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
@@ -39,6 +40,7 @@ GoRouter generateRoutes(
     refreshListenable: userProvider,
     redirect: (context, state) async {
       if (userProvider.status == AuthStatus.unauthenticated) {
+        logger.logDebug('user provider status: unauthenticated');
         websocketProvider.disconnect();
         return RoutePath.login.path;
       }

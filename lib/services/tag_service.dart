@@ -4,6 +4,8 @@ import 'package:nearby_assist/services/api_service.dart';
 
 class TagService {
   Future<List<ExpertiseModel>> getExpertiseWithTags() async {
+    logger.logDebug('called getExpertiseWithTags in tag_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.expertiseList);
@@ -12,7 +14,7 @@ class TagService {
           .map((expertise) => ExpertiseModel.fromJson(expertise))
           .toList();
     } catch (error) {
-      logger.log('Error getting expertise with tags: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

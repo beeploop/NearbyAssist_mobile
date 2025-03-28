@@ -173,6 +173,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   }
 
   void _submit() async {
+    logger.logDebug('called submit in verify_account_page.dart');
+
     final loader = context.loaderOverlay;
     loader.show();
 
@@ -204,11 +206,13 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
 
       _onSuccess();
     } on LocationServiceDisabledException catch (error) {
-      logger.log('Error on verify account: ${error.toString()}');
+      logger.logError(error.toString());
       _showLocationServiceDisabledDialog();
     } on DioException catch (error) {
+      logger.logError(error.toString());
       _onError(error.response?.data['message']);
     } catch (error) {
+      logger.logError(error.toString());
       _onError(error.toString());
     } finally {
       loader.hide();
@@ -216,6 +220,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   }
 
   void _onSuccess() {
+    logger.logDebug('called success in verify_account_page.dart');
+
     showCustomSnackBar(
       context,
       'Request submitted. We are reviewing your request and will get back to you',

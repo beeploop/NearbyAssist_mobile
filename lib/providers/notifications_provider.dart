@@ -11,19 +11,30 @@ class NotificationsProvider extends ChangeNotifier {
   int get unreadCount =>
       _notifications.where((notif) => !notif.isRead).toList().length;
 
+  void pushNotification(NotificationModel notif) {
+    logger.logDebug('called pushNotification in notifications_provider.dart');
+
+    _notifications.add(notif);
+    notifyListeners();
+  }
+
   Future<void> fetchNotifications() async {
+    logger.logDebug('called fetchNotifications in notifications_provider.dart');
+
     try {
       final service = NotificationService();
       final notifications = await service.fetchNotifications();
       _notifications = notifications;
       notifyListeners();
     } catch (error) {
-      logger.log('----- Error fetching notifications: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<void> readNotification(NotificationModel notification) async {
+    logger.logDebug('called readNotification in notifications_provider.dart');
+
     try {
       if (notification.isRead) return;
 
@@ -39,7 +50,7 @@ class NotificationsProvider extends ChangeNotifier {
       _notifications = updated;
       notifyListeners();
     } catch (error) {
-      logger.log('----- Error reading notification: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

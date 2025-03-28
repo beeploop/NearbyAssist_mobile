@@ -19,6 +19,8 @@ class VerifyAccountService {
     required Uint8List? backId,
     required Uint8List? face,
   }) async {
+    logger.logDebug('called verify in verify_account_service.dart');
+
     try {
       if (idType == ValidID.none) {
         throw Exception('Select an ID Type');
@@ -69,18 +71,16 @@ class VerifyAccountService {
       });
 
       final api = ApiService.authenticated();
-      await api.dio.post(
-        endpoint.verifyAccount,
-        data: data,
-      );
+      await api.dio.post(endpoint.verifyAccount, data: data);
     } on DioException catch (error) {
+      logger.logError(error.toString());
       if (error.response?.statusCode == 400) {
         throw 'You already submitted an application';
       }
 
       rethrow;
     } catch (error) {
-      logger.log('Error submitting account verification: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

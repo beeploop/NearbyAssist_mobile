@@ -21,6 +21,8 @@ class TransactionProvider extends ChangeNotifier {
   List<TransactionModel> get toReviews => _toReviewTransactions;
 
   Future<void> fetchRecent() async {
+    logger.logDebug('called fetchRecent in transaction_provider.dart');
+
     try {
       final service = TransactionService();
       final response = await service.fetchRecent();
@@ -28,7 +30,7 @@ class TransactionProvider extends ChangeNotifier {
       _recents = response;
       notifyListeners();
     } catch (error) {
-      logger.log('--- ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

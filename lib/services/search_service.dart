@@ -27,13 +27,15 @@ class SearchService {
   }
 
   Future<DetailedServiceModel> getServiceDetails(String id) async {
+    logger.logDebug('called getServiceDetails in search_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get('${endpoint.serviceDetails}/$id');
 
       return DetailedServiceModel.fromJson(response.data['detail']);
     } catch (error) {
-      logger.log('Error fetching service details: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

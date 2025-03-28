@@ -8,6 +8,9 @@ class SystemSettingProvider extends ChangeNotifier {
   String get serverURL => _serverURL;
 
   Future<void> changeServerURL(String url) async {
+    logger.logDebug(
+        'called changeServerURL with value: $url, in system_settings_provider.dart');
+
     _serverURL = url;
 
     final storage = SecureStorage();

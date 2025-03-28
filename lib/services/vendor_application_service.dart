@@ -11,6 +11,8 @@ class VendorApplicationService {
     required Uint8List supportingDoc,
     required Uint8List policeClearance,
   }) async {
+    logger.logDebug('called apply in vendor_application_service.dart');
+
     try {
       final data = FormData.fromMap({
         'expertiseId': expertise.id,
@@ -26,25 +28,17 @@ class VendorApplicationService {
         ],
       });
 
-      // TODO: double check content-type, maybe a bug
       final api = ApiService.authenticated();
-      await api.dio.post(
-        endpoint.vendorApplication,
-        data: data,
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
+      await api.dio.post(endpoint.vendorApplication, data: data);
     } on DioException catch (error) {
+      logger.logError(error.toString());
       if (error.response?.statusCode == 400) {
         throw error.response?.data['message'];
       }
 
       rethrow;
     } catch (error) {
-      logger.log('Error applying for vendor: $error');
+      logger.logError(error.toString());
       rethrow;
     }
   }

@@ -7,6 +7,8 @@ class VendorProvider extends ChangeNotifier {
   final Map<String, DetailedVendorModel> _vendors = {};
 
   Future<DetailedVendorModel> getVendor(String vendorId) async {
+    logger.logDebug('called getVendor in vendor_provider.dart');
+
     try {
       if (_vendors.containsKey(vendorId)) {
         return _vendors[vendorId]!;
@@ -21,7 +23,7 @@ class VendorProvider extends ChangeNotifier {
 
       return data;
     } catch (error) {
-      logger.log('Error fetching vendor: $error');
+      logger.logError(error.toString());
       rethrow;
     }
   }

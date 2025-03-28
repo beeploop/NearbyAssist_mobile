@@ -26,6 +26,8 @@ class AuthService {
 
   Future<UserModel> _serverLoginViaThirdParty(
       ThirdPartyLoginPayloadModel payload) async {
+    logger.logDebug('called serverLoginViaThirdParty in auth_service.dart');
+
     try {
       final api = ApiService.unauthenticated();
       final response = await api.dio.post(
@@ -47,7 +49,7 @@ class AuthService {
 
       return UserModel.fromJson(response.data['user']);
     } catch (error) {
-      logger.log('Error on login: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -66,6 +68,8 @@ class AuthService {
   }
 
   Future<void> _signOutToServer() async {
+    logger.logDebug('called signOutToServer in auth_service');
+
     try {
       final store = SecureStorage();
       final refreshToken = await store.getToken(TokenType.refreshToken);
@@ -84,7 +88,7 @@ class AuthService {
         ),
       );
     } catch (error) {
-      logger.log('Error on logout: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

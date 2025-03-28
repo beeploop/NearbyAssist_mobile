@@ -65,7 +65,8 @@ class _ServicePricingState extends State<ServicePricing> {
   }
 
   void _addField() {
-    logger.log('Adding field');
+    logger.logDebug('called addField in service_pricing.dart');
+
     setState(() {
       if (widget.serviceExtras.isNotEmpty) {
         final lastField = widget.serviceExtras.last;
@@ -86,7 +87,8 @@ class _ServicePricingState extends State<ServicePricing> {
   }
 
   void _removeField() {
-    logger.log('Removing field');
+    logger.logDebug('called removeField in service_pricing.dart');
+
     setState(() {
       widget.serviceExtras.removeLast();
 

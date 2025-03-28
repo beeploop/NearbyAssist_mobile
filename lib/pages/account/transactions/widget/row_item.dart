@@ -34,6 +34,6 @@ class RowItem extends StatelessWidget {
   }
 
   void _onTap() {
-    logger.log('Tapped');
+    logger.logDebug('called onTap in row_item.dart');
   }
 }

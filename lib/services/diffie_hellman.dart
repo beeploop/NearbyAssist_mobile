@@ -8,6 +8,8 @@ import 'package:nearby_assist/services/secure_storage.dart';
 class DiffieHellman {
   /// checks for locally saved keypair. generate keypair if no keypair is found and saves them locally and to the server.
   Future<DhKeyPair> register() async {
+    logger.logDebug('called register in diffie_hellman.dart');
+
     try {
       DhKeyPair? keypair;
 
@@ -20,7 +22,7 @@ class DiffieHellman {
 
       return keypair;
     } catch (error) {
-      logger.log('--- generic error in DiffieHellman: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -39,6 +41,8 @@ class DiffieHellman {
 
   /// computes a shared secret. throws error if there are no locally saved keypair.
   Future<BigInt> computeSharedSecret(DhPublicKey otherUserPublicKey) async {
+    logger.logDebug('called computSharedSecret in diffie_hellman.dart');
+
     try {
       final keyPair = await _getSavedKeys();
       if (keyPair == null) {
@@ -48,7 +52,7 @@ class DiffieHellman {
       final engine = DhPkcs3Engine.fromKeyPair(keyPair);
       return engine.computeSecretKey(otherUserPublicKey.value);
     } catch (error) {
-      logger.log('--- could not computer shared secret because keys are null');
+      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -59,6 +63,8 @@ class DiffieHellman {
   }
 
   Future<DhKeyPair?> _getSavedKeys() async {
+    logger.logDebug('called getSavedKeys in diffie_hellman.dart');
+
     try {
       final store = SecureStorage();
       final privatePem = await store.getKey(KeyType.privateKey);
@@ -73,12 +79,14 @@ class DiffieHellman {
       final keypair = DhKeyPair(privateKey: privateKey, publicKey: publicKey);
       return keypair;
     } catch (error) {
-      logger.log('--- error retrieving saved keys: ${error.toString()}');
+      logger.logError(error.toString());
       return null;
     }
   }
 
   Future<DhKeyPair?> _getKeysFromServer() async {
+    logger.logDebug('called getKeysFromServer in diffie_hellman.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.getKeys);
@@ -88,7 +96,7 @@ class DiffieHellman {
       final privateKey = DhPrivateKey.fromPem(keys["privateKey"]);
       return DhKeyPair(publicKey: publicKey, privateKey: privateKey);
     } catch (error) {
-      logger.log('--- error retrieving server keys: ${error.toString()}');
+      logger.logError(error.toString());
       return null;
     }
   }

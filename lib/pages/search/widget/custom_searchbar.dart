@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
@@ -67,7 +66,6 @@ class _CustomSearchbarState extends State<CustomSearchbar> {
                 .where((tag) => tag.title.contains(input))
                 .map((filteredItem) => GestureDetector(
                       onTap: () {
-                        logger.log(filteredItem.title);
                         _searchController.closeView(filteredItem.title);
                       },
                       child: ListTile(

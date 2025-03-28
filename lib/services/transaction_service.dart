@@ -7,6 +7,8 @@ import 'package:nearby_assist/services/api_service.dart';
 
 class TransactionService {
   Future<List<TransactionModel>> fetchRecent() async {
+    logger.logDebug('called fetchRecent in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.recent);
@@ -15,12 +17,14 @@ class TransactionService {
           .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
-      logger.log('Error fetching recent transaction: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<List<TransactionModel>> fetchHistory() async {
+    logger.logDebug('called fetchHistory in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.history);
@@ -29,12 +33,14 @@ class TransactionService {
           .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
-      logger.log('Error fetching transaction history: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<List<TransactionModel>> fetchAccepted() async {
+    logger.logDebug('called fetchAccepted in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.confirmed);
@@ -43,12 +49,14 @@ class TransactionService {
           .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
-      logger.log('Error fetching confirmed transactions: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<List<TransactionModel>> fetchReceivedRequests() async {
+    logger.logDebug('called fetchReceivedRequests in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(
@@ -60,12 +68,14 @@ class TransactionService {
           .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
-      logger.log('Error fetching client transactions: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<List<TransactionModel>> fetchSentRequests() async {
+    logger.logDebug('called fetchSentRequests in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(
@@ -77,12 +87,15 @@ class TransactionService {
           .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
-      logger.log('Error fetching my request transactions: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<List<TransactionModel>> fetchToReviewTransactions() async {
+    logger
+        .logDebug('called tchToReviewTransactions in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.toReviews);
@@ -91,12 +104,14 @@ class TransactionService {
           .map((transaction) => TransactionModel.fromJson(transaction))
           .toList();
     } catch (error) {
-      logger.log('Error fetching reviewable transactions: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<void> createTransaction(BookingRequestModel booking) async {
+    logger.logDebug('called createTransaction in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.post(
@@ -105,15 +120,16 @@ class TransactionService {
       );
 
       final transactionId = response.data['transaction'] as String;
-      logger.log('Transaction ID: $transactionId');
+      logger.logInfo('Transaction ID: $transactionId');
     } on DioException catch (error) {
+      logger.logError(error.toString());
       if (error.response?.statusCode == 400) {
         throw error.response?.data['message'];
       }
 
       rethrow;
     } catch (error) {
-      logger.log('Error booking service: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -123,7 +139,7 @@ class TransactionService {
       final api = ApiService.authenticated();
       await api.dio.get('${endpoint.getTransaction}/$id');
     } catch (error) {
-      logger.log('Error fetching transaction: ${error.toString()}');
+      logger.logError('Error fetching transaction: ${error.toString()}');
       rethrow;
     }
   }
@@ -133,27 +149,32 @@ class TransactionService {
       final api = ApiService.authenticated();
       await api.dio.put('${endpoint.cancelBooking}/$id');
     } catch (error) {
-      logger.log('Error cancelling transaction request: ${error.toString()}');
+      logger.logError(
+          'Error cancelling transaction request: ${error.toString()}');
       rethrow;
     }
   }
 
   Future<void> acceptRequest(String id) async {
+    logger.logDebug('called acceptRequest in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       await api.dio.put('${endpoint.acceptRequest}/$id');
     } catch (error) {
-      logger.log('Error accepting client request: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
   Future<void> rejectRequest(String id) async {
+    logger.logDebug('called rejectRequest in transaction_service.dart');
+
     try {
       final api = ApiService.authenticated();
       await api.dio.put('${endpoint.rejectRequest}/$id');
     } catch (error) {
-      logger.log('Error reject client request: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

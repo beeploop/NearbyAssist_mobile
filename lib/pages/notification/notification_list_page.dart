@@ -15,6 +15,8 @@ class NotificationListPage extends StatefulWidget {
 class _NotificationListPageState extends State<NotificationListPage> {
   @override
   Widget build(BuildContext context) {
+    final notifications = context.watch<NotificationsProvider>().notifications;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -23,40 +25,11 @@ class _NotificationListPageState extends State<NotificationListPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: FutureBuilder(
-        future: context.read<NotificationsProvider>().fetchNotifications(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return const Center(
-              child: AlertDialog(
-                icon: Icon(
-                  CupertinoIcons.exclamationmark_triangle,
-                  color: Colors.amber,
-                  size: 30,
-                ),
-                title: Text('Something went wrong'),
-                content: Text(
-                  'Oops! An error occurred while retrieving notifications, try again later',
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
-
-          final notifications =
-              context.watch<NotificationsProvider>().notifications;
-
-          return notifications.isEmpty
+      body: RefreshIndicator(
+          onRefresh: context.read<NotificationsProvider>().fetchNotifications,
+          child: notifications.isEmpty
               ? _emptyState()
-              : _mainContent(notifications);
-        },
-      ),
+              : _mainContent(notifications)),
     );
   }
 

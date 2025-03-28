@@ -93,6 +93,8 @@ class AuthInterceptor extends Interceptor {
   }
 
   Future<Response<dynamic>> _retry(RequestOptions requestOptions) async {
+    logger.logDebug('called retry in auth_interceptor.dart');
+
     final store = SecureStorage();
     final accessToken = await store.getToken(TokenType.accessToken);
     if (accessToken == null) {
@@ -115,7 +117,7 @@ class AuthInterceptor extends Interceptor {
             entry.value.clone(),
           ));
         } catch (error) {
-          logger.log('Error cloning file: $error');
+          logger.logError(error.toString());
           rethrow;
         }
       }

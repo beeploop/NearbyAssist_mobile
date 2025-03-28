@@ -22,7 +22,7 @@ import 'package:nearby_assist/services/logger.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:provider/provider.dart';
 
-final logger = ConsoleLogger();
+final logger = CustomLogger();
 final cron = Cron();
 late ApiEndpoint endpoint;
 late SystemSettingProvider systemSettings;
@@ -79,21 +79,24 @@ class _App extends State<App> {
 
   Future<void> initialization() async {
     try {
+      logger.logDebug('called initialization in main.dart');
       await loadSystemSetting();
       await loadUser();
       await loadTags();
     } catch (error) {
-      logger.log('--- error occurred on initialization: ${error.toString()}');
+      logger.logError(error.toString());
     } finally {
       FlutterNativeSplash.remove();
     }
   }
 
   Future<void> loadUser() async {
+    logger.logDebug('called loadUser in main.dart');
     await context.read<UserProvider>().tryLoadUser();
   }
 
   Future<void> loadTags() async {
+    logger.logDebug('called loadTags in main.dart');
     await context.read<ExpertiseProvider>().tryLoadLocal();
   }
 
@@ -116,13 +119,7 @@ class _App extends State<App> {
     final notificationProvider = context.read<NotificationsProvider>();
 
     websocketProvider.setMessageProvider(messageProvider);
-
-    cron.schedule(Schedule.parse("*/1 * * * *"), () async {
-      if (userProvider.status == AuthStatus.authenticated) {
-        userProvider.syncAccount();
-        notificationProvider.fetchNotifications();
-      }
-    });
+    websocketProvider.setNotifProvider(notificationProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,

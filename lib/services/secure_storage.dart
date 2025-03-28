@@ -48,13 +48,15 @@ class SecureStorage {
   }
 
   Future<UserModel> getUser() async {
+    logger.logDebug('called getUser in secure_storage.dart');
+
     try {
       final value = await _storage.read(key: _userKey);
       if (value == null) throw Exception('User not found');
 
       return UserModel.fromJson(jsonDecode(value));
     } catch (error) {
-      logger.log('Error on get user: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -73,6 +75,8 @@ class SecureStorage {
   }
 
   Future<List<ExpertiseModel>> getTags() async {
+    logger.logDebug('called getTags in secure_storage.dart');
+
     try {
       final value = await _storage.read(key: _expertiseKey);
       if (value == null) throw Exception('Expertises not found');
@@ -83,7 +87,7 @@ class SecureStorage {
           .map((expertise) => ExpertiseModel.fromJson(expertise))
           .toList();
     } catch (error) {
-      logger.log('Error on get tags: ${error.toString()}');
+      logger.logError(error.toString());
       rethrow;
     }
   }

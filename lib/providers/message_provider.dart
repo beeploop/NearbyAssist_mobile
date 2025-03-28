@@ -192,11 +192,13 @@ class MessageProvider extends ChangeNotifier {
       DhPublicKey? publicKey;
 
       if (!_publicKeyCache.containsKey(otherUserId)) {
-        logger.log("Public key cache miss");
+        logger.logDebug('cache miss on encrypt in message_provider.dart');
+
         publicKey = await dh.getPublicKey(otherUserId);
         _publicKeyCache[otherUserId] = publicKey;
       } else {
-        logger.log("Public key cache hit");
+        logger.logDebug('cache hit on encrypt in message_provider.dart');
+
         publicKey = _publicKeyCache[otherUserId]!;
       }
 
@@ -215,11 +217,13 @@ class MessageProvider extends ChangeNotifier {
       DhPublicKey? publicKey;
 
       if (!_publicKeyCache.containsKey(otherUserId)) {
-        logger.log("Public key cache miss");
+        logger.logDebug('cache miss on decrypt in message_provider.dart');
+
         publicKey = await dh.getPublicKey(otherUserId);
         _publicKeyCache[otherUserId] = publicKey;
       } else {
-        logger.log("Public key cache hit");
+        logger.logDebug('cache hit on decrypt in message_provider.dart');
+
         publicKey = _publicKeyCache[otherUserId]!;
       }
 

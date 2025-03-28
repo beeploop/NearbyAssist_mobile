@@ -95,6 +95,8 @@ class _AddressInputState extends State<AddressInput> {
   }
 
   Future<void> _onLocationPicked() async {
+    logger.logDebug('called onLocationPicked in address_input.dart');
+
     try {
       final geocoding = GeocodingService();
       final response = await geocoding.lookupAddress(
@@ -107,7 +109,7 @@ class _AddressInputState extends State<AddressInput> {
       if (!mounted) return;
       context.pop();
     } catch (error) {
-      logger.log('Error getting address: $error');
+      logger.logError(error.toString());
     }
   }
 }
