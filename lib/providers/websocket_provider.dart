@@ -5,6 +5,7 @@ import 'package:nearby_assist/models/message_model.dart';
 import 'package:nearby_assist/models/notification_model.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -15,6 +16,7 @@ enum EventType { message, notification, sync }
 class WebsocketProvider extends ChangeNotifier {
   MessageProvider? _messageProvider;
   NotificationsProvider? _notifProvider;
+  UserProvider? _userProvider;
   WebSocketChannel? _channel;
   WebsocketStatus _status = WebsocketStatus.disconnected;
 
@@ -26,6 +28,10 @@ class WebsocketProvider extends ChangeNotifier {
 
   void setNotifProvider(NotificationsProvider notifProvider) {
     _notifProvider = notifProvider;
+  }
+
+  void setUserProvider(UserProvider userProvider) {
+    _userProvider = userProvider;
   }
 
   Future<void> connect() async {
@@ -91,6 +97,14 @@ class WebsocketProvider extends ChangeNotifier {
     _notifProvider!.pushNotification(notif);
   }
 
+  void _syncUser() {
+    if (_userProvider == null) {
+      throw 'user provider is null';
+    }
+
+    _userProvider!.syncAccount();
+  }
+
   void _processEvent(dynamic event) {
     try {
       logger.logDebug('processing received event');
@@ -104,7 +118,7 @@ class WebsocketProvider extends ChangeNotifier {
           final payload = NotificationModel.fromJson(decoded['payload']);
           _pushNotif(payload);
         case 'sync':
-          logger.logDebug('received sync event');
+          _syncUser();
         default:
           throw 'unknown event type';
       }

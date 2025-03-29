@@ -120,6 +120,7 @@ class _App extends State<App> {
 
     websocketProvider.setMessageProvider(messageProvider);
     websocketProvider.setNotifProvider(notificationProvider);
+    websocketProvider.setUserProvider(userProvider);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
