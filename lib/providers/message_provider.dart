@@ -6,11 +6,9 @@ import 'package:nearby_assist/models/message_model.dart';
 import 'package:nearby_assist/models/partial_message_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/encryption.dart';
 import 'package:nearby_assist/services/message_service.dart';
-import 'package:nearby_assist/services/secure_storage.dart';
 
 class MessageProvider extends ChangeNotifier {
   List<ConversationModel> _conversations = [];
@@ -55,14 +53,14 @@ class MessageProvider extends ChangeNotifier {
 
       for (var conversation in conversations) {
         final decrypted =
-            await _decrypt(conversation.lastMessage, conversation.recipientId);
+            await _decrypt(conversation.lastMessage, conversation.userId);
         conversation.lastMessage = decrypted;
 
-        if (_messages.containsKey(conversation.recipientId)) {
+        if (_messages.containsKey(conversation.userId)) {
           continue;
         }
 
-        _messages[conversation.recipientId] = [];
+        _messages[conversation.userId] = [];
       }
 
       _conversations = conversations;
@@ -72,118 +70,97 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> send(PartialMessageModel message) async {
-    try {
-      final newPlainMessage = MessageModel.fromPartial(message);
+  Future<void> send(PartialMessageModel partial) async {
+    final newMessage = MessageModel.fromPartial(partial);
 
-      if (_messages.containsKey(message.receiver)) {
+    try {
+      if (_messages.containsKey(newMessage.receiver)) {
         // TODO: Improve this.
         // Disables sending message while another message is still sending because
         // I can't think of a way to replace the status of the right message when sent
         // Without breaking flutter rules.
         // See receive() function, it's related.
         // Skill issues, I know :(((
-        final messages = _messages[message.receiver]!;
-        if (messages.isEmpty == false &&
-            messages[0].status == types.Status.sending) {
-          throw 'Spam detected, wait until previous message is sent.';
-        }
+        // final messages = _messages[newMessage.receiver]!;
+        // if (messages.isNotEmpty && messages[0].status == types.Status.sending) {
+        //   throw 'Spam detected, wait until previous message is sent.';
+        // }
 
-        _messages[message.receiver]!.insert(0, newPlainMessage);
+        _messages[newMessage.receiver]!.insert(0, newMessage);
       } else {
-        _messages[message.receiver] = [];
-        _messages[message.receiver]!.insert(0, newPlainMessage);
+        _messages[newMessage.receiver] = [newMessage];
       }
-
-      // Update the conversations list
-      final idx = _conversations.indexWhere(
-          (conversation) => conversation.recipientId == message.receiver);
-      if (idx == -1) {
-        // NOTE: Could be better, instead of refetching we can update the
-        // conversations list, but message would need to have the receiver's
-        // image Url, id, and name. Too much work for now.
-        refreshConversations();
-      } else {
-        final conversation = _conversations[idx];
-        conversation.lastMessage = message.content;
-        conversation.date = DateTime.now().toIso8601String();
-        _conversations.insert(0, conversation);
-      }
-
       notifyListeners();
 
-      final encrypted = await _encrypt(message.content, message.receiver);
-      final encryptedMessage = message.copyWithNewContent(encrypted);
+      // Send message
+      final encrypted = await _encrypt(newMessage.content, newMessage.receiver);
+      final encryptedMessage = newMessage.copyWithNewContent(encrypted);
 
       final messageService = MessageService();
       await messageService.send(encryptedMessage);
+
+      // Update status to sent
+      _updateMessageStatus(newMessage, types.Status.sent);
+
+      // Update conversations
+      _updateConversations(partial);
     } catch (error) {
+      // Update status to error
+      _updateMessageStatus(newMessage, types.Status.error);
       rethrow;
     }
   }
 
-  Future<void> receive(MessageModel message) async {
-    UserModel user;
-    try {
-      user = await SecureStorage().getUser();
-    } catch (error) {
-      rethrow;
+  void _updateMessageStatus(MessageModel message, types.Status status) {
+    if (_messages.containsKey(message.receiver)) {
+      final messages = _messages[message.receiver]!;
+
+      final index = messages.indexWhere((msg) => msg.id == message.id);
+      if (index == -1) return;
+
+      final updatedMessage = messages[index].copyWithNewStatus(status);
+      _messages[message.receiver]![index] = updatedMessage;
+      notifyListeners();
+    }
+  }
+
+  void _updateConversations(PartialMessageModel partial) {
+    final index = _conversations.indexWhere(
+      (conversation) => conversation.userId == partial.receiver,
+    );
+    if (index == -1) {
+      // NOTE: Could be better, instead of refetching we can update the
+      // inbox, but message would need to have the receiver's image Url, id,
+      // and name. Too much work for now.
+      refreshConversations();
+    } else {
+      final conversation = _conversations[index];
+      conversation.lastMessage = partial.content;
+      conversation.date = DateTime.now().toIso8601String();
+      _conversations.insert(0, conversation);
     }
 
-    // Case 1: I am the sender, so check the cache for the receiver
-    if (message.sender == user.id) {
-      final decrypted = await _decrypt(message.content, message.receiver);
-      final decryptedMessage = message.copyWithNewContent(decrypted);
+    notifyListeners();
+  }
 
-      if (_messages.containsKey(message.receiver)) {
-        final messages = _messages[message.receiver]!;
-
-        // NOTE: Related to spam detection
-        // Also temporary solution.
-        final target =
-            messages.indexWhere((msg) => msg.isPartialEqual(decryptedMessage));
-
-        if (target == -1) {
-          messages.insert(
-              0, decryptedMessage.copyWithNewStatus(types.Status.sent));
-        } else {
-          messages[target] =
-              decryptedMessage.copyWithNewStatus(types.Status.sent);
-        }
-      } else {
-        _messages[decryptedMessage.receiver] = [];
-        _messages[decryptedMessage.receiver]!
-            .insert(0, decryptedMessage.copyWithNewStatus(types.Status.sent));
-      }
-    } else {
-      // Case 2: I am the receiver, so check the cache for the sender
+  Future<void> receive(MessageModel message) async {
+    try {
       final decrypted = await _decrypt(message.content, message.sender);
       final decryptedMessage = message.copyWithNewContent(decrypted);
 
       if (_messages.containsKey(message.sender)) {
         final messages = _messages[message.sender]!;
 
-        // NOTE: Related to spam detection
-        // Also temporary solution.
-        final target =
-            messages.indexWhere((msg) => msg.isPartialEqual(decryptedMessage));
-
-        if (target == -1) {
-          messages.insert(
-              0, decryptedMessage.copyWithNewStatus(types.Status.sent));
-        } else {
-          messages[target] =
-              decryptedMessage.copyWithNewStatus(types.Status.sent);
-        }
+        messages.insert(0, decryptedMessage);
       } else {
-        _messages[decryptedMessage.sender] = [];
-        _messages[decryptedMessage.sender]!
-            .insert(0, decryptedMessage.copyWithNewStatus(types.Status.sent));
+        _messages[decryptedMessage.sender] = [decryptedMessage];
       }
+      notifyListeners();
+    } catch (error) {
+      logger.logError(error.toString());
+    } finally {
+      refreshConversations(); // trigger refreshConversation to update inbox
     }
-
-    refreshConversations(); // lazily trigger refetch converstions
-    notifyListeners();
   }
 
   Future<String> _encrypt(String message, String otherUserId) async {

@@ -1,6 +1,7 @@
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:nearby_assist/models/partial_message_model.dart';
+import 'package:uuid/uuid.dart';
 
 class MessageModel {
   String id;
@@ -23,12 +24,13 @@ class MessageModel {
       sender: json['sender'],
       receiver: json['receiver'],
       content: json['content'],
+      status: types.Status.sent,
     );
   }
 
   factory MessageModel.fromPartial(PartialMessageModel partial) {
     return MessageModel(
-      id: '',
+      id: const Uuid().v4(),
       sender: partial.sender,
       receiver: partial.receiver,
       content: partial.content,

@@ -67,7 +67,7 @@ dependencies:
   auto_size_text: ^3.0.0
   loader_overlay: ^4.0.4+1
   logger: ^2.5.0
-  cron: ^0.6.1
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:

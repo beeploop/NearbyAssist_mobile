@@ -1,11 +1,10 @@
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/conversation_model.dart';
 import 'package:nearby_assist/models/message_model.dart';
-import 'package:nearby_assist/models/partial_message_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 
 class MessageService {
-  Future<void> send(PartialMessageModel message) async {
+  Future<void> send(MessageModel message) async {
     logger.logDebug('called send in message_service.dart');
 
     try {

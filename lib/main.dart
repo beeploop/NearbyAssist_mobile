@@ -1,4 +1,3 @@
-import 'package:cron/cron.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -23,7 +22,6 @@ import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:provider/provider.dart';
 
 final logger = CustomLogger();
-final cron = Cron();
 late ApiEndpoint endpoint;
 late SystemSettingProvider systemSettings;
 

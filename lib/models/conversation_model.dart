@@ -1,13 +1,13 @@
 class ConversationModel {
-  String recipientId;
-  String recipient;
+  String userId;
+  String name;
   String imageUrl;
   String lastMessage;
   String date;
 
   ConversationModel({
-    required this.recipientId,
-    required this.recipient,
+    required this.userId,
+    required this.name,
     required this.imageUrl,
     required this.lastMessage,
     required this.date,
@@ -15,8 +15,8 @@ class ConversationModel {
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      recipientId: json['userId'],
-      recipient: json['name'],
+      userId: json['userId'],
+      name: json['name'],
       imageUrl: json['imageUrl'],
       lastMessage: json['lastMessage'],
       date: json['lastMessageDate'],

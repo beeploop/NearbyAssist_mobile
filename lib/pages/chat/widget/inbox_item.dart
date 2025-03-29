@@ -31,7 +31,7 @@ class InboxItem extends StatelessWidget {
           ),
         ),
         title: AutoSizeText(
-          conversation.recipient,
+          conversation.name,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             overflow: TextOverflow.ellipsis,
@@ -46,8 +46,8 @@ class InboxItem extends StatelessWidget {
         onTap: () => context.pushNamed(
           'chat',
           queryParameters: {
-            'recipient': conversation.recipient,
-            'recipientId': conversation.recipientId,
+            'recipient': conversation.name,
+            'recipientId': conversation.userId,
           },
         ),
       ),
