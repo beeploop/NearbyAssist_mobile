@@ -9,6 +9,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/encryption.dart';
 import 'package:nearby_assist/services/message_service.dart';
+import 'package:nearby_assist/services/secure_storage.dart';
 
 class MessageProvider extends ChangeNotifier {
   List<ConversationModel> _conversations = [];
@@ -75,17 +76,6 @@ class MessageProvider extends ChangeNotifier {
 
     try {
       if (_messages.containsKey(newMessage.receiver)) {
-        // TODO: Improve this.
-        // Disables sending message while another message is still sending because
-        // I can't think of a way to replace the status of the right message when sent
-        // Without breaking flutter rules.
-        // See receive() function, it's related.
-        // Skill issues, I know :(((
-        // final messages = _messages[newMessage.receiver]!;
-        // if (messages.isNotEmpty && messages[0].status == types.Status.sending) {
-        //   throw 'Spam detected, wait until previous message is sent.';
-        // }
-
         _messages[newMessage.receiver]!.insert(0, newMessage);
       } else {
         _messages[newMessage.receiver] = [newMessage];
@@ -124,23 +114,36 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  void _updateConversations(PartialMessageModel partial) {
-    final index = _conversations.indexWhere(
-      (conversation) => conversation.userId == partial.receiver,
-    );
-    if (index == -1) {
-      // NOTE: Could be better, instead of refetching we can update the
-      // inbox, but message would need to have the receiver's image Url, id,
-      // and name. Too much work for now.
-      refreshConversations();
-    } else {
+  void _updateConversations(PartialMessageModel partial) async {
+    try {
+      final user = await SecureStorage().getUser();
+
+      final index = _conversations.indexWhere((conversation) {
+        if (partial.sender == user.id) {
+          return conversation.userId == partial.receiver;
+        }
+
+        return conversation.userId == partial.sender;
+      });
+
+      if (index == -1) {
+        logger.logDebug(
+            'no previous conversations, calling refreshConversations');
+        // NOTE: Could be better, instead of refetching we can update the
+        // inbox, but message would need to have the receiver's image URL, id,
+        // and name. Too much work for now.
+        refreshConversations();
+        return;
+      }
+
       final conversation = _conversations[index];
       conversation.lastMessage = partial.content;
       conversation.date = DateTime.now().toIso8601String();
-      _conversations.insert(0, conversation);
-    }
 
-    notifyListeners();
+      notifyListeners();
+    } catch (error) {
+      logger.logError(error.toString());
+    }
   }
 
   Future<void> receive(MessageModel message) async {
@@ -150,7 +153,6 @@ class MessageProvider extends ChangeNotifier {
 
       if (_messages.containsKey(message.sender)) {
         final messages = _messages[message.sender]!;
-
         messages.insert(0, decryptedMessage);
       } else {
         _messages[decryptedMessage.sender] = [decryptedMessage];
