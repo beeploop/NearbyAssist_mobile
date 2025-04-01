@@ -108,4 +108,6 @@ class ApiEndpoint {
 
   String get reportBug => '$_baseUrl/api/v1/complaints/system';
   String get reportUser => '$_baseUrl/api/v1/complaints/user';
+
+  String get recommendations => '$_baseUrl/api/v1/recommendations';
 }

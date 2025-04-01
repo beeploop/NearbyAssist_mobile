@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
+import 'package:nearby_assist/providers/recommendation_provider.dart';
 import 'package:nearby_assist/providers/system_setting_provider.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/config/api_endpoint.dart';
@@ -55,6 +56,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => TransactionProvider()),
         ChangeNotifierProvider(create: (context) => ExpertiseProvider()),
         ChangeNotifierProvider(create: (context) => NotificationsProvider()),
+        ChangeNotifierProvider(create: (context) => RecommendationProvider()),
       ],
       child: const App(),
     ),
