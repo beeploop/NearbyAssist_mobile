@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/pages/account/transactions/accepted_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -76,7 +77,7 @@ class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
             requests[index].service.title,
             overflow: TextOverflow.ellipsis,
           ),
-          trailing: _chip(requests[index].status),
+          trailing: TransactionStatusChip(status: requests[index].status),
         ),
       ),
     );
@@ -112,26 +113,6 @@ class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _chip(String label) {
-    return Chip(
-      label: Text(label),
-      labelStyle: const TextStyle(
-        fontSize: 12,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-      ),
-      visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.all(2),
-      backgroundColor: Colors.teal,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: Colors.transparent),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-      ),
     );
   }
 }

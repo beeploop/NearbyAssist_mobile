@@ -5,6 +5,7 @@ import 'package:nearby_assist/pages/account/transactions/accepted_request_summar
 import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
 import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
+import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -70,7 +71,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
       itemBuilder: (context, index) => ListTile(
         onTap: () {
           // Navigate to history summary page if status == 'done'
-          if (recents[index].status == 'done') {
+          if (recents[index].status == TransactionStatus.done) {
             Navigator.push(
               context,
               CupertinoPageRoute(
@@ -91,7 +92,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
             );
             return;
           } else {
-            if (recents[index].status == 'confirmed') {
+            if (recents[index].status == TransactionStatus.confirmed) {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
@@ -134,47 +135,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
           recents[index].service.title,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: _chip(recents[index].status),
-      ),
-    );
-  }
-
-  Widget _chip(String label) {
-    Color color;
-    switch (label.toLowerCase()) {
-      case 'pending':
-        color = Colors.orange;
-        break;
-      case 'confirmed':
-        color = Colors.teal;
-        break;
-      case 'done':
-        color = Colors.green;
-        break;
-      case 'cancelled':
-        color = Colors.grey;
-        break;
-      case 'rejected':
-        color = Colors.red;
-      default:
-        color = Colors.grey;
-    }
-
-    return Chip(
-      label: Text(label),
-      labelStyle: const TextStyle(
-        fontSize: 12,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-      ),
-      visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.all(2),
-      backgroundColor: color,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: Colors.transparent),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
+        trailing: TransactionStatusChip(status: recents[index].status),
       ),
     );
   }

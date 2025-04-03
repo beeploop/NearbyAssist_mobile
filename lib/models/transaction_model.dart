@@ -1,5 +1,7 @@
 import 'package:nearby_assist/models/service_extra_model.dart';
 
+enum TransactionStatus { pending, confirmed, done, rejected, cancelled }
+
 class TransactionModel {
   String id;
   String vendor;
@@ -7,7 +9,7 @@ class TransactionModel {
   String vendorId;
   String clientId;
   double cost;
-  String status;
+  TransactionStatus status;
   List<ServiceExtraModel> extras;
   MinimalServiceModel service;
 
@@ -31,7 +33,13 @@ class TransactionModel {
       vendorId: json['vendorId'],
       clientId: json['clientId'],
       cost: double.tryParse(json['cost'].toString()) ?? 0.0,
-      status: json['status'],
+      status: switch (json['status']) {
+        'pending' => TransactionStatus.pending,
+        'confirmed' => TransactionStatus.confirmed,
+        'done' => TransactionStatus.done,
+        'rejected' => TransactionStatus.rejected,
+        _ => TransactionStatus.cancelled,
+      },
       extras: ((json['extras'] ?? []) as List)
           .map<ServiceExtraModel>((extra) => ServiceExtraModel.fromJson(extra))
           .toList(),
@@ -39,7 +47,7 @@ class TransactionModel {
     );
   }
 
-  TransactionModel copyWithNewStatus(String status) {
+  TransactionModel copyWithNewStatus(TransactionStatus status) {
     this.status = status;
     return this;
   }

@@ -60,7 +60,7 @@ class _OverviewState extends State<Overview> {
                   spacing: 4,
                   runSpacing: 4,
                   children: [
-                    ...widget.service.tags.map((tag) => _chip(tag.title)),
+                    ...widget.service.tags.map((tag) => _tagChip(tag.title)),
                   ],
                 ),
 
@@ -111,7 +111,7 @@ class _OverviewState extends State<Overview> {
     );
   }
 
-  Widget _chip(String label) {
+  Widget _tagChip(String label) {
     return Chip(
       label: Text(label),
       labelStyle: const TextStyle(

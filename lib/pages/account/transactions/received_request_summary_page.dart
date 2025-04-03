@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -74,7 +75,8 @@ class _ReceivedRequestSummaryPageState
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
-                      color: widget.transaction.status == 'cancelled'
+                      color: widget.transaction.status ==
+                              TransactionStatus.cancelled
                           ? Colors.grey
                           : Colors.red,
                     ),
@@ -82,13 +84,15 @@ class _ReceivedRequestSummaryPageState
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: widget.transaction.status != 'cancelled'
-                      ? _onTapReject
-                      : () {},
+                  onPressed:
+                      widget.transaction.status != TransactionStatus.cancelled
+                          ? _onTapReject
+                          : () {},
                   child: Text(
                     'Reject',
                     style: TextStyle(
-                      color: widget.transaction.status == 'cancelled'
+                      color: widget.transaction.status ==
+                              TransactionStatus.cancelled
                           ? Colors.grey
                           : Colors.red,
                     ),
@@ -104,7 +108,7 @@ class _ReceivedRequestSummaryPageState
                 child: FilledButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(
-                      widget.transaction.status == 'cancelled'
+                      widget.transaction.status == TransactionStatus.cancelled
                           ? Colors.grey
                           : null,
                     ),
@@ -114,9 +118,10 @@ class _ReceivedRequestSummaryPageState
                       ),
                     ),
                   ),
-                  onPressed: widget.transaction.status != 'cancelled'
-                      ? _onTapAccept
-                      : () {},
+                  onPressed:
+                      widget.transaction.status != TransactionStatus.cancelled
+                          ? _onTapAccept
+                          : () {},
                   child: const Text('Accept'),
                 ),
               ),
@@ -144,7 +149,7 @@ class _ReceivedRequestSummaryPageState
                       color: Colors.grey[900],
                     )),
                 const Spacer(),
-                _chip(widget.transaction.status),
+                TransactionStatusChip(status: widget.transaction.status),
               ],
             ),
             const Divider(),
@@ -396,44 +401,6 @@ class _ReceivedRequestSummaryPageState
           ],
         );
       },
-    );
-  }
-
-  Widget _chip(String label) {
-    Color color;
-    switch (label.toLowerCase()) {
-      case 'pending':
-        color = Colors.orange;
-        break;
-      case 'confirmed':
-        color = Colors.teal;
-        break;
-      case 'done':
-        color = Colors.green;
-        break;
-      case 'cancelled':
-        color = Colors.red;
-        break;
-      default:
-        color = Colors.grey;
-    }
-
-    return Chip(
-      label: Text(label),
-      labelStyle: const TextStyle(
-        fontSize: 12,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-      ),
-      visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.all(2),
-      backgroundColor: color,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: Colors.transparent),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-      ),
     );
   }
 

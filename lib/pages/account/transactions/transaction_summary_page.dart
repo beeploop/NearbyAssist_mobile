@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/transaction_model.dart';
+import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
@@ -66,7 +67,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
                         color: Colors.grey[900],
                       )),
                   const Spacer(),
-                  _chip(widget.transaction.status),
+                  TransactionStatusChip(status: widget.transaction.status),
                 ],
               ),
               const Divider(),
@@ -123,7 +124,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
 
               // Cancel Button
               const SizedBox(height: 20),
-              if (widget.transaction.status.toLowerCase() == 'pending')
+              if (widget.transaction.status == TransactionStatus.pending)
                 FilledButton(
                   onPressed: () {
                     final reason = TextEditingController();
@@ -254,44 +255,6 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
           ],
         );
       },
-    );
-  }
-
-  Widget _chip(String label) {
-    Color color;
-    switch (label.toLowerCase()) {
-      case 'pending':
-        color = Colors.orange;
-        break;
-      case 'confirmed':
-        color = Colors.teal;
-        break;
-      case 'done':
-        color = Colors.green;
-        break;
-      case 'cancelled':
-        color = Colors.red;
-        break;
-      default:
-        color = Colors.grey;
-    }
-
-    return Chip(
-      label: Text(label),
-      labelStyle: const TextStyle(
-        fontSize: 12,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-      ),
-      visualDensity: VisualDensity.compact,
-      padding: const EdgeInsets.all(2),
-      backgroundColor: color,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: Colors.transparent),
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-      ),
     );
   }
 }

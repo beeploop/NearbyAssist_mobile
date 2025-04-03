@@ -117,7 +117,7 @@ class TransactionProvider extends ChangeNotifier {
 
       final updated = _recents
           .map((transaction) => transaction.id == id
-              ? transaction.copyWithNewStatus("cancelled")
+              ? transaction.copyWithNewStatus(TransactionStatus.cancelled)
               : transaction)
           .toList();
       _recents = updated;
@@ -135,7 +135,7 @@ class TransactionProvider extends ChangeNotifier {
 
       final updated = _recents
           .map((transaction) => transaction.id == id
-              ? transaction.copyWithNewStatus("confirmed")
+              ? transaction.copyWithNewStatus(TransactionStatus.confirmed)
               : transaction)
           .toList();
       _recents = updated;
@@ -153,7 +153,7 @@ class TransactionProvider extends ChangeNotifier {
 
       final updated = _recents
           .map((transaction) => transaction.id == id
-              ? transaction.copyWithNewStatus("rejected")
+              ? transaction.copyWithNewStatus(TransactionStatus.rejected)
               : transaction)
           .toList();
       _recents = updated;
