@@ -144,10 +144,13 @@ class TransactionService {
     }
   }
 
-  Future<void> cancelTransaction(String id) async {
+  Future<void> cancelTransaction(String id, String reason) async {
     try {
       final api = ApiService.authenticated();
-      await api.dio.put('${endpoint.cancelBooking}/$id');
+      await api.dio.put(
+        endpoint.cancelBooking,
+        data: {'transactionId': id, 'reason': reason},
+      );
     } catch (error) {
       logger.logError(
           'Error cancelling transaction request: ${error.toString()}');
@@ -155,12 +158,16 @@ class TransactionService {
     }
   }
 
-  Future<void> acceptRequest(String id) async {
+  Future<void> acceptRequest(String id, String schedule) async {
     logger.logDebug('called acceptRequest in transaction_service.dart');
+    logger.logDebug('parameters: {id: $id, schedule: $schedule}');
 
     try {
       final api = ApiService.authenticated();
-      await api.dio.put('${endpoint.acceptRequest}/$id');
+      await api.dio.put(
+        endpoint.acceptRequest,
+        data: {'transactionId': id, 'schedule': schedule},
+      );
     } catch (error) {
       logger.logError(error.toString());
       rethrow;

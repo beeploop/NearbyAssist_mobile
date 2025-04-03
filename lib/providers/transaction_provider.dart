@@ -109,9 +109,9 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> cancelTransactionRequest(String id) async {
+  Future<void> cancelTransactionRequest(String id, String reason) async {
     try {
-      await TransactionService().cancelTransaction(id);
+      await TransactionService().cancelTransaction(id, reason);
 
       _sentRequests.removeWhere((request) => request.id == id);
 
@@ -128,9 +128,9 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> acceptTransactionRequest(String id) async {
+  Future<void> acceptTransactionRequest(String id, String schedule) async {
     try {
-      await TransactionService().acceptRequest(id);
+      await TransactionService().acceptRequest(id, schedule);
       _receivedRequests.removeWhere((request) => request.id == id);
 
       final updated = _recents

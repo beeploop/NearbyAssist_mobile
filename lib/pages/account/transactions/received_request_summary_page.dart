@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/transaction_model.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -26,6 +27,16 @@ class ReceivedRequestSummaryPage extends StatefulWidget {
 
 class _ReceivedRequestSummaryPageState
     extends State<ReceivedRequestSummaryPage> {
+  final _scheduleController = TextEditingController();
+  late UserModel _user;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _user = Provider.of<UserProvider>(context, listen: false).user;
+  }
+
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
@@ -194,9 +205,7 @@ class _ReceivedRequestSummaryPageState
   }
 
   void _onTapAccept() {
-    final user = context.watch<UserProvider>().user;
-
-    if (user.isRestricted) {
+    if (_user.isRestricted) {
       showAccountRestrictedModal(context);
       return;
     }
@@ -212,14 +221,30 @@ class _ReceivedRequestSummaryPageState
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Accept this request?'),
+        title: const Text(
+          'Set a schedule for this booking',
+          style: TextStyle(fontSize: 20),
+        ),
+        content: TextField(
+          controller: _scheduleController,
+          decoration: const InputDecoration(
+            labelText: 'Schedule',
+            filled: true,
+            prefixIcon: Icon(CupertinoIcons.calendar),
+          ),
+          readOnly: true,
+          onTap: _pickDate,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => _confirmRequest(widget.transaction.id),
+            onPressed: () => _confirmRequest(
+              widget.transaction.id,
+              _scheduleController.text,
+            ),
             child: const Text('Continue'),
           ),
         ],
@@ -228,9 +253,7 @@ class _ReceivedRequestSummaryPageState
   }
 
   void _onTapReject() {
-    final user = context.watch<UserProvider>().user;
-
-    if (user.isRestricted) {
+    if (_user.isRestricted) {
       showAccountRestrictedModal(context);
       return;
     }
@@ -261,20 +284,23 @@ class _ReceivedRequestSummaryPageState
     );
   }
 
-  Future<void> _confirmRequest(String id) async {
+  Future<void> _confirmRequest(String id, String schedule) async {
     final loader = context.loaderOverlay;
 
     try {
       loader.show();
-
       Navigator.pop(context);
 
+      if (schedule.isEmpty) {
+        throw 'Invalid schedule';
+      }
+
       final transactionProvider = context.read<TransactionProvider>();
-      await transactionProvider.acceptTransactionRequest(id);
+      await transactionProvider.acceptTransactionRequest(id, schedule);
 
       _onSuccess();
     } on DioException catch (error) {
-      _onError(error.response?.data['error']);
+      _onError(error.response?.data['message']);
     } catch (error) {
       _onError(error.toString());
     } finally {
@@ -299,6 +325,22 @@ class _ReceivedRequestSummaryPageState
     } finally {
       loader.hide();
     }
+  }
+
+  Future<void> _pickDate() async {
+    DateTime? schedule = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+          const Duration(days: 30)), // restrict schedule to 30 days advance
+    );
+
+    if (schedule == null) return;
+
+    setState(() {
+      _scheduleController.text = schedule.toString().split(" ")[0];
+    });
   }
 
   void _onSuccess() {

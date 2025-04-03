@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/transaction_qr_code_data.dart';
+import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -157,6 +158,8 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                   if (widget.transaction.status.toLowerCase() == 'pending')
                     FilledButton(
                       onPressed: () {
+                        final reason = TextEditingController();
+
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
@@ -169,9 +172,11 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             title: const Text('Are you sure?'),
-                            content: const Text(
-                              'This action is not reversible.',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                            content: InputField(
+                              controller: reason,
+                              hintText: 'Reason',
+                              minLines: 3,
+                              maxLines: 6,
                             ),
                             actions: [
                               TextButton(
@@ -181,7 +186,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                               TextButton(
                                 onPressed: () {
                                   context.pop();
-                                  _cancelTransaction();
+                                  _cancelTransaction(reason.text);
                                 },
                                 child: const Text('Continue'),
                               ),
@@ -261,11 +266,15 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
     );
   }
 
-  void _cancelTransaction() async {
+  void _cancelTransaction(String reason) async {
     try {
+      if (reason.isEmpty) {
+        throw 'Provide reason for cancellation';
+      }
+
       await context
           .read<TransactionProvider>()
-          .cancelTransactionRequest(widget.transaction.id);
+          .cancelTransactionRequest(widget.transaction.id, reason);
 
       _onSuccess();
     } catch (error) {
