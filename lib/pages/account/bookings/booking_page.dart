@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/grid_section.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/recent_transaction.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/grid_section.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/recent_booking.dart';
 
-class TransactionPage extends StatelessWidget {
-  const TransactionPage({super.key});
+class BookingPage extends StatelessWidget {
+  const BookingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class TransactionPage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Transactions',
+          'Bookings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -24,7 +24,7 @@ class TransactionPage extends StatelessWidget {
               SizedBox(height: 20),
               Divider(),
               SizedBox(height: 10),
-              RecentTransaction(),
+              RecentBooking(),
             ],
           ),
         ),

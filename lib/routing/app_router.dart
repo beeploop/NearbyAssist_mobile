@@ -10,7 +10,7 @@ import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/publish_service_page.dart';
 import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
 import 'package:nearby_assist/pages/account/settings/app_settings_page.dart';
-import 'package:nearby_assist/pages/account/transactions/transaction_page.dart';
+import 'package:nearby_assist/pages/account/bookings/booking_page.dart';
 import 'package:nearby_assist/pages/notification/notification_list_page.dart';
 import 'package:nearby_assist/pages/saves/saves_page.dart';
 import 'package:nearby_assist/pages/chat/chat_page.dart';
@@ -162,9 +162,9 @@ GoRouter generateRoutes(
             ),
           ]),
       GoRoute(
-          path: RoutePath.transactions.path,
-          name: RoutePath.transactions.name,
-          builder: (context, state) => const TransactionPage()),
+          path: RoutePath.bookings.path,
+          name: RoutePath.bookings.name,
+          builder: (context, state) => const BookingPage()),
       GoRoute(
           path: RoutePath.verifyAccount.path,
           name: RoutePath.verifyAccount.name,

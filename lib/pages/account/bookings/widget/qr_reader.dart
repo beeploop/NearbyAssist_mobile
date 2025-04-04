@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/scan_window_overlay.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/scan_window_overlay.dart';
 
 class QrReader extends StatefulWidget {
   const QrReader({

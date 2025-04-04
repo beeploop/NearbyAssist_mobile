@@ -1,62 +1,64 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/pages/account/transactions/accepted_request_summary_page.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/booking_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class AcceptedRequestPage extends StatefulWidget {
-  const AcceptedRequestPage({super.key});
+class HistoryPage extends StatefulWidget {
+  const HistoryPage({super.key});
 
   @override
-  State<AcceptedRequestPage> createState() => _AcceptedRequestPageState();
+  State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
+class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Accepted Requests',
+          'History',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: FutureBuilder(
-        future: context.read<TransactionProvider>().fetchAccepted(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          future: context.read<BookingProvider>().fetchHistory(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-          if (snapshot.hasError) {
-            return const Center(
-              child: AlertDialog(
-                icon: Icon(CupertinoIcons.exclamationmark_triangle),
-                title: Text('Something went wrong'),
-                content: Text(
-                  'An error occurred while fetching data, please try again later',
+            if (snapshot.hasError) {
+              return const Center(
+                child: AlertDialog(
+                  icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                  title: Text('Something went wrong'),
+                  content: Text(
+                    'An error occurred while fetching data, please try again later',
+                  ),
                 ),
-              ),
+              );
+            }
+
+            final history = context.watch<BookingProvider>().history;
+
+            return RefreshIndicator(
+              onRefresh: context.read<BookingProvider>().fetchHistory,
+              child: history.isEmpty ? _emptyState() : _mainContent(history),
             );
-          }
-
-          final confirmed = context.watch<TransactionProvider>().accepted;
-
-          return RefreshIndicator(
-            onRefresh: context.read<TransactionProvider>().fetchAccepted,
-            child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
-          );
-        },
-      ),
+          }),
     );
   }
 
-  Widget _mainContent(List<TransactionModel> requests) {
+  Widget _mainContent(List<BookingModel> requests) {
+    final user = context.read<UserProvider>().user;
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ListView.separated(
@@ -68,16 +70,21 @@ class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    AcceptedRequestSummaryPage(transaction: requests[index]),
+                    BookingSummaryPage(booking: requests[index]),
               ),
             );
           },
+          leading: Icon(
+            requests[index].client.id == user.id
+                ? CupertinoIcons.arrow_up
+                : CupertinoIcons.arrow_down,
+          ),
           title: Text(requests[index].vendor.name),
           subtitle: Text(
             requests[index].service.title,
             overflow: TextOverflow.ellipsis,
           ),
-          trailing: TransactionStatusChip(status: requests[index].status),
+          trailing: BookingStatusChip(status: requests[index].status),
         ),
       ),
     );

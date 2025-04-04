@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/scan_window_painter.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/scan_window_painter.dart';
 
 /// This widget represents an overlay that paints a scan window cutout.
 class ScanWindowOverlay extends StatelessWidget {

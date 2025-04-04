@@ -1,31 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/pages/account/transactions/rate_page.dart';
-import 'package:nearby_assist/pages/account/transactions/to_rate_summary_page.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/accepted_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:provider/provider.dart';
 
-class ToRatePage extends StatefulWidget {
-  const ToRatePage({super.key});
+class AcceptedRequestPage extends StatefulWidget {
+  const AcceptedRequestPage({super.key});
 
   @override
-  State<ToRatePage> createState() => _ToRatePageState();
+  State<AcceptedRequestPage> createState() => _AcceptedRequestPageState();
 }
 
-class _ToRatePageState extends State<ToRatePage> {
+class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'To Rate',
+          'Accepted Requests',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: FutureBuilder(
-        future: context.read<TransactionProvider>().fetchToReviewTransactions(),
+        future: context.read<BookingProvider>().fetchAccepted(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -45,55 +45,39 @@ class _ToRatePageState extends State<ToRatePage> {
             );
           }
 
-          final reviewables = context.watch<TransactionProvider>().toReviews;
+          final confirmed = context.watch<BookingProvider>().accepted;
 
           return RefreshIndicator(
-            onRefresh:
-                context.read<TransactionProvider>().fetchToReviewTransactions,
-            child:
-                reviewables.isEmpty ? _emptyState() : _buildBody(reviewables),
+            onRefresh: context.read<BookingProvider>().fetchAccepted,
+            child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
           );
         },
       ),
     );
   }
 
-  Widget _buildBody(List<TransactionModel> transactions) {
+  Widget _mainContent(List<BookingModel> requests) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
       child: ListView.separated(
-        itemCount: transactions.length,
         separatorBuilder: (context, index) => const Divider(),
+        itemCount: requests.length,
         itemBuilder: (context, index) => ListTile(
-          leading: const Icon(CupertinoIcons.checkmark_circle),
-          title: Text(transactions[index].vendor.name),
-          subtitle: Text(
-            transactions[index].service.title,
-            overflow: TextOverflow.ellipsis,
-          ),
           onTap: () {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => ToRateSummaryPage(
-                  transaction: transactions[index],
-                ),
+                builder: (context) =>
+                    AcceptedRequestSummaryPage(booking: requests[index]),
               ),
             );
           },
-          trailing: FilledButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => RatePage(
-                    transaction: transactions[index],
-                  ),
-                ),
-              );
-            },
-            child: const Text('Review'),
+          title: Text(requests[index].vendor.name),
+          subtitle: Text(
+            requests[index].service.title,
+            overflow: TextOverflow.ellipsis,
           ),
+          trailing: BookingStatusChip(status: requests[index].status),
         ),
       ),
     );

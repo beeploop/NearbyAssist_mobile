@@ -107,9 +107,9 @@ class _AccountPageState extends State<AccountPage> {
               icon: CupertinoIcons.tray_full,
               onPress: () => context.pushNamed("manage")),
           AccountTileWidget(
-              title: "Transactions",
+              title: "Bookings",
               icon: CupertinoIcons.arrow_right_arrow_left_square,
-              onPress: () => context.pushNamed("transactions")),
+              onPress: () => context.pushNamed("bookings")),
           AccountTileWidget(
               title: "Settings",
               icon: CupertinoIcons.gear,

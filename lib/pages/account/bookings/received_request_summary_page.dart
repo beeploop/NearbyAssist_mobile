@@ -4,12 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
+import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/restricted_account_modal.dart';
 import 'package:provider/provider.dart';
@@ -17,10 +17,10 @@ import 'package:provider/provider.dart';
 class ReceivedRequestSummaryPage extends StatefulWidget {
   const ReceivedRequestSummaryPage({
     super.key,
-    required this.transaction,
+    required this.booking,
   });
 
-  final TransactionModel transaction;
+  final BookingModel booking;
 
   @override
   State<ReceivedRequestSummaryPage> createState() =>
@@ -56,8 +56,8 @@ class _ReceivedRequestSummaryPageState
                 context.pushNamed(
                   'chat',
                   queryParameters: {
-                    'recipientId': widget.transaction.client.id,
-                    'recipient': widget.transaction.client.name,
+                    'recipientId': widget.booking.client.id,
+                    'recipient': widget.booking.client.name,
                   },
                 );
               },
@@ -76,8 +76,7 @@ class _ReceivedRequestSummaryPageState
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
-                      color: widget.transaction.status ==
-                              TransactionStatus.cancelled
+                      color: widget.booking.status == BookingStatus.cancelled
                           ? Colors.grey
                           : Colors.red,
                     ),
@@ -85,15 +84,13 @@ class _ReceivedRequestSummaryPageState
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed:
-                      widget.transaction.status != TransactionStatus.cancelled
-                          ? _onTapReject
-                          : () {},
+                  onPressed: widget.booking.status != BookingStatus.cancelled
+                      ? _onTapReject
+                      : () {},
                   child: Text(
                     'Reject',
                     style: TextStyle(
-                      color: widget.transaction.status ==
-                              TransactionStatus.cancelled
+                      color: widget.booking.status == BookingStatus.cancelled
                           ? Colors.grey
                           : Colors.red,
                     ),
@@ -109,7 +106,7 @@ class _ReceivedRequestSummaryPageState
                 child: FilledButton(
                   style: ButtonStyle(
                     backgroundColor: WidgetStatePropertyAll(
-                      widget.transaction.status == TransactionStatus.cancelled
+                      widget.booking.status == BookingStatus.cancelled
                           ? Colors.grey
                           : null,
                     ),
@@ -119,10 +116,9 @@ class _ReceivedRequestSummaryPageState
                       ),
                     ),
                   ),
-                  onPressed:
-                      widget.transaction.status != TransactionStatus.cancelled
-                          ? _onTapAccept
-                          : () {},
+                  onPressed: widget.booking.status != BookingStatus.cancelled
+                      ? _onTapAccept
+                      : () {},
                   child: const Text('Accept'),
                 ),
               ),
@@ -150,7 +146,7 @@ class _ReceivedRequestSummaryPageState
                       color: Colors.grey[900],
                     )),
                 const Spacer(),
-                TransactionStatusChip(status: widget.transaction.status),
+                BookingStatusChip(status: widget.booking.status),
               ],
             ),
             const Divider(),
@@ -159,16 +155,14 @@ class _ReceivedRequestSummaryPageState
             const SizedBox(height: 20),
             const Text('Vendor Information', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            RowTile(
-                label: 'Vendor Name:', text: widget.transaction.vendor.name),
+            RowTile(label: 'Vendor Name:', text: widget.booking.vendor.name),
             const Divider(),
 
             // Client information
             const SizedBox(height: 20),
             const Text('Client Information', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            RowTile(
-                label: 'Client Name:', text: widget.transaction.client.name),
+            RowTile(label: 'Client Name:', text: widget.booking.client.name),
             const Divider(),
 
             // Service Price
@@ -177,11 +171,10 @@ class _ReceivedRequestSummaryPageState
 
             // Extras
             const SizedBox(height: 20),
-            AutoSizeText(widget.transaction.service.title),
+            AutoSizeText(widget.booking.service.title),
             const SizedBox(height: 10),
             RowTile(
-                label: 'Base Rate:',
-                text: '₱ ${widget.transaction.service.rate}'),
+                label: 'Base Rate:', text: '₱ ${widget.booking.service.rate}'),
             const SizedBox(height: 20),
             const AutoSizeText(
               'Extras:',
@@ -190,7 +183,7 @@ class _ReceivedRequestSummaryPageState
               ),
             ),
             const SizedBox(height: 10),
-            ...widget.transaction.extras.map((extra) {
+            ...widget.booking.extras.map((extra) {
               return RowTile(
                 label: extra.title,
                 text: '₱ ${extra.price}',
@@ -250,7 +243,7 @@ class _ReceivedRequestSummaryPageState
           ),
           TextButton(
             onPressed: () => _confirmRequest(
-              widget.transaction.id,
+              widget.booking.id,
               _scheduleController.text,
             ),
             child: const Text('Continue'),
@@ -292,7 +285,7 @@ class _ReceivedRequestSummaryPageState
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => _rejectRequest(widget.transaction.id, reason.text),
+            onPressed: () => _rejectRequest(widget.booking.id, reason.text),
             child: const Text('Continue'),
           ),
         ],
@@ -311,8 +304,8 @@ class _ReceivedRequestSummaryPageState
         throw 'Invalid schedule';
       }
 
-      final transactionProvider = context.read<TransactionProvider>();
-      await transactionProvider.acceptTransactionRequest(id, schedule);
+      final bookingProvider = context.read<BookingProvider>();
+      await bookingProvider.acceptBookingRequest(id, schedule);
 
       _onSuccess();
     } on DioException catch (error) {
@@ -335,9 +328,7 @@ class _ReceivedRequestSummaryPageState
         throw 'Provide reason for rejection';
       }
 
-      await context
-          .read<TransactionProvider>()
-          .rejectTransactionRequest(id, reason);
+      await context.read<BookingProvider>().rejectBookingRequest(id, reason);
 
       _onSuccess();
     } on DioException catch (error) {
@@ -422,8 +413,8 @@ class _ReceivedRequestSummaryPageState
   }
 
   double _calculateTotalCost() {
-    double total = widget.transaction.service.rate;
-    for (final extra in widget.transaction.extras) {
+    double total = widget.booking.service.rate;
+    for (final extra in widget.booking.extras) {
       total += extra.price;
     }
     return total;

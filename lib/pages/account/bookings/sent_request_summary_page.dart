@@ -4,12 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/models/transaction_qr_code_data.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/booking_qr_code_data.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +18,11 @@ import 'package:qr_flutter/qr_flutter.dart';
 class SentRequestSummaryPage extends StatefulWidget {
   const SentRequestSummaryPage({
     super.key,
-    required this.transaction,
+    required this.booking,
     this.showChatIcon = false,
   });
 
-  final TransactionModel transaction;
+  final BookingModel booking;
   final bool showChatIcon;
 
   @override
@@ -38,7 +38,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Transaction Summary',
+          'Booking Summary',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -49,8 +49,8 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                 context.pushNamed(
                   'chat',
                   queryParameters: {
-                    'recipientId': widget.transaction.vendor.id,
-                    'recipient': widget.transaction.vendor.name,
+                    'recipientId': widget.booking.vendor.id,
+                    'recipient': widget.booking.vendor.name,
                   },
                 );
               },
@@ -60,7 +60,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
         ],
       ),
       body: FutureBuilder(
-        future: _getTransactionSignature(widget.transaction),
+        future: _getBookingSignature(widget.booking),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -96,7 +96,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                             color: Colors.grey[900],
                           )),
                       const Spacer(),
-                      TransactionStatusChip(status: widget.transaction.status),
+                      BookingStatusChip(status: widget.booking.status),
                     ],
                   ),
                   const Divider(),
@@ -107,8 +107,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                       style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 20),
                   RowTile(
-                      label: 'Vendor Name:',
-                      text: widget.transaction.vendor.name),
+                      label: 'Vendor Name:', text: widget.booking.vendor.name),
                   const Divider(),
 
                   // Client information
@@ -126,11 +125,11 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
 
                   // Extras
                   const SizedBox(height: 20),
-                  AutoSizeText(widget.transaction.service.title),
+                  AutoSizeText(widget.booking.service.title),
                   const SizedBox(height: 10),
                   RowTile(
                       label: 'Base Rate:',
-                      text: '₱ ${widget.transaction.service.rate}'),
+                      text: '₱ ${widget.booking.service.rate}'),
                   const SizedBox(height: 20),
                   const AutoSizeText(
                     'Extras:',
@@ -139,7 +138,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  ...widget.transaction.extras.map((extra) {
+                  ...widget.booking.extras.map((extra) {
                     return RowTile(
                       label: extra.title,
                       text: '₱ ${extra.price}',
@@ -157,7 +156,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
 
                   // Cancel Button
                   const SizedBox(height: 20),
-                  if (widget.transaction.status == TransactionStatus.pending)
+                  if (widget.booking.status == BookingStatus.pending)
                     FilledButton(
                       onPressed: () {
                         final reason = TextEditingController();
@@ -188,7 +187,7 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                               TextButton(
                                 onPressed: () {
                                   context.pop();
-                                  _cancelTransaction(reason.text);
+                                  _cancelBooking(reason.text);
                                 },
                                 child: const Text('Continue'),
                               ),
@@ -204,18 +203,18 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                       child: const Text('Cancel'),
                     ),
 
-                  // QR Code to scan for completing the transaction
-                  if (widget.transaction.status == TransactionStatus.confirmed)
+                  // QR Code to scan for completing the booking
+                  if (widget.booking.status == BookingStatus.confirmed)
                     const Text(
-                      'Show this QR to the vendor to complete this transaction',
+                      'Show this QR to the vendor to complete this booking',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16),
                     ),
 
                   const SizedBox(height: 10),
 
-                  if (widget.transaction.status == TransactionStatus.confirmed)
-                    _displayQR(widget.transaction, snapshot.data!),
+                  if (widget.booking.status == BookingStatus.confirmed)
+                    _displayQR(widget.booking, snapshot.data!),
 
                   // For padding the bottom
                   const SizedBox(height: 20),
@@ -229,18 +228,18 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
   }
 
   double _calculateTotalCost() {
-    double total = widget.transaction.service.rate;
-    for (final extra in widget.transaction.extras) {
+    double total = widget.booking.service.rate;
+    for (final extra in widget.booking.extras) {
       total += extra.price;
     }
     return total;
   }
 
-  Widget _displayQR(TransactionModel transaction, String signature) {
-    final data = TransactionQrCodeData(
-      clientId: transaction.client.id,
-      vendorId: transaction.vendor.id,
-      transactionId: transaction.id,
+  Widget _displayQR(BookingModel booking, String signature) {
+    final data = BookingQrCodeData(
+      clientId: booking.client.id,
+      vendorId: booking.vendor.id,
+      bookingId: booking.id,
       signature: signature,
     );
 
@@ -268,15 +267,15 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
     );
   }
 
-  void _cancelTransaction(String reason) async {
+  void _cancelBooking(String reason) async {
     try {
       if (reason.isEmpty) {
         throw 'Provide reason for cancellation';
       }
 
       await context
-          .read<TransactionProvider>()
-          .cancelTransactionRequest(widget.transaction.id, reason);
+          .read<BookingProvider>()
+          .cancelBookingRequest(widget.booking.id, reason);
 
       _onSuccess();
     } catch (error) {
@@ -284,16 +283,16 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
     }
   }
 
-  Future<String> _getTransactionSignature(TransactionModel transaction) async {
-    if (transaction.status != TransactionStatus.confirmed) {
+  Future<String> _getBookingSignature(BookingModel booking) async {
+    if (booking.status != BookingStatus.confirmed) {
       return '';
     }
 
     try {
-      final data = TransactionQrCodeData(
-        clientId: transaction.client.id,
-        vendorId: transaction.vendor.id,
-        transactionId: transaction.id,
+      final data = BookingQrCodeData(
+        clientId: booking.client.id,
+        vendorId: booking.vendor.id,
+        bookingId: booking.id,
         signature: '',
       );
 

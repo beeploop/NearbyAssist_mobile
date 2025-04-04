@@ -70,7 +70,7 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
                     ),
                     title: const Text('Delete Extra'),
                     content: const Text(
-                      'This is a permanent action. This will fail if there are active transactions using this extra. Are you sure?',
+                      'This is a permanent action. This will fail if there are active bookings using this extra. Are you sure?',
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

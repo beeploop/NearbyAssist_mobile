@@ -1,30 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/pages/account/transactions/accepted_request_summary_page.dart';
-import 'package:nearby_assist/pages/account/transactions/received_request_summary_page.dart';
-import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
-import 'package:nearby_assist/pages/account/transactions/transaction_summary_page.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/accepted_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/received_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/sent_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/booking_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class RecentTransaction extends StatefulWidget {
-  const RecentTransaction({super.key});
+class RecentBooking extends StatefulWidget {
+  const RecentBooking({super.key});
 
   @override
-  State<RecentTransaction> createState() => _RecentTransactionState();
+  State<RecentBooking> createState() => _RecentBookingState();
 }
 
-class _RecentTransactionState extends State<RecentTransaction> {
+class _RecentBookingState extends State<RecentBooking> {
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Recent Transactions',
+          'Recent Bookings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 20),
@@ -35,7 +35,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
 
   Widget _fetchAndBuildList() {
     return FutureBuilder(
-      future: context.read<TransactionProvider>().fetchRecent(),
+      future: context.read<BookingProvider>().fetchRecent(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -55,13 +55,13 @@ class _RecentTransactionState extends State<RecentTransaction> {
           );
         }
 
-        final recents = context.watch<TransactionProvider>().recents;
+        final recents = context.watch<BookingProvider>().recents;
         return _buildList(recents);
       },
     );
   }
 
-  Widget _buildList(List<TransactionModel> recents) {
+  Widget _buildList(List<BookingModel> recents) {
     final user = context.read<UserProvider>().user;
 
     return ListView.separated(
@@ -71,12 +71,12 @@ class _RecentTransactionState extends State<RecentTransaction> {
       itemBuilder: (context, index) => ListTile(
         onTap: () {
           // Navigate to history summary page if status == 'done'
-          if (recents[index].status == TransactionStatus.done) {
+          if (recents[index].status == BookingStatus.done) {
             Navigator.push(
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    TransactionSummaryPage(transaction: recents[index]),
+                    BookingSummaryPage(booking: recents[index]),
               ),
             );
             return;
@@ -87,17 +87,17 @@ class _RecentTransactionState extends State<RecentTransaction> {
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    SentRequestSummaryPage(transaction: recents[index]),
+                    SentRequestSummaryPage(booking: recents[index]),
               ),
             );
             return;
           } else {
-            if (recents[index].status == TransactionStatus.confirmed) {
+            if (recents[index].status == BookingStatus.confirmed) {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
                   builder: (context) =>
-                      AcceptedRequestSummaryPage(transaction: recents[index]),
+                      AcceptedRequestSummaryPage(booking: recents[index]),
                 ),
               );
               return;
@@ -107,7 +107,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    ReceivedRequestSummaryPage(transaction: recents[index]),
+                    ReceivedRequestSummaryPage(booking: recents[index]),
               ),
             );
             return;
@@ -135,7 +135,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
           recents[index].service.title,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: TransactionStatusChip(status: recents[index].status),
+        trailing: BookingStatusChip(status: recents[index].status),
       ),
     );
   }

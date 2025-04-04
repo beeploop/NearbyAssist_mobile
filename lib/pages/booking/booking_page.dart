@@ -8,7 +8,7 @@ import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/service_information_section.dart';
 import 'package:nearby_assist/pages/booking/widget/summary_section.dart';
 import 'package:nearby_assist/pages/booking/widget/user_information_section.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -198,7 +198,7 @@ class _BookingPageState extends State<BookingPage> {
     );
 
     try {
-      await context.read<TransactionProvider>().createTransaction(booking);
+      await context.read<BookingProvider>().createBooking(booking);
 
       _onSuccess();
     } catch (error) {

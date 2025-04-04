@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
+import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:provider/provider.dart';
 
 class RatePage extends StatefulWidget {
-  const RatePage({super.key, required this.transaction});
+  const RatePage({super.key, required this.booking});
 
-  final TransactionModel transaction;
+  final BookingModel booking;
 
   @override
   State<RatePage> createState() => _RatePageState();
@@ -49,7 +49,7 @@ class _RatePageState extends State<RatePage> {
 
             // Title
             Text(
-              widget.transaction.service.title,
+              widget.booking.service.title,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -122,13 +122,13 @@ class _RatePageState extends State<RatePage> {
       }
 
       final review = ReviewModel(
-        transactionId: widget.transaction.id,
-        serviceId: widget.transaction.service.id,
+        bookingId: widget.booking.id,
+        serviceId: widget.booking.service.id,
         rating: _rating.toInt(),
         text: _reviewController.text,
       );
 
-      await context.read<TransactionProvider>().postReview(review);
+      await context.read<BookingProvider>().postReview(review);
 
       _onSuccess();
     } catch (error) {

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/pages/account/transactions/received_request_page.dart';
-import 'package:nearby_assist/pages/account/transactions/history_page.dart';
-import 'package:nearby_assist/pages/account/transactions/sent_request_page.dart';
-import 'package:nearby_assist/pages/account/transactions/accepted_request_page.dart';
-import 'package:nearby_assist/pages/account/transactions/to_rate_page.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/grid_item.dart';
+import 'package:nearby_assist/pages/account/bookings/received_request_page.dart';
+import 'package:nearby_assist/pages/account/bookings/history_page.dart';
+import 'package:nearby_assist/pages/account/bookings/sent_request_page.dart';
+import 'package:nearby_assist/pages/account/bookings/accepted_request_page.dart';
+import 'package:nearby_assist/pages/account/bookings/to_rate_page.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/grid_item.dart';
 
 class GridSection extends StatelessWidget {
   const GridSection({

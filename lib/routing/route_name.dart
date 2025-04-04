@@ -19,7 +19,7 @@ enum RoutePath {
 
   account(path: "/account"),
 
-  transactions(path: "/transactions"),
+  bookings(path: "/bookings"),
 
   profile(path: "/profile"),
 

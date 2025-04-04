@@ -6,7 +6,7 @@ class SearchResultModel {
   double rating;
   double latitude;
   double longitude;
-  int completedTransactions;
+  int completedBookings;
   double distance;
 
   SearchResultModel({
@@ -17,7 +17,7 @@ class SearchResultModel {
     required this.rating,
     required this.latitude,
     required this.longitude,
-    required this.completedTransactions,
+    required this.completedBookings,
     required this.distance,
   });
 
@@ -30,8 +30,7 @@ class SearchResultModel {
       rating: double.parse(json['rating'].toString()),
       latitude: json['latitude'],
       longitude: json['longitude'],
-      completedTransactions:
-          int.parse(json['completedTransactions'].toString()),
+      completedBookings: int.parse(json['completedBookings'].toString()),
       distance: double.parse(json['distance'].toString()),
     );
   }

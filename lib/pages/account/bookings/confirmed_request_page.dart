@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/pages/account/transactions/accepted_request_summary_page.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/accepted_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:provider/provider.dart';
 
 class ConfirmedRequestPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class ConfirmedRequestPage extends StatefulWidget {
 class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
   @override
   Widget build(BuildContext context) {
-    final confirmed = context.watch<TransactionProvider>().accepted;
+    final confirmed = context.watch<BookingProvider>().accepted;
 
     return Scaffold(
       appBar: AppBar(
@@ -27,13 +27,13 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: context.read<TransactionProvider>().fetchAccepted,
+        onRefresh: context.read<BookingProvider>().fetchAccepted,
         child: confirmed.isEmpty ? _emptyState() : _mainContent(confirmed),
       ),
     );
   }
 
-  Widget _mainContent(List<TransactionModel> requests) {
+  Widget _mainContent(List<BookingModel> requests) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ListView.separated(
@@ -45,7 +45,7 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
               context,
               CupertinoPageRoute(
                 builder: (context) =>
-                    AcceptedRequestSummaryPage(transaction: requests[index]),
+                    AcceptedRequestSummaryPage(booking: requests[index]),
               ),
             );
           },
@@ -54,7 +54,7 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
             requests[index].service.title,
             overflow: TextOverflow.ellipsis,
           ),
-          trailing: TransactionStatusChip(status: requests[index].status),
+          trailing: BookingStatusChip(status: requests[index].status),
         ),
       ),
     );

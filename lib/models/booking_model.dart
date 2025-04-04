@@ -3,22 +3,22 @@ import 'package:nearby_assist/models/minimal_user_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 
-enum TransactionStatus { pending, confirmed, done, rejected, cancelled }
+enum BookingStatus { pending, confirmed, done, rejected, cancelled }
 
-class TransactionModel {
+class BookingModel {
   String id;
   MinimalUserModel vendor;
   MinimalUserModel client;
   MinimalServiceModel service;
   List<ServiceExtraModel> extras;
   double cost;
-  TransactionStatus status;
+  BookingStatus status;
   String createdAt;
   String? updatedAt;
   String? scheduledAt;
   String? cancelReason;
 
-  TransactionModel({
+  BookingModel({
     required this.id,
     required this.vendor,
     required this.client,
@@ -32,8 +32,8 @@ class TransactionModel {
     required this.cancelReason,
   });
 
-  factory TransactionModel.fromJson(Map<String, dynamic> json) {
-    return TransactionModel(
+  factory BookingModel.fromJson(Map<String, dynamic> json) {
+    return BookingModel(
       id: json['id'],
       vendor: MinimalUserModel.fromJson(json['vendor']),
       client: MinimalUserModel.fromJson(json['client']),
@@ -43,11 +43,11 @@ class TransactionModel {
           .toList(),
       cost: double.tryParse(json['cost'].toString()) ?? 0.0,
       status: switch (json['status']) {
-        'pending' => TransactionStatus.pending,
-        'confirmed' => TransactionStatus.confirmed,
-        'done' => TransactionStatus.done,
-        'rejected' => TransactionStatus.rejected,
-        _ => TransactionStatus.cancelled,
+        'pending' => BookingStatus.pending,
+        'confirmed' => BookingStatus.confirmed,
+        'done' => BookingStatus.done,
+        'rejected' => BookingStatus.rejected,
+        _ => BookingStatus.cancelled,
       },
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
@@ -56,7 +56,7 @@ class TransactionModel {
     );
   }
 
-  TransactionModel copyWithNewStatus(TransactionStatus status) {
+  BookingModel copyWithNewStatus(BookingStatus status) {
     this.status = status;
     return this;
   }

@@ -1,14 +1,14 @@
 class ReviewModel {
   String? id;
   final String serviceId;
-  final String transactionId;
+  final String bookingId;
   final int rating;
   final String text;
 
   ReviewModel({
     this.id,
     required this.serviceId,
-    required this.transactionId,
+    required this.bookingId,
     required this.rating,
     required this.text,
   });
@@ -17,7 +17,7 @@ class ReviewModel {
     return ReviewModel(
       id: json['id'] ?? '',
       serviceId: json['serviceId'],
-      transactionId: json['transactionId'],
+      bookingId: json['bookingId'],
       rating: json['rating'],
       text: json['text'],
     );
@@ -26,7 +26,7 @@ class ReviewModel {
   Map<String, dynamic> toJson() {
     return {
       'serviceId': serviceId,
-      'transactionId': transactionId,
+      'bookingId': bookingId,
       'rating': rating,
       'text': text,
     };

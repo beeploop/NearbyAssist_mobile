@@ -13,7 +13,7 @@ import 'package:nearby_assist/providers/route_provider.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/providers/vendor_provider.dart';
 import 'package:nearby_assist/providers/websocket_provider.dart';
@@ -53,7 +53,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => WebsocketProvider()),
         ChangeNotifierProvider(create: (context) => SavesProvider()),
         ChangeNotifierProvider(create: (context) => ManagedServiceProvider()),
-        ChangeNotifierProvider(create: (context) => TransactionProvider()),
+        ChangeNotifierProvider(create: (context) => BookingProvider()),
         ChangeNotifierProvider(create: (context) => ExpertiseProvider()),
         ChangeNotifierProvider(create: (context) => NotificationsProvider()),
         ChangeNotifierProvider(create: (context) => RecommendationProvider()),

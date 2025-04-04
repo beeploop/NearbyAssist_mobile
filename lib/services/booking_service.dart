@@ -1,20 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
+import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/review_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 
-class TransactionService {
-  Future<List<TransactionModel>> fetchRecent() async {
-    logger.logDebug('called fetchRecent in transaction_service.dart');
+class BookingService {
+  Future<List<BookingModel>> fetchRecent() async {
+    logger.logDebug('called fetchRecent in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.recent);
 
-      return (response.data['transactions'] as List)
-          .map((transaction) => TransactionModel.fromJson(transaction))
+      return (response.data['bookings'] as List)
+          .map((booking) => BookingModel.fromJson(booking))
           .toList();
     } catch (error) {
       logger.logError(error.toString());
@@ -22,15 +22,15 @@ class TransactionService {
     }
   }
 
-  Future<List<TransactionModel>> fetchHistory() async {
-    logger.logDebug('called fetchHistory in transaction_service.dart');
+  Future<List<BookingModel>> fetchHistory() async {
+    logger.logDebug('called fetchHistory in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.history);
 
       return (response.data['history'] as List)
-          .map((transaction) => TransactionModel.fromJson(transaction))
+          .map((booking) => BookingModel.fromJson(booking))
           .toList();
     } catch (error) {
       logger.logError(error.toString());
@@ -38,15 +38,15 @@ class TransactionService {
     }
   }
 
-  Future<List<TransactionModel>> fetchAccepted() async {
-    logger.logDebug('called fetchAccepted in transaction_service.dart');
+  Future<List<BookingModel>> fetchAccepted() async {
+    logger.logDebug('called fetchAccepted in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.confirmed);
 
-      return (response.data['transactions'] as List)
-          .map((transaction) => TransactionModel.fromJson(transaction))
+      return (response.data['bookings'] as List)
+          .map((booking) => BookingModel.fromJson(booking))
           .toList();
     } catch (error) {
       logger.logError(error.toString());
@@ -54,8 +54,8 @@ class TransactionService {
     }
   }
 
-  Future<List<TransactionModel>> fetchReceivedRequests() async {
-    logger.logDebug('called fetchReceivedRequests in transaction_service.dart');
+  Future<List<BookingModel>> fetchReceivedRequests() async {
+    logger.logDebug('called fetchReceivedRequests in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
@@ -64,8 +64,8 @@ class TransactionService {
         queryParameters: {'filter': 'received'},
       );
 
-      return (response.data['transactions'] as List)
-          .map((transaction) => TransactionModel.fromJson(transaction))
+      return (response.data['bookings'] as List)
+          .map((booking) => BookingModel.fromJson(booking))
           .toList();
     } catch (error) {
       logger.logError(error.toString());
@@ -73,8 +73,8 @@ class TransactionService {
     }
   }
 
-  Future<List<TransactionModel>> fetchSentRequests() async {
-    logger.logDebug('called fetchSentRequests in transaction_service.dart');
+  Future<List<BookingModel>> fetchSentRequests() async {
+    logger.logDebug('called fetchSentRequests in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
@@ -83,8 +83,8 @@ class TransactionService {
         queryParameters: {'filter': 'sent'},
       );
 
-      return (response.data['transactions'] as List)
-          .map((transaction) => TransactionModel.fromJson(transaction))
+      return (response.data['bookings'] as List)
+          .map((booking) => BookingModel.fromJson(booking))
           .toList();
     } catch (error) {
       logger.logError(error.toString());
@@ -92,16 +92,15 @@ class TransactionService {
     }
   }
 
-  Future<List<TransactionModel>> fetchToReviewTransactions() async {
-    logger
-        .logDebug('called tchToReviewTransactions in transaction_service.dart');
+  Future<List<BookingModel>> fetchToReviewBookings() async {
+    logger.logDebug('called tchToReviewBookings in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.toReviews);
 
       return (response.data['reviewables'] as List)
-          .map((transaction) => TransactionModel.fromJson(transaction))
+          .map((booking) => BookingModel.fromJson(booking))
           .toList();
     } catch (error) {
       logger.logError(error.toString());
@@ -109,8 +108,8 @@ class TransactionService {
     }
   }
 
-  Future<void> createTransaction(BookingRequestModel booking) async {
-    logger.logDebug('called createTransaction in transaction_service.dart');
+  Future<void> createBooking(BookingRequestModel booking) async {
+    logger.logDebug('called createBooking in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
@@ -119,8 +118,8 @@ class TransactionService {
         data: booking.toJson(),
       );
 
-      final transactionId = response.data['transaction'] as String;
-      logger.logInfo('Transaction ID: $transactionId');
+      final bookingId = response.data['booking'] as String;
+      logger.logInfo('Booking ID: $bookingId');
     } on DioException catch (error) {
       logger.logError(error.toString());
       if (error.response?.statusCode == 400) {
@@ -134,39 +133,38 @@ class TransactionService {
     }
   }
 
-  Future<void> fetchTransaction(String id) async {
+  Future<void> fetchBooking(String id) async {
     try {
       final api = ApiService.authenticated();
-      await api.dio.get('${endpoint.getTransaction}/$id');
+      await api.dio.get('${endpoint.getBooking}/$id');
     } catch (error) {
-      logger.logError('Error fetching transaction: ${error.toString()}');
+      logger.logError('Error fetching booking: ${error.toString()}');
       rethrow;
     }
   }
 
-  Future<void> cancelTransaction(String id, String reason) async {
+  Future<void> cancelBooking(String id, String reason) async {
     try {
       final api = ApiService.authenticated();
       await api.dio.put(
         endpoint.cancelBooking,
-        data: {'transactionId': id, 'reason': reason},
+        data: {'bookingId': id, 'reason': reason},
       );
     } catch (error) {
-      logger.logError(
-          'Error cancelling transaction request: ${error.toString()}');
+      logger.logError('Error cancelling booking request: ${error.toString()}');
       rethrow;
     }
   }
 
   Future<void> acceptRequest(String id, String schedule) async {
-    logger.logDebug('called acceptRequest in transaction_service.dart');
+    logger.logDebug('called acceptRequest in booking_service.dart');
     logger.logDebug('parameters: {id: $id, schedule: $schedule}');
 
     try {
       final api = ApiService.authenticated();
       await api.dio.put(
         endpoint.acceptRequest,
-        data: {'transactionId': id, 'schedule': schedule},
+        data: {'bookingId': id, 'schedule': schedule},
       );
     } catch (error) {
       logger.logError(error.toString());
@@ -175,13 +173,13 @@ class TransactionService {
   }
 
   Future<void> rejectRequest(String id, String reason) async {
-    logger.logDebug('called rejectRequest in transaction_service.dart');
+    logger.logDebug('called rejectRequest in booking_service.dart');
 
     try {
       final api = ApiService.authenticated();
       await api.dio.put(
         endpoint.rejectRequest,
-        data: {'transactionId': id, 'reason': reason},
+        data: {'bookingId': id, 'reason': reason},
       );
     } catch (error) {
       logger.logError(error.toString());

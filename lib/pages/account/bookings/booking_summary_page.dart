@@ -2,35 +2,35 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:provider/provider.dart';
 
-class TransactionSummaryPage extends StatefulWidget {
-  const TransactionSummaryPage({
+class BookingSummaryPage extends StatefulWidget {
+  const BookingSummaryPage({
     super.key,
-    required this.transaction,
+    required this.booking,
     this.showChatIcon = false,
   });
 
-  final TransactionModel transaction;
+  final BookingModel booking;
   final bool showChatIcon;
 
   @override
-  State<TransactionSummaryPage> createState() => _TransactionSummaryPageState();
+  State<BookingSummaryPage> createState() => _BookingSummaryPageState();
 }
 
-class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
+class _BookingSummaryPageState extends State<BookingSummaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Transaction Summary',
+          'Booking Summary',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -41,8 +41,8 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
                 context.pushNamed(
                   'chat',
                   queryParameters: {
-                    'recipientId': widget.transaction.vendor.id,
-                    'recipient': widget.transaction.vendor.name,
+                    'recipientId': widget.booking.vendor.id,
+                    'recipient': widget.booking.vendor.name,
                   },
                 );
               },
@@ -67,7 +67,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
                         color: Colors.grey[900],
                       )),
                   const Spacer(),
-                  TransactionStatusChip(status: widget.transaction.status),
+                  BookingStatusChip(status: widget.booking.status),
                 ],
               ),
               const Divider(),
@@ -76,16 +76,14 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
               const SizedBox(height: 20),
               const Text('Vendor Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(
-                  label: 'Vendor Name:', text: widget.transaction.vendor.name),
+              RowTile(label: 'Vendor Name:', text: widget.booking.vendor.name),
               const Divider(),
 
               // Client information
               const SizedBox(height: 20),
               const Text('Client Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(
-                  label: 'Client Name:', text: widget.transaction.client.name),
+              RowTile(label: 'Client Name:', text: widget.booking.client.name),
               const Divider(),
 
               // Service Price
@@ -95,12 +93,12 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
               // Extras
               const SizedBox(height: 20),
               AutoSizeText(
-                widget.transaction.service.title,
+                widget.booking.service.title,
               ),
               const SizedBox(height: 10),
               RowTile(
                   label: 'Base Rate:',
-                  text: '₱ ${widget.transaction.service.rate}'),
+                  text: '₱ ${widget.booking.service.rate}'),
               const SizedBox(height: 20),
               const AutoSizeText(
                 'Extras:',
@@ -109,7 +107,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              ...widget.transaction.extras.map((extra) {
+              ...widget.booking.extras.map((extra) {
                 return RowTile(
                   label: extra.title,
                   text: '₱ ${extra.price}',
@@ -126,7 +124,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
 
               // Cancel Button
               const SizedBox(height: 20),
-              if (widget.transaction.status == TransactionStatus.pending)
+              if (widget.booking.status == BookingStatus.pending)
                 FilledButton(
                   onPressed: () {
                     final reason = TextEditingController();
@@ -157,7 +155,7 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
                           TextButton(
                             onPressed: () {
                               context.pop();
-                              _cancelTransaction(reason.text);
+                              _cancelBooking(reason.text);
                             },
                             child: const Text('Continue'),
                           ),
@@ -179,22 +177,22 @@ class _TransactionSummaryPageState extends State<TransactionSummaryPage> {
   }
 
   double _calculateTotalCost() {
-    double total = widget.transaction.service.rate;
-    for (final extra in widget.transaction.extras) {
+    double total = widget.booking.service.rate;
+    for (final extra in widget.booking.extras) {
       total += extra.price;
     }
     return total;
   }
 
-  void _cancelTransaction(String reason) async {
+  void _cancelBooking(String reason) async {
     try {
       if (reason.isEmpty) {
         throw 'Provide reason for cancellation';
       }
 
       await context
-          .read<TransactionProvider>()
-          .cancelTransactionRequest(widget.transaction.id, reason);
+          .read<BookingProvider>()
+          .cancelBookingRequest(widget.booking.id, reason);
 
       _onSuccess();
     } catch (error) {

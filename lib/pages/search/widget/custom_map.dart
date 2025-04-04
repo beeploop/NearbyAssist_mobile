@@ -195,7 +195,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
             ),
             _orderPreferenceItem(
               searchProvider,
-              ServiceSortingMethod.completedTransactions,
+              ServiceSortingMethod.completedBookings,
               CupertinoIcons.checkmark,
             ),
             _orderPreferenceItem(

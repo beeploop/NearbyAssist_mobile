@@ -84,19 +84,19 @@ class ApiEndpoint {
   String get saveService => '$_baseUrl/api/v1/services/save';
   String get unsaveService => '$_baseUrl/api/v1/services/unsave';
 
-  String get createBooking => '$_baseUrl/api/v1/transactions';
-  String get cancelBooking => '$_baseUrl/api/v1/transactions/cancel';
-  String get acceptRequest => '$_baseUrl/api/v1/transactions/accept';
-  String get rejectRequest => '$_baseUrl/api/v1/transactions/reject';
-  String get completeTransaction => '$_baseUrl/api/v1/transactions/complete';
-  String get toReviews => '$_baseUrl/api/v1/transactions/toReview';
+  String get createBooking => '$_baseUrl/api/v1/bookings';
+  String get cancelBooking => '$_baseUrl/api/v1/bookings/cancel';
+  String get acceptRequest => '$_baseUrl/api/v1/bookings/accept';
+  String get rejectRequest => '$_baseUrl/api/v1/bookings/reject';
+  String get completeBooking => '$_baseUrl/api/v1/bookings/complete';
+  String get toReviews => '$_baseUrl/api/v1/bookings/toReview';
   String get postReview => '$_baseUrl/api/v1/reviews';
-  String get getTransaction => '$_baseUrl/api/v1/transactions';
-  String get recent => '$_baseUrl/api/v1/transactions/recent';
-  String get history => '$_baseUrl/api/v1/transactions/history';
-  String get confirmed => '$_baseUrl/api/v1/transactions/confirmed';
-  String get myRequests => '$_baseUrl/api/v1/transactions/mine';
-  String get clientRequests => '$_baseUrl/api/v1/transactions/mine';
+  String get getBooking => '$_baseUrl/api/v1/bookings';
+  String get recent => '$_baseUrl/api/v1/bookings/recent';
+  String get history => '$_baseUrl/api/v1/bookings/history';
+  String get confirmed => '$_baseUrl/api/v1/bookings/confirmed';
+  String get myRequests => '$_baseUrl/api/v1/bookings/mine';
+  String get clientRequests => '$_baseUrl/api/v1/bookings/mine';
 
   String get expertiseList => '$_baseUrl/api/v1/tags/expertise';
 

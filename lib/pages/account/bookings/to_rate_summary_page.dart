@@ -1,14 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/pages/account/transactions/rate_page.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/rate_page.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 
 class ToRateSummaryPage extends StatefulWidget {
-  const ToRateSummaryPage({super.key, required this.transaction});
+  const ToRateSummaryPage({super.key, required this.booking});
 
-  final TransactionModel transaction;
+  final BookingModel booking;
 
   @override
   State<ToRateSummaryPage> createState() => _ToRateSummaryPageState();
@@ -35,16 +35,14 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               const SizedBox(height: 20),
               const Text('Vendor Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(
-                  label: 'Vendor Name:', text: widget.transaction.vendor.name),
+              RowTile(label: 'Vendor Name:', text: widget.booking.vendor.name),
               const Divider(),
 
               // Client information
               const SizedBox(height: 20),
               const Text('Client Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(
-                  label: 'Client Name:', text: widget.transaction.client.name),
+              RowTile(label: 'Client Name:', text: widget.booking.client.name),
               const Divider(),
 
               // Service Price
@@ -53,11 +51,11 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
 
               // Extras
               const SizedBox(height: 20),
-              AutoSizeText(widget.transaction.service.title),
+              AutoSizeText(widget.booking.service.title),
               const SizedBox(height: 10),
               RowTile(
                   label: 'Base Rate:',
-                  text: '₱ ${widget.transaction.service.rate}'),
+                  text: '₱ ${widget.booking.service.rate}'),
               const SizedBox(height: 20),
               const AutoSizeText(
                 'Extras:',
@@ -66,7 +64,7 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              ...widget.transaction.extras.map((extra) {
+              ...widget.booking.extras.map((extra) {
                 return RowTile(
                   label: extra.title,
                   text: '₱ ${extra.price}',
@@ -87,8 +85,7 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
                   Navigator.push(
                     context,
                     CupertinoPageRoute(
-                      builder: (context) =>
-                          RatePage(transaction: widget.transaction),
+                      builder: (context) => RatePage(booking: widget.booking),
                     ),
                   );
                 },
@@ -105,8 +102,8 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
   }
 
   double _calculateTotalCost() {
-    double total = widget.transaction.service.rate;
-    for (final extra in widget.transaction.extras) {
+    double total = widget.booking.service.rate;
+    for (final extra in widget.booking.extras) {
       total += extra.price;
     }
     return total;

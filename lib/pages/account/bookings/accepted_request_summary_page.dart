@@ -7,23 +7,23 @@ import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/models/transaction_qr_code_data.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/qr_reader.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/booking_qr_code_data.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/qr_reader.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:provider/provider.dart';
 
 class AcceptedRequestSummaryPage extends StatefulWidget {
   const AcceptedRequestSummaryPage({
     super.key,
-    required this.transaction,
+    required this.booking,
     this.showChatIcon = false,
   });
 
-  final TransactionModel transaction;
+  final BookingModel booking;
   final bool showChatIcon;
 
   @override
@@ -40,7 +40,7 @@ class _AcceptedRequestSummaryPageState
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            'Transaction Summary',
+            'Booking Summary',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
@@ -51,8 +51,8 @@ class _AcceptedRequestSummaryPageState
                   context.pushNamed(
                     'chat',
                     queryParameters: {
-                      'recipientId': widget.transaction.vendor.id,
-                      'recipient': widget.transaction.vendor.name,
+                      'recipientId': widget.booking.vendor.id,
+                      'recipient': widget.booking.vendor.name,
                     },
                   );
                 },
@@ -66,7 +66,7 @@ class _AcceptedRequestSummaryPageState
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: FilledButton(
             onPressed: () {
-              _completeTransaction();
+              _completeBooking();
             },
             style: ButtonStyle(
               shape: WidgetStatePropertyAll(
@@ -99,7 +99,7 @@ class _AcceptedRequestSummaryPageState
                       color: Colors.grey[900],
                     )),
                 const Spacer(),
-                TransactionStatusChip(status: widget.transaction.status),
+                BookingStatusChip(status: widget.booking.status),
               ],
             ),
             const Divider(),
@@ -108,16 +108,14 @@ class _AcceptedRequestSummaryPageState
             const SizedBox(height: 20),
             const Text('Vendor Information', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            RowTile(
-                label: 'Vendor Name:', text: widget.transaction.vendor.name),
+            RowTile(label: 'Vendor Name:', text: widget.booking.vendor.name),
             const Divider(),
 
             // Client information
             const SizedBox(height: 20),
             const Text('Client Information', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            RowTile(
-                label: 'Client Name:', text: widget.transaction.client.name),
+            RowTile(label: 'Client Name:', text: widget.booking.client.name),
             const Divider(),
 
             // Service Price
@@ -126,11 +124,10 @@ class _AcceptedRequestSummaryPageState
 
             // Extras
             const SizedBox(height: 20),
-            AutoSizeText(widget.transaction.service.title),
+            AutoSizeText(widget.booking.service.title),
             const SizedBox(height: 10),
             RowTile(
-                label: 'Base Rate:',
-                text: '₱ ${widget.transaction.service.rate}'),
+                label: 'Base Rate:', text: '₱ ${widget.booking.service.rate}'),
             const SizedBox(height: 20),
             const AutoSizeText(
               'Extras:',
@@ -139,7 +136,7 @@ class _AcceptedRequestSummaryPageState
               ),
             ),
             const SizedBox(height: 10),
-            ...widget.transaction.extras.map((extra) {
+            ...widget.booking.extras.map((extra) {
               return RowTile(
                 label: extra.title,
                 text: '₱ ${extra.price}',
@@ -162,14 +159,14 @@ class _AcceptedRequestSummaryPageState
   }
 
   double _calculateTotalCost() {
-    double total = widget.transaction.service.rate;
-    for (final extra in widget.transaction.extras) {
+    double total = widget.booking.service.rate;
+    for (final extra in widget.booking.extras) {
       total += extra.price;
     }
     return total;
   }
 
-  void _completeTransaction() async {
+  void _completeBooking() async {
     try {
       showModalBottomSheet(
         context: context,
@@ -196,7 +193,7 @@ class _AcceptedRequestSummaryPageState
     try {
       loader.show();
 
-      final requestProvider = context.read<TransactionProvider>();
+      final requestProvider = context.read<BookingProvider>();
 
       Navigator.pop(context); // Called to close the dialog for the camera
 
@@ -205,7 +202,7 @@ class _AcceptedRequestSummaryPageState
         throw 'Error scanning QR';
       }
 
-      final data = TransactionQrCodeData.fromJson(jsonDecode(detectedValue));
+      final data = BookingQrCodeData.fromJson(jsonDecode(detectedValue));
 
       // call the server to verify the QR code signature
       final api = ApiService.authenticated();
@@ -214,11 +211,10 @@ class _AcceptedRequestSummaryPageState
         data: data.toJson(),
       );
 
-      // call the server to complete the transaction
-      await api.dio
-          .post('${endpoint.completeTransaction}/${data.transactionId}');
+      // call the server to complete the booking
+      await api.dio.post('${endpoint.completeBooking}/${data.bookingId}');
 
-      requestProvider.removeRequestFromAccepted(widget.transaction.id);
+      requestProvider.removeRequestFromAccepted(widget.booking.id);
       _onSuccess();
     } on DioException catch (error) {
       _onError(error.response?.data);
@@ -243,7 +239,7 @@ class _AcceptedRequestSummaryPageState
             borderRadius: BorderRadius.circular(10),
           ),
           title: const Text('Successful'),
-          content: const Text('Transaction complete'),
+          content: const Text('Booking complete'),
           actions: [
             TextButton(
               onPressed: () {

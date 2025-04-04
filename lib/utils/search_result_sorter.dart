@@ -18,8 +18,8 @@ class SearchResultSorter {
         return _sortWithRate();
       case ServiceSortingMethod.rating:
         return _sortWithRating();
-      case ServiceSortingMethod.completedTransactions:
-        return _sortWithCompletedTransactions();
+      case ServiceSortingMethod.completedBookings:
+        return _sortWithCompletedBookings();
       case ServiceSortingMethod.distance:
         return _sortWithDistance();
     }
@@ -40,9 +40,9 @@ class SearchResultSorter {
     return services;
   }
 
-  List<SearchResultModel> _sortWithCompletedTransactions() {
+  List<SearchResultModel> _sortWithCompletedBookings() {
     services.sort(
-      (a, b) => a.completedTransactions.compareTo(b.completedTransactions),
+      (a, b) => a.completedBookings.compareTo(b.completedBookings),
     );
     return services;
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
+import 'package:nearby_assist/models/booking_model.dart';
 
-class TransactionStatusChip extends StatelessWidget {
-  const TransactionStatusChip({super.key, required this.status});
+class BookingStatusChip extends StatelessWidget {
+  const BookingStatusChip({super.key, required this.status});
 
-  final TransactionStatus status;
+  final BookingStatus status;
 
   @override
   Widget build(BuildContext context) {
@@ -31,15 +31,15 @@ class TransactionStatusChip extends StatelessWidget {
 
   Color _pickColor() {
     switch (status) {
-      case TransactionStatus.pending:
+      case BookingStatus.pending:
         return Colors.orange;
-      case TransactionStatus.confirmed:
+      case BookingStatus.confirmed:
         return Colors.teal;
-      case TransactionStatus.done:
+      case BookingStatus.done:
         return Colors.green;
-      case TransactionStatus.rejected:
+      case BookingStatus.rejected:
         return Colors.red;
-      case TransactionStatus.cancelled:
+      case BookingStatus.cancelled:
         return Colors.grey;
       default:
         return Colors.grey;

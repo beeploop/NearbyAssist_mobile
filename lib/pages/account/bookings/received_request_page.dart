@@ -1,31 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/transaction_model.dart';
-import 'package:nearby_assist/pages/account/transactions/sent_request_summary_page.dart';
-import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
-import 'package:nearby_assist/providers/transaction_provider.dart';
+import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/received_request_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/booking_status_chip.dart';
+import 'package:nearby_assist/providers/booking_provider.dart';
 import 'package:provider/provider.dart';
 
-class SentRequestPage extends StatefulWidget {
-  const SentRequestPage({super.key});
+class ReceivedRequestPage extends StatefulWidget {
+  const ReceivedRequestPage({super.key});
 
   @override
-  State<SentRequestPage> createState() => _SentRequestPageState();
+  State<ReceivedRequestPage> createState() => _ReceivedRequestPageState();
 }
 
-class _SentRequestPageState extends State<SentRequestPage> {
+class _ReceivedRequestPageState extends State<ReceivedRequestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Sent Requests',
+          'Received Requests',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
       body: FutureBuilder(
-        future: context.read<TransactionProvider>().fetchSentRequests(),
+        future: context.read<BookingProvider>().fetchReceivedRequests(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -45,10 +45,10 @@ class _SentRequestPageState extends State<SentRequestPage> {
             );
           }
 
-          final requests = context.watch<TransactionProvider>().sentRequests;
+          final requests = context.watch<BookingProvider>().receivedRequests;
 
           return RefreshIndicator(
-            onRefresh: context.read<TransactionProvider>().fetchSentRequests,
+            onRefresh: context.read<BookingProvider>().fetchReceivedRequests,
             child: requests.isEmpty ? _emptyState() : _mainContent(requests),
           );
         },
@@ -56,7 +56,7 @@ class _SentRequestPageState extends State<SentRequestPage> {
     );
   }
 
-  Widget _mainContent(List<TransactionModel> requests) {
+  Widget _mainContent(List<BookingModel> requests) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ListView.separated(
@@ -67,19 +67,15 @@ class _SentRequestPageState extends State<SentRequestPage> {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => SentRequestSummaryPage(
-                  transaction: requests[index],
-                  showChatIcon: true,
+                builder: (context) => ReceivedRequestSummaryPage(
+                  booking: requests[index],
                 ),
               ),
             );
           },
-          title: Text(requests[index].vendor.name),
-          subtitle: Text(
-            requests[index].service.title,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: TransactionStatusChip(status: requests[index].status),
+          title: Text(requests[index].client.name),
+          subtitle: Text(requests[index].service.title),
+          trailing: BookingStatusChip(status: requests[index].status),
         ),
       ),
     );

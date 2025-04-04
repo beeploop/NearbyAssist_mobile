@@ -1,21 +1,21 @@
-class TransactionQrCodeData {
+class BookingQrCodeData {
   final String clientId;
   final String vendorId;
-  final String transactionId;
+  final String bookingId;
   final String signature;
 
-  TransactionQrCodeData({
+  BookingQrCodeData({
     required this.clientId,
     required this.vendorId,
-    required this.transactionId,
+    required this.bookingId,
     required this.signature,
   });
 
-  factory TransactionQrCodeData.fromJson(Map<String, dynamic> json) {
-    return TransactionQrCodeData(
+  factory BookingQrCodeData.fromJson(Map<String, dynamic> json) {
+    return BookingQrCodeData(
       clientId: json['clientId'],
       vendorId: json['vendorId'],
-      transactionId: json['transactionId'],
+      bookingId: json['bookingId'],
       signature: json['signature'],
     );
   }
@@ -24,7 +24,7 @@ class TransactionQrCodeData {
     return {
       'clientId': clientId,
       'vendorId': vendorId,
-      'transactionId': transactionId,
+      'bookingId': bookingId,
       'signature': signature,
     };
   }
@@ -33,7 +33,7 @@ class TransactionQrCodeData {
     return {
       'clientId': clientId,
       'vendorId': vendorId,
-      'transactionId': transactionId,
+      'bookingId': bookingId,
     };
   }
 }
