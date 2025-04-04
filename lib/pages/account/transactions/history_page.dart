@@ -75,11 +75,11 @@ class _HistoryPageState extends State<HistoryPage> {
             );
           },
           leading: Icon(
-            requests[index].clientId == user.id
+            requests[index].client.id == user.id
                 ? CupertinoIcons.arrow_up
                 : CupertinoIcons.arrow_down,
           ),
-          title: Text(requests[index].vendor),
+          title: Text(requests[index].vendor.name),
           subtitle: Text(
             requests[index].service.title,
             overflow: TextOverflow.ellipsis,

@@ -174,12 +174,15 @@ class TransactionService {
     }
   }
 
-  Future<void> rejectRequest(String id) async {
+  Future<void> rejectRequest(String id, String reason) async {
     logger.logDebug('called rejectRequest in transaction_service.dart');
 
     try {
       final api = ApiService.authenticated();
-      await api.dio.put('${endpoint.rejectRequest}/$id');
+      await api.dio.put(
+        endpoint.rejectRequest,
+        data: {'transactionId': id, 'reason': reason},
+      );
     } catch (error) {
       logger.logError(error.toString());
       rethrow;

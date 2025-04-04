@@ -146,9 +146,9 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> rejectTransactionRequest(String id) async {
+  Future<void> rejectTransactionRequest(String id, String reason) async {
     try {
-      await TransactionService().rejectRequest(id);
+      await TransactionService().rejectRequest(id, reason);
       _receivedRequests.removeWhere((request) => request.id == id);
 
       final updated = _recents

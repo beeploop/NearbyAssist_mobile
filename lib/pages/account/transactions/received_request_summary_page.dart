@@ -7,6 +7,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/transaction_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/transactions/widget/transaction_status_chip.dart';
+import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/transaction_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -55,8 +56,8 @@ class _ReceivedRequestSummaryPageState
                 context.pushNamed(
                   'chat',
                   queryParameters: {
-                    'recipientId': widget.transaction.clientId,
-                    'recipient': widget.transaction.client,
+                    'recipientId': widget.transaction.client.id,
+                    'recipient': widget.transaction.client.name,
                   },
                 );
               },
@@ -158,14 +159,16 @@ class _ReceivedRequestSummaryPageState
             const SizedBox(height: 20),
             const Text('Vendor Information', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            RowTile(label: 'Vendor Name:', text: widget.transaction.vendor),
+            RowTile(
+                label: 'Vendor Name:', text: widget.transaction.vendor.name),
             const Divider(),
 
             // Client information
             const SizedBox(height: 20),
             const Text('Client Information', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 20),
-            RowTile(label: 'Client Name:', text: widget.transaction.client),
+            RowTile(
+                label: 'Client Name:', text: widget.transaction.client.name),
             const Divider(),
 
             // Service Price
@@ -263,6 +266,8 @@ class _ReceivedRequestSummaryPageState
       return;
     }
 
+    final reason = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -275,13 +280,19 @@ class _ReceivedRequestSummaryPageState
           borderRadius: BorderRadius.circular(10),
         ),
         title: const Text('Reject this request?'),
+        content: InputField(
+          controller: reason,
+          hintText: 'Reason',
+          minLines: 3,
+          maxLines: 6,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => _rejectRequest(widget.transaction.id),
+            onPressed: () => _rejectRequest(widget.transaction.id, reason.text),
             child: const Text('Continue'),
           ),
         ],
@@ -313,15 +324,21 @@ class _ReceivedRequestSummaryPageState
     }
   }
 
-  Future<void> _rejectRequest(String id) async {
+  Future<void> _rejectRequest(String id, String reason) async {
     final loader = context.loaderOverlay;
 
     try {
       loader.show();
-
       Navigator.pop(context);
 
-      await context.read<TransactionProvider>().rejectTransactionRequest(id);
+      if (reason.isEmpty) {
+        throw 'Provide reason for rejection';
+      }
+
+      await context
+          .read<TransactionProvider>()
+          .rejectTransactionRequest(id, reason);
+
       _onSuccess();
     } on DioException catch (error) {
       _onError(error.response?.data['error']);

@@ -49,7 +49,7 @@ class _ConfirmedRequestPageState extends State<ConfirmedRequestPage> {
               ),
             );
           },
-          title: Text(requests[index].vendor),
+          title: Text(requests[index].vendor.name),
           subtitle: Text(
             requests[index].service.title,
             overflow: TextOverflow.ellipsis,

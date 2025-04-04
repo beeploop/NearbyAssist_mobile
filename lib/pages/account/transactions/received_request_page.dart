@@ -75,7 +75,7 @@ class _ReceivedRequestPageState extends State<ReceivedRequestPage> {
               ),
             );
           },
-          title: Text(requests[index].client),
+          title: Text(requests[index].client.name),
           subtitle: Text(requests[index].service.title),
           trailing: TransactionStatusChip(status: requests[index].status),
         ),

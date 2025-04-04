@@ -72,7 +72,7 @@ class _AcceptedRequestPageState extends State<AcceptedRequestPage> {
               ),
             );
           },
-          title: Text(requests[index].vendor),
+          title: Text(requests[index].vendor.name),
           subtitle: Text(
             requests[index].service.title,
             overflow: TextOverflow.ellipsis,

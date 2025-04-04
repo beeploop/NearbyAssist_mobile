@@ -82,7 +82,7 @@ class _RecentTransactionState extends State<RecentTransaction> {
             return;
           }
 
-          if (recents[index].clientId == user.id) {
+          if (recents[index].client.id == user.id) {
             Navigator.push(
               context,
               CupertinoPageRoute(
@@ -115,15 +115,15 @@ class _RecentTransactionState extends State<RecentTransaction> {
         },
         dense: true,
         leading: Icon(
-          recents[index].clientId == user.id
+          recents[index].client.id == user.id
               ? CupertinoIcons.arrow_up
               : CupertinoIcons.arrow_down,
-          color: recents[index].clientId == user.id
+          color: recents[index].client.id == user.id
               ? Colors.teal.shade400
               : Colors.pink.shade300,
         ),
         title: Text(
-          recents[index].clientId == user.id
+          recents[index].client.id == user.id
               ? 'vendor: ${recents[index].vendor}'
               : 'client: ${recents[index].client}',
           style: const TextStyle(

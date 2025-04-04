@@ -66,7 +66,7 @@ class _ToRatePageState extends State<ToRatePage> {
         separatorBuilder: (context, index) => const Divider(),
         itemBuilder: (context, index) => ListTile(
           leading: const Icon(CupertinoIcons.checkmark_circle),
-          title: Text(transactions[index].vendor),
+          title: Text(transactions[index].vendor.name),
           subtitle: Text(
             transactions[index].service.title,
             overflow: TextOverflow.ellipsis,

@@ -49,8 +49,8 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                 context.pushNamed(
                   'chat',
                   queryParameters: {
-                    'recipientId': widget.transaction.vendorId,
-                    'recipient': widget.transaction.vendor,
+                    'recipientId': widget.transaction.vendor.id,
+                    'recipient': widget.transaction.vendor.name,
                   },
                 );
               },
@@ -107,7 +107,8 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
                       style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 20),
                   RowTile(
-                      label: 'Vendor Name:', text: widget.transaction.vendor),
+                      label: 'Vendor Name:',
+                      text: widget.transaction.vendor.name),
                   const Divider(),
 
                   // Client information
@@ -237,8 +238,8 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
 
   Widget _displayQR(TransactionModel transaction, String signature) {
     final data = TransactionQrCodeData(
-      clientId: transaction.clientId,
-      vendorId: transaction.vendorId,
+      clientId: transaction.client.id,
+      vendorId: transaction.vendor.id,
       transactionId: transaction.id,
       signature: signature,
     );
@@ -290,8 +291,8 @@ class _SentRequestSummaryPageState extends State<SentRequestSummaryPage> {
 
     try {
       final data = TransactionQrCodeData(
-        clientId: transaction.clientId,
-        vendorId: transaction.vendorId,
+        clientId: transaction.client.id,
+        vendorId: transaction.vendor.id,
         transactionId: transaction.id,
         signature: '',
       );

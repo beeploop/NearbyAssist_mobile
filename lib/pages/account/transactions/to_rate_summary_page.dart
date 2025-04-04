@@ -35,14 +35,16 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               const SizedBox(height: 20),
               const Text('Vendor Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(label: 'Vendor Name:', text: widget.transaction.vendor),
+              RowTile(
+                  label: 'Vendor Name:', text: widget.transaction.vendor.name),
               const Divider(),
 
               // Client information
               const SizedBox(height: 20),
               const Text('Client Information', style: TextStyle(fontSize: 16)),
               const SizedBox(height: 20),
-              RowTile(label: 'Client Name:', text: widget.transaction.client),
+              RowTile(
+                  label: 'Client Name:', text: widget.transaction.client.name),
               const Divider(),
 
               // Service Price
