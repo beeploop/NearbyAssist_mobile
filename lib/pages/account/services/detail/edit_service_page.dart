@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -247,8 +248,7 @@ class _EditServicePageState extends State<EditServicePage> {
         description: _descriptionController.text,
         rate: double.parse(_rateController.text),
         tags: _selectedTags,
-        latitude: location.latitude,
-        longitude: location.longitude,
+        location: LatLng(location.latitude, location.longitude),
       );
 
       await provider.updateService(updatedData, widget.service.extras);

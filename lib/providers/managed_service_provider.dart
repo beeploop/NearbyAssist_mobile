@@ -55,8 +55,7 @@ class ManagedServiceProvider extends ChangeNotifier {
       rate: updatedData.rate,
       tags: updatedData.tags,
       extras: extras,
-      latitude: updatedData.latitude,
-      longitude: updatedData.longitude,
+      location: updatedData.location,
     );
 
     _services[service.id] = service;
@@ -102,8 +101,7 @@ class ManagedServiceProvider extends ChangeNotifier {
         rate: detail.service.rate,
         extras: detail.service.extras,
         tags: detail.service.tags,
-        latitude: detail.service.latitude,
-        longitude: detail.service.longitude,
+        location: detail.service.location,
       );
 
       _services[updatedService.id] = updatedService;
@@ -136,8 +134,7 @@ class ManagedServiceProvider extends ChangeNotifier {
         rate: detail.service.rate,
         extras: detail.service.extras,
         tags: detail.service.tags,
-        latitude: detail.service.latitude,
-        longitude: detail.service.longitude,
+        location: detail.service.location,
       );
 
       _services[updatedService.id] = updatedService;
@@ -180,8 +177,7 @@ class ManagedServiceProvider extends ChangeNotifier {
             price: updatedExtra.price,
           );
         }).toList(),
-        latitude: detail.service.latitude,
-        longitude: detail.service.longitude,
+        location: detail.service.location,
       );
 
       _services[updatedService.id] = updatedService;

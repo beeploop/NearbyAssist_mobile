@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -188,8 +189,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         title: _titleController.text,
         description: _descriptionController.text,
         rate: double.tryParse(_basePriceController.text) ?? 0,
-        latitude: location.latitude,
-        longitude: location.longitude,
+        location: LatLng(location.latitude, location.longitude),
         tags: _selectedTags,
         extras: extras,
       );
