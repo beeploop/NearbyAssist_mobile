@@ -92,6 +92,8 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _accountSection() {
+    final user = context.watch<UserProvider>().user;
+
     return Container(
       padding: const EdgeInsetsDirectional.symmetric(horizontal: 20),
       child: Column(
@@ -102,10 +104,11 @@ class _AccountPageState extends State<AccountPage> {
               title: "Profile",
               icon: CupertinoIcons.person,
               onPress: () => context.pushNamed("profile")),
-          AccountTileWidget(
-              title: "Manage Services",
-              icon: CupertinoIcons.tray_full,
-              onPress: () => context.pushNamed("manage")),
+          if (user.isVendor)
+            AccountTileWidget(
+                title: "Manage Services",
+                icon: CupertinoIcons.tray_full,
+                onPress: () => context.pushNamed("manage")),
           AccountTileWidget(
               title: "Bookings",
               icon: CupertinoIcons.arrow_right_arrow_left_square,
