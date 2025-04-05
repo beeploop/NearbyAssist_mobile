@@ -28,7 +28,10 @@ class UpdateServiceModel {
       'description': description,
       'rate': rate.toString(),
       'tags': tags.map((tag) => tag.title).toList(),
-      'location': location,
+      'location': {
+        'latitude': location.latitude,
+        'longitude': location.longitude,
+      },
     };
   }
 }

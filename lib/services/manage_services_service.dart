@@ -23,12 +23,6 @@ class ManageServicesService {
 
       final id = response.data['service'];
       return service.copyWithNewId(id);
-    } on DioException catch (error) {
-      if (error.response?.statusCode == 400) {
-        throw 'Duplicate service';
-      }
-
-      rethrow;
     } catch (error) {
       rethrow;
     }

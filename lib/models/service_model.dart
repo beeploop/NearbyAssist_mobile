@@ -52,7 +52,10 @@ class ServiceModel {
       'title': title,
       'description': description,
       'rate': rate.toString(),
-      'location': location,
+      'location': {
+        'latitude': location.latitude,
+        'longitude': location.longitude,
+      },
       'tags': tags.map((extra) => extra.title).toList(),
       'extras': extras.map((extra) => extra.toJson()).toList(),
       'images': images.map((image) => image.toJson()).toList(),

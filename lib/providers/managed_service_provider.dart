@@ -37,10 +37,14 @@ class ManagedServiceProvider extends ChangeNotifier {
   }
 
   Future<void> addService(ServiceModel service) async {
-    final response = await ManageServicesService().add(service);
+    try {
+      final response = await ManageServicesService().add(service);
 
-    _services[response.id] = response;
-    notifyListeners();
+      _services[response.id] = response;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future<void> updateService(

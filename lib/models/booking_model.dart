@@ -102,7 +102,10 @@ class MinimalServiceModel {
       'description': description,
       'rate': rate.toString(),
       'tags': tags,
-      'location': location.toJson,
+      'location': {
+        'latitude': location.latitude,
+        'longitude': location.longitude,
+      },
     };
   }
 

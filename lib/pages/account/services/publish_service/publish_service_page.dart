@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -197,6 +198,8 @@ class _PublishServicePageState extends State<PublishServicePage> {
       await provider.addService(service);
 
       _onSuccess();
+    } on DioException catch (error) {
+      _showErrorModal(error.response?.data['message']);
     } catch (error) {
       if (error == LocationServiceDisabledException) {
         _showLocationServiceDisabledDialog();
