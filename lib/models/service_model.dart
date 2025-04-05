@@ -1,4 +1,4 @@
-import 'package:latlong2/latlong.dart';
+import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -12,7 +12,7 @@ class ServiceModel {
   final List<TagModel> tags;
   final List<ServiceExtraModel> extras;
   List<ServiceImageModel> images;
-  final LatLng location;
+  final LocationModel location;
 
   ServiceModel({
     this.id = '',
@@ -42,7 +42,7 @@ class ServiceModel {
       images: ((json['images'] ?? []) as List)
           .map((image) => ServiceImageModel.fromJson(image))
           .toList(),
-      location: LatLng.fromJson(json['location']),
+      location: LocationModel.fromJson(json['location']),
     );
   }
 
@@ -52,10 +52,7 @@ class ServiceModel {
       'title': title,
       'description': description,
       'rate': rate.toString(),
-      'location': {
-        'latitude': location.latitude,
-        'longitude': location.longitude,
-      },
+      'location': location.toJson(),
       'tags': tags.map((extra) => extra.title).toList(),
       'extras': extras.map((extra) => extra.toJson()).toList(),
       'images': images.map((image) => image.toJson()).toList(),

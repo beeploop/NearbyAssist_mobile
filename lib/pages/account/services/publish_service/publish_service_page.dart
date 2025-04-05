@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -182,7 +182,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         extras.add(extra);
       }
 
-      final location = await LocationService().getLocation();
+      final position = await LocationService().getLocation();
 
       final service = ServiceModel(
         id: '',
@@ -190,7 +190,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         title: _titleController.text,
         description: _descriptionController.text,
         rate: double.tryParse(_basePriceController.text) ?? 0,
-        location: LatLng(location.latitude, location.longitude),
+        location: LocationModel.fromPosition(position),
         tags: _selectedTags,
         extras: extras,
       );

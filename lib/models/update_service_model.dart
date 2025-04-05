@@ -1,4 +1,4 @@
-import 'package:latlong2/latlong.dart';
+import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 
 class UpdateServiceModel {
@@ -8,7 +8,7 @@ class UpdateServiceModel {
   final String description;
   final double rate;
   final List<TagModel> tags;
-  final LatLng location;
+  final LocationModel location;
 
   UpdateServiceModel({
     required this.id,
@@ -28,10 +28,7 @@ class UpdateServiceModel {
       'description': description,
       'rate': rate.toString(),
       'tags': tags.map((tag) => tag.title).toList(),
-      'location': {
-        'latitude': location.latitude,
-        'longitude': location.longitude,
-      },
+      'location': location.toJson(),
     };
   }
 }

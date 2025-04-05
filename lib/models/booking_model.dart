@@ -1,4 +1,4 @@
-import 'package:latlong2/latlong.dart';
+import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/minimal_user_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -69,7 +69,7 @@ class MinimalServiceModel {
   final String description;
   final double rate;
   final List<TagModel> tags;
-  final LatLng location;
+  final LocationModel location;
 
   MinimalServiceModel({
     required this.id,
@@ -91,7 +91,7 @@ class MinimalServiceModel {
       tags: List.from(
         ((json['tags'] ?? []) as List).map((tag) => TagModel.fromJson(tag)),
       ),
-      location: LatLng.fromJson(json['location']),
+      location: LocationModel.fromJson(json['location']),
     );
   }
 
@@ -102,10 +102,7 @@ class MinimalServiceModel {
       'description': description,
       'rate': rate.toString(),
       'tags': tags,
-      'location': {
-        'latitude': location.latitude,
-        'longitude': location.longitude,
-      },
+      'location': location.toJson(),
     };
   }
 

@@ -36,6 +36,7 @@ class ManageServicesService {
         data: updated.toJson(),
       );
     } catch (error) {
+      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -58,6 +59,7 @@ class ManageServicesService {
 
       return DetailedVendorModel.fromJson(response.data);
     } catch (error) {
+      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -125,6 +127,7 @@ class ManageServicesService {
         url: response.data['url'],
       );
     } catch (error) {
+      logger.logError(error.toString());
       rethrow;
     }
   }
