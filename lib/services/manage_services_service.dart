@@ -31,10 +31,7 @@ class ManageServicesService {
   Future<void> update(UpdateServiceModel updated) async {
     try {
       final api = ApiService.authenticated();
-      await api.dio.put(
-        '${endpoint.updateService}/${updated.id}',
-        data: updated.toJson(),
-      );
+      await api.dio.put(endpoint.updateService, data: updated.toJson());
     } catch (error) {
       logger.logError(error.toString());
       rethrow;
