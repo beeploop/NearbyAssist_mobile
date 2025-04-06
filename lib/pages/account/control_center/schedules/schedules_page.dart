@@ -20,7 +20,7 @@ class _SchedulesPageState extends State<SchedulesPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Ongoing',
+          'Schedules',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),

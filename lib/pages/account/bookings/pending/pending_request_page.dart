@@ -20,7 +20,7 @@ class _PendingRequestPageState extends State<PendingRequestPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Pending Requests',
+          'Pending Bookings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),

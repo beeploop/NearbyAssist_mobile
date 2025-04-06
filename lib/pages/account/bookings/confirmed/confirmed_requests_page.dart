@@ -20,7 +20,7 @@ class _ConfirmedRequestsPageState extends State<ConfirmedRequestsPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Accepted Requests',
+          'Confirmed Bookings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
