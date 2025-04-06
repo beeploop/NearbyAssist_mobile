@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
@@ -115,7 +114,7 @@ class ClientBookingService {
     }
   }
 
-  Future<void> createBooking(BookingRequestModel booking) async {
+  Future<BookingModel> createBooking(BookingRequestModel booking) async {
     logger.logDebug('called createBooking');
 
     try {
@@ -125,15 +124,7 @@ class ClientBookingService {
         data: booking.toJson(),
       );
 
-      final bookingId = response.data['booking'] as String;
-      logger.logInfo('Booking ID: $bookingId');
-    } on DioException catch (error) {
-      logger.logError(error.toString());
-      if (error.response?.statusCode == 400) {
-        throw error.response?.data['message'];
-      }
-
-      rethrow;
+      return BookingModel.fromJson(response.data['booking']);
     } catch (error) {
       logger.logError(error.toString());
       rethrow;

@@ -80,7 +80,9 @@ class ClientBookingProvider extends ChangeNotifier {
 
   Future<void> book(BookingRequestModel booking) async {
     try {
-      await ClientBookingService().createBooking(booking);
+      final response = await ClientBookingService().createBooking(booking);
+      _pending.add(response);
+      notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
       rethrow;

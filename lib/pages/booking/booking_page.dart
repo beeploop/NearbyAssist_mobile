@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -163,6 +164,8 @@ class _BookingPageState extends State<BookingPage> {
 
       await context.read<ClientBookingProvider>().book(booking);
       _onSuccess();
+    } on DioException catch (error) {
+      _onError(error.response?.data['message']);
     } catch (error) {
       _onError(error.toString());
     } finally {
