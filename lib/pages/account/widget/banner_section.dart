@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/assets.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -25,8 +26,7 @@ class BannerSection extends StatelessWidget {
                   radius: 40,
                   foregroundImage:
                       CachedNetworkImageProvider(provider.user.imageUrl),
-                  backgroundImage:
-                      const AssetImage('assets/images/profile.png'),
+                  backgroundImage: const AssetImage(Assets.profile),
                 ),
                 const SizedBox(height: 10),
                 Text(

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/assets.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
@@ -169,7 +170,7 @@ class _ConfirmedRequestSummarPageState
             dataModuleShape: QrDataModuleShape.square,
             color: Colors.black,
           ),
-          embeddedImage: const AssetImage('assets/icon/icon.png'),
+          embeddedImage: const AssetImage(Assets.appIcon),
           embeddedImageStyle: const QrEmbeddedImageStyle(
             size: Size(20, 20),
           ),

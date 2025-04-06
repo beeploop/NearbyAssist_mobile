@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
+import 'package:nearby_assist/config/assets.dart';
 
 class OtherSection extends StatelessWidget {
   const OtherSection({super.key});
@@ -30,7 +31,7 @@ class OtherSection extends StatelessWidget {
                   applicationVersion: appVersion,
                   applicationLegalese: appLegalese,
                   applicationIcon: Image.asset(
-                    'assets/images/splash_icon_android_12.png',
+                    Assets.splashIcon,
                     width: 100,
                     height: 100,
                   ),

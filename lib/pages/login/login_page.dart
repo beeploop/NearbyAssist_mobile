@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/assets.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/login/tester_settings_modal.dart';
@@ -93,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         fit: BoxFit.cover,
         child: Column(
           children: [
-            Image.asset('assets/icon/login-icon.png'),
+            Image.asset(Assets.appIconTransparent),
             Text(
               "NearbyAssist",
               style: TextStyle(

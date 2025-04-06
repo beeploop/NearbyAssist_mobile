@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:nearby_assist/models/conversation_model.dart';
 import 'package:nearby_assist/utils/random_color.dart';
+import 'package:nearby_assist/config/assets.dart';
 
 class InboxItem extends StatelessWidget {
   const InboxItem({
@@ -27,7 +28,7 @@ class InboxItem extends StatelessWidget {
             foregroundImage: CachedNetworkImageProvider(
               conversation.imageUrl,
             ),
-            backgroundImage: const AssetImage('assets/images/profile.png'),
+            backgroundImage: const AssetImage(Assets.profile),
           ),
         ),
         title: AutoSizeText(
