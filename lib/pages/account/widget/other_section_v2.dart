@@ -47,21 +47,7 @@ class _OtherSectionV2State extends State<OtherSectionV2> {
             title: "Information & Licenses",
             fontSize: 14,
             icon: CupertinoIcons.info,
-            onPress: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => LicensePage(
-                  applicationName: appName,
-                  applicationVersion: appVersion,
-                  applicationLegalese: appLegalese,
-                  applicationIcon: Image.asset(
-                    Assets.splashIcon,
-                    width: 100,
-                    height: 100,
-                  ),
-                ),
-              ),
-            ),
+            onPress: () => context.pushNamed("licenses"),
           ),
         ],
       ),

@@ -39,7 +39,9 @@ enum RoutePath {
   toRate(path: "/toRate"),
   history(path: "/history"),
 
-  controlCenter(path: "/controlCenter");
+  controlCenter(path: "/controlCenter"),
+
+  licenses(path: "/licenses");
 
   const RoutePath({required this.path});
   final String path;

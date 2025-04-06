@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/config/assets.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/account/account_page.dart';
 import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_requests_page.dart';
 import 'package:nearby_assist/pages/account/bookings/history/client_history_page.dart';
@@ -175,6 +177,16 @@ GoRouter generateRoutes(
           path: RoutePath.controlCenter.path,
           name: RoutePath.controlCenter.name,
           builder: (context, state) => const ControlCenterPage()),
+      GoRoute(
+          path: RoutePath.licenses.path,
+          name: RoutePath.licenses.name,
+          builder: (context, state) => LicensePage(
+                applicationName: appName,
+                applicationVersion: appVersion,
+                applicationLegalese: appLegalese,
+                applicationIcon:
+                    Image.asset(Assets.splashIcon, width: 100, height: 100),
+              )),
     ],
   );
 }
