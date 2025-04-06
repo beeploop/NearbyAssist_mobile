@@ -41,7 +41,7 @@ class QuickActionItem extends StatelessWidget {
                     size: constraints.maxWidth / 4,
                     color: iconColor,
                   ),
-                  onPressed: () => onPressed(),
+                  onPressed: onPressed,
                 ),
               ),
               if (count >= 1)
@@ -49,7 +49,7 @@ class QuickActionItem extends StatelessWidget {
                   top: -14,
                   right: -6,
                   child: GestureDetector(
-                    onTap: () => onPressed(),
+                    onTap: onPressed,
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(

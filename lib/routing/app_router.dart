@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/account_page.dart';
+import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_requests_page.dart';
+import 'package:nearby_assist/pages/account/bookings/history/client_history_page.dart';
+import 'package:nearby_assist/pages/account/bookings/pending/pending_request_page.dart';
+import 'package:nearby_assist/pages/account/bookings/to_rate/to_rate_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
 import 'package:nearby_assist/pages/account/profile/verify_account_page.dart';
 import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
@@ -151,6 +155,22 @@ GoRouter generateRoutes(
           path: RoutePath.reportIssue.path,
           name: RoutePath.reportIssue.name,
           builder: (context, state) => const ReportIssuePage()),
+      GoRoute(
+          path: RoutePath.pendings.path,
+          name: RoutePath.pendings.name,
+          builder: (context, state) => const PendingRequestPage()),
+      GoRoute(
+          path: RoutePath.confirmed.path,
+          name: RoutePath.confirmed.name,
+          builder: (context, state) => const ConfirmedRequestsPage()),
+      GoRoute(
+          path: RoutePath.toRate.path,
+          name: RoutePath.toRate.name,
+          builder: (context, state) => const ToRatePage()),
+      GoRoute(
+          path: RoutePath.history.path,
+          name: RoutePath.history.name,
+          builder: (context, state) => const ClientHistoryPage()),
       GoRoute(
           path: RoutePath.controlCenter.path,
           name: RoutePath.controlCenter.name,

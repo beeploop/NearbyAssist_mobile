@@ -19,8 +19,6 @@ enum RoutePath {
 
   account(path: "/account"),
 
-  bookings(path: "/bookings"),
-
   profile(path: "/profile"),
 
   settings(path: "/settings"),
@@ -35,6 +33,11 @@ enum RoutePath {
 
   information(path: "/information"),
   reportIssue(path: "/reportIssue"),
+
+  pendings(path: "/pendings"),
+  confirmed(path: "/confirmed"),
+  toRate(path: "/toRate"),
+  history(path: "/history"),
 
   controlCenter(path: "/controlCenter");
 

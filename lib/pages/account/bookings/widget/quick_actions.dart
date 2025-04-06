@@ -1,10 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_requests_page.dart';
-import 'package:nearby_assist/pages/account/bookings/history/client_history_page.dart';
-import 'package:nearby_assist/pages/account/bookings/pending/pending_request_page.dart';
-import 'package:nearby_assist/pages/account/bookings/to_rate/to_rate_page.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/pages/account/bookings/widget/quick_action_item.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:provider/provider.dart';
@@ -37,14 +34,7 @@ class _QuickActionsState extends State<QuickActions> {
         const AutoSizeText('Quick actions'),
         const Spacer(),
         TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => const ClientHistoryPage(),
-              ),
-            );
-          },
+          onPressed: () => context.pushNamed("history"),
           child: const Text('View history'),
         ),
       ],
@@ -66,14 +56,7 @@ class _QuickActionsState extends State<QuickActions> {
             // Pending
             QuickActionItem(
               count: provider.pending.length,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => const PendingRequestPage(),
-                  ),
-                );
-              },
+              onPressed: () => context.pushNamed("pendings"),
               icon: CupertinoIcons.arrow_2_circlepath,
               backgroundColor: Colors.blueGrey,
               iconColor: Colors.white,
@@ -83,14 +66,7 @@ class _QuickActionsState extends State<QuickActions> {
             // Confirmed
             QuickActionItem(
               count: provider.confirmed.length,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => const ConfirmedRequestsPage(),
-                  ),
-                );
-              },
+              onPressed: () => context.pushNamed("confirmed"),
               icon: CupertinoIcons.checkmark_circle,
               backgroundColor: Colors.green.shade800,
               iconColor: Colors.white,
@@ -100,14 +76,7 @@ class _QuickActionsState extends State<QuickActions> {
             // To Rate
             QuickActionItem(
               count: provider.toRate.length,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => const ToRatePage(),
-                  ),
-                );
-              },
+              onPressed: () => context.pushNamed("toRate"),
               icon: CupertinoIcons.star_circle,
               backgroundColor: Colors.amber,
               iconColor: Colors.white,
