@@ -19,8 +19,11 @@ class ClientBookingProvider extends ChangeNotifier {
   Future<void> fetchPending() async {
     try {
       final response = await ClientBookingService().fetchSentRequests();
+
       _pending.clear();
-      _pending.addAll(response);
+      _pending.addAll(
+        response.where((booking) => booking.status == BookingStatus.pending),
+      );
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
