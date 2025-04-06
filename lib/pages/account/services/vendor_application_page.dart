@@ -13,7 +13,7 @@ import 'package:nearby_assist/pages/widget/divider_with_text.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/vendor_application_service.dart';
-import 'package:nearby_assist/utils/restricted_account_modal.dart';
+import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,115 +51,81 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: buildBody(),
-      ),
-    );
-  }
+        body: Consumer<UserProvider>(
+          builder: (context, provider, _) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _tagsDropdown(provider.user.expertise),
+                    const SizedBox(height: 20),
+                    const Text(
+                        'Selected expertise will unlock the following tags:'),
+                    Text(
+                      _unlockables.join(', '),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 20),
+                    const DividerWithText(text: 'Supporting Document'),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Document that prove you are capable of offering satisfactory service for this role. Example documents are license and certifications',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        FillableImageContainer(
+                          controller: _supportingDocController,
+                          icon: CupertinoIcons.doc_on_clipboard,
+                          labelText: 'Supporting Document',
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration:
+                                BoxDecoration(color: Colors.orange[200]),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const DividerWithText(text: 'Police Clearance'),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        FillableImageContainer(
+                          controller: _policeClearanceController,
+                          icon: CupertinoIcons.doc_on_clipboard,
+                          labelText: 'Police Clearance',
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration:
+                                BoxDecoration(color: Colors.orange[200]),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    _checkboxTAC(),
+                    const SizedBox(height: 10),
+                    FilledButton(
+                      style: const ButtonStyle(
+                        minimumSize:
+                            WidgetStatePropertyAll(Size.fromHeight(50)),
+                      ),
+                      onPressed: () => _handleSubmit(provider.user),
+                      child: const Text('Submit'),
+                    ),
 
-  Widget buildBody() {
-    final user = context.read<UserProvider>().user;
-
-    if (user.isVerified == false) {
-      return Center(
-        child: AlertDialog(
-          icon: const Icon(CupertinoIcons.exclamationmark_triangle),
-          title: const Text('Account not verified'),
-          content: const Text('Verify your account to unlock feature'),
-          actions: [
-            TextButton(
-              style: const ButtonStyle(
-                foregroundColor: WidgetStatePropertyAll(Colors.red),
-              ),
-              onPressed: () => context.pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(
-                  Colors.green.shade800,
-                ),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                    // Bottom padding
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-              onPressed: () => context.pushNamed('verifyAccount'),
-              child: const Text(
-                'Verify',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            _tagsDropdown(user.expertise),
-            const SizedBox(height: 20),
-            const Text('Selected expertise will unlock the following tags:'),
-            Text(
-              _unlockables.join(', '),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            const DividerWithText(text: 'Supporting Document'),
-            const SizedBox(height: 10),
-            const Text(
-              'Document that prove you are capable of offering satisfactory service for this role. Example documents are license and certifications',
-              style: TextStyle(fontSize: 12),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                FillableImageContainer(
-                  controller: _supportingDocController,
-                  icon: CupertinoIcons.doc_on_clipboard,
-                  labelText: 'Supporting Document',
-                ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.orange[200]),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const DividerWithText(text: 'Police Clearance'),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                FillableImageContainer(
-                  controller: _policeClearanceController,
-                  icon: CupertinoIcons.doc_on_clipboard,
-                  labelText: 'Police Clearance',
-                ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(color: Colors.orange[200]),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            _checkboxTAC(),
-            const SizedBox(height: 10),
-            FilledButton(
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-              ),
-              onPressed: () => _handleSubmit(user),
-              child: const Text('Submit'),
-            ),
-
-            // Bottom padding
-            const SizedBox(height: 20),
-          ],
+            );
+          },
         ),
       ),
     );

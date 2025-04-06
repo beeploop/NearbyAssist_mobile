@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/account_page.dart';
-import 'package:nearby_assist/pages/account/information_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
 import 'package:nearby_assist/pages/account/profile/verify_account_page.dart';
 import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
-import 'package:nearby_assist/pages/account/services/manage_services_page.dart';
-import 'package:nearby_assist/pages/account/services/publish_service/publish_service_page.dart';
 import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
 import 'package:nearby_assist/pages/account/settings/app_settings_page.dart';
-import 'package:nearby_assist/pages/account/bookings/booking_page.dart';
+import 'package:nearby_assist/pages/account/control_center/control_center_page.dart';
 import 'package:nearby_assist/pages/notification/notification_list_page.dart';
 import 'package:nearby_assist/pages/saves/saves_page.dart';
 import 'package:nearby_assist/pages/chat/chat_page.dart';
@@ -20,7 +17,6 @@ import 'package:nearby_assist/pages/search/map_page.dart';
 import 'package:nearby_assist/pages/search/route_page.dart';
 import 'package:nearby_assist/pages/search/search_page.dart';
 import 'package:nearby_assist/pages/search/service_view_page.dart';
-import 'package:nearby_assist/pages/test_page.dart';
 import 'package:nearby_assist/pages/vendor/vendor_page.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/providers/websocket_provider.dart';
@@ -144,28 +140,6 @@ GoRouter generateRoutes(
           name: RoutePath.settings.name,
           builder: (context, state) => const AppSettingPage()),
       GoRoute(
-          path: RoutePath.manage.path,
-          name: RoutePath.manage.name,
-          builder: (context, state) => const ManageServices(),
-          routes: [
-            GoRoute(
-              path: RoutePath.addService.path,
-              name: RoutePath.addService.name,
-              builder: (context, state) => const PublishServicePage(),
-              routes: [
-                GoRoute(
-                  path: RoutePath.locationPicker.path,
-                  name: RoutePath.locationPicker.name,
-                  builder: (context, state) => const TestPage(),
-                ),
-              ],
-            ),
-          ]),
-      GoRoute(
-          path: RoutePath.bookings.path,
-          name: RoutePath.bookings.name,
-          builder: (context, state) => const BookingPage()),
-      GoRoute(
           path: RoutePath.verifyAccount.path,
           name: RoutePath.verifyAccount.name,
           builder: (context, state) => const VerifyAccountPage()),
@@ -178,9 +152,9 @@ GoRouter generateRoutes(
           name: RoutePath.reportIssue.name,
           builder: (context, state) => const ReportIssuePage()),
       GoRoute(
-          path: RoutePath.information.path,
-          name: RoutePath.information.name,
-          builder: (context, state) => const InformationPage()),
+          path: RoutePath.controlCenter.path,
+          name: RoutePath.controlCenter.name,
+          builder: (context, state) => const ControlCenterPage()),
     ],
   );
 }

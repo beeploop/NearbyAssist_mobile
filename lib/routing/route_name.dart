@@ -34,7 +34,9 @@ enum RoutePath {
   vendorApplication(path: "/vendorApplication"),
 
   information(path: "/information"),
-  reportIssue(path: "/reportIssue");
+  reportIssue(path: "/reportIssue"),
+
+  controlCenter(path: "/controlCenter");
 
   const RoutePath({required this.path});
   final String path;

@@ -10,7 +10,7 @@ import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
-import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:provider/provider.dart';
@@ -237,7 +237,7 @@ class _EditServicePageState extends State<EditServicePage> {
       }
 
       final navigator = Navigator.of(context);
-      final provider = context.read<ManagedServiceProvider>();
+      final provider = context.read<ControlCenterProvider>();
 
       final position = await LocationService().getLocation();
 
@@ -252,7 +252,6 @@ class _EditServicePageState extends State<EditServicePage> {
       );
 
       await provider.updateService(updatedData, widget.service.extras);
-
       navigator.pop();
     } on LocationServiceDisabledException catch (_) {
       _showLocationServiceDisabledDialog();

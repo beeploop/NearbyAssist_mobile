@@ -5,7 +5,7 @@ import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/edit_service_page.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
-import 'package:nearby_assist/utils/restricted_account_modal.dart';
+import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class Overview extends StatefulWidget {

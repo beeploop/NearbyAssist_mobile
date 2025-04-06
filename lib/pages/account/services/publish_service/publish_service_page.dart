@@ -10,7 +10,7 @@ import 'package:nearby_assist/pages/account/services/publish_service/service_ove
 import 'package:nearby_assist/pages/account/services/publish_service/service_pricing.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/service_publish.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/widget/service_extra.dart';
-import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -162,7 +162,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
 
   void _handlePublish() async {
     try {
-      final provider = context.read<ManagedServiceProvider>();
+      final provider = context.read<ControlCenterProvider>();
       final user = context.read<UserProvider>().user;
 
       final List<ServiceExtraModel> extras = [];

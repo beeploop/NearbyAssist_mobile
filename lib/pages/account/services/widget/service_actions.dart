@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/show_unverified_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class ServiceActions extends StatefulWidget {
@@ -24,12 +26,26 @@ class _ServiceActionsState extends State<ServiceActions> {
     return IntrinsicHeight(
       child: Row(
         children: [
-          Expanded(
-            child: TextButton.icon(
-              onPressed: () => _viewMap(context),
-              icon: const Icon(CupertinoIcons.arrow_up_right_diamond),
-              label: const Text('View route'),
-            ),
+          Consumer<UserProvider>(
+            builder: (context, provider, _) {
+              return Expanded(
+                child: TextButton.icon(
+                  onPressed: () {
+                    if (!provider.user.isVerified) {
+                      showUnverifiedAccountModal(context);
+                      return;
+                    }
+
+                    context.pushNamed(
+                      'route',
+                      queryParameters: {'serviceId': widget.service.service.id},
+                    );
+                  },
+                  icon: const Icon(CupertinoIcons.arrow_up_right_diamond),
+                  label: const Text('View route'),
+                ),
+              );
+            },
           ),
           const VerticalDivider(),
           Consumer<SavesProvider>(
@@ -53,13 +69,6 @@ class _ServiceActionsState extends State<ServiceActions> {
           ),
         ],
       ),
-    );
-  }
-
-  void _viewMap(BuildContext context) {
-    context.pushNamed(
-      'route',
-      queryParameters: {'serviceId': widget.service.service.id},
     );
   }
 

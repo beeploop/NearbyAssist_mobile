@@ -6,7 +6,8 @@ import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/pages/booking/booking_page.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
-import 'package:nearby_assist/utils/restricted_account_modal.dart';
+import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
+import 'package:nearby_assist/utils/show_unverified_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class FloatingCTA extends StatelessWidget {
@@ -35,6 +36,11 @@ class FloatingCTA extends StatelessWidget {
                       onPressed: () {
                         if (user.id == details.vendor.id) return;
 
+                        if (!user.isVerified) {
+                          showUnverifiedAccountModal(context);
+                          return;
+                        }
+
                         if (user.isRestricted) {
                           showAccountRestrictedModal(context);
                           return;
@@ -58,6 +64,11 @@ class FloatingCTA extends StatelessWidget {
                     child: TextButton(
                       onPressed: () {
                         if (user.id == details.vendor.id) return;
+
+                        if (!user.isVerified) {
+                          showUnverifiedAccountModal(context);
+                          return;
+                        }
 
                         context.pushNamed(
                           'chat',

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/partial_message_model.dart';
 import 'package:nearby_assist/pages/chat/widget/menu.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
@@ -38,66 +37,31 @@ class _ChatPageState extends State<ChatPage> {
             Menu(userId: widget.recipientId),
             const SizedBox(width: 10),
           ]),
-      body: context.read<UserProvider>().user.isVerified == false
-          ? Center(
+      body: FutureBuilder(
+        future:
+            context.read<MessageProvider>().fetchMessages(widget.recipientId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (snapshot.hasError) {
+            return const Center(
               child: AlertDialog(
-                icon: const Icon(CupertinoIcons.exclamationmark_triangle),
-                title: const Text('Account not verified'),
-                content: const Text('Verify your account to unlock feature'),
-                actions: [
-                  TextButton(
-                    style: const ButtonStyle(
-                      foregroundColor: WidgetStatePropertyAll(Colors.red),
-                    ),
-                    onPressed: () => context.pop(),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(
-                        Colors.green.shade800,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    onPressed: () => context.pushNamed('verifyAccount'),
-                    child: const Text(
-                      'Verify',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+                icon: Icon(CupertinoIcons.exclamationmark_triangle),
+                title: Text('Something went wrong'),
+                content: Text(
+                  'An error occurred while fetching messages. Please try again later',
+                ),
               ),
-            )
-          : FutureBuilder(
-              future: context
-                  .read<MessageProvider>()
-                  .fetchMessages(widget.recipientId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+            );
+          }
 
-                if (snapshot.hasError) {
-                  return const Center(
-                    child: AlertDialog(
-                      icon: Icon(CupertinoIcons.exclamationmark_triangle),
-                      title: Text('Something went wrong'),
-                      content: Text(
-                        'An error occurred while fetching messages. Please try again later',
-                      ),
-                    ),
-                  );
-                }
-
-                return _chat();
-              },
-            ),
+          return _chat();
+        },
+      ),
     );
   }
 

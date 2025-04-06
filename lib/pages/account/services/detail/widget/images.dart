@@ -10,9 +10,9 @@ import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
-import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/utils/restricted_account_modal.dart';
+import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class Images extends StatefulWidget {
@@ -163,18 +163,16 @@ class _ImagesState extends State<Images> {
 
     try {
       loader.show();
-
       Navigator.pop(context);
-      final provider = context.read<ManagedServiceProvider>();
 
       if (_fillableImageController.image == null) {
         throw 'No image selected';
       }
 
-      await provider.uploadServiceImage(
-        widget.service.id,
-        _fillableImageController.image!,
-      );
+      await context.read<ControlCenterProvider>().uploadImage(
+            widget.service.id,
+            _fillableImageController.image!,
+          );
     } on DioException catch (error) {
       _onError(error.response?.data['message']);
     } catch (error) {
@@ -190,8 +188,9 @@ class _ImagesState extends State<Images> {
     try {
       loader.show();
 
-      final provider = context.read<ManagedServiceProvider>();
-      await provider.deleteServiceImage(widget.service.id, imageId);
+      await context
+          .read<ControlCenterProvider>()
+          .deleteImage(widget.service.id, imageId);
     } on DioException catch (error) {
       _onError(error.response?.data['message']);
     } catch (error) {

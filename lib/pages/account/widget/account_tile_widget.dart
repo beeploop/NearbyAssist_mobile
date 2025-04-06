@@ -10,6 +10,8 @@ class AccountTileWidget extends StatelessWidget {
     this.endIcon = true,
     this.textColor,
     this.iconColor,
+    this.fontSize,
+    this.iconSize,
   });
 
   final String title;
@@ -19,6 +21,8 @@ class AccountTileWidget extends StatelessWidget {
   final VoidCallback onPress;
   final bool endIcon;
   final Color? textColor;
+  final double? fontSize;
+  final double? iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,7 @@ class AccountTileWidget extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: TextStyle(color: textColor),
+        style: TextStyle(color: textColor, fontSize: fontSize),
       ),
       subtitle: subtitle != null ? Text(subtitle!) : null,
       trailing: endIcon
@@ -45,8 +49,11 @@ class AccountTileWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
                 color: Colors.grey.withOpacity(0.1),
               ),
-              child: const Icon(Icons.chevron_right_sharp,
-                  size: 18.0, color: Colors.grey))
+              child: Icon(
+                Icons.chevron_right_sharp,
+                size: iconSize,
+                color: Colors.grey,
+              ))
           : null,
     );
   }

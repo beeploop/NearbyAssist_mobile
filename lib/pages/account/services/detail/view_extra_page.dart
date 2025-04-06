@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
-import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/utils/restricted_account_modal.dart';
+import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class ViewExtraPage extends StatefulWidget {
@@ -230,7 +230,7 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
       loader.show();
 
       final navigator = Navigator.of(context);
-      final provider = context.read<ManagedServiceProvider>();
+      final provider = context.read<ControlCenterProvider>();
 
       if (_titleController.text.isEmpty ||
           _descriptionController.text.isEmpty ||
@@ -239,15 +239,14 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
         return;
       }
 
-      final newData = ServiceExtraModel(
+      final updated = ServiceExtraModel(
         id: widget.extra.id,
         title: _titleController.text,
         description: _descriptionController.text,
         price: double.parse(_priceController.text),
       );
 
-      await provider.editServiceExtra(widget.serviceId, newData);
-
+      await provider.updateExtra(widget.serviceId, updated);
       navigator.pop();
     } on DioException catch (error) {
       _onError(error.response?.data['message']);
@@ -265,10 +264,9 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
       loader.show();
 
       final navigator = Navigator.of(context);
-      final provider = context.read<ManagedServiceProvider>();
+      final provider = context.read<ControlCenterProvider>();
 
-      provider.deleteServiceExtra(widget.serviceId, widget.extra.id);
-
+      await provider.deleteExtra(widget.serviceId, widget.extra.id);
       navigator.pop();
     } on DioException catch (error) {
       _onError(error.response?.data['message']);

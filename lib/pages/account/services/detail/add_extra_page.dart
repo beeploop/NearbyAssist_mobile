@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
-import 'package:nearby_assist/providers/managed_service_provider.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddExtraPage extends StatefulWidget {
@@ -135,7 +135,6 @@ class _AddExtraPageState extends State<AddExtraPage> {
       }
 
       final navigator = Navigator.of(context);
-      final provider = context.read<ManagedServiceProvider>();
 
       final data = AddExtraModel(
         serviceId: widget.serviceId,
@@ -144,8 +143,7 @@ class _AddExtraPageState extends State<AddExtraPage> {
         price: double.parse(_priceController.text),
       );
 
-      await provider.addExtra(data);
-
+      await context.read<ControlCenterProvider>().addExtra(data);
       navigator.pop();
     } on DioException catch (error) {
       _onError(error.response?.data['message']);

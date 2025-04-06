@@ -8,7 +8,7 @@ import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/service_information_section.dart';
 import 'package:nearby_assist/pages/booking/widget/summary_section.dart';
 import 'package:nearby_assist/pages/booking/widget/user_information_section.dart';
-import 'package:nearby_assist/providers/booking_provider.dart';
+import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -47,55 +47,17 @@ class _BookingPageState extends State<BookingPage> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: _buildBody(),
+        body: Stepper(
+          type: StepperType.horizontal,
+          elevation: 0,
+          steps: _steps(),
+          currentStep: _currentStep,
+          onStepContinue: _onContinue,
+          onStepCancel: _onCancel,
+          controlsBuilder: _controlsBuilder,
+        ),
       ),
     );
-  }
-
-  Widget _buildBody() {
-    return context.read<UserProvider>().user.isVerified == false
-        ? Center(
-            child: AlertDialog(
-              icon: const Icon(CupertinoIcons.exclamationmark_triangle),
-              title: const Text('Account not verified'),
-              content: const Text('Verify your account to unlock feature'),
-              actions: [
-                TextButton(
-                  style: const ButtonStyle(
-                    foregroundColor: WidgetStatePropertyAll(Colors.red),
-                  ),
-                  onPressed: () => context.pop(),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(
-                      Colors.green.shade800,
-                    ),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  onPressed: () => context.pushNamed('verifyAccount'),
-                  child: const Text(
-                    'Verify',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          )
-        : Stepper(
-            type: StepperType.horizontal,
-            elevation: 0,
-            steps: _steps(),
-            currentStep: _currentStep,
-            onStepContinue: _onContinue,
-            onStepCancel: _onCancel,
-            controlsBuilder: _controlsBuilder,
-          );
   }
 
   List<Step> _steps() {
@@ -187,19 +149,19 @@ class _BookingPageState extends State<BookingPage> {
 
   Future<void> _book() async {
     final loader = context.loaderOverlay;
-    loader.show();
-
-    final booking = BookingRequestModel(
-      vendorId: widget.details.vendor.id,
-      clientId: context.read<UserProvider>().user.id,
-      serviceId: widget.details.service.id,
-      extras: _selectedExtras,
-      totalCost: _computeTotal().toString(),
-    );
 
     try {
-      await context.read<BookingProvider>().createBooking(booking);
+      loader.show();
 
+      final booking = BookingRequestModel(
+        vendorId: widget.details.vendor.id,
+        clientId: context.read<UserProvider>().user.id,
+        serviceId: widget.details.service.id,
+        extras: _selectedExtras,
+        totalCost: _computeTotal().toString(),
+      );
+
+      await context.read<ClientBookingProvider>().book(booking);
       _onSuccess();
     } catch (error) {
       _onError(error.toString());

@@ -7,7 +7,7 @@ import 'package:nearby_assist/pages/account/services/detail/add_extra_page.dart'
 import 'package:nearby_assist/pages/account/services/detail/view_extra_page.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
-import 'package:nearby_assist/utils/restricted_account_modal.dart';
+import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class Extras extends StatefulWidget {

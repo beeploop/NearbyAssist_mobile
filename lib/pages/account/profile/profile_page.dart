@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         body: Consumer<UserProvider>(
-          builder: (context, auth, child) {
+          builder: (context, provider, child) {
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -55,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: CachedNetworkImageProvider(
-                                    auth.user.imageUrl),
+                                    provider.user.imageUrl),
                               ),
                             ),
                           ),
@@ -66,14 +66,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             right: -10,
                             child: IconButton(
                               icon: Icon(
-                                auth.user.isVerified
+                                provider.user.isVerified
                                     ? CupertinoIcons.checkmark_seal_fill
                                     : CupertinoIcons.checkmark_seal,
                                 size: 30,
                                 color: Colors.blue,
                               ),
                               onPressed: () {
-                                if (auth.user.isVerified) return;
+                                if (provider.user.isVerified) return;
                                 context.pushNamed('verifyAccount');
                               },
                             ),
@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Name
                     Center(
                       child: AutoSizeText(
-                        auth.user.name,
+                        provider.user.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           overflow: TextOverflow.ellipsis,
@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         const Icon(CupertinoIcons.mail, size: 20),
                         const SizedBox(width: 10),
-                        AutoSizeText(auth.user.email),
+                        AutoSizeText(provider.user.email),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         const Icon(CupertinoIcons.phone, size: 20),
                         const SizedBox(width: 10),
-                        AutoSizeText(auth.user.phone ?? ''),
+                        AutoSizeText(provider.user.phone ?? ''),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -144,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 20),
 
-                    ...auth.user.socials.map((social) => GestureDetector(
+                    ...provider.user.socials.map((social) => GestureDetector(
                           onLongPress: () => _deleteSocial(social),
                           child: InkWell(
                             overlayColor: WidgetStateProperty.all(
@@ -164,8 +164,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 10),
 
                     // Expertise
-                    const ExpertiseSection(),
+                    if (provider.user.isVerified) const ExpertiseSection(),
                     const Divider(),
+
+                    // Bottom padding
                     const SizedBox(height: 20),
                   ],
                 ),

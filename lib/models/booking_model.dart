@@ -13,6 +13,7 @@ class BookingModel {
   List<ServiceExtraModel> extras;
   double cost;
   BookingStatus status;
+  String qrSignature;
   String createdAt;
   String? updatedAt;
   String? scheduledAt;
@@ -26,6 +27,7 @@ class BookingModel {
     required this.extras,
     required this.cost,
     required this.status,
+    required this.qrSignature,
     required this.createdAt,
     required this.updatedAt,
     required this.scheduledAt,
@@ -49,6 +51,7 @@ class BookingModel {
         'rejected' => BookingStatus.rejected,
         _ => BookingStatus.cancelled,
       },
+      qrSignature: json['qrSignature'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
       scheduledAt: json['scheduledAt'],
@@ -56,9 +59,22 @@ class BookingModel {
     );
   }
 
+  BookingModel copyWithSchedule(String scheduledAt) {
+    this.scheduledAt = scheduledAt;
+    return this;
+  }
+
   BookingModel copyWithNewStatus(BookingStatus status) {
     this.status = status;
     return this;
+  }
+
+  double total() {
+    double total = service.rate;
+    for (final extra in extras) {
+      total += extra.price;
+    }
+    return total;
   }
 }
 
