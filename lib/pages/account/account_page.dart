@@ -10,6 +10,7 @@ import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/services/google_auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/show_account_not_vendor_modal.dart';
 import 'package:provider/provider.dart';
 
 class AccountPage extends StatefulWidget {
@@ -88,14 +89,19 @@ class _AccountPageState extends State<AccountPage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               // ControlCenter
-              if (provider.user.isVendor)
-                IconButton(
-                  onPressed: () => context.pushNamed("controlCenter"),
-                  icon: const Icon(
-                    Icons.store,
-                    color: Colors.white,
-                  ),
+              IconButton(
+                onPressed: () {
+                  if (!provider.user.isVendor) {
+                    showAccountNotVendorModal(context);
+                    return;
+                  }
+                  context.pushNamed("controlCenter");
+                },
+                icon: const Icon(
+                  Icons.store,
+                  color: Colors.white,
                 ),
+              ),
 
               // Settings
               IconButton(
