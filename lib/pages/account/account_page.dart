@@ -35,8 +35,12 @@ class _AccountPageState extends State<AccountPage> {
                 future: context.read<ClientBookingProvider>().fetchAll(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return Container(
+                      decoration: const BoxDecoration(color: Colors.green),
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      child: const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      ),
                     );
                   }
 
