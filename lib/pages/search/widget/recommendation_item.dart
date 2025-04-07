@@ -35,7 +35,7 @@ class RecommendationItem extends StatelessWidget {
                       decoration: BoxDecoration(color: Colors.grey.shade200),
                     )
                   : CachedNetworkImage(
-                      imageUrl: '${endpoint.resource}/${data.thumbnail}',
+                      imageUrl: '${endpoint.publicResource}/${data.thumbnail}',
                       fit: BoxFit.fill,
                     ),
             ),

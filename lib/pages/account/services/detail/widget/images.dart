@@ -144,7 +144,7 @@ class _ImagesState extends State<Images> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: CachedNetworkImage(
-            imageUrl: '${endpoint.resource}/${image.url}',
+            imageUrl: '${endpoint.publicResource}/${image.url}',
             fit: BoxFit.contain,
             progressIndicatorBuilder: (context, url, downloadProgress) {
               return CircularProgressIndicator(

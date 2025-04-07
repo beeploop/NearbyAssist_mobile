@@ -27,7 +27,7 @@ class ImageSection extends StatelessWidget {
             border: Border.all(),
           ),
           child: CachedNetworkImage(
-            imageUrl: '${endpoint.resource}/${images[idx].url}',
+            imageUrl: '${endpoint.publicResource}/${images[idx].url}',
             fit: BoxFit.cover,
             progressIndicatorBuilder: (context, url, downloadProgress) {
               return Padding(

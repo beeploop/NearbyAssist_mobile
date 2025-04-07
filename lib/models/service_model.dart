@@ -15,14 +15,14 @@ class ServiceModel {
   final LocationModel location;
 
   ServiceModel({
-    this.id = '',
+    required this.id,
     required this.vendorId,
     required this.title,
     required this.description,
     required this.rate,
-    this.tags = const [],
-    this.extras = const [],
-    this.images = const [],
+    required this.tags,
+    required this.extras,
+    required this.images,
     required this.location,
   });
 
@@ -48,6 +48,7 @@ class ServiceModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'vendorId': vendorId,
       'title': title,
       'description': description,

@@ -193,6 +193,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         location: LocationModel.fromPosition(position),
         tags: _selectedTags,
         extras: extras,
+        images: [],
       );
 
       await provider.addService(service);

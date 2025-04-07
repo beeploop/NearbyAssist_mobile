@@ -33,6 +33,7 @@ class ApiEndpoint {
 
   // Resource URL
   String get resource => '$_baseUrl/api/v1/resource';
+  String get publicResource => '$_baseUrl/api/v1/resource/public';
 
   // Health check
   String get healthcheck => '$_baseUrl/api/v1/health/protected';
