@@ -98,7 +98,11 @@ class ClientBookingProvider extends ChangeNotifier {
 
       final targetIdx = _pending.indexWhere((request) => request.id == id);
       final cancelledBooking = _pending.removeAt(targetIdx);
-      _history.add(cancelledBooking.copyWithNewStatus(BookingStatus.cancelled));
+      _history.add(cancelledBooking.copyWith(
+        status: BookingStatus.cancelled,
+        updatedAt: DateTime.now().toString(),
+        cancelReason: reason,
+      ));
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());

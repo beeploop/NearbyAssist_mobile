@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/pending/pending_request_list_item.dart';
 import 'package:nearby_assist/pages/account/bookings/pending/pending_request_summary_page.dart';
-import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +43,8 @@ class _PendingRequestPageState extends State<PendingRequestPage> {
       child: ListView.separated(
         separatorBuilder: (context, index) => const Divider(),
         itemCount: requests.length,
-        itemBuilder: (context, index) => ListTile(
+        itemBuilder: (context, index) => PendingRequestListItem(
+          booking: requests[index],
           onTap: () {
             Navigator.push(
               context,
@@ -55,12 +56,6 @@ class _PendingRequestPageState extends State<PendingRequestPage> {
               ),
             );
           },
-          title: Text(requests[index].vendor.name),
-          subtitle: Text(
-            requests[index].service.title,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: BookingStatusChip(status: requests[index].status),
         ),
       ),
     );

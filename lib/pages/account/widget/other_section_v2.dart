@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/config/assets.dart';
-import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';

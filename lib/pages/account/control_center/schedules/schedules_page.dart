@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/control_center/schedules/schedule_list_item.dart';
 import 'package:nearby_assist/pages/account/control_center/schedules/schedule_summary_page.dart';
-import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -41,24 +41,21 @@ class _SchedulesPageState extends State<SchedulesPage> {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: ListView.separated(
-        separatorBuilder: (context, index) => const Divider(),
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemCount: requests.length,
-        itemBuilder: (context, index) => ListTile(
+        itemBuilder: (context, index) => ScheduleListItem(
+          booking: requests[index],
           onTap: () {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) =>
-                    ScheduleSummaryPage(booking: requests[index]),
+                builder: (context) => ScheduleSummaryPage(
+                  booking: requests[index],
+                  showChatIcon: true,
+                ),
               ),
             );
           },
-          title: Text(requests[index].vendor.name),
-          subtitle: Text(
-            requests[index].service.title,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: BookingStatusChip(status: requests[index].status),
         ),
       ),
     );
@@ -81,7 +78,7 @@ class _SchedulesPageState extends State<SchedulesPage> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'No requests',
+                    'No schedules',
                     style: TextStyle(color: Colors.grey),
                   ),
                   Text(

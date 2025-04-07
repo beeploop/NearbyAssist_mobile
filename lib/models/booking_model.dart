@@ -59,14 +59,26 @@ class BookingModel {
     );
   }
 
-  BookingModel copyWithSchedule(String scheduledAt) {
-    this.scheduledAt = scheduledAt;
-    return this;
-  }
-
-  BookingModel copyWithNewStatus(BookingStatus status) {
-    this.status = status;
-    return this;
+  BookingModel copyWith({
+    BookingStatus? status,
+    String? updatedAt,
+    String? scheduledAt,
+    String? cancelReason,
+  }) {
+    return BookingModel(
+      id: id,
+      vendor: vendor,
+      client: client,
+      service: service,
+      extras: extras,
+      cost: cost,
+      status: status ?? this.status,
+      qrSignature: qrSignature,
+      createdAt: createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      scheduledAt: scheduledAt ?? this.scheduledAt,
+      cancelReason: cancelReason ?? this.cancelReason,
+    );
   }
 
   double total() {

@@ -207,7 +207,7 @@ class ControlCenterProvider extends ChangeNotifier {
 
       final targetIdx = _requests.indexWhere((request) => request.id == id);
       final acceptedBooking = _requests.removeAt(targetIdx);
-      _schedules.add(acceptedBooking.copyWithSchedule(schedule));
+      _schedules.add(acceptedBooking.copyWith(scheduledAt: schedule));
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -221,7 +221,7 @@ class ControlCenterProvider extends ChangeNotifier {
 
       final targetIdx = _requests.indexWhere((request) => request.id == id);
       final rejectedBooking = _requests.removeAt(targetIdx);
-      _history.add(rejectedBooking.copyWithNewStatus(BookingStatus.rejected));
+      _history.add(rejectedBooking.copyWith(status: BookingStatus.rejected));
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());

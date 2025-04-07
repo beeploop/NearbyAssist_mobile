@@ -32,13 +32,13 @@ class BookingStatusChip extends StatelessWidget {
   Color _pickColor() {
     switch (status) {
       case BookingStatus.pending:
-        return Colors.orange;
+        return Colors.blueGrey;
       case BookingStatus.confirmed:
         return Colors.teal;
       case BookingStatus.done:
-        return Colors.green;
+        return Colors.green.shade800;
       case BookingStatus.rejected:
-        return Colors.red;
+        return Colors.red.shade800;
       case BookingStatus.cancelled:
         return Colors.grey;
       default:

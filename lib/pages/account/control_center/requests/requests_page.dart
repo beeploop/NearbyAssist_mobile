@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/control_center/requests/request_list_item.dart';
 import 'package:nearby_assist/pages/account/control_center/requests/request_summary_page.dart';
-import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +43,8 @@ class _RequestsPageState extends State<RequestsPage> {
       child: ListView.separated(
         separatorBuilder: (context, index) => const Divider(),
         itemCount: requests.length,
-        itemBuilder: (context, index) => ListTile(
+        itemBuilder: (context, index) => RequestListItem(
+          booking: requests[index],
           onTap: () {
             Navigator.push(
               context,
@@ -54,9 +55,6 @@ class _RequestsPageState extends State<RequestsPage> {
               ),
             );
           },
-          title: Text(requests[index].client.name),
-          subtitle: Text(requests[index].service.title),
-          trailing: BookingStatusChip(status: requests[index].status),
         ),
       ),
     );

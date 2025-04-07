@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:go_router/go_router.dart';
 
-class BookingListItem extends StatelessWidget {
-  const BookingListItem({
+class ConfirmedBookingListItem extends StatelessWidget {
+  const ConfirmedBookingListItem({
     super.key,
     required this.booking,
     required this.onTap,
@@ -19,8 +18,6 @@ class BookingListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.logDebug(booking.scheduledAt);
-
     return Container(
       decoration: BoxDecoration(color: backgroundColor),
       child: Column(
@@ -33,14 +30,14 @@ class BookingListItem extends StatelessWidget {
             ),
             child: _top(context),
           ),
-          const Divider(),
+          const SizedBox(height: 10),
 
           // Service section
           GestureDetector(
             onTap: onTap,
             child: _middle(),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
 
           // Schedule section
           _schedule(),
@@ -53,11 +50,11 @@ class BookingListItem extends StatelessWidget {
     return Row(
       children: [
         // Vendor
-        const Icon(CupertinoIcons.person, size: 13, color: Colors.green),
+        const Icon(CupertinoIcons.person, size: 13),
         const SizedBox(width: 10),
         Text(
           booking.vendor.name,
-          style: const TextStyle(fontSize: 12, color: Colors.green),
+          style: const TextStyle(fontSize: 12),
         ),
       ],
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
+import 'package:nearby_assist/pages/account/control_center/history/vendor_history_list_item.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/pages/account/control_center/history/vendor_history_summary_page.dart';
@@ -46,7 +46,8 @@ class _VendorHistoryPageState extends State<VendorHistoryPage> {
           child: ListView.separated(
             separatorBuilder: (context, index) => const Divider(),
             itemCount: requests.length,
-            itemBuilder: (context, index) => ListTile(
+            itemBuilder: (context, index) => VendorHistoryListItem(
+              booking: requests[index],
               onTap: () {
                 Navigator.push(
                   context,
@@ -57,17 +58,6 @@ class _VendorHistoryPageState extends State<VendorHistoryPage> {
                   ),
                 );
               },
-              leading: Icon(
-                requests[index].client.id == provider.user.id
-                    ? CupertinoIcons.arrow_up
-                    : CupertinoIcons.arrow_down,
-              ),
-              title: Text(requests[index].vendor.name),
-              subtitle: Text(
-                requests[index].service.title,
-                overflow: TextOverflow.ellipsis,
-              ),
-              trailing: BookingStatusChip(status: requests[index].status),
             ),
           ),
         );

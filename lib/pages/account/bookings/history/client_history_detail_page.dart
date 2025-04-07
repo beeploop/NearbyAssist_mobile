@@ -6,8 +6,8 @@ import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 
-class ClientHistorySummaryPage extends StatefulWidget {
-  const ClientHistorySummaryPage({
+class ClientHistoryDetailPage extends StatefulWidget {
+  const ClientHistoryDetailPage({
     super.key,
     required this.booking,
     this.showChatIcon = false,
@@ -17,11 +17,11 @@ class ClientHistorySummaryPage extends StatefulWidget {
   final bool showChatIcon;
 
   @override
-  State<ClientHistorySummaryPage> createState() =>
-      _ClientHistorySummaryPageState();
+  State<ClientHistoryDetailPage> createState() =>
+      _ClientHistoryDetailPageState();
 }
 
-class _ClientHistorySummaryPageState extends State<ClientHistorySummaryPage> {
+class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,6 +118,9 @@ class _ClientHistorySummaryPageState extends State<ClientHistorySummaryPage> {
               // Estimated cost
               const SizedBox(height: 20),
               RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
+              const SizedBox(height: 20),
+
+              // Bottom padding
               const SizedBox(height: 20),
             ],
           ),

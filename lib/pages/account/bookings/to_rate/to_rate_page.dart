@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/bookings/to_rate/rate_page.dart';
-import 'package:nearby_assist/pages/account/bookings/to_rate/to_rate_summary_page.dart';
+import 'package:nearby_assist/pages/account/bookings/to_rate/to_rate_list_item.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -43,37 +42,8 @@ class _ToRatePageState extends State<ToRatePage> {
       child: ListView.separated(
         itemCount: bookings.length,
         separatorBuilder: (context, index) => const Divider(),
-        itemBuilder: (context, index) => ListTile(
-          leading: const Icon(CupertinoIcons.checkmark_circle),
-          title: Text(bookings[index].vendor.name),
-          subtitle: Text(
-            bookings[index].service.title,
-            overflow: TextOverflow.ellipsis,
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => ToRateSummaryPage(
-                  booking: bookings[index],
-                ),
-              ),
-            );
-          },
-          trailing: FilledButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => RatePage(
-                    booking: bookings[index],
-                  ),
-                ),
-              );
-            },
-            child: const Text('Review'),
-          ),
-        ),
+        itemBuilder: (context, index) =>
+            ToRateListItem(booking: bookings[index]),
       ),
     );
   }
