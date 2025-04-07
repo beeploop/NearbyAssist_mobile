@@ -89,19 +89,20 @@ class _AccountPageState extends State<AccountPage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               // ControlCenter
-              IconButton(
-                onPressed: () {
-                  if (!provider.user.isVendor) {
-                    showAccountNotVendorModal(context);
-                    return;
-                  }
-                  context.pushNamed("controlCenter");
-                },
-                icon: const Icon(
-                  Icons.store,
-                  color: Colors.white,
+              if (provider.user.isVerified)
+                IconButton(
+                  onPressed: () {
+                    if (!provider.user.isVendor) {
+                      showAccountNotVendorModal(context);
+                      return;
+                    }
+                    context.pushNamed("controlCenter");
+                  },
+                  icon: const Icon(
+                    Icons.store,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
 
               // Settings
               IconButton(

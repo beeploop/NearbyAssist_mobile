@@ -65,14 +65,7 @@ class _ServicesPageState extends State<ServicesPage> {
       child: ListView.separated(
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemCount: services.length,
-        itemBuilder: (context, index) {
-          final hasPadding = index == (services.length - 1);
-
-          return ServiceItem(
-            service: services[index],
-            paddingBottom: hasPadding,
-          );
-        },
+        itemBuilder: (context, index) => ServiceItem(service: services[index]),
       ),
     );
   }

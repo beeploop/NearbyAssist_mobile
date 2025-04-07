@@ -7,7 +7,6 @@ import 'package:focused_menu/modals.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
-import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
@@ -16,9 +15,9 @@ import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class Images extends StatefulWidget {
-  const Images({super.key, required this.service});
+  const Images({super.key, required this.serviceId});
 
-  final ServiceModel service;
+  final String serviceId;
 
   @override
   State<Images> createState() => _ImagesState();
@@ -29,8 +28,11 @@ class _ImagesState extends State<Images> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserProvider>(
-      builder: (context, userProvider, child) {
+    return Consumer2<UserProvider, ControlCenterProvider>(
+      builder: (context, userProvider, ccProvider, _) {
+        final service = ccProvider.services
+            .firstWhere((service) => service.id == widget.serviceId);
+
         return LoaderOverlay(
           child: Stack(
             children: [
@@ -42,10 +44,9 @@ class _ImagesState extends State<Images> {
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
                   ),
-                  children: [
-                    ...widget.service.images
-                        .map((image) => _imageWidget(image)),
-                  ],
+                  children: service.images
+                      .map((image) => _imageWidget(image))
+                      .toList(),
                 ),
               ),
               Positioned(
@@ -170,7 +171,7 @@ class _ImagesState extends State<Images> {
       }
 
       await context.read<ControlCenterProvider>().uploadImage(
-            widget.service.id,
+            widget.serviceId,
             _fillableImageController.image!,
           );
     } on DioException catch (error) {
@@ -190,7 +191,7 @@ class _ImagesState extends State<Images> {
 
       await context
           .read<ControlCenterProvider>()
-          .deleteImage(widget.service.id, imageId);
+          .deleteImage(widget.serviceId, imageId);
     } on DioException catch (error) {
       _onError(error.response?.data['message']);
     } catch (error) {

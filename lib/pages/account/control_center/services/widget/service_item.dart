@@ -7,11 +7,9 @@ import 'package:nearby_assist/pages/account/services/detail/service_detail_page.
 class ServiceItem extends StatelessWidget {
   const ServiceItem({
     super.key,
-    this.paddingBottom = false,
     required this.service,
   });
 
-  final bool paddingBottom;
   final ServiceModel service;
 
   @override
