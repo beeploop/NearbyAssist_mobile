@@ -2,10 +2,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:nearby_assist/models/conversation_model.dart';
 import 'package:nearby_assist/utils/random_color.dart';
 import 'package:nearby_assist/config/assets.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 
 class InboxItem extends StatelessWidget {
   const InboxItem({
@@ -42,8 +42,7 @@ class InboxItem extends StatelessWidget {
           conversation.lastMessage,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: Text(
-            DateFormat('MMMd h:m').format(DateTime.parse(conversation.date))),
+        trailing: Text(DateFormatter.monthDateHourMinutes(conversation.date)),
         onTap: () => context.pushNamed(
           'chat',
           queryParameters: {

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:go_router/go_router.dart';
 
 class RequestListItem extends StatelessWidget {
@@ -60,7 +61,7 @@ class RequestListItem extends StatelessWidget {
           style: const TextStyle(fontSize: 12),
         ),
         const Spacer(),
-        Text(booking.createdAt),
+        Text(DateFormatter.monthAndDate(booking.createdAt)),
       ],
     );
   }
@@ -110,6 +111,10 @@ class RequestListItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        // Created date
+        Text(DateFormatter.monthAndDate(booking.createdAt)),
+        const SizedBox(width: 10),
+
         // Details button
         OutlinedButton(
           onPressed: onTap,

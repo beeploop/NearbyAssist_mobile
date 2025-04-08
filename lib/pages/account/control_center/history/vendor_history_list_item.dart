@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 
 class VendorHistoryListItem extends StatelessWidget {
   const VendorHistoryListItem({
@@ -104,7 +105,7 @@ class VendorHistoryListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Updated date
-        Text(booking.updatedAt ?? 'no-date'),
+        Text(DateFormatter.monthAndDate(booking.updatedAt ?? "")),
         const SizedBox(width: 10),
 
         // Details button

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:go_router/go_router.dart';
 
@@ -111,7 +112,7 @@ class ClientHistoryListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Updated date
-        Text(booking.updatedAt ?? 'no-date'),
+        Text(DateFormatter.monthAndDate(booking.updatedAt ?? "")),
         const SizedBox(width: 10),
 
         // Details button

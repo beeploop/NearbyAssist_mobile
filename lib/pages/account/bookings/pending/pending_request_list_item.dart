@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:go_router/go_router.dart';
 
@@ -105,8 +106,8 @@ class PendingRequestListItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        // Schedule
-        Text(booking.scheduledAt ?? 'no-schedule'),
+        // Created date
+        Text(DateFormatter.monthAndDate(booking.createdAt)),
         const SizedBox(width: 10),
 
         // Details button

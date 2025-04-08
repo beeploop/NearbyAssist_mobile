@@ -5,6 +5,7 @@ import 'package:nearby_assist/pages/account/bookings/to_rate/rate_page.dart';
 import 'package:nearby_assist/pages/account/bookings/to_rate/to_rate_summary_page.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 
 class ToRateListItem extends StatelessWidget {
   const ToRateListItem({
@@ -100,7 +101,7 @@ class ToRateListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Updated date
-        Text(booking.updatedAt ?? 'no-date'),
+        Text(DateFormatter.monthAndDate(booking.updatedAt ?? "")),
         const Spacer(),
 
         // Details button
