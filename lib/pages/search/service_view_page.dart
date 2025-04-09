@@ -7,6 +7,7 @@ import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
 import 'package:nearby_assist/pages/account/services/widget/rating_count_bar.dart';
 import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
 import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
+import 'package:nearby_assist/pages/search/widget/service_review_item.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
@@ -100,9 +101,13 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 Text(details.service.description),
                 const SizedBox(height: 20),
 
+                // Divider
+                const Divider(),
+                const SizedBox(height: 20),
+
                 // Rating
                 Text(
-                  'Total Reviews: ${details.ratingCount.total()}',
+                  'Total Reviews: ${details.ratings.reduce((a, b) => a + b)}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -112,13 +117,32 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 SizedBox(
                   width: double.infinity,
                   height: 160,
-                  child: RatingCountBar(rating: details.ratingCount),
+                  child: RatingCountBar(rating: details.ratings),
+                ),
+                const SizedBox(height: 20),
+
+                // Latest reviews
+                const Text(
+                  'Reviews',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, _) => const Divider(),
+                  itemCount: details.reviews.length,
+                  itemBuilder: (context, index) => ServiceReviewItem(
+                    review: details.reviews[index],
+                  ),
                 ),
                 const SizedBox(height: 20),
 
                 // Divider
                 const Divider(),
-                const SizedBox(height: 20),
 
                 // Bottom padding
                 const SizedBox(height: 40),

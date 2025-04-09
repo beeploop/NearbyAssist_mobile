@@ -1,21 +1,18 @@
-class ReviewModel {
-  String? id;
+class PostReviewModel {
   final String serviceId;
   final String bookingId;
   final int rating;
   final String text;
 
-  ReviewModel({
-    this.id,
+  PostReviewModel({
     required this.serviceId,
     required this.bookingId,
     required this.rating,
     required this.text,
   });
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) {
-    return ReviewModel(
-      id: json['id'] ?? '',
+  factory PostReviewModel.fromJson(Map<String, dynamic> json) {
+    return PostReviewModel(
       serviceId: json['serviceId'],
       bookingId: json['bookingId'],
       rating: json['rating'],

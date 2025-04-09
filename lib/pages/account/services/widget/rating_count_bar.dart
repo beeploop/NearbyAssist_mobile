@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/models/rating_count_model.dart';
 
 class RatingCountBar extends StatelessWidget {
   const RatingCountBar({
@@ -9,7 +8,7 @@ class RatingCountBar extends StatelessWidget {
     this.spacing = 2,
   });
 
-  final RatingCountModel rating;
+  final List<int> rating;
   final double gap;
   final double spacing;
 
@@ -18,15 +17,15 @@ class RatingCountBar extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _ratingRow('5 ⭐', rating.five),
+        _ratingRow('5 ⭐', rating[4]),
         SizedBox(height: spacing),
-        _ratingRow('4 ⭐', rating.four),
+        _ratingRow('4 ⭐', rating[3]),
         SizedBox(height: spacing),
-        _ratingRow('3 ⭐', rating.three),
+        _ratingRow('3 ⭐', rating[2]),
         SizedBox(height: spacing),
-        _ratingRow('2 ⭐', rating.two),
+        _ratingRow('2 ⭐', rating[1]),
         SizedBox(height: spacing),
-        _ratingRow('1 ⭐', rating.one),
+        _ratingRow('1 ⭐', rating[0]),
         SizedBox(height: spacing),
       ],
     );

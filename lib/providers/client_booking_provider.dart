@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
-import 'package:nearby_assist/models/review_model.dart';
+import 'package:nearby_assist/models/post_review_model.dart';
 import 'package:nearby_assist/services/client_booking_service.dart';
 
 class ClientBookingProvider extends ChangeNotifier {
@@ -110,7 +110,7 @@ class ClientBookingProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> review(ReviewModel review) async {
+  Future<void> review(PostReviewModel review) async {
     try {
       await ClientBookingService().postReview(review);
 

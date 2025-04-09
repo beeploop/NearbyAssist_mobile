@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/models/review_model.dart';
+import 'package:nearby_assist/models/post_review_model.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:provider/provider.dart';
@@ -121,7 +121,7 @@ class _RatePageState extends State<RatePage> {
         throw 'Please leave a message';
       }
 
-      final review = ReviewModel(
+      final review = PostReviewModel(
         bookingId: widget.booking.id,
         serviceId: widget.booking.service.id,
         rating: _rating.toInt(),

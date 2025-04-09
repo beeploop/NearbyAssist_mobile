@@ -2,7 +2,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
-import 'package:nearby_assist/models/review_model.dart';
+import 'package:nearby_assist/models/post_review_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 
 class ClientBookingService {
@@ -144,7 +144,7 @@ class ClientBookingService {
     }
   }
 
-  Future<void> postReview(ReviewModel review) async {
+  Future<void> postReview(PostReviewModel review) async {
     try {
       final api = ApiService.authenticated();
       await api.dio.post(endpoint.postReview, data: review.toJson());
