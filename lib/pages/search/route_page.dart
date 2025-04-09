@@ -18,6 +18,9 @@ class RoutePage extends StatefulWidget {
 }
 
 class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
+  final _initialZoom = 14.0;
+  final _minZoom = 16.0;
+  final _maxZoom = 18.0;
   late final _controller = AnimatedMapController(vsync: this);
 
   @override
@@ -60,7 +63,8 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
     return FlutterMap(
       mapController: _controller.mapController,
       options: MapOptions(
-        initialZoom: 15,
+        initialZoom: _initialZoom,
+        maxZoom: _maxZoom,
         initialCenter: coordinates.first,
         onMapReady: () => _fitMarkers(coordinates),
       ),
@@ -106,8 +110,8 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
       cameraFit: CameraFit.coordinates(
         coordinates: coordinates,
         padding: const EdgeInsets.all(50),
-        maxZoom: 20,
-        minZoom: 16,
+        maxZoom: _maxZoom,
+        minZoom: _minZoom,
       ),
     );
   }

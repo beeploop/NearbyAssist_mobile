@@ -22,6 +22,9 @@ class CustomMap extends StatefulWidget {
 }
 
 class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
+  final _initialZoom = 13.0;
+  final _maxZoom = 18.0;
+  final _animateZoom = 16.0;
   OverlayEntry? orderingPreferenceOverlay;
   late final _controller = AnimatedMapController(vsync: this);
   LatLng _location = defaultLocation;
@@ -55,8 +58,9 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
               options: MapOptions(
                   initialCenter:
                       LatLng(_location.latitude, _location.longitude),
-                  initialZoom: 13.0,
-                  onMapReady: _mapReady,
+                  initialZoom: _initialZoom,
+                  maxZoom: _maxZoom,
+                  onMapReady: _centerMap,
                   onTap: (tapPos, latlng) {
                     // Remove focus from the searchbar
                     FocusManager.instance.primaryFocus?.unfocus();
@@ -287,14 +291,10 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
-  void _mapReady() {
-    _centerMap();
-  }
-
   void _centerMap() {
     _controller.animateTo(
       dest: LatLng(_location.latitude, _location.longitude),
-      zoom: 16,
+      zoom: _animateZoom,
     );
   }
 
@@ -309,7 +309,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
     if (bounds.northEast == bounds.southWest) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _controller.animateTo(dest: userPosition, zoom: 16.0);
+        _controller.animateTo(dest: userPosition, zoom: _animateZoom);
       });
       return;
     }
