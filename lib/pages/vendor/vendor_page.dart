@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
+import 'package:nearby_assist/pages/vendor/widget/menu.dart';
 import 'package:nearby_assist/providers/vendor_provider.dart';
 import 'package:nearby_assist/utils/url_icon_generator.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,10 @@ class _VendorPageState extends State<VendorPage> {
           'Vendor',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          Menu(vendorId: widget.vendorId),
+          const SizedBox(width: 10),
+        ],
       ),
       body: FutureBuilder(
         future: Provider.of<VendorProvider>(context).getVendor(widget.vendorId),
