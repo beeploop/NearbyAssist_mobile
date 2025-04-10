@@ -1,9 +1,10 @@
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/api_service.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
+import 'package:nearby_assist/services/image_resize_service.dart';
 
 class ReportIssueService {
   Future<void> reportIssue({
@@ -16,16 +17,20 @@ class ReportIssueService {
         throw "Don't leave empty fields";
       }
 
+      final resizedImages = <MultipartFile>[];
+      for (final image in images) {
+        final resized = await compute(ImageResizeService.resize, image);
+        resizedImages.add(MultipartFile.fromBytes(
+          resized,
+          filename: 'image',
+          contentType: MediaType('image', 'jpeg'),
+        ));
+      }
+
       final data = FormData.fromMap({
         'title': title,
         'detail': detail,
-        'files': [
-          ...images.map((image) => MultipartFile.fromBytes(
-                image,
-                filename: 'image',
-                contentType: MediaType('image', 'jpeg'),
-              )),
-        ],
+        'files': resizedImages,
       });
 
       final api = ApiService.unauthenticated();
@@ -44,17 +49,21 @@ class ReportIssueService {
     required List<Uint8List> images,
   }) async {
     try {
+      final resizedImages = <MultipartFile>[];
+      for (final image in images) {
+        final resized = await compute(ImageResizeService.resize, image);
+        resizedImages.add(MultipartFile.fromBytes(
+          resized,
+          filename: 'image',
+          contentType: MediaType('image', 'jpeg'),
+        ));
+      }
+
       final data = FormData.fromMap({
         'userId': userId,
         'reason': reason,
         'detail': detail,
-        'files': [
-          ...images.map((image) => MultipartFile.fromBytes(
-                image,
-                filename: 'image',
-                contentType: MediaType('image', 'jpeg'),
-              )),
-        ],
+        'files': resizedImages,
       });
 
       final api = ApiService.authenticated();

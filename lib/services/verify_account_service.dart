@@ -1,10 +1,11 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/api_service.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
+import 'package:nearby_assist/services/image_resize_service.dart';
 
 class VerifyAccountService {
   Future<void> verify({
@@ -17,7 +18,7 @@ class VerifyAccountService {
     required String idNumber,
     required Uint8List? frontId,
     required Uint8List? backId,
-    required Uint8List? face,
+    required Uint8List? selfie,
   }) async {
     logger.logDebug('called verify in verify_account_service.dart');
 
@@ -26,7 +27,7 @@ class VerifyAccountService {
         throw Exception('Select an ID Type');
       }
 
-      if (frontId == null || backId == null || face == null) {
+      if (frontId == null || backId == null || selfie == null) {
         throw Exception('Select images');
       }
 
@@ -55,17 +56,19 @@ class VerifyAccountService {
         'idNumber': idNumber,
         'files': [
           MultipartFile.fromBytes(
-            frontId,
+            await compute(ImageResizeService.resize, frontId),
             filename: 'frontId',
             contentType: MediaType('image', 'jpeg'),
           ),
           MultipartFile.fromBytes(
-            backId,
+            await compute(ImageResizeService.resize, backId),
             filename: 'backId',
+            contentType: MediaType('image', 'jpeg'),
           ),
           MultipartFile.fromBytes(
-            face,
+            await compute(ImageResizeService.resize, selfie),
             filename: 'face',
+            contentType: MediaType('image', 'jpeg'),
           ),
         ]
       });

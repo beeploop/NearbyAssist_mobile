@@ -1,9 +1,11 @@
-import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
+import 'package:nearby_assist/services/image_resize_service.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http_parser/http_parser.dart';
 
 class VendorApplicationService {
   Future<void> apply({
@@ -18,12 +20,14 @@ class VendorApplicationService {
         'expertiseId': expertise.id,
         'files': [
           MultipartFile.fromBytes(
-            supportingDoc,
+            await compute(ImageResizeService.resize, supportingDoc),
             filename: 'supportingDocument',
+            contentType: MediaType('image', 'jpeg'),
           ),
           MultipartFile.fromBytes(
-            policeClearance,
+            await compute(ImageResizeService.resize, policeClearance),
             filename: 'policeClearance',
+            contentType: MediaType('image', 'jpeg'),
           ),
         ],
       });

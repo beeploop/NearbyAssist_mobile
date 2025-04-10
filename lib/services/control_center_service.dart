@@ -1,4 +1,4 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
@@ -12,6 +12,7 @@ import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
+import 'package:nearby_assist/services/image_resize_service.dart';
 
 class ControlCenterService {
   Future<DetailedVendorModel> fetchServices(String vendorId) async {
@@ -154,7 +155,7 @@ class ControlCenterService {
       final data = FormData.fromMap({
         'files': [
           MultipartFile.fromBytes(
-            bytes,
+            await compute(ImageResizeService.resize, bytes),
             filename: 'image',
             contentType: MediaType('image', 'jpeg'),
           ),

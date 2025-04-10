@@ -31,7 +31,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   final _phoneController = TextEditingController();
   final _idNumberController = TextEditingController();
   final _frontIdController = FillableImageContainerController();
-  final _faceController = FillableImageContainerController();
+  final _seflieController = FillableImageContainerController();
   final _backIdController = FillableImageContainerController();
   ValidID _selectedID = ValidID.none;
 
@@ -145,7 +145,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
             Row(
               children: [
                 FillableImageContainer(
-                  controller: _faceController,
+                  controller: _seflieController,
                   labelText: 'Face',
                   hintText: 'Tap to open camera',
                   icon: CupertinoIcons.camera_viewfinder,
@@ -185,7 +185,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     final idNumber = _idNumberController.text;
     final frontId = _frontIdController.image;
     final backId = _backIdController.image;
-    final face = _faceController.image;
+    final selfie = _seflieController.image;
 
     try {
       final location = await LocationService().getLocation();
@@ -201,7 +201,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         idNumber: idNumber,
         frontId: frontId,
         backId: backId,
-        face: face,
+        selfie: selfie,
       );
 
       _onSuccess();
