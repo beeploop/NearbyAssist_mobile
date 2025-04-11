@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 
@@ -46,6 +47,7 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
               },
               icon: const Icon(CupertinoIcons.ellipses_bubble),
             ),
+          Menu(booking: widget.booking),
           const SizedBox(width: 20),
         ],
       ),

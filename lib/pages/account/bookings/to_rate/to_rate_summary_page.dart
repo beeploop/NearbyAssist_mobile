@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/bookings/to_rate/rate_page.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 
 class ToRateSummaryPage extends StatefulWidget {
@@ -24,6 +25,10 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
           'Details',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          Menu(booking: widget.booking),
+          const SizedBox(width: 10),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),

@@ -4,15 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/report.dart';
+import 'package:nearby_assist/models/report_user_model.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/services/report_issue_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 
 class ReportUserPage extends StatefulWidget {
-  const ReportUserPage({super.key, required this.userId, required this.reason});
+  const ReportUserPage({
+    super.key,
+    required this.userId,
+    required this.reason,
+    required this.category,
+    this.bookingId,
+  });
 
   final String userId;
   final String reason;
+  final ReportCategory category;
+  final String? bookingId; // Include this if category is booking related
 
   @override
   State<ReportUserPage> createState() => _ReportUserPageState();
@@ -220,13 +230,16 @@ class _ReportUserPageState extends State<ReportUserPage> {
         throw "Don't leave empty fields";
       }
 
-      final service = ReportIssueService();
-      await service.reportUser(
+      final report = ReportUserModel(
         userId: widget.userId,
+        category: widget.category,
+        bookingId: widget.bookingId,
         reason: widget.reason,
         detail: _detailController.text,
         images: _images,
       );
+
+      await ReportIssueService().reportUser(report);
 
       _showSuccessModal();
     } catch (error) {

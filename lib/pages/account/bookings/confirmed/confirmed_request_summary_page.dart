@@ -7,6 +7,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/config/assets.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
+import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -53,6 +54,7 @@ class _ConfirmedRequestSummarPageState
                 },
                 icon: const Icon(CupertinoIcons.ellipses_bubble),
               ),
+            Menu(booking: widget.booking),
             const SizedBox(width: 20),
           ],
         ),

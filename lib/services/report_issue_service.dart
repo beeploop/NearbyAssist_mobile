@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/report_user_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
@@ -42,15 +43,10 @@ class ReportIssueService {
     }
   }
 
-  Future<void> reportUser({
-    required String userId,
-    required String reason,
-    required String detail,
-    required List<Uint8List> images,
-  }) async {
+  Future<void> reportUser(ReportUserModel report) async {
     try {
       final resizedImages = <MultipartFile>[];
-      for (final image in images) {
+      for (final image in report.images) {
         final resized = await compute(ImageResizeService.resize, image);
         resizedImages.add(MultipartFile.fromBytes(
           resized,
@@ -60,14 +56,19 @@ class ReportIssueService {
       }
 
       final data = FormData.fromMap({
-        'userId': userId,
-        'reason': reason,
-        'detail': detail,
+        'userId': report.userId,
+        'category': report.category.value,
+        'bookingId': report.bookingId,
+        'reason': report.reason,
+        'detail': report.detail,
         'files': resizedImages,
       });
 
       final api = ApiService.authenticated();
-      await api.dio.post(endpoint.reportUser, data: data);
+      await api.dio.post(
+        endpoint.reportUser,
+        data: data,
+      );
     } on DioException catch (error) {
       throw error.response?.data['message'];
     } catch (error) {
