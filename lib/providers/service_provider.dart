@@ -9,13 +9,18 @@ class ServiceProvider extends ChangeNotifier {
 
   List<SearchResultModel> getServices() => _services;
 
-  Future<DetailedServiceModel> getService(String id) async {
+  Future<DetailedServiceModel> getService(
+    String id, {
+    bool fresh = false,
+  }) async {
     try {
-      if (_serviceDetails.containsKey(id)) {
-        return _serviceDetails[id]!;
+      if (!fresh) {
+        if (_serviceDetails.containsKey(id)) {
+          return _serviceDetails[id]!;
+        }
       }
 
-      final detail = await SearchService().getServiceDetails(id);
+      final detail = await SearchService().getServiceDetails(id, fresh: fresh);
       _serviceDetails[id] = detail;
       notifyListeners();
 

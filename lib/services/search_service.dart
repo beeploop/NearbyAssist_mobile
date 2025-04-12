@@ -26,12 +26,22 @@ class SearchService {
     }
   }
 
-  Future<DetailedServiceModel> getServiceDetails(String id) async {
+  Future<DetailedServiceModel> getServiceDetails(
+    String id, {
+    bool fresh = false,
+  }) async {
     logger.logDebug('called getServiceDetails in search_service.dart');
 
     try {
       final api = ApiService.authenticated();
-      final response = await api.dio.get('${endpoint.serviceDetails}/$id');
+
+      final response = switch (fresh) {
+        true => await api.dio.get(
+            '${endpoint.serviceDetails}/$id',
+            queryParameters: {'fresh': 'true'},
+          ),
+        false => await api.dio.get('${endpoint.serviceDetails}/$id'),
+      };
 
       return DetailedServiceModel.fromJson(response.data['detail']);
     } catch (error) {
