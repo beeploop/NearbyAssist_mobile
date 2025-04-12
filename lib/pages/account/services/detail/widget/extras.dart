@@ -85,9 +85,14 @@ class _ExtrasState extends State<Extras> {
           ),
         ),
       ),
+      titleAlignment: ListTileTitleAlignment.top,
       leading: Icon(CupertinoIcons.tags_solid, color: Colors.green.shade900),
       title: Text(extra.title, overflow: TextOverflow.ellipsis),
-      subtitle: Text(extra.description),
+      subtitle: Text(
+        extra.description,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      ),
       trailing: Text(
         formatCurrency(extra.price),
         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
