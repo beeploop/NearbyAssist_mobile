@@ -36,7 +36,17 @@ class RecommendationItem extends StatelessWidget {
                     )
                   : CachedNetworkImage(
                       imageUrl: '${endpoint.publicResource}/${data.thumbnail}',
-                      fit: BoxFit.fill,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        )),
+                      ),
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
             ),
             Padding(
