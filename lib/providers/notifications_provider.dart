@@ -14,7 +14,7 @@ class NotificationsProvider extends ChangeNotifier {
   void pushNotification(NotificationModel notif) {
     logger.logDebug('called pushNotification in notifications_provider.dart');
 
-    _notifications.add(notif);
+    _notifications.insert(0, notif);
     notifyListeners();
   }
 
