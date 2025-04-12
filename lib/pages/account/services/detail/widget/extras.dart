@@ -50,7 +50,7 @@ class _ExtrasState extends State<Extras> {
                 style: const ButtonStyle(
                   minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (userProvider.user.isRestricted) {
                     showAccountRestrictedModal(context);
                     return;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/extras.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/images.dart';
@@ -19,42 +20,44 @@ class ServiceDetailPage extends StatefulWidget {
 class _ServiceDetailPageState extends State<ServiceDetailPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Detail',
-          style: TextStyle(fontWeight: FontWeight.bold),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Detail',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-      body: DefaultTabController(
-        initialIndex: 0,
-        length: 3,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const TabBar(
-              unselectedLabelColor: Colors.grey,
-              overlayColor: WidgetStatePropertyAll(Colors.transparent),
-              dividerColor: Colors.transparent,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorPadding: EdgeInsets.all(10),
-              tabs: [
-                Tab(child: Text('Overview')),
-                Tab(child: Text('Images')),
-                Tab(child: Text('Add-ons')),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Flexible(
-              child: TabBarView(
-                children: [
-                  Overview(serviceId: widget.service.id),
-                  Images(serviceId: widget.service.id),
-                  Extras(serviceId: widget.service.id),
+        body: DefaultTabController(
+          initialIndex: 0,
+          length: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const TabBar(
+                unselectedLabelColor: Colors.grey,
+                overlayColor: WidgetStatePropertyAll(Colors.transparent),
+                dividerColor: Colors.transparent,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorPadding: EdgeInsets.all(10),
+                tabs: [
+                  Tab(child: Text('Overview')),
+                  Tab(child: Text('Images')),
+                  Tab(child: Text('Add-ons')),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Flexible(
+                child: TabBarView(
+                  children: [
+                    Overview(serviceId: widget.service.id),
+                    Images(serviceId: widget.service.id),
+                    Extras(serviceId: widget.service.id),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
