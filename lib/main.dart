@@ -122,6 +122,8 @@ class _App extends State<App> {
     websocketProvider.setNotifProvider(notificationProvider);
     websocketProvider.setUserProvider(userProvider);
 
+    notificationProvider.fetchNotifications();
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'NearbyAssist',
