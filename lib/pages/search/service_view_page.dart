@@ -1,3 +1,4 @@
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -204,6 +205,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
             separatorBuilder: (context, _) => const Divider(),
             itemBuilder: (context, idx) {
               return ListTile(
+                titleAlignment: ListTileTitleAlignment.top,
                 leading: Icon(
                   CupertinoIcons.tags_solid,
                   color: Colors.green.shade900,
@@ -213,8 +215,12 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text(
+                subtitle: ExpandableText(
                   extras[idx].description,
+                  expandText: 'Read more',
+                  collapseText: 'Show less',
+                  maxLines: 2,
+                  linkColor: Colors.blue,
                 ),
                 trailing: Text(
                   formatCurrency(extras[idx].price),

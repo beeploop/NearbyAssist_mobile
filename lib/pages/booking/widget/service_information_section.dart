@@ -1,3 +1,4 @@
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
@@ -78,6 +79,7 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
   List<Widget> _buildExtras() {
     return widget.details.service.extras.map((extra) {
       return ListTile(
+        titleAlignment: ListTileTitleAlignment.top,
         leading: Checkbox(
           onChanged: (bool? value) {
             if (value == null) return;
@@ -94,8 +96,18 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
           },
           value: _selectedExtras[extra.id],
         ),
-        title: Text(extra.title),
-        subtitle: Text(extra.description),
+        title: Text(
+          extra.title,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: ExpandableText(
+          extra.description,
+          expandText: 'Read more',
+          collapseText: 'Show less',
+          maxLines: 2,
+          linkColor: Colors.blue,
+        ),
         trailing: Text(
           '₱ ${extra.price}',
           style: const TextStyle(
