@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +11,7 @@ import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
+import 'package:nearby_assist/pages/account/profile/widget/identity_capture.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
 import 'package:nearby_assist/pages/widget/address_input.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -69,6 +71,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
 
@@ -119,21 +122,25 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
             ),
             const SizedBox(height: 20),
 
-            // ID Images
-            Row(
-              children: [
-                FillableImageContainer(
-                  controller: _frontIdController,
-                  labelText: 'ID Front Side',
-                  icon: CupertinoIcons.photo,
-                ),
-                const SizedBox(width: 20),
-                FillableImageContainer(
-                  controller: _backIdController,
-                  labelText: 'ID Back Side',
-                  icon: CupertinoIcons.photo_fill,
-                ),
-              ],
+            // Front ID
+            const AutoSizeText('Front ID'),
+            const SizedBox(height: 10),
+            IdentityCapture(
+              controller: _frontIdController,
+              labelText: 'Front ID',
+              hintText: 'Tap to capture',
+              icon: CupertinoIcons.photo,
+            ),
+            const SizedBox(height: 10),
+
+            // Back ID
+            const AutoSizeText('Back ID'),
+            const SizedBox(height: 10),
+            IdentityCapture(
+              controller: _backIdController,
+              labelText: 'Back ID',
+              hintText: 'Tap to capture',
+              icon: CupertinoIcons.photo,
             ),
             const SizedBox(height: 20),
 
@@ -142,6 +149,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
             const SizedBox(height: 20),
 
             // Selfie
+            const AutoSizeText('Selfie'),
             Row(
               children: [
                 FillableImageContainer(
