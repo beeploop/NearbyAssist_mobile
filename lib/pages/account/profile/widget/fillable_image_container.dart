@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -113,7 +114,13 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
   }
 
   Future<void> _pickImageFromCamera() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    final image = await ImagePicker().pickImage(
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 80,
+      source: ImageSource.camera,
+      preferredCameraDevice: CameraDevice.front,
+    );
     if (image == null) {
       if (mounted) {
         showCustomSnackBar(context, 'No image selected');
@@ -121,7 +128,34 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
       return;
     }
 
-    final imageBytes = await image.readAsBytes();
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: image.path,
+      maxWidth: 600,
+      maxHeight: 600,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          cropStyle: CropStyle.rectangle,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+          ],
+        ),
+        IOSUiSettings(
+          cropStyle: CropStyle.rectangle,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+          ],
+        ),
+      ],
+    );
+    if (cropped == null) {
+      if (mounted) {
+        showCustomSnackBar(context, 'Error cropping image');
+      }
+      return;
+    }
+
+    final imageBytes = await cropped.readAsBytes();
     setState(() {
       widget.controller.setImage(imageBytes);
     });
