@@ -4,20 +4,21 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/config/valid_id.dart';
-import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/models/verify_account_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/identity_capture.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
-import 'package:nearby_assist/pages/widget/address_input.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/verify_account_service.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:nearby_assist/utils/show_generic_success_modal.dart';
+import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
 import 'package:provider/provider.dart';
 
 class VerifyAccountPage extends StatefulWidget {
@@ -28,6 +29,7 @@ class VerifyAccountPage extends StatefulWidget {
 }
 
 class _VerifyAccountPageState extends State<VerifyAccountPage> {
+  UserModel? _user;
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -35,7 +37,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   final _frontIdController = FillableImageContainerController();
   final _seflieController = FillableImageContainerController();
   final _backIdController = FillableImageContainerController();
-  ValidID _selectedID = ValidID.none;
+  ValidID _selectedIDType = ValidID.none;
 
   @override
   void initState() {
@@ -44,9 +46,13 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   }
 
   void _initialValues() {
-    final user = context.read<UserProvider>().user;
+    _user = Provider.of<UserProvider>(context, listen: false).user;
+
+    if (_user == null) return;
     setState(() {
-      _nameController.text = user.name;
+      _nameController.text = _user!.name;
+      _phoneController.text = _user!.phone ?? '';
+      _addressController.text = _user!.address ?? '';
     });
   }
 
@@ -92,8 +98,10 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
             const SizedBox(height: 20),
 
             // Address
-            AddressInput(
+            VerifyAccountInputField(
               controller: _addressController,
+              labelText: 'Address',
+              inputType: TextInputType.streetAddress,
             ),
             const SizedBox(height: 20),
 
@@ -108,9 +116,9 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               items: (filter, props) => ValidID.values,
               itemAsString: (id) => id.value,
               compareFn: (id, selectedID) => id == selectedID,
-              selectedItem: _selectedID,
+              selectedItem: _selectedIDType,
               onChanged: (id) => setState(
-                () => id != null ? _selectedID = id : ValidID.none,
+                () => id != null ? _selectedIDType = id : ValidID.none,
               ),
             ),
             const SizedBox(height: 20),
@@ -181,100 +189,54 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   }
 
   void _submit() async {
-    logger.logDebug('called submit in verify_account_page.dart');
-
     final loader = context.loaderOverlay;
-    loader.show();
-
-    final name = _nameController.text;
-    final phone = _phoneController.text;
-    final address = _addressController.text;
-    final idType = _selectedID;
-    final idNumber = _idNumberController.text;
-    final frontId = _frontIdController.image;
-    final backId = _backIdController.image;
-    final selfie = _seflieController.image;
 
     try {
+      loader.show();
+
+      final userProvider = context.read<UserProvider>();
       final location = await LocationService().getLocation();
 
-      final service = VerifyAccountService();
-      await service.verify(
-        name: name,
-        phone: phone,
-        address: address,
+      final data = VerifyAccountModel(
+        name: _nameController.text,
+        phone: _phoneController.text,
+        address: _addressController.text,
         latitude: location.latitude,
         longitude: location.longitude,
-        idType: idType,
-        idNumber: idNumber,
-        frontId: frontId,
-        backId: backId,
-        selfie: selfie,
+        idType: _selectedIDType,
+        referenceNumber: _idNumberController.text,
+        frontId: _frontIdController.imageBytes!,
+        backId: _backIdController.imageBytes!,
+        selfie: _seflieController.imageBytes!,
       );
 
-      _onSuccess();
-    } on LocationServiceDisabledException catch (error) {
-      logger.logError(error.toString());
-      _showLocationServiceDisabledDialog();
+      data.selfValidate();
+
+      await VerifyAccountService().verify(data);
+      final updatedUser = userProvider.user.copyWith(
+        name: data.name,
+        phone: data.phone,
+        address: data.address,
+      );
+      userProvider.updateUser(updatedUser);
+
+      if (!mounted) return;
+      showGenericSuccessModal(
+        context,
+        message:
+            'Request submitted. We are reviewing your request and will get back to you',
+      );
+    } on LocationServiceDisabledException catch (_) {
+      if (!mounted) return;
+      showLocationDisabledModal(context);
     } on DioException catch (error) {
-      logger.logError(error.toString());
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      logger.logError(error.toString());
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
-  }
-
-  void _onSuccess() {
-    logger.logDebug('called success in verify_account_page.dart');
-
-    showCustomSnackBar(
-      context,
-      'Request submitted. We are reviewing your request and will get back to you',
-      duration: const Duration(seconds: 5),
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      closeIconColor: Colors.white,
-    );
-
-    context.pop();
-  }
-
-  void _onError(String error) {
-    showCustomSnackBar(
-      context,
-      error,
-      duration: const Duration(seconds: 5),
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-      closeIconColor: Colors.white,
-    );
-  }
-
-  void _showLocationServiceDisabledDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Location Services Disabled'),
-          content: const Text(
-            'Please enable location services to use this feature.',
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                await Geolocator.openLocationSettings();
-              },
-              child: const Text('Open Settings'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

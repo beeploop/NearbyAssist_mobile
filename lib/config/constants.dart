@@ -6,6 +6,8 @@ const appVersion = "v0.10.3-alpha";
 const appName = "NearbyAssist";
 const appLegalese = "© 2024 NearbyAssist";
 
+const phoneNumberLength = 11;
+
 const defaultLocation = LatLng(7.4470693031593225, 125.80932608954173);
 const tileMapProvider = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 

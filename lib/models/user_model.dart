@@ -71,4 +71,22 @@ class UserModel {
       'socials': socials,
     };
   }
+
+  UserModel copyWith({String? name, String? phone, String? address}) {
+    return UserModel(
+      id: id,
+      name: name ?? this.name,
+      email: email,
+      imageUrl: imageUrl,
+      isVendor: isVendor,
+      isVerified: isVerified,
+      isRestricted: isRestricted,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      latitude: latitude,
+      longitude: longitude,
+      expertise: expertise,
+      socials: socials,
+    );
+  }
 }

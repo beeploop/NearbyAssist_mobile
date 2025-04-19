@@ -1,12 +1,9 @@
-import 'dart:typed_data';
-
+import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/config/valid_id.dart';
 
-class SignupModel {
+class VerifyAccountModel {
   String name;
-  String email;
-  String imageURL;
   String phone;
   String address;
   double latitude;
@@ -17,10 +14,8 @@ class SignupModel {
   Uint8List backId;
   Uint8List selfie;
 
-  SignupModel({
+  VerifyAccountModel({
     required this.name,
-    required this.email,
-    required this.imageURL,
     required this.phone,
     required this.address,
     required this.latitude,
@@ -35,8 +30,6 @@ class SignupModel {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'email': email,
-      'imageUrl': imageURL,
       'phone': phone,
       'address': address,
       'latitude': latitude,
@@ -48,8 +41,6 @@ class SignupModel {
 
   void selfValidate() {
     if (name.isEmpty ||
-        email.isEmpty ||
-        imageURL.isEmpty ||
         phone.isEmpty ||
         address.isEmpty ||
         idType == ValidID.none ||

@@ -15,6 +15,11 @@ class UserProvider extends ChangeNotifier {
   AuthStatus get status =>
       _user == null ? AuthStatus.unauthenticated : AuthStatus.authenticated;
 
+  void updateUser(UserModel user) {
+    _user = user;
+    notifyListeners();
+  }
+
   void login(UserModel user) {
     _user = user;
     OneSignalService().updateUser(user);
