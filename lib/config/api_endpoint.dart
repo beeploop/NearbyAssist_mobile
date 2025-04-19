@@ -41,7 +41,8 @@ class ApiEndpoint {
   String get reverseGeocoding => 'https://nominatim.openstreetmap.org/reverse';
 
   // Auth Routes
-  String get thirdPartyLogin => '$_baseUrl/api/v1/auth/thirdPartyLogin';
+  String get login => '$_baseUrl/api/v1/auth/login';
+  String get register => '$_baseUrl/api/v1/auth/register';
   String get logout => '$_baseUrl/api/v1/auth/logout';
   String get refresh => '$_baseUrl/api/v1/auth/refresh';
 

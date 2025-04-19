@@ -1,13 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/config/assets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/pages/login/tester_settings_modal.dart';
+import 'package:nearby_assist/pages/login/verification/verification_page.dart';
+import 'package:nearby_assist/pages/login/widget/login_page_logo.dart';
 import 'package:nearby_assist/pages/widget/clickable_text.dart';
-import 'package:nearby_assist/pages/widget/google_login_button.dart';
+import 'package:nearby_assist/pages/widget/google_auth_button.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
         actions: [
           IconButton(
             icon: const Icon(CupertinoIcons.ellipsis),
-            onPressed: () => _showTesterSettings(),
+            onPressed: _showTesterMenu,
           ),
           const SizedBox(width: 10),
         ],
@@ -38,11 +46,36 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 60),
 
-                _logo(),
+                const LoginPageLogo(),
                 const SizedBox(height: 60),
 
-                // Login Button
-                const GoogleLoginButton(),
+                // Signin with Google
+                GoogleAuthButton(
+                  label: 'Login with Google',
+                  successCallback: _handleLogin,
+                  errorCallback: _onError,
+                ),
+                const SizedBox(height: 20),
+
+                // Divider
+                const Row(
+                  children: [
+                    Expanded(child: Divider()),
+                    SizedBox(width: 10),
+                    Text('or'),
+                    SizedBox(width: 10),
+                    Expanded(child: Divider())
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Signup with Google
+                GoogleAuthButton(
+                  filled: false,
+                  label: 'Signup with Google',
+                  successCallback: _handleRegister,
+                  errorCallback: _onError,
+                ),
                 const SizedBox(height: 20),
 
                 // Privacy Policy and T&C
@@ -87,24 +120,43 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _logo() {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.5,
-      child: FittedBox(
-        fit: BoxFit.cover,
-        child: Column(
-          children: [
-            Image.asset(Assets.appIconTransparent),
-            Text(
-              "NearbyAssist",
-              style: TextStyle(
-                color: Colors.green[800],
-                fontSize: 90,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+  Future<void> _handleLogin(ThirdPartyLoginPayloadModel user) async {
+    try {
+      final userProvider = context.read<UserProvider>();
+
+      final loggedInUser = await AuthService().signin(user);
+      userProvider.login(loggedInUser);
+
+      if (!mounted) return;
+      context.goNamed('search');
+    } on DioException catch (error) {
+      showGenericErrorModal(context, message: error.response?.data['message']);
+    } catch (error) {
+      showGenericErrorModal(context, message: error.toString());
+    }
+  }
+
+  void _handleRegister(ThirdPartyLoginPayloadModel user) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => VerificationPage(
+          user: user,
+          onSuccessCallback: () => context.goNamed('search'),
         ),
+      ),
+    );
+  }
+
+  void _showTesterMenu() {
+    showModalBottomSheet(
+      showDragHandle: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.75,
+        width: double.infinity,
+        child: const TesterSettingsModal(),
       ),
     );
   }
@@ -123,19 +175,6 @@ class _LoginPageState extends State<LoginPage> {
       closeIconColor: Colors.white,
       textColor: Colors.white,
       duration: const Duration(seconds: 3),
-    );
-  }
-
-  void _showTesterSettings() {
-    showModalBottomSheet(
-      showDragHandle: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.75,
-        width: double.infinity,
-        child: const TesterSettingsModal(),
-      ),
     );
   }
 }

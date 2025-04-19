@@ -1,16 +1,22 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/signup_model.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
+import 'package:nearby_assist/services/image_resize_service.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http_parser/http_parser.dart';
 
 class AuthService {
-  Future<UserModel> thirdPartyLogin(ThirdPartyLoginPayloadModel payload) async {
+  Future<UserModel> signup(SignupModel userData) async {
     try {
-      final signedUser = await _serverLoginViaThirdParty(payload);
+      final signedUser = await _serverSignup(userData);
 
       final store = SecureStorage();
       await store.saveUser(signedUser);
@@ -24,14 +30,66 @@ class AuthService {
     }
   }
 
-  Future<UserModel> _serverLoginViaThirdParty(
-      ThirdPartyLoginPayloadModel payload) async {
-    logger.logDebug('called serverLoginViaThirdParty in auth_service.dart');
+  Future<UserModel> _serverSignup(SignupModel userData) async {
+    try {
+      final data = FormData.fromMap({
+        'user': jsonEncode(userData),
+        'files': [
+          MultipartFile.fromBytes(
+            await compute(ImageResizeService.resize, userData.frontId),
+            filename: 'frontId',
+            contentType: MediaType('image', 'jpeg'),
+          ),
+          MultipartFile.fromBytes(
+            await compute(ImageResizeService.resize, userData.backId),
+            filename: 'backId',
+            contentType: MediaType('image', 'jpeg'),
+          ),
+          MultipartFile.fromBytes(
+            await compute(ImageResizeService.resize, userData.selfie),
+            filename: 'face',
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        ],
+      });
 
+      final api = ApiService.unauthenticated();
+      final response = await api.dio.post(endpoint.register, data: data);
+
+      final accessToken = response.data['accessToken'];
+      final refreshToken = response.data['refreshToken'];
+
+      final store = SecureStorage();
+      await store.saveToken(TokenType.accessToken, accessToken);
+      await store.saveToken(TokenType.refreshToken, refreshToken);
+
+      return UserModel.fromJson(response.data['user']);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel> signin(ThirdPartyLoginPayloadModel payload) async {
+    try {
+      final signedUser = await _serverSignin(payload);
+
+      final store = SecureStorage();
+      await store.saveUser(signedUser);
+
+      final dh = DiffieHellman();
+      await dh.register();
+
+      return signedUser;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<UserModel> _serverSignin(ThirdPartyLoginPayloadModel payload) async {
     try {
       final api = ApiService.unauthenticated();
       final response = await api.dio.post(
-        endpoint.thirdPartyLogin,
+        endpoint.login,
         data: payload.toJson(),
         options: Options(
           headers: {
@@ -54,9 +112,9 @@ class AuthService {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> signout() async {
     try {
-      await _signOutToServer();
+      await _serverSignout();
 
       final store = SecureStorage();
       await store.clearAll();
@@ -67,9 +125,7 @@ class AuthService {
     }
   }
 
-  Future<void> _signOutToServer() async {
-    logger.logDebug('called signOutToServer in auth_service');
-
+  Future<void> _serverSignout() async {
     try {
       final store = SecureStorage();
       final refreshToken = await store.getToken(TokenType.refreshToken);

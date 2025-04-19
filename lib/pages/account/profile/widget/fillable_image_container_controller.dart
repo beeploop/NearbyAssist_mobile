@@ -1,6 +1,6 @@
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
-class FillableImageContainerController {
+class FillableImageContainerController extends ChangeNotifier {
   Uint8List? imageBytes;
 
   bool get hasImage => imageBytes != null;
@@ -9,5 +9,11 @@ class FillableImageContainerController {
 
   void setImage(Uint8List imageBytes) {
     this.imageBytes = imageBytes;
+    notifyListeners();
+  }
+
+  void clearImage() {
+    imageBytes = null;
+    notifyListeners();
   }
 }

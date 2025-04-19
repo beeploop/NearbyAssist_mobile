@@ -16,6 +16,7 @@ class FillableImageContainer extends StatefulWidget {
     this.overlay,
     this.hintText = 'Tap to upload',
     this.source = ImageSource.gallery,
+    this.validInputListenerCallback,
   });
 
   final FillableImageContainerController controller;
@@ -27,12 +28,35 @@ class FillableImageContainer extends StatefulWidget {
   final Decoration? decoration;
   final WidgetStateProperty<Color>? overlay;
   final ImageSource source;
+  final void Function(bool)? validInputListenerCallback;
 
   @override
   State<FillableImageContainer> createState() => _FillableImageContainerState();
 }
 
 class _FillableImageContainerState extends State<FillableImageContainer> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_inputListener);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_inputListener);
+    super.dispose();
+  }
+
+  void _inputListener() {
+    if (widget.validInputListenerCallback == null) return;
+
+    if (widget.controller.hasImage) {
+      widget.validInputListenerCallback!(true);
+    } else {
+      widget.validInputListenerCallback!(false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(

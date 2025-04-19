@@ -124,7 +124,7 @@ class _AccountPageState extends State<AccountPage> {
   Future<void> _logout() async {
     try {
       await GoogleAuthService().logout();
-      await AuthService().logout();
+      await AuthService().signout();
       _onLogoutSuccess();
     } catch (error) {
       _showErrorModal(error.toString());
