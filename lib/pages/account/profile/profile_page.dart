@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/pages/account/profile/widget/expertise_section.dart';
+import 'package:nearby_assist/pages/account/profile/widget/profile_avatar.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/url_icon_generator.dart';
@@ -31,56 +31,17 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: Consumer<UserProvider>(
-          builder: (context, provider, child) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
+        body: RefreshIndicator(
+          onRefresh: context.read<UserProvider>().syncAccount,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // User Avatar
-                    Center(
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: MediaQuery.of(context).size.width * 0.3,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.green.shade800,
-                                width: 4,
-                              ),
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: CachedNetworkImageProvider(
-                                    provider.user.imageUrl),
-                              ),
-                            ),
-                          ),
-
-                          //
-                          Positioned(
-                            bottom: -10,
-                            right: -10,
-                            child: IconButton(
-                              icon: Icon(
-                                provider.user.isVerified
-                                    ? CupertinoIcons.checkmark_seal_fill
-                                    : CupertinoIcons.checkmark_seal,
-                                size: 30,
-                                color: Colors.blue,
-                              ),
-                              onPressed: () {
-                                if (provider.user.isVerified) return;
-                                context.pushNamed('verifyAccount');
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    const Center(child: ProfileAvatar()),
                     const SizedBox(height: 10),
 
                     // Name
@@ -170,10 +131,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Bottom padding
                     const SizedBox(height: 20),
                   ],
-                ),
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

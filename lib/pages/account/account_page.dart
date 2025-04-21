@@ -25,55 +25,58 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Topbar
-              _topBar(),
+        child: RefreshIndicator(
+          onRefresh: context.read<ClientBookingProvider>().fetchAll,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Topbar
+                _topBar(),
 
-              // Banner
-              FutureBuilder(
-                future: context.read<ClientBookingProvider>().fetchAll(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Container(
-                      decoration: const BoxDecoration(color: Colors.green),
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      child: const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
-                      ),
-                    );
-                  }
+                // Banner
+                FutureBuilder(
+                  future: context.read<ClientBookingProvider>().fetchAll(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        decoration: const BoxDecoration(color: Colors.green),
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        child: const Center(
+                          child: CircularProgressIndicator(color: Colors.white),
+                        ),
+                      );
+                    }
 
-                  return const BannerSectionV2();
-                },
-              ),
-              const SizedBox(height: 10),
+                    return const BannerSectionV2();
+                  },
+                ),
+                const SizedBox(height: 10),
 
-              // Quick Actions
-              const QuickActions(),
-              const Divider(),
-              const SizedBox(height: 20),
+                // Quick Actions
+                const QuickActions(),
+                const Divider(),
+                const SizedBox(height: 20),
 
-              // Others
-              const OtherSectionV2(),
-              const Divider(),
-              const SizedBox(height: 10),
+                // Others
+                const OtherSectionV2(),
+                const Divider(),
+                const SizedBox(height: 10),
 
-              // Logout
-              AccountTileWidget(
-                title: "Logout",
-                fontSize: 14,
-                icon: CupertinoIcons.square_arrow_left,
-                textColor: Colors.red,
-                iconColor: Colors.red,
-                endIcon: false,
-                onPress: _logout,
-              ),
+                // Logout
+                AccountTileWidget(
+                  title: "Logout",
+                  fontSize: 14,
+                  icon: CupertinoIcons.square_arrow_left,
+                  textColor: Colors.red,
+                  iconColor: Colors.red,
+                  endIcon: false,
+                  onPress: _logout,
+                ),
 
-              // Bottom padding
-              const SizedBox(height: 20),
-            ],
+                // Bottom padding
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
