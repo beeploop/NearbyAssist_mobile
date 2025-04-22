@@ -16,6 +16,8 @@ class ServicesPage extends StatefulWidget {
 }
 
 class _ServicesPageState extends State<ServicesPage> {
+  bool _showDisabled = false;
+
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
@@ -27,6 +29,34 @@ class _ServicesPageState extends State<ServicesPage> {
           'Services',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(CupertinoIcons.ellipsis),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: () {
+                  setState(() => _showDisabled = !_showDisabled);
+                },
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Icon(
+                        CupertinoIcons.checkmark_circle,
+                        size: 18,
+                        color: _showDisabled ? Colors.green : Colors.grey,
+                      ),
+                      const SizedBox(width: 10),
+                      const Text('show disabled'),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 10),
+        ],
       ),
       body: Consumer<ControlCenterProvider>(
         builder: (context, provider, _) {
@@ -60,12 +90,18 @@ class _ServicesPageState extends State<ServicesPage> {
   }
 
   Widget _buildBody(List<ServiceModel> services) {
+    final displayable = services.where((service) {
+      if (_showDisabled) return true;
+      return !service.disabled;
+    }).toList();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ListView.separated(
         separatorBuilder: (context, index) => const SizedBox(height: 10),
-        itemCount: services.length,
-        itemBuilder: (context, index) => ServiceItem(service: services[index]),
+        itemCount: displayable.length,
+        itemBuilder: (context, index) =>
+            ServiceItem(service: displayable[index]),
       ),
     );
   }

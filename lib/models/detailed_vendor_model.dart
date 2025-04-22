@@ -19,4 +19,11 @@ class DetailedVendorModel {
       ),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'vendor': vendor.toJson(),
+      'services': services,
+    };
+  }
 }

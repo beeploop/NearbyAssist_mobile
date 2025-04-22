@@ -11,6 +11,7 @@ import 'package:nearby_assist/pages/account/profile/widget/fillable_image_contai
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -60,6 +61,14 @@ class _ImagesState extends State<Images> {
                   onPressed: () {
                     if (userProvider.user.isRestricted) {
                       showAccountRestrictedModal(context);
+                      return;
+                    }
+
+                    if (service.disabled) {
+                      showGenericErrorModal(
+                        context,
+                        message: 'Service is disabled',
+                      );
                       return;
                     }
 

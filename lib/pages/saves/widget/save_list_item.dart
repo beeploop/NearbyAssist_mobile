@@ -1,16 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/pages/account/services/detail/service_detail_page.dart';
 
-class ServiceItem extends StatelessWidget {
-  const ServiceItem({
-    super.key,
-    required this.service,
-  });
+class SaveListItem extends StatelessWidget {
+  const SaveListItem({super.key, required this.service});
 
   final ServiceModel service;
 
@@ -18,19 +15,15 @@ class ServiceItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: service.disabled ? Colors.green.shade50 : Colors.green.shade100,
+        color: Colors.green[100],
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(6),
       child: ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (context) => ServiceDetailPage(service: service),
-            ),
-          );
-        },
+        onTap: () => context.pushNamed(
+          'viewService',
+          queryParameters: {'serviceId': service.id},
+        ),
         leading: service.images.isNotEmpty
             ? CachedNetworkImage(
                 imageUrl: '${endpoint.publicResource}/${service.images[0].url}',
@@ -51,7 +44,6 @@ class ServiceItem extends StatelessWidget {
         title: Text(
           service.title,
           style: const TextStyle(fontWeight: FontWeight.bold),
-          overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
           service.description,
@@ -71,3 +63,4 @@ class ServiceItem extends StatelessWidget {
     return tagIconMap[key]!;
   }
 }
+
