@@ -13,6 +13,7 @@ class ServiceModel {
   final List<ServiceExtraModel> extras;
   List<ServiceImageModel> images;
   final LocationModel location;
+  bool disabled;
 
   ServiceModel({
     required this.id,
@@ -24,6 +25,7 @@ class ServiceModel {
     required this.extras,
     required this.images,
     required this.location,
+    required this.disabled,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class ServiceModel {
           .map((image) => ServiceImageModel.fromJson(image))
           .toList(),
       location: LocationModel.fromJson(json['location']),
+      disabled: json['disabled'],
     );
   }
 
@@ -57,6 +60,7 @@ class ServiceModel {
       'tags': tags.map((extra) => extra.title).toList(),
       'extras': extras.map((extra) => extra.toJson()).toList(),
       'images': images.map((image) => image.toJson()).toList(),
+      'disabled': disabled,
     };
   }
 
@@ -71,6 +75,7 @@ class ServiceModel {
       tags: tags,
       extras: extras,
       images: images,
+      disabled: disabled,
     );
   }
 }

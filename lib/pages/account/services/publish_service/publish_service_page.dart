@@ -194,6 +194,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         tags: _selectedTags,
         extras: extras,
         images: [],
+        disabled: false,
       );
 
       await provider.addService(service);

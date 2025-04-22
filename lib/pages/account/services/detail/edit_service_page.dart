@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
@@ -13,6 +12,8 @@ import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
 import 'package:provider/provider.dart';
 
 class EditServicePage extends StatefulWidget {
@@ -236,6 +237,10 @@ class _EditServicePageState extends State<EditServicePage> {
         throw "Don't leave empty fields";
       }
 
+      if (widget.service.disabled) {
+        throw "Service is disabled";
+      }
+
       final navigator = Navigator.of(context);
       final provider = context.read<ControlCenterProvider>();
 
@@ -254,69 +259,16 @@ class _EditServicePageState extends State<EditServicePage> {
       await provider.updateService(updatedData, widget.service.extras);
       navigator.pop();
     } on LocationServiceDisabledException catch (_) {
-      _showLocationServiceDisabledDialog();
+      if (!mounted) return;
+      showLocationDisabledModal(context);
     } on DioException catch (error) {
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
-  }
-
-  void _showLocationServiceDisabledDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Location Services Disabled'),
-          content: const Text(
-            'Please enable location services to use this feature.',
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                await Geolocator.openLocationSettings();
-              },
-              child: const Text('Open Settings'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _onError(String error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.xmark_circle_fill,
-            color: Colors.red,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Failed'),
-          content: Text(
-            error,
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

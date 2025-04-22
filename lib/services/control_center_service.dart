@@ -187,6 +187,24 @@ class ControlCenterService {
     }
   }
 
+  Future<void> disableService(String serviceId) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.post('${endpoint.disableService}/$serviceId');
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> enableService(String serviceId) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.post('${endpoint.enableService}/$serviceId');
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<void> acceptRequest(String id, String schedule) async {
     logger.logDebug('called acceptRequest');
     logger.logDebug('parameters: {id: $id, schedule: $schedule}');

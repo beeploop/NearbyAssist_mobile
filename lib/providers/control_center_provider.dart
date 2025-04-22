@@ -108,6 +108,7 @@ class ControlCenterProvider extends ChangeNotifier {
         location: updated.location,
         images:
             _services.firstWhere((service) => service.id == updated.id).images,
+        disabled: false,
       );
 
       _services.removeWhere((service) => service.id == updated.id);
@@ -197,6 +198,32 @@ class ControlCenterProvider extends ChangeNotifier {
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> disableService(String serviceId) async {
+    try {
+      await ControlCenterService().disableService(serviceId);
+
+      final index = _services.indexWhere((service) => service.id == serviceId);
+      if (index == -1) return;
+      _services[index].disabled = true;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> enableService(String serviceId) async {
+    try {
+      await ControlCenterService().enableService(serviceId);
+
+      final index = _services.indexWhere((service) => service.id == serviceId);
+      if (index == -1) return;
+      _services[index].disabled = false;
+      notifyListeners();
+    } catch (error) {
       rethrow;
     }
   }

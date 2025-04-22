@@ -82,6 +82,9 @@ class ApiEndpoint {
   String get addImage => '$_baseUrl/api/v1/services/addImage';
   String get deleteImage => '$_baseUrl/api/v1/services/deleteImage';
 
+  String get disableService => '$_baseUrl/api/v1/services/disable';
+  String get enableService => '$_baseUrl/api/v1/services/enable';
+
   String get savedServices => '$_baseUrl/api/v1/services/get-saved';
   String get saveService => '$_baseUrl/api/v1/services/save';
   String get unsaveService => '$_baseUrl/api/v1/services/unsave';
