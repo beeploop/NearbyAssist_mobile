@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Center(
           child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.6,
+            width: MediaQuery.of(context).size.width * 0.8,
             child: Column(
               children: [
                 const SizedBox(height: 60),
@@ -51,11 +51,12 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Signin with Google
                 GoogleAuthButton(
-                  label: 'Login with Google',
+                  label: 'Login',
+                  withIcon: false,
                   successCallback: _handleLogin,
                   errorCallback: _onError,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
                 // Divider
                 const Row(
@@ -67,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                     Expanded(child: Divider())
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
                 // Signup with Google
                 GoogleAuthButton(
@@ -76,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                   successCallback: _handleRegister,
                   errorCallback: _onError,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
 
                 // Privacy Policy and T&C
                 IntrinsicHeight(

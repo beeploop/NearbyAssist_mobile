@@ -11,12 +11,14 @@ class GoogleAuthButton extends StatefulWidget {
     required this.successCallback,
     required this.errorCallback,
     this.filled = true,
+    this.withIcon = true,
   });
 
   final String label;
   final void Function(ThirdPartyLoginPayloadModel) successCallback;
   final void Function(String message) errorCallback;
   final bool filled;
+  final bool withIcon;
 
   @override
   State<GoogleAuthButton> createState() => _GoogleAuthButtonState();
@@ -28,11 +30,9 @@ class _GoogleAuthButtonState extends State<GoogleAuthButton> {
     if (widget.filled) {
       return FilledButton.icon(
         onPressed: _handleGoogleAuth,
-        icon: const FaIcon(
-          FontAwesomeIcons.google,
-          color: Colors.white,
-          size: 16,
-        ),
+        icon: widget.withIcon
+            ? const FaIcon(FontAwesomeIcons.google, size: 16)
+            : null,
         style: ButtonStyle(
           minimumSize: const WidgetStatePropertyAll(
             Size.fromHeight(50),
@@ -49,7 +49,9 @@ class _GoogleAuthButtonState extends State<GoogleAuthButton> {
 
     return OutlinedButton.icon(
       onPressed: _handleGoogleAuth,
-      icon: const FaIcon(FontAwesomeIcons.google, size: 16),
+      icon: widget.withIcon
+          ? const FaIcon(FontAwesomeIcons.google, size: 16)
+          : null,
       style: ButtonStyle(
         minimumSize: const WidgetStatePropertyAll(
           Size.fromHeight(50),
