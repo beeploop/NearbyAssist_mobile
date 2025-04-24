@@ -1,10 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/service_tag_icon.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
 import 'package:nearby_assist/pages/vendor/widget/menu.dart';
 import 'package:nearby_assist/providers/vendor_provider.dart';
@@ -35,7 +38,7 @@ class _VendorPageState extends State<VendorPage> {
         ],
       ),
       body: FutureBuilder(
-        future: Provider.of<VendorProvider>(context).getVendor(widget.vendorId),
+        future: context.read<VendorProvider>().getVendor(widget.vendorId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -55,20 +58,21 @@ class _VendorPageState extends State<VendorPage> {
             );
           }
 
-          final data = snapshot.data!;
-          return _content(data);
+          final model = snapshot.data!;
+          return _content(model);
         },
       ),
     );
   }
 
-  Widget _content(DetailedVendorModel data) {
-    return Padding(
+  Widget _content(DetailedVendorModel model) {
+    return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: ListView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Vendor info
-          _header(data.vendor),
+          _header(model.vendor),
           const SizedBox(height: 10),
 
           // Contacts
@@ -86,7 +90,7 @@ class _VendorPageState extends State<VendorPage> {
               const Icon(CupertinoIcons.mail, size: 20),
               const SizedBox(width: 10),
               AutoSizeText(
-                data.vendor.email,
+                model.vendor.email,
                 style: const TextStyle(fontSize: 14),
               ),
             ],
@@ -99,7 +103,7 @@ class _VendorPageState extends State<VendorPage> {
               const Icon(CupertinoIcons.phone, size: 20),
               const SizedBox(width: 10),
               AutoSizeText(
-                data.vendor.phone,
+                model.vendor.phone,
                 style: const TextStyle(fontSize: 14),
               ),
             ],
@@ -115,7 +119,7 @@ class _VendorPageState extends State<VendorPage> {
           ),
           const SizedBox(height: 10),
 
-          ...data.vendor.socials.map((social) => Row(
+          ...model.vendor.socials.map((social) => Row(
                 children: [
                   Icon(iconFromURL(social), size: 20),
                   const SizedBox(width: 10),
@@ -134,32 +138,9 @@ class _VendorPageState extends State<VendorPage> {
           const AutoSizeText(
             'More Services',
             style: TextStyle(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
-          ...data.services.map((service) => Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.green[100],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListTile(
-                  onTap: () => context.pushNamed(
-                    'viewService',
-                    queryParameters: {'serviceId': service.id},
-                  ),
-                  leading: Icon(
-                    _icon(service.tags.first.title),
-                    size: 26,
-                    grade: 10,
-                  ),
-                  title: Text(
-                    service.description,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: const Icon(CupertinoIcons.arrow_right),
-                ),
-              )),
+          _moreServices(model.services),
         ],
       ),
     );
@@ -231,6 +212,63 @@ class _VendorPageState extends State<VendorPage> {
         ],
       ),
     );
+  }
+
+  Widget _moreServices(List<ServiceModel> services) {
+    final displayable = services.where((service) => !service.disabled).toList();
+
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: displayable.length,
+        separatorBuilder: (context, _) => const SizedBox(height: 8),
+        itemBuilder: (context, index) {
+          final service = displayable[index];
+
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.green.shade100,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(6),
+            child: ListTile(
+              onTap: () => context.pushNamed(
+                'viewService',
+                queryParameters: {'serviceId': service.id},
+              ),
+              leading: service.images.isNotEmpty
+                  ? CachedNetworkImage(
+                      imageUrl:
+                          '${endpoint.publicResource}/${service.images[0].url}',
+                      fit: BoxFit.fitHeight,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) {
+                        return CircularProgressIndicator(
+                            value: downloadProgress.progress);
+                      },
+                      errorWidget: (context, url, error) => const Icon(
+                        CupertinoIcons.photo,
+                      ),
+                    )
+                  : Icon(
+                      _icon(service.tags.first.title),
+                      size: 26,
+                      grade: 10,
+                    ),
+              title: Text(
+                service.title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                service.description,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+              trailing: const Icon(CupertinoIcons.arrow_right),
+            ),
+          );
+        });
   }
 
   IconData _icon(String key) {

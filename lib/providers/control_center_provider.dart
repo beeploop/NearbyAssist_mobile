@@ -3,6 +3,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
+import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
@@ -81,7 +82,7 @@ class ControlCenterProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addService(ServiceModel service) async {
+  Future<void> addService(NewService service) async {
     try {
       final response = await ControlCenterService().createService(service);
       _services.add(response);
@@ -108,6 +109,7 @@ class ControlCenterProvider extends ChangeNotifier {
         location: updated.location,
         images:
             _services.firstWhere((service) => service.id == updated.id).images,
+        disabled: false,
       );
 
       _services.removeWhere((service) => service.id == updated.id);
@@ -197,6 +199,32 @@ class ControlCenterProvider extends ChangeNotifier {
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> disableService(String serviceId) async {
+    try {
+      await ControlCenterService().disableService(serviceId);
+
+      final index = _services.indexWhere((service) => service.id == serviceId);
+      if (index == -1) return;
+      _services[index].disabled = true;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> enableService(String serviceId) async {
+    try {
+      await ControlCenterService().enableService(serviceId);
+
+      final index = _services.indexWhere((service) => service.id == serviceId);
+      if (index == -1) return;
+      _services[index].disabled = false;
+      notifyListeners();
+    } catch (error) {
       rethrow;
     }
   }

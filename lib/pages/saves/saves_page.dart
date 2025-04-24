@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/pages/saves/widget/save_list_item.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:provider/provider.dart';
@@ -42,36 +41,16 @@ class _SavesPageState extends State<SavesPage> {
   }
 
   Widget _buildSaves(List<DetailedServiceModel> saves) {
+    final displayable =
+        saves.where((model) => !model.service.disabled).toList();
+
     return ListView.separated(
-      separatorBuilder: (context, index) => const SizedBox(height: 10),
-      itemCount: saves.length,
-      itemBuilder: (context, index) => Container(
-        decoration: BoxDecoration(
-          color: Colors.green[100],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.all(10),
-        child: ListTile(
-          onTap: () => context.pushNamed(
-            'viewService',
-            queryParameters: {'serviceId': saves[index].service.id},
-          ),
-          leading: Icon(
-            _icon(saves[index].service.tags.first.title),
-            size: 26,
-            grade: 10,
-          ),
-          title: Text(
-            saves[index].service.title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Text(
-            saves[index].service.description,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: const Icon(CupertinoIcons.arrow_right),
-        ),
-      ),
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      itemCount: displayable.length,
+      itemBuilder: (context, index) {
+        final model = displayable[index];
+        return SaveListItem(service: model.service);
+      },
     );
   }
 
@@ -100,13 +79,5 @@ class _SavesPageState extends State<SavesPage> {
         ),
       ],
     );
-  }
-
-  IconData _icon(String key) {
-    if (!tagIconMap.containsKey(key)) {
-      return CupertinoIcons.wrench;
-    }
-
-    return tagIconMap[key]!;
   }
 }

@@ -1,6 +1,6 @@
 enum ServiceSortingMethod {
   suggestionScore(name: 'Suggestion'),
-  rate(name: 'Rate'),
+  rate(name: 'Price'),
   rating(name: 'Rating'),
   completedBookings(name: 'Completed'),
   distance(name: 'Distance');

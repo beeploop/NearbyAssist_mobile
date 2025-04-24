@@ -1,9 +1,14 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/extras.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/images.dart';
 import 'package:nearby_assist/pages/account/services/detail/widget/overview.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:provider/provider.dart';
 
 class ServiceDetailPage extends StatefulWidget {
   const ServiceDetailPage({
@@ -27,6 +32,56 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
             'Detail',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          actions: [
+            Icon(
+              CupertinoIcons.circle_fill,
+              color: widget.service.disabled ? Colors.red : Colors.green,
+              size: 10,
+            ),
+            PopupMenuButton(
+              icon: const Icon(CupertinoIcons.ellipsis),
+              itemBuilder: (context) => [
+                widget.service.disabled
+                    ? PopupMenuItem(
+                        onTap: _showEnableServiceConfirmation,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          child: const Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Icon(
+                                CupertinoIcons.checkmark_circle,
+                                size: 18,
+                                color: Colors.green,
+                              ),
+                              SizedBox(width: 10),
+                              Text('Enable Service'),
+                            ],
+                          ),
+                        ),
+                      )
+                    : PopupMenuItem(
+                        onTap: _showDisableServiceConfirmation,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          child: const Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Icon(
+                                CupertinoIcons.nosign,
+                                size: 18,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(width: 10),
+                              Text('Disabled Service'),
+                            ],
+                          ),
+                        ),
+                      ),
+              ],
+            ),
+            const SizedBox(width: 10),
+          ],
         ),
         body: DefaultTabController(
           initialIndex: 0,
@@ -61,5 +116,133 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
         ),
       ),
     );
+  }
+
+  void _showDisableServiceConfirmation() {
+    const title = "Disable Service";
+    const message =
+        "Disabled services will no longer show up in search results and can't be booked. Do you want to continue?";
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.xmark_circle_fill,
+            color: Colors.red,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text(title),
+          content: const Text(message),
+          actions: [
+            TextButton(
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                backgroundColor: const WidgetStatePropertyAll(Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                _handleDisableService();
+              },
+              child: const Text(
+                'Continue',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEnableServiceConfirmation() {
+    const title = "Enable this service again?";
+    const message =
+        "The service will be shown in search results and can be booked";
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(
+            CupertinoIcons.question_circle,
+            color: Colors.amber,
+            size: 40,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text(title),
+          content: const Text(message),
+          actions: [
+            TextButton(
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                backgroundColor: WidgetStatePropertyAll(Colors.green.shade800),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                _handleEnableService();
+              },
+              child: const Text(
+                'Continue',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _handleDisableService() async {
+    final loader = context.loaderOverlay;
+    try {
+      loader.show();
+      final navigator = Navigator.of(context);
+      final provider = context.read<ControlCenterProvider>();
+
+      await provider.disableService(widget.service.id);
+
+      navigator.pop();
+    } on DioException catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
+    } catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
+    } finally {
+      loader.hide();
+    }
+  }
+
+  Future<void> _handleEnableService() async {
+    final loader = context.loaderOverlay;
+    try {
+      loader.show();
+      final navigator = Navigator.of(context);
+      final provider = context.read<ControlCenterProvider>();
+
+      await provider.enableService(widget.service.id);
+
+      navigator.pop();
+    } on DioException catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
+    } catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
+    } finally {
+      loader.hide();
+    }
   }
 }

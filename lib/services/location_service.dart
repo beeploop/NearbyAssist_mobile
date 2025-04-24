@@ -11,7 +11,7 @@ class LocationService {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw LocationServiceDisabledException;
+      throw const LocationServiceDisabledException();
     }
 
     permission = await Geolocator.checkPermission();

@@ -4,6 +4,7 @@ import 'package:nearby_assist/pages/account/services/detail/edit_service_page.da
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -79,6 +80,14 @@ class _OverviewState extends State<Overview> {
                 onPressed: () {
                   if (userProvider.user.isRestricted) {
                     showAccountRestrictedModal(context);
+                    return;
+                  }
+
+                  if (service.disabled) {
+                    showGenericErrorModal(
+                      context,
+                      message: 'Service is disabled',
+                    );
                     return;
                   }
 
