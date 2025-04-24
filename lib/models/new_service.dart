@@ -23,7 +23,7 @@ class NewService {
       'vendorId': vendorId,
       'title': title,
       'description': description,
-      'rate': rate,
+      'rate': rate.toString(),
       'tags': tags.map((tag) => tag.title).toList(),
       'extras': extras.map((extra) => extra.toJson()).toList(),
     };
