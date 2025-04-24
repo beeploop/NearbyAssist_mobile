@@ -3,6 +3,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
+import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
@@ -81,7 +82,7 @@ class ControlCenterProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addService(ServiceModel service) async {
+  Future<void> addService(NewService service) async {
     try {
       final response = await ControlCenterService().createService(service);
       _services.add(response);

@@ -1,4 +1,3 @@
-import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/service_review_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
@@ -25,23 +24,5 @@ class DetailedServiceModel {
           .map((review) => ServiceReviewModel.fromJson(review))
           .toList()),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'ratings': ratings,
-      'service': service.toJson(),
-      'vendor': vendor.toJson(),
-    };
-  }
-
-  DetailedServiceModel copyWithUpdatedService(ServiceModel service) {
-    this.service = service;
-    return this;
-  }
-
-  DetailedServiceModel copyWithNewImages(List<ServiceImageModel> images) {
-    service.images = images;
-    return this;
   }
 }

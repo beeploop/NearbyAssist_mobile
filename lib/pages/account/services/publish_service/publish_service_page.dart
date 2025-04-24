@@ -1,10 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nearby_assist/models/location_model.dart';
-import 'package:nearby_assist/models/service_extra_model.dart';
-import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/new_extra.dart';
+import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/service_overview.dart';
 import 'package:nearby_assist/pages/account/services/publish_service/service_pricing.dart';
@@ -12,8 +9,8 @@ import 'package:nearby_assist/pages/account/services/publish_service/service_pub
 import 'package:nearby_assist/pages/account/services/publish_service/widget/service_extra.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:provider/provider.dart';
 
 class PublishServicePage extends StatefulWidget {
@@ -165,99 +162,43 @@ class _PublishServicePageState extends State<PublishServicePage> {
       final provider = context.read<ControlCenterProvider>();
       final user = context.read<UserProvider>().user;
 
-      final List<ServiceExtraModel> extras = [];
-      for (final entry in _serviceExtras) {
-        if (entry.controller.title.isEmpty ||
-            entry.controller.description.isEmpty) {
-          continue;
-        }
-
-        final extra = ServiceExtraModel(
-          id: '',
-          title: entry.controller.title,
-          description: entry.controller.description,
-          price: entry.controller.price,
-        );
-
-        extras.add(extra);
-      }
-
-      final position = await LocationService().getLocation();
-
-      final service = ServiceModel(
-        id: '',
+      final service = NewService(
         vendorId: user.id,
         title: _titleController.text,
         description: _descriptionController.text,
         rate: double.tryParse(_basePriceController.text) ?? 0,
-        location: LocationModel.fromPosition(position),
         tags: _selectedTags,
-        extras: extras,
-        images: [],
-        disabled: false,
+        extras: _serviceExtras
+            .map((extra) => NewExtra(
+                  title: extra.controller.title,
+                  description: extra.controller.description,
+                  price: extra.controller.price,
+                ))
+            .toList(),
       );
 
       await provider.addService(service);
 
       _onSuccess();
     } on DioException catch (error) {
-      _showErrorModal(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      if (error == LocationServiceDisabledException) {
-        _showLocationServiceDisabledDialog();
-        return;
-      }
-
-      _showErrorModal(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     }
-  }
-
-  void _showLocationServiceDisabledDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Location Services Disabled'),
-          content: const Text(
-            'Please enable location services to use this feature.',
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                await Geolocator.openLocationSettings();
-              },
-              child: const Text('Open Settings'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _onSuccess() {
     showCustomSnackBar(
       context,
-      'Service published successfully',
+      'Service published',
       backgroundColor: Colors.green,
       textColor: Colors.white,
       closeIconColor: Colors.white,
       duration: const Duration(seconds: 5),
     );
 
-    context.pop();
-  }
-
-  void _showErrorModal(String error) {
-    showCustomSnackBar(
-      context,
-      error,
-      duration: const Duration(seconds: 5),
-      backgroundColor: Colors.red,
-      closeIconColor: Colors.white,
-      textColor: Colors.white,
-    );
+    Navigator.pop(context);
   }
 }

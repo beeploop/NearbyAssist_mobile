@@ -4,7 +4,9 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
+import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
+import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
@@ -85,7 +87,7 @@ class ControlCenterService {
     }
   }
 
-  Future<ServiceModel> createService(ServiceModel service) async {
+  Future<ServiceModel> createService(NewService service) async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.post(
@@ -93,8 +95,8 @@ class ControlCenterService {
         data: service.toJson(),
       );
 
-      final id = response.data['service'];
-      return service.copyWithNewId(id);
+      final data = DetailedServiceModel.fromJson(response.data['service']);
+      return data.service;
     } catch (error) {
       rethrow;
     }

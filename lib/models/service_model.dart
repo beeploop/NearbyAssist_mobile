@@ -48,34 +48,4 @@ class ServiceModel {
       disabled: json['disabled'],
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'vendorId': vendorId,
-      'title': title,
-      'description': description,
-      'rate': rate.toString(),
-      'location': location.toJson(),
-      'tags': tags.map((extra) => extra.title).toList(),
-      'extras': extras.map((extra) => extra.toJson()).toList(),
-      'images': images.map((image) => image.toJson()).toList(),
-      'disabled': disabled,
-    };
-  }
-
-  ServiceModel copyWithNewId(String newId) {
-    return ServiceModel(
-      id: newId,
-      vendorId: vendorId,
-      title: title,
-      description: description,
-      rate: rate,
-      location: location,
-      tags: tags,
-      extras: extras,
-      images: images,
-      disabled: disabled,
-    );
-  }
 }
