@@ -5,7 +5,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
-import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
 import 'package:provider/provider.dart';
 
 class CustomSearchbar extends StatefulWidget {
@@ -87,48 +88,15 @@ class _CustomSearchbarState extends State<CustomSearchbar> {
       serviceProvider.replaceAll(results);
 
       widget.onSearchFinished();
-    } on DioException catch (error) {
-      _showErrorModal(error.response?.data['message']);
     } on LocationServiceDisabledException catch (_) {
-      _showLocationServiceDisabledDialog();
+      if (!mounted) return;
+      showLocationDisabledModal(context);
+    } on DioException catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _showErrorModal(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     }
-  }
-
-  void _showLocationServiceDisabledDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Location Services Disabled'),
-          content: const Text(
-            'Please enable location services to use this feature.',
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                await Geolocator.openLocationSettings();
-              },
-              child: const Text('Open Settings'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showErrorModal(String error) {
-    showCustomSnackBar(
-      context,
-      error,
-      duration: const Duration(seconds: 5),
-      backgroundColor: Colors.red,
-      closeIconColor: Colors.white,
-      textColor: Colors.white,
-    );
   }
 }
