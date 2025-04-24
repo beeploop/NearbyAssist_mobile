@@ -266,4 +266,19 @@ class ControlCenterProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> reschedule(String bookingId, String schedule) async {
+    try {
+      await ControlCenterService().reschedule(bookingId, schedule);
+
+      final index = _schedules.indexWhere((booking) => booking.id == bookingId);
+      if (index == -1) {
+        return;
+      }
+      _schedules[index].scheduledAt = schedule;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

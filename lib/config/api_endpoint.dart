@@ -94,6 +94,7 @@ class ApiEndpoint {
   String get acceptRequest => '$_baseUrl/api/v1/bookings/accept';
   String get rejectRequest => '$_baseUrl/api/v1/bookings/reject';
   String get completeBooking => '$_baseUrl/api/v1/bookings/complete';
+  String get rescheduleBooking => '$_baseUrl/api/v1/bookings/reschedule';
   String get toReviews => '$_baseUrl/api/v1/bookings/toReview';
   String get postReview => '$_baseUrl/api/v1/reviews';
   String get getBooking => '$_baseUrl/api/v1/bookings';

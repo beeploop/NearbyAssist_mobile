@@ -12,6 +12,9 @@ import 'package:nearby_assist/pages/account/control_center/widget/qr_reader/qr_r
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:nearby_assist/utils/show_generic_success_modal.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleSummaryPage extends StatefulWidget {
@@ -36,10 +39,14 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            'Booking Summary',
+            'Details',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
+            IconButton(
+              onPressed: _showRescheduleModal,
+              icon: const Icon(CupertinoIcons.calendar_today),
+            ),
             if (widget.showChatIcon)
               IconButton(
                 onPressed: () {
@@ -175,7 +182,8 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
         ),
       );
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     }
   }
 
@@ -193,70 +201,101 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
 
       final data = BookingQrCodeData.fromJson(jsonDecode(detectedValue));
       await context.read<ControlCenterProvider>().complete(data);
-      _onSuccess();
+
+      if (!mounted) return;
+      showGenericSuccessModal(context, message: 'Booking completed!');
     } on DioException catch (error) {
-      _onError(error.response?.data);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError('Invalid QR');
+      if (!mounted) return;
+      showGenericErrorModal(context, message: 'Invalid QR');
     } finally {
       loader.hide();
     }
   }
 
-  void _onSuccess() {
+  void _showRescheduleModal() {
+    final rescheduleController = TextEditingController(
+      text: DateFormatter.monthAndDate(widget.booking.scheduledAt!),
+    );
+
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.check_mark_circled_solid,
-            color: Colors.green,
-            size: 40,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          CupertinoIcons.calendar_badge_plus,
+          color: Colors.green,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text(
+          'Set reschedule date',
+          style: TextStyle(fontSize: 20),
+        ),
+        content: TextField(
+          controller: rescheduleController,
+          decoration: const InputDecoration(
+            labelText: 'Schedule',
+            filled: true,
+            prefixIcon: Icon(CupertinoIcons.calendar),
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+          readOnly: true,
+          onTap: () async {
+            DateTime? schedule = await showDatePicker(
+                context: context,
+                initialDate: DateTime.parse(widget.booking.scheduledAt!),
+                firstDate: DateTime.now(),
+                lastDate: DateTime.now().add(
+                  const Duration(days: 30),
+                ));
+
+            if (schedule == null) return;
+
+            setState(() {
+              rescheduleController.text = schedule.toString().split(" ")[0];
+            });
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
-          title: const Text('Successful'),
-          content: const Text('Booking complete'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-                context.pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _handleReschedule(widget.booking.id, rescheduleController.text);
+            },
+            child: const Text('Reschedule'),
+          ),
+        ],
+      ),
     );
   }
 
-  void _onError(String error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.xmark_circle_fill,
-            color: Colors.red,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Failed'),
-          content: Text(error),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _handleReschedule(String bookingId, String schedule) async {
+    final loader = context.loaderOverlay;
+
+    try {
+      loader.show();
+
+      await context
+          .read<ControlCenterProvider>()
+          .reschedule(bookingId, schedule);
+
+      if (!mounted) return;
+      showGenericSuccessModal(context, message: 'Booking rescheduled');
+    } on DioException catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
+    } catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
+    } finally {
+      loader.hide();
+    }
   }
 }

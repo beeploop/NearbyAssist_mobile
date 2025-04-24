@@ -251,4 +251,16 @@ class ControlCenterService {
       rethrow;
     }
   }
+
+  Future<void> reschedule(String bookingId, String schedule) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put(
+        endpoint.rescheduleBooking,
+        data: {'bookingId': bookingId, 'schedule': schedule},
+      );
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

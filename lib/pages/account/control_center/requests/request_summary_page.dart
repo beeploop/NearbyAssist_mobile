@@ -11,6 +11,8 @@ import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:nearby_assist/utils/show_generic_success_modal.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -303,11 +305,15 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       }
 
       await context.read<ControlCenterProvider>().confirm(id, schedule);
-      _onSuccess();
+
+      if (!mounted) return;
+      showGenericSuccessModal(context, message: 'Confirmed request');
     } on DioException catch (error) {
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
@@ -325,11 +331,15 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       }
 
       await context.read<ControlCenterProvider>().reject(id, reason);
-      _onSuccess();
+
+      if (!mounted) return;
+      showGenericSuccessModal(context, message: 'Rejected request');
     } on DioException catch (error) {
-      _onError(error.response?.data['error']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
@@ -349,62 +359,6 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
     setState(() {
       _scheduleController.text = schedule.toString().split(" ")[0];
     });
-  }
-
-  void _onSuccess() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.check_mark_circled_solid,
-            color: Colors.green,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Successful'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _onError(String error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.xmark_circle_fill,
-            color: Colors.red,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Failed'),
-          content: Text(error),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   double _calculateTotalCost() {
