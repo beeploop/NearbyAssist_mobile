@@ -9,6 +9,11 @@ class SavesProvider extends ChangeNotifier {
     return List.from(List.from(_saves.values).reversed);
   }
 
+  void clear() {
+    _saves.clear();
+    notifyListeners();
+  }
+
   bool isSaved(String id) {
     return _saves.containsKey(id);
   }

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
@@ -11,6 +12,7 @@ import 'package:nearby_assist/pages/login/verification/verification_page.dart';
 import 'package:nearby_assist/pages/login/widget/login_page_logo.dart';
 import 'package:nearby_assist/pages/widget/clickable_text.dart';
 import 'package:nearby_assist/pages/widget/google_auth_button.dart';
+import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -28,112 +30,124 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.ellipsis),
-            onPressed: _showTesterMenu,
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Column(
-              children: [
-                const SizedBox(height: 60),
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: const Icon(CupertinoIcons.ellipsis),
+              onPressed: _showTesterMenu,
+            ),
+            const SizedBox(width: 10),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Column(
+                children: [
+                  const SizedBox(height: 60),
 
-                const LoginPageLogo(),
-                const SizedBox(height: 60),
+                  const LoginPageLogo(),
+                  const SizedBox(height: 60),
 
-                // Signin with Google
-                GoogleAuthButton(
-                  label: 'Login',
-                  withIcon: false,
-                  successCallback: _handleLogin,
-                  errorCallback: _onError,
-                ),
-                const SizedBox(height: 10),
+                  // Signin with Google
+                  GoogleAuthButton(
+                    label: 'Login',
+                    withIcon: false,
+                    successCallback: _handleLogin,
+                    errorCallback: _onError,
+                  ),
+                  const SizedBox(height: 10),
 
-                // Divider
-                const Row(
-                  children: [
-                    Expanded(child: Divider()),
-                    SizedBox(width: 10),
-                    Text('or'),
-                    SizedBox(width: 10),
-                    Expanded(child: Divider())
-                  ],
-                ),
-                const SizedBox(height: 10),
-
-                // Signup with Google
-                GoogleAuthButton(
-                  filled: false,
-                  label: 'Signup with Google',
-                  successCallback: _handleRegister,
-                  errorCallback: _onError,
-                ),
-                const SizedBox(height: 40),
-
-                // Privacy Policy and T&C
-                IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  // Divider
+                  const Row(
                     children: [
-                      ClickableText(
-                        text: '',
-                        clickableText: 'Privacy Policy',
-                        onClick: () =>
-                            _launchUrl(Uri.parse(endpoint.privacyPolicy)),
-                      ),
-                      const VerticalDivider(),
-                      ClickableText(
-                        text: '',
-                        clickableText: 'Terms & Condition',
-                        onClick: () => _launchUrl(
-                          Uri.parse(endpoint.termsAndConditions),
-                        ),
-                      ),
+                      Expanded(child: Divider()),
+                      SizedBox(width: 10),
+                      Text('or'),
+                      SizedBox(width: 10),
+                      Expanded(child: Divider())
                     ],
                   ),
-                ),
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                // Bottom padding
-                const SizedBox(height: 60),
-              ],
+                  // Signup with Google
+                  GoogleAuthButton(
+                    filled: false,
+                    label: 'Signup with Google',
+                    successCallback: _handleRegister,
+                    errorCallback: _onError,
+                  ),
+                  const SizedBox(height: 40),
+
+                  // Privacy Policy and T&C
+                  IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ClickableText(
+                          text: '',
+                          clickableText: 'Privacy Policy',
+                          onClick: () =>
+                              _launchUrl(Uri.parse(endpoint.privacyPolicy)),
+                        ),
+                        const VerticalDivider(),
+                        ClickableText(
+                          text: '',
+                          clickableText: 'Terms & Condition',
+                          onClick: () => _launchUrl(
+                            Uri.parse(endpoint.termsAndConditions),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Bottom padding
+                  const SizedBox(height: 60),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(10),
-        child: const AutoSizeText(
-          appVersion,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.all(10),
+          child: const AutoSizeText(
+            appVersion,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey),
+          ),
         ),
       ),
     );
   }
 
   Future<void> _handleLogin(ThirdPartyLoginPayloadModel user) async {
+    final loader = context.loaderOverlay;
+
     try {
+      loader.show();
+
       final userProvider = context.read<UserProvider>();
+      final notifProvider = context.read<NotificationsProvider>();
+      final router = GoRouter.of(context);
 
       final loggedInUser = await AuthService().signin(user);
       userProvider.login(loggedInUser);
+      notifProvider.fetchNotifications();
 
-      if (!mounted) return;
-      context.goNamed('search');
+      router.goNamed('search');
     } on DioException catch (error) {
+      if (!mounted) return;
       showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
+      if (!mounted) return;
       showGenericErrorModal(context, message: error.toString());
+    } finally {
+      loader.hide();
     }
   }
 

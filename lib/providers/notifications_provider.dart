@@ -11,6 +11,11 @@ class NotificationsProvider extends ChangeNotifier {
   int get unreadCount =>
       _notifications.where((notif) => !notif.isRead).toList().length;
 
+  void clear() {
+    _notifications.clear();
+    notifyListeners();
+  }
+
   void pushNotification(NotificationModel notif) {
     logger.logDebug('called pushNotification in notifications_provider.dart');
 

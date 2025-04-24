@@ -30,6 +30,12 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
+  void clear() {
+    _conversations.clear();
+    _messages.clear();
+    notifyListeners();
+  }
+
   Future<void> fetchMessages(String recipientId) async {
     try {
       final messageService = MessageService();

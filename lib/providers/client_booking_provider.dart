@@ -16,6 +16,14 @@ class ClientBookingProvider extends ChangeNotifier {
   List<BookingModel> get toRate => _toRate;
   List<BookingModel> get history => _history;
 
+  void clear() {
+    _pending.clear();
+    _confirmed.clear();
+    _toRate.clear();
+    _history.clear();
+    notifyListeners();
+  }
+
   Future<void> fetchPending() async {
     try {
       final response = await ClientBookingService().fetchSentRequests();
