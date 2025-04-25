@@ -3,6 +3,7 @@ import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
 
 class SummarySection extends StatefulWidget {
@@ -61,7 +62,10 @@ class _SummarySectionState extends State<SummarySection> {
 
         // Extras
         const SizedBox(height: 20),
-        RowTile(label: 'Base Rate:', text: '₱ ${widget.detail.service.rate}'),
+        RowTile(
+          label: 'Base Rate:',
+          text: formatCurrency(widget.detail.service.rate),
+        ),
         const SizedBox(height: 20),
         const Text(
           'Extras:',
@@ -74,7 +78,7 @@ class _SummarySectionState extends State<SummarySection> {
         ...widget.selectedExtras.map((extra) {
           return RowTile(
             label: extra.title,
-            text: '₱ ${extra.price}',
+            text: formatCurrency(extra.price),
             withLeftPad: true,
           );
         }),
@@ -83,7 +87,10 @@ class _SummarySectionState extends State<SummarySection> {
 
         // Estimated cost
         const SizedBox(height: 20),
-        RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
+        RowTile(
+          label: 'Total Cost:',
+          text: formatCurrency(_calculateTotalCost()),
+        ),
         const SizedBox(height: 20),
       ],
     );

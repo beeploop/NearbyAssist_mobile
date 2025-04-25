@@ -150,7 +150,7 @@ class _VendorPageState extends State<VendorPage> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.green[200],
+        color: Colors.green.shade200,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

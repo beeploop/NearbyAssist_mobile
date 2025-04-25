@@ -8,17 +8,18 @@ import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
+import 'package:nearby_assist/utils/show_generic_success_modal.dart';
 import 'package:provider/provider.dart';
 
 class PendingRequestSummaryPage extends StatefulWidget {
   const PendingRequestSummaryPage({
     super.key,
     required this.booking,
-    this.showChatIcon = false,
   });
 
   final BookingModel booking;
-  final bool showChatIcon;
 
   @override
   State<PendingRequestSummaryPage> createState() =>
@@ -38,20 +39,19 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          if (widget.showChatIcon)
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                context.pushNamed(
-                  'chat',
-                  queryParameters: {
-                    'recipientId': widget.booking.vendor.id,
-                    'recipient': widget.booking.vendor.name,
-                  },
-                );
-              },
-              icon: const Icon(CupertinoIcons.ellipses_bubble),
-            ),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.pushNamed(
+                'chat',
+                queryParameters: {
+                  'recipientId': widget.booking.vendor.id,
+                  'recipient': widget.booking.vendor.name,
+                },
+              );
+            },
+            icon: const Icon(CupertinoIcons.ellipses_bubble),
+          ),
           const SizedBox(width: 20),
         ],
       ),
@@ -68,7 +68,7 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[900],
+                        color: Colors.grey.shade900,
                       )),
                   const Spacer(),
                   BookingStatusChip(status: widget.booking.status),
@@ -99,8 +99,9 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
               AutoSizeText(widget.booking.service.title),
               const SizedBox(height: 10),
               RowTile(
-                  label: 'Base Rate:',
-                  text: '₱ ${widget.booking.service.rate}'),
+                label: 'Base Rate:',
+                text: formatCurrency(widget.booking.service.rate),
+              ),
               const SizedBox(height: 20),
               const AutoSizeText(
                 'Extras:',
@@ -112,7 +113,7 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
               ...widget.booking.extras.map((extra) {
                 return RowTile(
                   label: extra.title,
-                  text: '₱ ${extra.price}',
+                  text: formatCurrency(extra.price),
                   withLeftPad: true,
                 );
               }),
@@ -123,50 +124,14 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
               const SizedBox(height: 20),
               RowTile(
                 label: 'Total Cost:',
-                text: '₱ ${widget.booking.total()}',
+                text: formatCurrency(widget.booking.total()),
               ),
               const SizedBox(height: 20),
 
               // Cancel Button
               const SizedBox(height: 20),
               FilledButton(
-                onPressed: () {
-                  final reason = TextEditingController();
-
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      icon: const Icon(
-                        CupertinoIcons.question_circle,
-                        color: Colors.red,
-                        size: 40,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      title: const Text('Are you sure?'),
-                      content: InputField(
-                        controller: reason,
-                        hintText: 'Reason',
-                        minLines: 3,
-                        maxLines: 6,
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => context.pop(),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            context.pop();
-                            _handleCancelBooking(reason.text);
-                          },
-                          child: const Text('Continue'),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                onPressed: _cancelConfirmation,
                 style: const ButtonStyle(
                   minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
                   backgroundColor: WidgetStatePropertyAll(Colors.red),
@@ -183,6 +148,44 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
     );
   }
 
+  void _cancelConfirmation() {
+    final reason = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          CupertinoIcons.question_circle,
+          color: Colors.red,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text('Are you sure?'),
+        content: InputField(
+          controller: reason,
+          hintText: 'Reason',
+          minLines: 3,
+          maxLines: 6,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.pop();
+              _handleCancelBooking(reason.text);
+            },
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _handleCancelBooking(String reason) async {
     try {
       if (reason.isEmpty) {
@@ -192,67 +195,12 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
       await context
           .read<ClientBookingProvider>()
           .cancel(widget.booking.id, reason);
-      _onSuccess();
+
+      if (!mounted) return;
+      showGenericSuccessModal(context, message: 'Booking request cancelled');
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     }
-  }
-
-  void _onSuccess() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.check_mark_circled_solid,
-            color: Colors.green,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Successful'),
-          content:
-              const Text('You successfully cancelled your booking request'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-                context.pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _onError(String error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.xmark_circle_fill,
-            color: Colors.red,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Failed'),
-          content: Text(error),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

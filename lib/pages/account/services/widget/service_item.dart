@@ -18,7 +18,7 @@ class ServiceItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.green[100],
+        color: Colors.green.shade100,
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.all(10),

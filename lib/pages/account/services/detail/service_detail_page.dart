@@ -39,48 +39,36 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
               size: 10,
             ),
             PopupMenuButton(
-              icon: const Icon(CupertinoIcons.ellipsis),
+              icon: const Icon(CupertinoIcons.ellipsis_vertical),
               itemBuilder: (context) => [
-                widget.service.disabled
-                    ? PopupMenuItem(
-                        onTap: _showEnableServiceConfirmation,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          child: const Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(
-                                CupertinoIcons.checkmark_circle,
-                                size: 18,
-                                color: Colors.green,
-                              ),
-                              SizedBox(width: 10),
-                              Text('Enable Service'),
-                            ],
-                          ),
+                PopupMenuItem(
+                  onTap: widget.service.disabled
+                      ? _showEnableServiceConfirmation
+                      : _showDisableServiceConfirmation,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Icon(
+                          widget.service.disabled
+                              ? CupertinoIcons.checkmark_circle
+                              : CupertinoIcons.nosign,
+                          size: 18,
+                          color: widget.service.disabled
+                              ? Colors.green
+                              : Colors.grey,
                         ),
-                      )
-                    : PopupMenuItem(
-                        onTap: _showDisableServiceConfirmation,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          child: const Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(
-                                CupertinoIcons.nosign,
-                                size: 18,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(width: 10),
-                              Text('Disabled Service'),
-                            ],
-                          ),
-                        ),
-                      ),
+                        const SizedBox(width: 10),
+                        Text(widget.service.disabled
+                            ? 'Enable service'
+                            : 'Disable service'),
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
-            const SizedBox(width: 10),
           ],
         ),
         body: DefaultTabController(

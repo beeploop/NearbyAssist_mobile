@@ -85,7 +85,7 @@ class _TesterSettingsModalState extends State<TesterSettingsModal> {
           "This option is only available in test flavors of the app. Features and functionality are subject to change and may not be available in the final release.",
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: Colors.grey.shade700,
           ),
         ),
       ],

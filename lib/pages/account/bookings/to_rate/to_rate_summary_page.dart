@@ -5,6 +5,7 @@ import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/bookings/to_rate/rate_page.dart';
 import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/utils/money_formatter.dart';
 
 class ToRateSummaryPage extends StatefulWidget {
   const ToRateSummaryPage({super.key, required this.booking});
@@ -27,7 +28,6 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
         ),
         actions: [
           Menu(booking: widget.booking),
-          const SizedBox(width: 10),
         ],
       ),
       body: Padding(
@@ -59,8 +59,9 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               AutoSizeText(widget.booking.service.title),
               const SizedBox(height: 10),
               RowTile(
-                  label: 'Base Rate:',
-                  text: '₱ ${widget.booking.service.rate}'),
+                label: 'Base Rate:',
+                text: formatCurrency(widget.booking.service.rate),
+              ),
               const SizedBox(height: 20),
               const AutoSizeText(
                 'Extras:',
@@ -72,7 +73,7 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               ...widget.booking.extras.map((extra) {
                 return RowTile(
                   label: extra.title,
-                  text: '₱ ${extra.price}',
+                  text: formatCurrency(extra.price),
                   withLeftPad: true,
                 );
               }),
@@ -81,7 +82,10 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
 
               // Estimated cost
               const SizedBox(height: 20),
-              RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
+              RowTile(
+                label: 'Total Cost:',
+                text: formatCurrency(widget.booking.total()),
+              ),
               const SizedBox(height: 20),
 
               // Actions
@@ -104,13 +108,5 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
         ),
       ),
     );
-  }
-
-  double _calculateTotalCost() {
-    double total = widget.booking.service.rate;
-    for (final extra in widget.booking.extras) {
-      total += extra.price;
-    }
-    return total;
   }
 }

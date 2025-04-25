@@ -31,7 +31,7 @@ class _ServicesPageState extends State<ServicesPage> {
         ),
         actions: [
           PopupMenuButton(
-            icon: const Icon(CupertinoIcons.ellipsis),
+            icon: const Icon(CupertinoIcons.ellipsis_vertical),
             itemBuilder: (context) => [
               PopupMenuItem(
                 onTap: () {
@@ -55,7 +55,6 @@ class _ServicesPageState extends State<ServicesPage> {
               ),
             ],
           ),
-          const SizedBox(width: 10),
         ],
       ),
       body: Consumer<ControlCenterProvider>(

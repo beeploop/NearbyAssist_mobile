@@ -82,11 +82,10 @@ class BookingModel {
   }
 
   double total() {
-    double total = service.rate;
-    for (final extra in extras) {
-      total += extra.price;
-    }
-    return total;
+    return extras.fold<double>(
+      service.rate,
+      (prev, extra) => prev + extra.price,
+    );
   }
 }
 
@@ -132,17 +131,5 @@ class MinimalServiceModel {
       'tags': tags,
       'location': location.toJson(),
     };
-  }
-
-  MinimalServiceModel copyWithNewId(String newId) {
-    return MinimalServiceModel(
-      id: newId,
-      vendorId: vendorId,
-      title: title,
-      description: description,
-      rate: rate,
-      tags: tags,
-      location: location,
-    );
   }
 }

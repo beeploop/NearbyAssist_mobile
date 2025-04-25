@@ -16,7 +16,7 @@ class LoginPageLogo extends StatelessWidget {
             Text(
               "NearbyAssist",
               style: TextStyle(
-                color: Colors.green[800],
+                color: Colors.green.shade800,
                 fontSize: 90,
                 fontWeight: FontWeight.bold,
               ),

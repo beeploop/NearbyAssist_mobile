@@ -35,7 +35,6 @@ class _ChatPageState extends State<ChatPage> {
           ),
           actions: [
             Menu(userId: widget.recipientId),
-            const SizedBox(width: 10),
           ]),
       body: FutureBuilder(
         future:
@@ -85,7 +84,7 @@ class _ChatPageState extends State<ChatPage> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
-              fillColor: Colors.grey[200],
+              fillColor: Colors.grey.shade200,
               filled: true,
             ),
           ),

@@ -40,12 +40,12 @@ class _ServiceGalleryState extends State<ServiceGallery> {
           child: LayoutBuilder(
             builder: (context, constraints) => InkWell(
               overlayColor: WidgetStatePropertyAll(
-                Colors.green[200],
+                Colors.green.shade200,
               ),
               onTap: () => _handlePickImage(),
               child: Ink(
                 decoration: BoxDecoration(
-                  color: Colors.green[100],
+                  color: Colors.green.shade100,
                   border: Border.all(color: Colors.green),
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -85,20 +85,20 @@ class _ServiceGalleryState extends State<ServiceGallery> {
         Text(
           'Add Image',
           style: TextStyle(
-            color: Colors.green[700],
+            color: Colors.green.shade700,
           ),
         ),
         const SizedBox(height: 10),
         Icon(
           CupertinoIcons.photo_on_rectangle,
-          color: Colors.green[400],
+          color: Colors.green.shade400,
         ),
         const SizedBox(height: 10),
         Text(
           'Tap to add image',
           style: TextStyle(
             fontSize: 12,
-            color: Colors.green[700],
+            color: Colors.green.shade700,
           ),
         ),
       ],

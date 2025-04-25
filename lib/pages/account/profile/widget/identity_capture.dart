@@ -34,7 +34,7 @@ class _IdentityCaptureState extends State<IdentityCapture> {
           onTap: _handleCapture,
           child: Ink(
             decoration: BoxDecoration(
-              color: Colors.green[100],
+              color: Colors.green.shade100,
               border: Border.all(color: Colors.green),
               borderRadius: BorderRadius.circular(5),
             ),

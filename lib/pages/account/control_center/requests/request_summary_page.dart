@@ -11,6 +11,7 @@ import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_generic_success_modal.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
@@ -143,7 +144,7 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[900],
+                      color: Colors.grey.shade800,
                     )),
                 const Spacer(),
                 BookingStatusChip(status: widget.booking.status),
@@ -174,7 +175,9 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             AutoSizeText(widget.booking.service.title),
             const SizedBox(height: 10),
             RowTile(
-                label: 'Base Rate:', text: '₱ ${widget.booking.service.rate}'),
+              label: 'Base Rate:',
+              text: formatCurrency(widget.booking.service.rate),
+            ),
             const SizedBox(height: 20),
             const AutoSizeText(
               'Extras:',
@@ -186,7 +189,7 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             ...widget.booking.extras.map((extra) {
               return RowTile(
                 label: extra.title,
-                text: '₱ ${extra.price}',
+                text: formatCurrency(extra.price),
                 withLeftPad: true,
               );
             }),
@@ -195,7 +198,10 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
 
             // Estimated cost
             const SizedBox(height: 20),
-            RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
+            RowTile(
+              label: 'Total Cost:',
+              text: formatCurrency(widget.booking.total()),
+            ),
 
             // Bottom padding
             const SizedBox(height: 40),
@@ -359,13 +365,5 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
     setState(() {
       _scheduleController.text = schedule.toString().split(" ")[0];
     });
-  }
-
-  double _calculateTotalCost() {
-    double total = widget.booking.service.rate;
-    for (final extra in widget.booking.extras) {
-      total += extra.price;
-    }
-    return total;
   }
 }

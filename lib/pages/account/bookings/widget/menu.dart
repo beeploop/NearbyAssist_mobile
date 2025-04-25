@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/report/report_user_reason_page.dart';
 
@@ -11,8 +12,22 @@ class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      icon: const Icon(CupertinoIcons.ellipsis),
+      icon: const Icon(CupertinoIcons.ellipsis_vertical),
       itemBuilder: (context) => [
+        _popupItem(
+          context,
+          onTap: () {
+            context.pushNamed(
+              'chat',
+              queryParameters: {
+                'recipientId': booking.vendor.id,
+                'recipient': booking.vendor.name,
+              },
+            );
+          },
+          icon: CupertinoIcons.ellipses_bubble,
+          text: 'Message',
+        ),
         _popupItem(
           context,
           onTap: () {

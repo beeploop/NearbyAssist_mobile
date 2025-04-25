@@ -84,7 +84,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
                         Expanded(
                           child: Container(
                             decoration:
-                                BoxDecoration(color: Colors.orange[200]),
+                                BoxDecoration(color: Colors.orange.shade200),
                           ),
                         ),
                       ],
@@ -102,7 +102,7 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
                         Expanded(
                           child: Container(
                             decoration:
-                                BoxDecoration(color: Colors.orange[200]),
+                                BoxDecoration(color: Colors.orange.shade200),
                           ),
                         ),
                       ],

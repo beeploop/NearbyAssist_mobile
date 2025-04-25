@@ -64,7 +64,7 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
         builder: (context, constraints) => InkWell(
           overlayColor: widget.overlay ??
               WidgetStatePropertyAll(
-                Colors.green[200],
+                Colors.green.shade200,
               ),
           onTap: widget.source == ImageSource.gallery
               ? _pickImageFromGallery
@@ -72,7 +72,7 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
           child: Ink(
             decoration: widget.decoration ??
                 BoxDecoration(
-                  color: Colors.green[100],
+                  color: Colors.green.shade100,
                   border: Border.all(color: Colors.green),
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -102,20 +102,20 @@ class _FillableImageContainerState extends State<FillableImageContainer> {
         Text(
           widget.labelText,
           style: TextStyle(
-            color: widget.labelColor ?? Colors.green[700],
+            color: widget.labelColor ?? Colors.green.shade700,
           ),
         ),
         const SizedBox(height: 10),
         Icon(
           widget.icon,
-          color: widget.iconColor ?? Colors.green[400],
+          color: widget.iconColor ?? Colors.green.shade400,
         ),
         const SizedBox(height: 10),
         Text(
           widget.hintText,
           style: TextStyle(
             fontSize: 12,
-            color: widget.labelColor ?? Colors.green[700],
+            color: widget.labelColor ?? Colors.green.shade700,
           ),
         ),
       ],

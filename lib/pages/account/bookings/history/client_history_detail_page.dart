@@ -1,21 +1,18 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/utils/money_formatter.dart';
 
 class ClientHistoryDetailPage extends StatefulWidget {
   const ClientHistoryDetailPage({
     super.key,
     required this.booking,
-    this.showChatIcon = false,
   });
 
   final BookingModel booking;
-  final bool showChatIcon;
 
   @override
   State<ClientHistoryDetailPage> createState() =>
@@ -33,22 +30,7 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          if (widget.showChatIcon)
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                context.pushNamed(
-                  'chat',
-                  queryParameters: {
-                    'recipientId': widget.booking.vendor.id,
-                    'recipient': widget.booking.vendor.name,
-                  },
-                );
-              },
-              icon: const Icon(CupertinoIcons.ellipses_bubble),
-            ),
           Menu(booking: widget.booking),
-          const SizedBox(width: 20),
         ],
       ),
       body: Padding(
@@ -64,7 +46,7 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[900],
+                        color: Colors.grey.shade800,
                       )),
                   const Spacer(),
                   BookingStatusChip(status: widget.booking.status),
@@ -97,8 +79,9 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
               ),
               const SizedBox(height: 10),
               RowTile(
-                  label: 'Base Rate:',
-                  text: '₱ ${widget.booking.service.rate}'),
+                label: 'Base Rate:',
+                text: formatCurrency(widget.booking.service.rate),
+              ),
               const SizedBox(height: 20),
               const AutoSizeText(
                 'Extras:',
@@ -110,7 +93,7 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
               ...widget.booking.extras.map((extra) {
                 return RowTile(
                   label: extra.title,
-                  text: '₱ ${extra.price}',
+                  text: formatCurrency(extra.price),
                   withLeftPad: true,
                 );
               }),
@@ -119,7 +102,10 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
 
               // Estimated cost
               const SizedBox(height: 20),
-              RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
+              RowTile(
+                label: 'Total Cost:',
+                text: formatCurrency(widget.booking.total()),
+              ),
               const SizedBox(height: 20),
 
               // Bottom padding
@@ -129,13 +115,5 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
         ),
       ),
     );
-  }
-
-  double _calculateTotalCost() {
-    double total = widget.booking.service.rate;
-    for (final extra in widget.booking.extras) {
-      total += extra.price;
-    }
-    return total;
   }
 }

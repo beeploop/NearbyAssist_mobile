@@ -51,7 +51,6 @@ class _PendingRequestPageState extends State<PendingRequestPage> {
               CupertinoPageRoute(
                 builder: (context) => PendingRequestSummaryPage(
                   booking: requests[index],
-                  showChatIcon: true,
                 ),
               ),
             );

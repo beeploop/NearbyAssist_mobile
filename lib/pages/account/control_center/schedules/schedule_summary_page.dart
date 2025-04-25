@@ -11,6 +11,7 @@ import 'package:nearby_assist/pages/account/control_center/widget/qr_reader/qr_r
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_generic_success_modal.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +73,7 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[900],
+                      color: Colors.grey.shade800,
                     )),
                 const Spacer(),
                 BookingStatusChip(status: widget.booking.status),
@@ -103,7 +104,9 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
             AutoSizeText(widget.booking.service.title),
             const SizedBox(height: 10),
             RowTile(
-                label: 'Base Rate:', text: '₱ ${widget.booking.service.rate}'),
+              label: 'Base Rate:',
+              text: formatCurrency(widget.booking.service.rate),
+            ),
             const SizedBox(height: 20),
             const AutoSizeText(
               'Extras:',
@@ -115,7 +118,7 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
             ...widget.booking.extras.map((extra) {
               return RowTile(
                 label: extra.title,
-                text: '₱ ${extra.price}',
+                text: formatCurrency(extra.price),
                 withLeftPad: true,
               );
             }),
@@ -124,7 +127,10 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
 
             // Estimated cost
             const SizedBox(height: 20),
-            RowTile(label: 'Total Cost:', text: '₱ ${_calculateTotalCost()}'),
+            RowTile(
+              label: 'Total Cost:',
+              text: formatCurrency(widget.booking.total()),
+            ),
 
             // Complete Button
             const SizedBox(height: 40),
@@ -132,14 +138,6 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
         ),
       ),
     );
-  }
-
-  double _calculateTotalCost() {
-    double total = widget.booking.service.rate;
-    for (final extra in widget.booking.extras) {
-      total += extra.price;
-    }
-    return total;
   }
 
   void _handleCompleteBooking() async {

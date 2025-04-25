@@ -11,7 +11,7 @@ class Menu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      icon: const Icon(CupertinoIcons.ellipsis),
+      icon: const Icon(CupertinoIcons.ellipsis_vertical),
       itemBuilder: (context) => [
         _popupItem(
           context,
