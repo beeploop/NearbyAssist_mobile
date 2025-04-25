@@ -51,7 +51,6 @@ class _SchedulesPageState extends State<SchedulesPage> {
               CupertinoPageRoute(
                 builder: (context) => ScheduleSummaryPage(
                   booking: requests[index],
-                  showChatIcon: true,
                 ),
               ),
             );
