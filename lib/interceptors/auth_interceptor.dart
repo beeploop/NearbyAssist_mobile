@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/providers/token_change_notifier.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 
@@ -66,6 +67,8 @@ class AuthInterceptor extends Interceptor {
   }
 
   Future<void> _refreshToken() async {
+    logger.logDebug('refresh token called');
+
     try {
       final store = SecureStorage();
 
@@ -86,7 +89,11 @@ class AuthInterceptor extends Interceptor {
       );
 
       await store.saveToken(
-          TokenType.accessToken, response.data['accessToken']);
+        TokenType.accessToken,
+        response.data['accessToken'],
+      );
+
+      TokenChangeNotifier().notifyTokenRefreshed();
     } catch (error) {
       rethrow;
     }

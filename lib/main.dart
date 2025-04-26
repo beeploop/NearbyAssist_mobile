@@ -41,6 +41,8 @@ void main() async {
 
   OneSignalService().initialize();
 
+  final websockerProvider = WebsocketProvider();
+
   runApp(
     MultiProvider(
       providers: [
