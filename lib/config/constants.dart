@@ -2,7 +2,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 
-const appVersion = "v0.11.3-alpha";
+const appVersion = "v0.11.4-alpha";
 const appName = "NearbyAssist";
 const appLegalese = "© 2024 NearbyAssist";
 
