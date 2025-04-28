@@ -12,7 +12,6 @@ import 'package:nearby_assist/pages/widget/clickable_text.dart';
 import 'package:nearby_assist/pages/widget/divider_with_text.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/services/vendor_application_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_generic_success_modal.dart';
@@ -20,19 +19,18 @@ import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class VendorApplicationPage extends StatefulWidget {
-  const VendorApplicationPage({super.key});
+class AddVendorExpertisePage extends StatefulWidget {
+  const AddVendorExpertisePage({super.key});
 
   @override
-  State<VendorApplicationPage> createState() => _VendorApplicationPageState();
+  State<AddVendorExpertisePage> createState() => _AddVendorExpertisePageState();
 }
 
-class _VendorApplicationPageState extends State<VendorApplicationPage> {
+class _AddVendorExpertisePageState extends State<AddVendorExpertisePage> {
   List<ExpertiseModel> _expertiseList = [];
   ExpertiseModel? _selectedExpertise;
   List<String> _unlockables = [];
   final _supportingDocController = FillableImageContainerController();
-  final _policeClearanceController = FillableImageContainerController();
   bool _hasAgreedToTAC = false;
 
   @override
@@ -83,24 +81,6 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
                           controller: _supportingDocController,
                           icon: CupertinoIcons.doc_on_clipboard,
                           labelText: 'Supporting Document',
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration:
-                                BoxDecoration(color: Colors.orange.shade200),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    const DividerWithText(text: 'Police Clearance'),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        FillableImageContainer(
-                          controller: _policeClearanceController,
-                          icon: CupertinoIcons.doc_on_clipboard,
-                          labelText: 'Police Clearance',
                         ),
                         Expanded(
                           child: Container(
@@ -229,16 +209,14 @@ class _VendorApplicationPageState extends State<VendorApplicationPage> {
         throw 'Please select an expertise';
       }
 
-      if (_supportingDocController.image == null ||
-          _policeClearanceController.image == null) {
+      if (_supportingDocController.image == null) {
         throw 'Upload required documents';
       }
-      final service = VendorApplicationService();
-      await service.apply(
-        expertise: _selectedExpertise!,
-        supportingDoc: _supportingDocController.imageBytes!,
-        policeClearance: _policeClearanceController.imageBytes!,
-      );
+
+      await context.read<UserProvider>().addExpertise(
+            _selectedExpertise!,
+            _supportingDocController.imageBytes!,
+          );
 
       if (!mounted) return;
       showGenericSuccessModal(

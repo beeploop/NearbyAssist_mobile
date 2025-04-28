@@ -53,6 +53,7 @@ class ApiEndpoint {
   String get me => '$_baseUrl/api/v1/user';
   String get addSocial => '$_baseUrl/api/v1/user/socials';
   String get deleteSocial => '$_baseUrl/api/v1/user/socials';
+  String get addExpertise => '$_baseUrl/api/v1/user/addExpertise';
 
   String get privacyPolicy => '$_baseUrl/privacy_policy';
   String get termsAndConditions => '$_baseUrl/terms_and_conditions';

@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:nearby_assist/services/user_account_service.dart';
+import 'package:nearby_assist/services/vendor_application_service.dart';
 
 enum AuthStatus { authenticated, unauthenticated }
 
@@ -71,6 +73,19 @@ class UserProvider extends ChangeNotifier {
       _user!.socials.removeWhere((social) => social == url);
 
       notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> addExpertise(
+      ExpertiseModel expertise, Uint8List supportingDoc) async {
+    try {
+      final service = VendorApplicationService();
+      await service.applyAgain(
+        expertiseId: expertise.id,
+        supportingDoc: supportingDoc,
+      );
     } catch (error) {
       rethrow;
     }

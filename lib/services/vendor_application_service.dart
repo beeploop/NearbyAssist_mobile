@@ -34,15 +34,31 @@ class VendorApplicationService {
 
       final api = ApiService.authenticated();
       await api.dio.post(endpoint.vendorApplication, data: data);
-    } on DioException catch (error) {
-      logger.logError(error.toString());
-      if (error.response?.statusCode == 400) {
-        throw error.response?.data['message'];
-      }
-
-      rethrow;
     } catch (error) {
       logger.logError(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> applyAgain({
+    required String expertiseId,
+    required Uint8List supportingDoc,
+  }) async {
+    try {
+      final data = FormData.fromMap({
+        'expertiseId': expertiseId,
+        'files': [
+          MultipartFile.fromBytes(
+            await compute(ImageResizeService.resize, supportingDoc),
+            filename: 'supportingDocument',
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        ],
+      });
+
+      final api = ApiService.authenticated();
+      await api.dio.post(endpoint.addExpertise, data: data);
+    } catch (error) {
       rethrow;
     }
   }
