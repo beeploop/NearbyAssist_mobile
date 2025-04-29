@@ -1,4 +1,3 @@
-import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 
 class UpdateServiceModel {
@@ -8,7 +7,6 @@ class UpdateServiceModel {
   final String description;
   final double rate;
   final List<TagModel> tags;
-  final LocationModel location;
 
   UpdateServiceModel({
     required this.id,
@@ -17,7 +15,6 @@ class UpdateServiceModel {
     required this.description,
     required this.rate,
     required this.tags,
-    required this.location,
   });
 
   Map<String, dynamic> toJson() {
@@ -28,7 +25,6 @@ class UpdateServiceModel {
       'description': description,
       'rate': rate.toString(),
       'tags': tags.map((tag) => tag.title).toList(),
-      'location': location.toJson(),
     };
   }
 }
