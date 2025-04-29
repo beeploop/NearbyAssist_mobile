@@ -30,8 +30,9 @@ void main() async {
   WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: binding);
 
-  // Load environment variables
-  await dotenv.load(fileName: '.env');
+  // Load .env file dynamically via --dart-define
+  const env = String.fromEnvironment('ENV_FILE', defaultValue: '.env');
+  await dotenv.load(fileName: env);
 
   // Initialize systemSettings
   systemSettings = SystemSettingProvider();
@@ -42,6 +43,7 @@ void main() async {
   OneSignalService().initialize();
 
   final websockerProvider = WebsocketProvider();
+  websockerProvider.init();
 
   runApp(
     MultiProvider(
@@ -52,7 +54,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => VendorProvider()),
         ChangeNotifierProvider(create: (context) => RouteProvider()),
         ChangeNotifierProvider(create: (context) => MessageProvider()),
-        ChangeNotifierProvider(create: (context) => WebsocketProvider()),
+        ChangeNotifierProvider(create: (context) => websockerProvider),
         ChangeNotifierProvider(create: (context) => SavesProvider()),
         ChangeNotifierProvider(create: (context) => ExpertiseProvider()),
         ChangeNotifierProvider(create: (context) => NotificationsProvider()),

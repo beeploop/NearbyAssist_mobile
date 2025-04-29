@@ -47,3 +47,4 @@ build/
 *.apk
 
 *.env
+*.env.local.*
