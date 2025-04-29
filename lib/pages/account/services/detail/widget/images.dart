@@ -184,9 +184,11 @@ class _ImagesState extends State<Images> {
             _fillableImageController.image!,
           );
     } on DioException catch (error) {
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
@@ -202,39 +204,13 @@ class _ImagesState extends State<Images> {
           .read<ControlCenterProvider>()
           .deleteImage(widget.serviceId, imageId);
     } on DioException catch (error) {
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
-  }
-
-  void _onError(String error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.xmark_circle_fill,
-            color: Colors.red,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Failed'),
-          content: Text(error),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
