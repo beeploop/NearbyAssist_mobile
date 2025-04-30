@@ -43,8 +43,13 @@ class SecureStorage {
   }
 
   Future<void> saveUser(UserModel user) async {
-    final userData = jsonEncode(user);
-    await _storage.write(key: _userKey, value: userData);
+    try {
+      final userData = jsonEncode(user.toJson());
+      await _storage.write(key: _userKey, value: userData);
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    }
   }
 
   Future<UserModel> getUser() async {

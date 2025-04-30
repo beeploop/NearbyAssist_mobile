@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
+import 'package:nearby_assist/models/social_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
@@ -33,45 +35,42 @@ class UserProvider extends ChangeNotifier {
       final service = UserAccountService();
       final user = await service.syncAccount();
 
-      final store = SecureStorage();
-      await store.saveUser(user);
-
+      await SecureStorage().saveUser(user);
       _user = user;
 
       notifyListeners();
-    } catch (error) {
+    } catch (error, trace) {
+      logger.logError(error.toString());
+      logger.logError(trace);
       rethrow;
     }
   }
 
-  Future<void> addSocial(String url) async {
+  Future<void> addSocial(NewSocial data) async {
     try {
       if (_user == null) {
         throw 'null user';
       }
 
       final service = UserAccountService();
-      await service.addSocial(url);
+      final social = await service.addSocial(data);
 
-      _user!.socials.add(url);
-
+      _user!.socials.add(social);
       notifyListeners();
     } catch (error) {
       rethrow;
     }
   }
 
-  Future<void> removeSocial(String url) async {
+  Future<void> removeSocial(String socialId) async {
     try {
       if (_user == null) {
         throw 'null user';
       }
 
-      final service = UserAccountService();
-      await service.removeSocial(url);
+      await UserAccountService().removeSocial(socialId);
 
-      _user!.socials.removeWhere((social) => social == url);
-
+      _user!.socials.removeWhere((social) => social.id == socialId);
       notifyListeners();
     } catch (error) {
       rethrow;

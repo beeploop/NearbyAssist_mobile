@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:nearby_assist/models/expertise_model.dart';
+import 'package:nearby_assist/models/social_model.dart';
 
 class UserModel {
   String id;
@@ -13,7 +16,7 @@ class UserModel {
   double? latitude;
   double? longitude;
   List<ExpertiseModel> expertise;
-  List<String> socials;
+  List<SocialModel> socials;
 
   UserModel({
     required this.id,
@@ -44,13 +47,12 @@ class UserModel {
       phone: json['phone'] == "" ? null : json['phone'],
       latitude: json['latitude'] == 0 ? null : json['latitude'],
       longitude: json['longitude'] == 0 ? null : json['longitude'],
-      expertise: json['expertises'] == null
-          ? []
-          : (json['expertises'] as List)
-              .map((e) => ExpertiseModel.fromJson(e))
-              .toList(),
-      socials:
-          json['socials'] == null ? [] : List<String>.from(json['socials']),
+      expertise: ((json['expertises'] ?? []) as List)
+          .map((expertise) => ExpertiseModel.fromJson(expertise))
+          .toList(),
+      socials: ((json['socials'] ?? []) as List)
+          .map((social) => SocialModel.fromJson(social))
+          .toList(),
     );
   }
 
@@ -67,8 +69,8 @@ class UserModel {
       'phone': phone,
       'latitude': latitude,
       'longitude': longitude,
-      'expertises': expertise.map((e) => e.toJson()).toList(),
-      'socials': socials,
+      'expertises': jsonEncode(expertise.map((e) => e.toJson()).toList()),
+      'socials': jsonEncode(socials.map((social) => social.toJson()).toList()),
     };
   }
 

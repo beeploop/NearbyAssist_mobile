@@ -11,7 +11,7 @@ import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
 import 'package:nearby_assist/pages/vendor/widget/menu.dart';
 import 'package:nearby_assist/providers/vendor_provider.dart';
-import 'package:nearby_assist/utils/url_icon_generator.dart';
+import 'package:nearby_assist/utils/social_type_icon.dart';
 import 'package:provider/provider.dart';
 
 class VendorPage extends StatefulWidget {
@@ -121,10 +121,10 @@ class _VendorPageState extends State<VendorPage> {
 
           ...model.vendor.socials.map((social) => Row(
                 children: [
-                  Icon(iconFromURL(social), size: 20),
+                  Icon(siteIcon(social.site), size: 20),
                   const SizedBox(width: 10),
                   AutoSizeText(
-                    social,
+                    social.title,
                     style: const TextStyle(fontSize: 14),
                   ),
                 ],

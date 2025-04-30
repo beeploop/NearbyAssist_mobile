@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:nearby_assist/models/social_model.dart';
+
 class VendorModel {
   final String id;
   final String name;
@@ -6,7 +10,7 @@ class VendorModel {
   final String imageUrl;
   final double rating;
   final List<String> expertise;
-  final List<String> socials;
+  final List<SocialModel> socials;
 
   VendorModel({
     required this.id,
@@ -29,8 +33,9 @@ class VendorModel {
       rating: double.parse(json['rating']),
       expertise:
           json['expertise'] == null ? [] : List<String>.from(json['expertise']),
-      socials:
-          json['socials'] == null ? [] : List<String>.from(json['socials']),
+      socials: ((json['socials'] ?? []) as List)
+          .map((social) => SocialModel.fromJson(social))
+          .toList(),
     );
   }
 
@@ -42,7 +47,7 @@ class VendorModel {
       'imageUrl': imageUrl,
       'rating': rating,
       'expertise': expertise,
-      'socials': socials,
+      'socials': jsonEncode(socials.map((social) => social.toJson()).toList()),
     };
   }
 }
