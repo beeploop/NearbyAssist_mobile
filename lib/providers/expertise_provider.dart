@@ -35,6 +35,8 @@ class ExpertiseProvider extends ChangeNotifier {
       final response = await service.getExpertiseWithTags();
 
       _expertise = response;
+      await SecureStorage().saveTags(response);
+
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -43,9 +45,7 @@ class ExpertiseProvider extends ChangeNotifier {
 
   Future<void> tryLoadLocal() async {
     try {
-      final store = SecureStorage();
-      final expertises = await store.getTags();
-
+      final expertises = await SecureStorage().getTags();
       _expertise = expertises;
       notifyListeners();
     } catch (error) {

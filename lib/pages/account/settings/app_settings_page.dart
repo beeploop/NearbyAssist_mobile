@@ -79,9 +79,9 @@ class _AppSettingPageState extends State<AppSettingPage> {
       loader.show();
 
       await context.read<UserProvider>().syncAccount();
-      _showSuccessModal('Account information synced');
+      _showSuccessSnackbar('Account information synced');
     } catch (error) {
-      _showErrorModal(error.toString());
+      _showErrorSnackbar(error.toString());
     } finally {
       loader.hide();
     }
@@ -92,18 +92,10 @@ class _AppSettingPageState extends State<AppSettingPage> {
 
     try {
       loader.show();
-
-      final provider = context.read<ExpertiseProvider>();
-
-      await provider.fetchExpertise();
-      final expertises = provider.expertise;
-
-      final store = SecureStorage();
-      await store.saveTags(expertises);
-
-      _showSuccessModal('Tags updated');
+      await context.read<ExpertiseProvider>().fetchExpertise();
+      _showSuccessSnackbar('Tags updated');
     } catch (error) {
-      _showErrorModal(error.toString());
+      _showErrorSnackbar(error.toString());
     } finally {
       loader.hide();
     }
@@ -163,7 +155,7 @@ class _AppSettingPageState extends State<AppSettingPage> {
     );
   }
 
-  void _showSuccessModal(String message) {
+  void _showSuccessSnackbar(String message) {
     showCustomSnackBar(
       context,
       message,
@@ -174,7 +166,7 @@ class _AppSettingPageState extends State<AppSettingPage> {
     );
   }
 
-  void _showErrorModal(String error) {
+  void _showErrorSnackbar(String error) {
     showCustomSnackBar(
       context,
       error,
