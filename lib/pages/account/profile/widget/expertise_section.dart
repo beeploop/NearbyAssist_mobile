@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/pages/account/services/add_vendor_expertise_page.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,8 +24,17 @@ class ExpertiseSection extends StatelessWidget {
             const Spacer(),
             TextButton.icon(
               onPressed: () {
-                context.pushNamed(
-                  'vendorApplication',
+                if (!user.isVendor) {
+                  context.pushNamed(
+                    'vendorApplication',
+                  );
+                }
+
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => const AddVendorExpertisePage(),
+                  ),
                 );
               },
               icon: const Icon(CupertinoIcons.add, size: 14),

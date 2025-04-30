@@ -98,6 +98,7 @@ class ControlCenterProvider extends ChangeNotifier {
     try {
       await ControlCenterService().updateService(updated);
 
+      final index = _services.indexWhere((service) => service.id == updated.id);
       final updatedService = ServiceModel(
         id: updated.id,
         vendorId: updated.vendorId,
@@ -106,13 +107,11 @@ class ControlCenterProvider extends ChangeNotifier {
         rate: updated.rate,
         tags: updated.tags,
         extras: extras,
-        location: updated.location,
-        images:
-            _services.firstWhere((service) => service.id == updated.id).images,
-        disabled: false,
+        location: _services[index].location,
+        images: _services[index].images,
+        disabled: _services[index].disabled,
       );
-
-      _services.removeWhere((service) => service.id == updated.id);
+      _services.removeAt(index);
       _services.add(updatedService);
       notifyListeners();
     } catch (error) {

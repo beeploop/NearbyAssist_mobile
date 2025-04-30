@@ -7,7 +7,7 @@ class TagService {
     logger.logDebug('called getExpertiseWithTags in tag_service.dart');
 
     try {
-      final api = ApiService.authenticated();
+      final api = ApiService.unauthenticated();
       final response = await api.dio.get(endpoint.expertiseList);
 
       return (response.data['expertises'] as List)

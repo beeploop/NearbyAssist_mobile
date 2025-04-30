@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
 import 'package:provider/provider.dart';
@@ -244,8 +242,6 @@ class _EditServicePageState extends State<EditServicePage> {
       final navigator = Navigator.of(context);
       final provider = context.read<ControlCenterProvider>();
 
-      final position = await LocationService().getLocation();
-
       final updatedData = UpdateServiceModel(
         id: widget.service.id,
         vendorId: widget.service.vendorId,
@@ -253,7 +249,6 @@ class _EditServicePageState extends State<EditServicePage> {
         description: _descriptionController.text,
         rate: double.parse(_rateController.text),
         tags: _selectedTags,
-        location: LocationModel.fromPosition(position),
       );
 
       await provider.updateService(updatedData, widget.service.extras);
