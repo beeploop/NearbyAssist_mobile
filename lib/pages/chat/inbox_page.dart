@@ -15,7 +15,7 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   @override
   Widget build(BuildContext context) {
-    final conversations = context.watch<MessageProvider>().getConversations();
+    final inbox = context.watch<MessageProvider>().inbox;
 
     return Scaffold(
       appBar: AppBar(
@@ -30,13 +30,13 @@ class _InboxPageState extends State<InboxPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: context.read<MessageProvider>().refreshConversations,
-        child: conversations.isEmpty
+        onRefresh: context.read<MessageProvider>().refreshInbox,
+        child: inbox.isEmpty
             ? _emptyState()
             : ListView.builder(
-                itemCount: conversations.length,
+                itemCount: inbox.length,
                 itemBuilder: (context, index) => InboxItem(
-                  conversation: conversations[index],
+                  inboxItem: inbox[index],
                 ),
               ),
       ),

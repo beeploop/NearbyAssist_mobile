@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:nearby_assist/models/social_model.dart';
 
 class VendorModel {

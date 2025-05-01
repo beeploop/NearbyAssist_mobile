@@ -9,6 +9,9 @@ class MessageModel {
   String receiver;
   String content;
   types.Status status;
+  bool seen;
+  DateTime? seenAt;
+  DateTime createdAt;
 
   MessageModel({
     required this.id,
@@ -16,6 +19,9 @@ class MessageModel {
     required this.receiver,
     required this.content,
     this.status = types.Status.sent,
+    required this.seen,
+    this.seenAt,
+    required this.createdAt,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -25,16 +31,9 @@ class MessageModel {
       receiver: json['receiver'],
       content: json['content'],
       status: types.Status.sent,
-    );
-  }
-
-  factory MessageModel.fromPartial(PartialMessageModel partial) {
-    return MessageModel(
-      id: const Uuid().v4(),
-      sender: partial.sender,
-      receiver: partial.receiver,
-      content: partial.content,
-      status: types.Status.sending,
+      seen: json['seen'],
+      seenAt: DateTime.tryParse(json['seenAt']),
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -47,22 +46,35 @@ class MessageModel {
     };
   }
 
-  MessageModel copyWithNewContent(String content) {
+  factory MessageModel.fromPartial(PartialMessageModel partial) {
     return MessageModel(
-      id: id,
+      id: const Uuid().v4(),
+      sender: partial.sender,
+      receiver: partial.receiver,
+      content: partial.content,
+      status: types.Status.sending,
+      seen: true,
+      createdAt: DateTime.now(),
+    );
+  }
+
+  PartialMessageModel toPartial() {
+    return PartialMessageModel(
       sender: sender,
       receiver: receiver,
       content: content,
     );
   }
 
-  MessageModel copyWithNewStatus(types.Status status) {
+  MessageModel copyWith({String? content, types.Status? status, bool? seen}) {
     return MessageModel(
       id: id,
       sender: sender,
       receiver: receiver,
-      content: content,
-      status: status,
+      content: content ?? this.content,
+      status: status ?? this.status,
+      seen: seen ?? this.seen,
+      createdAt: DateTime.now(),
     );
   }
 
@@ -73,23 +85,7 @@ class MessageModel {
       text: content,
       showStatus: true,
       status: status,
+      createdAt: createdAt.millisecondsSinceEpoch,
     );
-  }
-
-  /// Does not take into account the content
-  bool isPartialEqual(MessageModel message) {
-    if (sender == message.sender &&
-        receiver == message.receiver &&
-        content == message.content &&
-        status == types.Status.sending) {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool isSending() {
-    if (status == types.Status.sending) return true;
-    return false;
   }
 }

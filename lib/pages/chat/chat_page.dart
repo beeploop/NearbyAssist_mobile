@@ -37,25 +37,16 @@ class _ChatPageState extends State<ChatPage> {
             Menu(userId: widget.recipientId),
           ]),
       body: FutureBuilder(
-        future:
-            context.read<MessageProvider>().fetchMessages(widget.recipientId),
+        future: context
+            .read<MessageProvider>()
+            .fetchMessagesWithUser(widget.recipientId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return const Center(
-              child: AlertDialog(
-                icon: Icon(CupertinoIcons.exclamationmark_triangle),
-                title: Text('Something went wrong'),
-                content: Text(
-                  'An error occurred while fetching messages. Please try again later',
-                ),
-              ),
-            );
+            return _errorState();
           }
 
           return _chat();
@@ -65,10 +56,11 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _chat() {
-    final user = types.User(id: context.watch<UserProvider>().user.id);
+    return Consumer2<UserProvider, MessageProvider>(
+      builder: (context, userProvider, messageProvider, child) {
+        final user = userProvider.user;
+        messageProvider.markSeen(widget.recipientId);
 
-    return Consumer<MessageProvider>(
-      builder: (context, provider, child) {
         return Chat(
           theme: DefaultChatTheme(
             primaryColor: Theme.of(context).primaryColor,
@@ -88,11 +80,24 @@ class _ChatPageState extends State<ChatPage> {
               filled: true,
             ),
           ),
+          dateIsUtc: true,
           onSendPressed: (partial) => _sendMessage(partial, user.id),
-          messages: provider.getMessages(widget.recipientId),
-          user: user,
+          messages: messageProvider.openConversationWith(widget.recipientId),
+          user: types.User(id: user.id, imageUrl: user.imageUrl),
         );
       },
+    );
+  }
+
+  Widget _errorState() {
+    return const Center(
+      child: AlertDialog(
+        icon: Icon(CupertinoIcons.exclamationmark_triangle),
+        title: Text('Something went wrong'),
+        content: Text(
+          'An error occurred while fetching data of this vendor. Please try again later',
+        ),
+      ),
     );
   }
 

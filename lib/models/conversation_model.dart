@@ -1,25 +1,21 @@
+import 'package:nearby_assist/models/inbox_preview_model.dart';
+import 'package:nearby_assist/models/message_model.dart';
+
 class ConversationModel {
-  String userId;
-  String name;
-  String imageUrl;
-  String lastMessage;
-  String date;
+  InboxPreviewModel preview;
+  List<MessageModel> messages;
 
   ConversationModel({
-    required this.userId,
-    required this.name,
-    required this.imageUrl,
-    required this.lastMessage,
-    required this.date,
+    required this.preview,
+    required this.messages,
   });
 
   factory ConversationModel.fromJson(Map<String, dynamic> json) {
     return ConversationModel(
-      userId: json['userId'],
-      name: json['name'],
-      imageUrl: json['imageUrl'],
-      lastMessage: json['lastMessage'],
-      date: json['lastMessageDate'],
+      preview: InboxPreviewModel.fromJson(json['preview']),
+      messages: ((json['messages'] ?? []) as List)
+          .map((msg) => MessageModel.fromJson(msg))
+          .toList(),
     );
   }
 }

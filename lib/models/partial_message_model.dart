@@ -25,6 +25,8 @@ class PartialMessageModel {
       sender: sender,
       receiver: receiver,
       content: content,
+      seen: true,
+      createdAt: DateTime.now(),
     );
   }
 

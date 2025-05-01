@@ -69,6 +69,7 @@ class ApiEndpoint {
   String get conversations => '$_baseUrl/api/v1/chat/conversations';
   String get getMessages => '$_baseUrl/api/v1/chat/messages';
   String get sendMessage => '$_baseUrl/api/v1/chat/send';
+  String get markSeen => '$_baseUrl/api/v1/chat/markSeen';
 
   String get vendor => '$_baseUrl/api/v1/vendors';
   String get vendorServices => '$_baseUrl/api/v1/vendors/services';

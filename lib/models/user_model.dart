@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/models/social_model.dart';
 
@@ -69,8 +67,8 @@ class UserModel {
       'phone': phone,
       'latitude': latitude,
       'longitude': longitude,
-      'expertises': jsonEncode(expertise.map((e) => e.toJson()).toList()),
-      'socials': jsonEncode(socials.map((social) => social.toJson()).toList()),
+      'expertises': expertise.map((e) => e.toJson()).toList(),
+      'socials': socials.map((social) => social.toJson()).toList(),
     };
   }
 

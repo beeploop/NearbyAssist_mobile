@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:nearby_assist/models/tag_model.dart';
 
 class ExpertiseModel {
@@ -29,7 +27,7 @@ class ExpertiseModel {
     return {
       'id': id,
       'title': title,
-      'tags': jsonEncode(tags.map((tag) => tag.toJson()).toList()),
+      'tags': tags.map((tag) => tag.toJson()).toList(),
     };
   }
 }

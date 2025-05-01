@@ -1,79 +1,99 @@
 import 'package:diffie_hellman/diffie_hellman.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/conversation_model.dart';
+import 'package:nearby_assist/models/inbox_preview_model.dart';
 import 'package:nearby_assist/models/message_model.dart';
 import 'package:nearby_assist/models/partial_message_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/models/received_message_model.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/encryption.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
+import 'package:nearby_assist/services/vendor_service.dart';
 
 class MessageProvider extends ChangeNotifier {
-  List<ConversationModel> _conversations = [];
-  final Map<String, List<MessageModel>> _messages = {};
+  final List<ConversationModel> _inbox = [];
   final Map<String, DhPublicKey> _publicKeyCache = {};
 
-  List<ConversationModel> getConversations() => _conversations;
-
-  List<types.TextMessage> getMessages(String recipientId) {
-    try {
-      if (_messages.containsKey(recipientId)) {
-        return _messages[recipientId]!.map((e) => e.toTextMessage()).toList();
-      }
-
-      return [];
-    } catch (error) {
-      rethrow;
-    }
-  }
-
   void clear() {
-    _conversations.clear();
-    _messages.clear();
+    logger.logDebug('called clear in messages');
+    _inbox.clear();
     notifyListeners();
   }
 
-  Future<void> fetchMessages(String recipientId) async {
-    try {
-      final messageService = MessageService();
-      final messages = await messageService.fetchMessages(recipientId);
+  List<InboxPreviewModel> get inbox =>
+      _inbox.map((inbox) => inbox.preview).toList().reversed.toList();
 
-      for (var entry in messages) {
-        final decrypted = await _decrypt(entry.content, recipientId);
-        entry.content = decrypted;
+  List<types.TextMessage> openConversationWith(String userId) {
+    try {
+      // Redundant check, will refactor later
+      if (!_hasConversationWith(userId)) {
+        logger.logDebug('no conversation with this user');
+        return [];
       }
 
-      _messages[recipientId] = messages;
-      notifyListeners();
+      final messages = _getMessagesWith(userId);
+      return messages.map((msg) => msg.toTextMessage()).toList();
     } catch (error) {
+      logger.logError(error.toString());
       rethrow;
     }
   }
 
-  Future<void> refreshConversations() async {
+  Future<void> fetchMessagesWithUser(String userId) async {
     try {
-      final messageService = MessageService();
-      final conversations = await messageService.fetchConversations();
+      final messages = await MessageService().fetchMessages(userId);
 
-      for (var conversation in conversations) {
-        final decrypted =
-            await _decrypt(conversation.lastMessage, conversation.userId);
-        conversation.lastMessage = decrypted;
+      for (var message in messages) {
+        final decrypted = await _decrypt(message.content, userId);
+        message.content = decrypted;
 
-        if (_messages.containsKey(conversation.userId)) {
-          continue;
+        // This is guaranteed to have a conversation with the user
+        _addMessageToConversation(message, prepend: false);
+      }
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshInbox() async {
+    try {
+      final user = await SecureStorage().getUser();
+
+      final inboxPreviews = await MessageService().fetchConversations();
+
+      for (var preview in inboxPreviews) {
+        final decrypted = await _decrypt(preview.lastMessage, preview.userId);
+        preview.lastMessage = decrypted;
+        preview.seen =
+            preview.lastMessageSender == user.id ? true : preview.seen;
+
+        if (_hasConversationWith(preview.userId)) {
+          _updateInboxPreview(
+            preview.userId,
+            preview.lastMessage,
+            preview.seen,
+            createdAt: preview.lastMessageDate,
+          );
+        } else {
+          _addInboxItem(preview);
         }
-
-        _messages[conversation.userId] = [];
       }
 
-      _conversations = conversations;
-      notifyListeners();
+      _sortInbox();
     } catch (error) {
+      logger.logError(error.toString());
       rethrow;
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -81,70 +101,62 @@ class MessageProvider extends ChangeNotifier {
     final newMessage = MessageModel.fromPartial(partial);
 
     try {
-      if (_messages.containsKey(newMessage.receiver)) {
-        _messages[newMessage.receiver]!.insert(0, newMessage);
-      } else {
-        _messages[newMessage.receiver] = [newMessage];
+      if (!_hasConversationWith(partial.receiver)) {
+        await _createInboxItem(partial.receiver, partial.content);
       }
-      notifyListeners();
 
-      // Send message
+      _addMessageToConversation(newMessage);
+
       final encrypted = await _encrypt(newMessage.content, newMessage.receiver);
-      final encryptedMessage = newMessage.copyWithNewContent(encrypted);
+      final encryptedMessage = newMessage.copyWith(content: encrypted);
+      await MessageService().send(encryptedMessage);
 
-      final messageService = MessageService();
-      await messageService.send(encryptedMessage);
-
-      // Update status to sent
-      _updateMessageStatus(newMessage, types.Status.sent);
-
-      // Update conversations
-      _updateConversations(partial);
+      _updateMyMessageStatus(newMessage, types.Status.sent);
+      _updateInboxPreview(newMessage.receiver, newMessage.content, true);
     } catch (error) {
-      // Update status to error
-      _updateMessageStatus(newMessage, types.Status.error);
+      logger.logError(error.toString());
+      _updateMyMessageStatus(newMessage, types.Status.error);
+      _updateInboxPreview(newMessage.receiver, newMessage.content, true);
       rethrow;
     }
   }
 
-  void _updateMessageStatus(MessageModel message, types.Status status) {
-    if (_messages.containsKey(message.receiver)) {
-      final messages = _messages[message.receiver]!;
-
-      final index = messages.indexWhere((msg) => msg.id == message.id);
-      if (index == -1) return;
-
-      final updatedMessage = messages[index].copyWithNewStatus(status);
-      _messages[message.receiver]![index] = updatedMessage;
-      notifyListeners();
-    }
-  }
-
-  void _updateConversations(PartialMessageModel partial) async {
+  Future<void> receive(ReceivedMessageModel message) async {
     try {
-      final user = await SecureStorage().getUser();
+      final decrypted = await _decrypt(message.content, message.sender.id);
+      final decryptedMessage = MessageModel(
+        id: message.id,
+        sender: message.sender.id,
+        receiver: message.receiver.id,
+        content: decrypted,
+        createdAt: message.createdAt,
+        seen: message.seen,
+      );
 
-      final index = _conversations.indexWhere((conversation) {
-        if (partial.sender == user.id) {
-          return conversation.userId == partial.receiver;
-        }
+      final preview = InboxPreviewModel(
+        userId: message.sender.id,
+        name: message.sender.name,
+        imageUrl: message.sender.imageUrl,
+        lastMessage: decrypted,
+        lastMessageSender: message.sender.id,
+        lastMessageDate: message.createdAt,
+        seen: message.seen,
+      );
 
-        return conversation.userId == partial.sender;
-      });
-
-      if (index == -1) {
-        logger.logDebug(
-            'no previous conversations, calling refreshConversations');
-        // NOTE: Could be better, instead of refetching we can update the
-        // inbox, but message would need to have the receiver's image URL, id,
-        // and name. Too much work for now.
-        refreshConversations();
-        return;
+      if (!_hasConversationWith(message.sender.id)) {
+        logger.logDebug('have no conversation with: ${message.sender.id}');
+        _addInboxItem(preview);
+      } else {
+        logger.logDebug('have conversation with: ${message.sender.id}');
+        _updateInboxPreview(
+          preview.userId,
+          preview.lastMessage,
+          preview.seen,
+          createdAt: preview.lastMessageDate,
+        );
       }
 
-      final conversation = _conversations[index];
-      conversation.lastMessage = partial.content;
-      conversation.date = DateTime.now().toIso8601String();
+      _addMessageToConversation(decryptedMessage);
 
       notifyListeners();
     } catch (error) {
@@ -152,22 +164,32 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> receive(MessageModel message) async {
+// userId refers to id of the other person
+  Future<void> markSeen(String userId) async {
     try {
-      final decrypted = await _decrypt(message.content, message.sender);
-      final decryptedMessage = message.copyWithNewContent(decrypted);
+      logger.logDebug('marking message with $userId seen');
 
-      if (_messages.containsKey(message.sender)) {
-        final messages = _messages[message.sender]!;
-        messages.insert(0, decryptedMessage);
-      } else {
-        _messages[decryptedMessage.sender] = [decryptedMessage];
+      final messages = _getMessagesWith(userId);
+
+      final unseen = messages.where((message) => !message.seen).toList();
+      if (unseen.isEmpty) return;
+
+      for (var msg in unseen) {
+        final index = messages.indexWhere((message) => message.id == msg.id);
+        // Should be guaranteed to never be -1
+        messages[index].status = types.Status.seen;
       }
-      notifyListeners();
+
+      final ids = unseen.map((msg) => msg.id).toList();
+      await MessageService().markSeen(ids);
+
+      _markInboxPreviewSeen(userId);
+    } on DioException catch (error) {
+      logger.logError(error.response?.data);
     } catch (error) {
       logger.logError(error.toString());
     } finally {
-      refreshConversations(); // trigger refreshConversation to update inbox
+      notifyListeners();
     }
   }
 
@@ -177,13 +199,11 @@ class MessageProvider extends ChangeNotifier {
       DhPublicKey? publicKey;
 
       if (!_publicKeyCache.containsKey(otherUserId)) {
-        logger.logDebug('cache miss on encrypt in message_provider.dart');
-
+        logger.logDebug('cache miss on encrypt');
         publicKey = await dh.getPublicKey(otherUserId);
         _publicKeyCache[otherUserId] = publicKey;
       } else {
-        logger.logDebug('cache hit on encrypt in message_provider.dart');
-
+        logger.logDebug('cache hit on encrypt');
         publicKey = _publicKeyCache[otherUserId]!;
       }
 
@@ -202,13 +222,11 @@ class MessageProvider extends ChangeNotifier {
       DhPublicKey? publicKey;
 
       if (!_publicKeyCache.containsKey(otherUserId)) {
-        logger.logDebug('cache miss on decrypt in message_provider.dart');
-
+        logger.logDebug('cache miss on decrypt');
         publicKey = await dh.getPublicKey(otherUserId);
         _publicKeyCache[otherUserId] = publicKey;
       } else {
-        logger.logDebug('cache hit on decrypt in message_provider.dart');
-
+        logger.logDebug('cache hit on decrypt');
         publicKey = _publicKeyCache[otherUserId]!;
       }
 
@@ -219,5 +237,124 @@ class MessageProvider extends ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  bool _hasConversationWith(String userId) {
+    final index = _inbox.indexWhere((inbox) => inbox.preview.userId == userId);
+    return index != -1;
+  }
+
+  void _updateInboxPreview(
+    String userId,
+    String message,
+    bool seen, {
+    DateTime? createdAt,
+  }) {
+    final index = _inbox.indexWhere(
+      (inbox) => inbox.preview.userId == userId,
+    );
+    if (index == -1) return;
+
+    _inbox[index].preview.lastMessage = message;
+    _inbox[index].preview.lastMessageDate = createdAt ?? DateTime.now();
+    _inbox[index].preview.seen = seen;
+
+    notifyListeners();
+  }
+
+  void _markInboxPreviewSeen(String userId) {
+    final index = _inbox.indexWhere((inbox) => inbox.preview.userId == userId);
+    _inbox[index].preview.seen = true;
+    notifyListeners();
+  }
+
+  void _updateMyMessageStatus(MessageModel message, types.Status status) {
+    final conversation = _inbox.singleWhere(
+      (conversation) => conversation.preview.userId == message.receiver,
+    );
+
+    final index = conversation.messages.indexWhere(
+      (msg) => msg.id == message.id,
+    );
+    conversation.messages[index].status = status;
+
+    notifyListeners();
+  }
+
+  void _addInboxItem(InboxPreviewModel preview) {
+    final conversation = ConversationModel(
+      preview: preview,
+      messages: [],
+    );
+    _inbox.add(conversation);
+    notifyListeners();
+  }
+
+// userId = id of the recipient
+  Future<void> _createInboxItem(String vendorId, String message) async {
+    try {
+      final user = await SecureStorage().getUser();
+      final vendor = await VendorService().getVendor(vendorId);
+      final preview = InboxPreviewModel(
+        userId: vendor.id,
+        name: vendor.name,
+        imageUrl: vendor.imageUrl,
+        lastMessage: message,
+        lastMessageSender: user.id,
+        lastMessageDate: DateTime.now(),
+        seen: true,
+      );
+
+      _addInboxItem(preview);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> _addMessageToConversation(
+    MessageModel message, {
+    bool prepend = true,
+  }) async {
+    final loggedInUser = await SecureStorage().getUser();
+
+    late int convoIndex;
+    if (loggedInUser.id == message.sender) {
+      convoIndex = _inbox
+          .indexWhere((inbox) => inbox.preview.userId == message.receiver);
+    } else {
+      convoIndex =
+          _inbox.indexWhere((inbox) => inbox.preview.userId == message.sender);
+    }
+
+    final msgIndex = _inbox[convoIndex].messages.indexWhere(
+          (msg) => msg.id == message.id,
+        );
+    if (msgIndex == -1) {
+      // only insert if it doesn't exists to avoid duplicate
+      if (!prepend) {
+        _inbox[convoIndex].messages.add(message);
+      } else {
+        _inbox[convoIndex].messages.insert(0, message);
+      }
+    }
+
+    notifyListeners();
+  }
+
+  List<MessageModel> _getMessagesWith(String userId) {
+    final index = _inbox.indexWhere((inbox) => inbox.preview.userId == userId);
+    if (index == -1) return [];
+    return _inbox[index].messages;
+  }
+
+  InboxPreviewModel? getChatPreview(String userId) {
+    final index = _inbox.indexWhere((inbox) => inbox.preview.userId == userId);
+    if (index == -1) return null;
+    return _inbox[index].preview;
+  }
+
+  void _sortInbox() {
+    _inbox.sort((a, b) =>
+        b.preview.lastMessageDate.compareTo(a.preview.lastMessageDate));
   }
 }

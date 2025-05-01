@@ -86,9 +86,7 @@ class SecureStorage {
       final value = await _storage.read(key: _expertiseKey);
       if (value == null) throw Exception('Expertises not found');
 
-      List<dynamic> expertises = jsonDecode(value);
-
-      return (expertises)
+      return (value as List)
           .map((expertise) => ExpertiseModel.fromJson(expertise))
           .toList();
     } catch (error) {

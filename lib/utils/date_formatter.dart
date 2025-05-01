@@ -21,4 +21,15 @@ final class DateFormatter {
       return "invalid date";
     }
   }
+
+  static String monthDateHourMinutesFromDT(DateTime timestamp) {
+    try {
+      final monthDate = DateFormat.MMMMd().format(timestamp);
+      final hourMinutes = DateFormat.jm().format(timestamp);
+
+      return '$monthDate ${hourMinutes.replaceAll('\u202F', ' ')}';
+    } on FormatException catch (_) {
+      return "invalid date";
+    }
+  }
 }

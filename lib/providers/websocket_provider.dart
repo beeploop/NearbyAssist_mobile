@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/models/message_model.dart';
 import 'package:nearby_assist/models/notification_model.dart';
+import 'package:nearby_assist/models/received_message_model.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/token_change_notifier.dart';
@@ -152,9 +152,10 @@ class WebsocketProvider extends ChangeNotifier {
       }
 
       final decoded = jsonDecode(event);
+      logger.logInfo(decoded);
       switch (decoded['type']) {
         case 'message':
-          final payload = MessageModel.fromJson(decoded['payload']);
+          final payload = ReceivedMessageModel.fromJson(decoded['payload']);
           _receiveMessage(payload);
         case 'notification':
           final payload = NotificationModel.fromJson(decoded['payload']);
@@ -169,7 +170,7 @@ class WebsocketProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _receiveMessage(MessageModel message) async {
+  Future<void> _receiveMessage(ReceivedMessageModel message) async {
     if (_messageProvider == null) {
       throw 'message provider is null';
     }
