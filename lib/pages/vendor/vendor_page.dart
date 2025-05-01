@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/main.dart';
@@ -11,6 +12,7 @@ import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/vendor_model.dart';
 import 'package:nearby_assist/pages/vendor/widget/menu.dart';
 import 'package:nearby_assist/providers/vendor_provider.dart';
+import 'package:nearby_assist/utils/launch_url.dart';
 import 'package:nearby_assist/utils/social_type_icon.dart';
 import 'package:provider/provider.dart';
 
@@ -119,15 +121,29 @@ class _VendorPageState extends State<VendorPage> {
           ),
           const SizedBox(height: 10),
 
-          ...model.vendor.socials.map((social) => Row(
-                children: [
-                  Icon(siteIcon(social.site), size: 20),
-                  const SizedBox(width: 10),
-                  AutoSizeText(
-                    social.title,
-                    style: const TextStyle(fontSize: 14),
+          ...model.vendor.socials.map((social) => GestureDetector(
+                onTap: () {
+                  openURL(context, Uri.parse(social.url));
+                },
+                child: InkWell(
+                  overlayColor:
+                      WidgetStateProperty.all(Colors.grey.withOpacity(0.2)),
+                  child: Ink(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        FaIcon(siteIcon(social.site), size: 20),
+                        const SizedBox(width: 10),
+                        AutoSizeText(
+                          social.title,
+                          style: const TextStyle(color: Colors.blue),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               )),
 
           // Divider

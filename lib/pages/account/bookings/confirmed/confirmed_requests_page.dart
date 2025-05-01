@@ -44,7 +44,6 @@ class _ConfirmedRequestsPageState extends State<ConfirmedRequestsPage> {
         separatorBuilder: (context, index) => const SizedBox(height: 10),
         itemCount: requests.length,
         itemBuilder: (context, index) => ConfirmedBookingListItem(
-          backgroundColor: Colors.white,
           booking: requests[index],
           onTap: () {
             Navigator.push(
