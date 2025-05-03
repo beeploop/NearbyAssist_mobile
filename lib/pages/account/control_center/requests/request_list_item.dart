@@ -61,7 +61,7 @@ class RequestListItem extends StatelessWidget {
           style: const TextStyle(fontSize: 12),
         ),
         const Spacer(),
-        Text(DateFormatter.monthAndDate(booking.createdAt)),
+        Text(DateFormatter.monthAndDateFromDT(booking.createdAt)),
       ],
     );
   }
@@ -112,7 +112,7 @@ class RequestListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Created date
-        Text(DateFormatter.monthAndDate(booking.createdAt)),
+        Text(DateFormatter.monthAndDateFromDT(booking.createdAt)),
         const SizedBox(width: 10),
 
         // Details button

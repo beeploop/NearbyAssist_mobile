@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/date_formatter.dart';
@@ -20,8 +19,6 @@ class ScheduleListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.logDebug(booking.scheduledAt);
-
     return Container(
       decoration: BoxDecoration(color: backgroundColor),
       child: Column(
@@ -113,7 +110,7 @@ class ScheduleListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Schedule
-        Text(DateFormatter.monthAndDate(booking.scheduledAt ?? "")),
+        Text(DateFormatter.monthAndDateFromDT(booking.scheduledAt!)),
         const SizedBox(width: 10),
 
         // Details button

@@ -263,4 +263,18 @@ class ControlCenterService {
       rethrow;
     }
   }
+
+  Future<void> cancel(String bookingId, String reason) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put(
+        endpoint.cancelBooking,
+        data: {'bookingId': bookingId, 'reason': reason},
+        queryParameters: {'actor': 'vendor'},
+      );
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    }
+  }
 }

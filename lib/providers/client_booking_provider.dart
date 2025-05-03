@@ -108,7 +108,7 @@ class ClientBookingProvider extends ChangeNotifier {
       final cancelledBooking = _pending.removeAt(targetIdx);
       _history.add(cancelledBooking.copyWith(
         status: BookingStatus.cancelled,
-        updatedAt: DateTime.now().toString(),
+        updatedAt: DateTime.now(),
         cancelReason: reason,
       ));
       notifyListeners();

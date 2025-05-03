@@ -112,7 +112,7 @@ class ClientHistoryListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Updated date
-        Text(DateFormatter.monthAndDate(booking.updatedAt ?? "")),
+        Text(DateFormatter.monthAndDateFromDT(booking.updatedAt!)),
         const SizedBox(width: 10),
 
         // Details button

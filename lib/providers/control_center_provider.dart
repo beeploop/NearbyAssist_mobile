@@ -232,9 +232,9 @@ class ControlCenterProvider extends ChangeNotifier {
     try {
       await ControlCenterService().acceptRequest(id, schedule);
 
-      final targetIdx = _requests.indexWhere((request) => request.id == id);
-      final acceptedBooking = _requests.removeAt(targetIdx);
-      _schedules.add(acceptedBooking.copyWith(scheduledAt: schedule));
+      final index = _requests.indexWhere((request) => request.id == id);
+      final booking = _requests.removeAt(index);
+      _schedules.add(booking.copyWith(scheduledAt: DateTime.parse(schedule)));
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -246,12 +246,13 @@ class ControlCenterProvider extends ChangeNotifier {
     try {
       await ControlCenterService().rejectRequest(id, reason);
 
-      final targetIdx = _requests.indexWhere((request) => request.id == id);
-      final rejectedBooking = _requests.removeAt(targetIdx);
-      _history.add(rejectedBooking.copyWith(status: BookingStatus.rejected));
+      final index = _requests.indexWhere((request) => request.id == id);
+      final booking = _requests.removeAt(index);
+      _history.add(
+        booking.copyWith(status: BookingStatus.rejected, cancelReason: reason),
+      );
       notifyListeners();
     } catch (error) {
-      logger.logError(error.toString());
       rethrow;
     }
   }
@@ -259,7 +260,13 @@ class ControlCenterProvider extends ChangeNotifier {
   Future<void> complete(BookingQrCodeData data) async {
     try {
       await ControlCenterService().completeBooking(data);
-      _schedules.removeWhere((request) => request.id == data.bookingId);
+
+      final booking = _schedules.firstWhere((e) => e.id == data.bookingId);
+
+      _history.add(
+        booking.copyWith(status: BookingStatus.done, updatedAt: DateTime.now()),
+      );
+      _schedules.removeWhere((e) => e.id == data.bookingId);
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -274,7 +281,22 @@ class ControlCenterProvider extends ChangeNotifier {
       if (index == -1) {
         return;
       }
-      _schedules[index].scheduledAt = schedule;
+      _schedules[index].scheduledAt = DateTime.parse(schedule);
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> cancel(String bookingId, String reason) async {
+    try {
+      await ControlCenterService().cancel(bookingId, reason);
+
+      final booking = _schedules.firstWhere((e) => e.id == bookingId);
+      _history.add(
+        booking.copyWith(status: BookingStatus.cancelled, cancelReason: reason),
+      );
+      _schedules.removeWhere((e) => e.id == bookingId);
       notifyListeners();
     } catch (error) {
       rethrow;
