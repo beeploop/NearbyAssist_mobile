@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PopularSearchChip extends StatelessWidget {
-  const PopularSearchChip(
-      {super.key, required this.label, required this.onPressed});
+  const PopularSearchChip({
+    super.key,
+    required this.label,
+    required this.onPressed,
+  });
 
   final String label;
   final Function onPressed;
@@ -21,6 +24,7 @@ class PopularSearchChip extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
+      side: BorderSide.none,
     );
   }
 }

@@ -118,7 +118,6 @@ class WebsocketProvider extends ChangeNotifier {
     _pingTimer = Timer.periodic(_pingInterval, (_) {
       if (_channel == null) return;
       _channel!.sink.add("ping");
-      logger.logDebug('sent ping message');
       _startPongTimeout();
     });
   }
@@ -137,15 +136,12 @@ class WebsocketProvider extends ChangeNotifier {
   }
 
   void _receivePong() {
-    logger.logDebug('received pong message');
     _pongTimeoutTimer?.cancel();
     _pongTimeoutTimer = null;
   }
 
   void _processEvent(dynamic event) {
     try {
-      logger.logDebug('processing received event');
-
       if (event == "pong") {
         _receivePong();
         return;

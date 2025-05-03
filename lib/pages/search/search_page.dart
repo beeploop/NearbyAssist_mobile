@@ -53,9 +53,8 @@ class _SearchPageState extends State<SearchPage> {
                           'Popular Searches',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 10),
                         _popularSearches(provider.popularSearches),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
 
                         // Services
                         const AutoSizeText(
@@ -63,19 +62,22 @@ class _SearchPageState extends State<SearchPage> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
-                        GridView(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                          ),
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.all(4),
-                          children:
-                              _buildRecommendations(provider.recommendations),
-                        ),
+
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? const Center(child: CircularProgressIndicator())
+                            : GridView(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                ),
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: const EdgeInsets.all(4),
+                                children: _buildRecommendations(
+                                    provider.recommendations),
+                              ),
 
                         // Bottom padding
                         const SizedBox(height: 10),
@@ -108,7 +110,7 @@ class _SearchPageState extends State<SearchPage> {
     final searchProvider = context.read<SearchProvider>();
 
     return Wrap(
-      spacing: 10,
+      spacing: 6,
       children: popularSearches
           .map((item) => PopularSearchChip(
                 label: item,
