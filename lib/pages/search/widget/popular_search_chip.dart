@@ -12,19 +12,22 @@ class PopularSearchChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InputChip(
-      label: Text(label),
-      onPressed: () => onPressed(),
-      labelStyle: const TextStyle(
-        fontSize: 12,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: InputChip(
+        label: Text(label),
+        onPressed: () => onPressed(),
+        labelStyle: const TextStyle(
+          fontSize: 12,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        backgroundColor: Colors.green.shade800,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        side: BorderSide.none,
       ),
-      backgroundColor: Colors.green.shade800,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      side: BorderSide.none,
     );
   }
 }

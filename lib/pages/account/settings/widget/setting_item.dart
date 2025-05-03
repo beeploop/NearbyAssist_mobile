@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AccountTileWidget extends StatelessWidget {
-  const AccountTileWidget({
+class SettingItem extends StatelessWidget {
+  const SettingItem({
     super.key,
     required this.title,
     this.subtitle,
     required this.icon,
     required this.onPress,
-    this.hasEndIcon = true,
     this.textColor,
     this.iconColor,
     this.fontSize,
     this.iconSize,
+    this.trailing,
   });
 
   final String title;
@@ -19,10 +19,10 @@ class AccountTileWidget extends StatelessWidget {
   final IconData icon;
   final Color? iconColor;
   final VoidCallback onPress;
-  final bool hasEndIcon;
   final Color? textColor;
   final double? fontSize;
   final double? iconSize;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +41,20 @@ class AccountTileWidget extends StatelessWidget {
         style: TextStyle(color: textColor, fontSize: fontSize),
       ),
       subtitle: subtitle != null ? Text(subtitle!) : null,
-      trailing: hasEndIcon
-          ? Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: Colors.grey.withOpacity(0.1),
-              ),
-              child: Icon(
-                Icons.chevron_right_sharp,
-                size: iconSize,
-                color: Colors.grey,
-              ))
-          : null,
+      trailing: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: Colors.grey.withOpacity(0.1),
+        ),
+        child: trailing ??
+            Icon(
+              Icons.chevron_right_sharp,
+              size: iconSize,
+              color: Colors.grey,
+            ),
+      ),
     );
   }
 }

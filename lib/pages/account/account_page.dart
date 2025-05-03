@@ -77,7 +77,7 @@ class _AccountPageState extends State<AccountPage> {
                     icon: CupertinoIcons.square_arrow_left,
                     textColor: Colors.red,
                     iconColor: Colors.red,
-                    endIcon: false,
+                    hasEndIcon: false,
                     onPress: _logout,
                   ),
 
