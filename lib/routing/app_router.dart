@@ -11,7 +11,7 @@ import 'package:nearby_assist/pages/account/bookings/to_rate/to_rate_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_page.dart';
 import 'package:nearby_assist/pages/account/profile/verify_account_page.dart';
 import 'package:nearby_assist/pages/account/report/report_issue_page.dart';
-import 'package:nearby_assist/pages/account/services/vendor_application_page.dart';
+import 'package:nearby_assist/pages/account/vendor_application/application_page.dart';
 import 'package:nearby_assist/pages/account/settings/app_settings_page.dart';
 import 'package:nearby_assist/pages/account/control_center/control_center_page.dart';
 import 'package:nearby_assist/pages/notification/notification_list_page.dart';
@@ -152,7 +152,7 @@ GoRouter generateRoutes(
       GoRoute(
           path: RoutePath.vendorApplication.path,
           name: RoutePath.vendorApplication.name,
-          builder: (context, state) => const VendorApplicationPage()),
+          builder: (context, state) => const ApplicationPage()),
       GoRoute(
           path: RoutePath.reportIssue.path,
           name: RoutePath.reportIssue.name,

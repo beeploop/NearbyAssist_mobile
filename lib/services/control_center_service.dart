@@ -10,6 +10,7 @@ import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/service_review_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 // ignore: depend_on_referenced_packages
@@ -259,6 +260,33 @@ class ControlCenterService {
         endpoint.rescheduleBooking,
         data: {'bookingId': bookingId, 'schedule': schedule},
       );
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> cancel(String bookingId, String reason) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put(
+        endpoint.cancelBooking,
+        data: {'bookingId': bookingId, 'reason': reason},
+        queryParameters: {'actor': 'vendor'},
+      );
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<ServiceReviewModel>> getReviews(String serviceId) async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get('${endpoint.getReviews}/$serviceId');
+
+      return (response.data['reviews'] as List)
+          .map((review) => ServiceReviewModel.fromJson(review))
+          .toList();
     } catch (error) {
       rethrow;
     }

@@ -1,21 +1,21 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/add_extra_model.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:provider/provider.dart';
 
-class AddExtraPage extends StatefulWidget {
-  const AddExtraPage({super.key, required this.serviceId});
+class NewAddOnPage extends StatefulWidget {
+  const NewAddOnPage({super.key, required this.serviceId});
 
   final String serviceId;
 
   @override
-  State<AddExtraPage> createState() => _AddExtraPageState();
+  State<NewAddOnPage> createState() => _NewAddOnPageState();
 }
 
-class _AddExtraPageState extends State<AddExtraPage> {
+class _NewAddOnPageState extends State<NewAddOnPage> {
   bool _fieldsHasValues = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -146,42 +146,13 @@ class _AddExtraPageState extends State<AddExtraPage> {
       await context.read<ControlCenterProvider>().addExtra(data);
       navigator.pop();
     } on DioException catch (error) {
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
-  }
-
-  void _onError(String error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.xmark_circle_fill,
-            color: Colors.red,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Failed'),
-          content: Text(
-            error,
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

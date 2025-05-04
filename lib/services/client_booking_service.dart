@@ -137,6 +137,7 @@ class ClientBookingService {
       await api.dio.put(
         endpoint.cancelBooking,
         data: {'bookingId': id, 'reason': reason},
+        queryParameters: {'actor': 'client'},
       );
     } catch (error) {
       logger.logError('Error cancelling booking request: ${error.toString()}');

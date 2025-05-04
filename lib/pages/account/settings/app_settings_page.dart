@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
+import 'package:nearby_assist/pages/account/settings/widget/setting_item.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
+import 'package:nearby_assist/providers/system_setting_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/google_auth_service.dart';
@@ -36,40 +37,62 @@ class _AppSettingPageState extends State<AppSettingPage> {
       children: [
         Consumer<UserProvider>(
           builder: (context, auth, child) {
-            return AccountTileWidget(
+            return SettingItem(
               title: "Sync Account",
               subtitle: "Update user information to latest values",
               icon: CupertinoIcons.arrow_2_circlepath,
-              endIcon: false,
               onPress: () => _syncAccount(auth),
             );
           },
         ),
-        AccountTileWidget(
+        SettingItem(
           title: "Update Tags",
           subtitle: "Force update service tags",
           icon: CupertinoIcons.tag,
-          endIcon: false,
           onPress: _updateTags,
         ),
-        AccountTileWidget(
+        SettingItem(
           title: "Healthcheck",
           subtitle: "Check status and connection of the server",
           icon: CupertinoIcons.waveform_path,
-          endIcon: false,
           onPress: _healthcheck,
         ),
         const Divider(),
         const SizedBox(height: 10),
-        AccountTileWidget(
+        SettingItem(
           title: "Clear Data",
           subtitle: "Clear cached data and logout",
           icon: CupertinoIcons.clear,
-          endIcon: false,
           onPress: _clearData,
+        ),
+        const SizedBox(height: 10),
+        SettingItem(
+          title: "Welcome Page Type",
+          subtitle: "Switch version of welcome page to use",
+          icon: CupertinoIcons.compass,
+          onPress: () {},
+          trailing: _useWelcomePageV2(),
         ),
       ],
     );
+  }
+
+  Widget _useWelcomePageV2() {
+    return Consumer<SystemSettingProvider>(builder: (context, provider, _) {
+      bool toggled = provider.isWelcomePageV2;
+
+      return Switch(
+        value: toggled,
+        onChanged: (value) {
+          switch (value) {
+            case true:
+              SystemSettingProvider().changeWelcomePage(WelcomePageType.type2);
+            case false:
+              SystemSettingProvider().changeWelcomePage(WelcomePageType.type1);
+          }
+        },
+      );
+    });
   }
 
   Future<void> _syncAccount(UserProvider auth) async {

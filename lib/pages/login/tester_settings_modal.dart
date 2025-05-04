@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/providers/system_setting_provider.dart';
 
 class TesterSettingsModal extends StatefulWidget {
   const TesterSettingsModal({super.key});
@@ -15,9 +15,9 @@ class _TesterSettingsModalState extends State<TesterSettingsModal> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: systemSettings,
+      listenable: SystemSettingProvider(),
       builder: (context, _) {
-        _urlController.text = systemSettings.serverURL;
+        _urlController.text = SystemSettingProvider().serverURL;
 
         return Container(
           padding: const EdgeInsets.all(20),
@@ -94,7 +94,7 @@ class _TesterSettingsModalState extends State<TesterSettingsModal> {
 
   Future<void> _handleSave() async {
     final navigator = Navigator.of(context);
-    await systemSettings.changeServerURL(_urlController.text);
+    await SystemSettingProvider().changeServerURL(_urlController.text);
 
     navigator.pop();
   }

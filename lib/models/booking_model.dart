@@ -14,9 +14,9 @@ class BookingModel {
   double cost;
   BookingStatus status;
   String qrSignature;
-  String createdAt;
-  String? updatedAt;
-  String? scheduledAt;
+  DateTime createdAt;
+  DateTime? updatedAt;
+  DateTime? scheduledAt;
   String? cancelReason;
 
   BookingModel({
@@ -52,17 +52,20 @@ class BookingModel {
         _ => BookingStatus.cancelled,
       },
       qrSignature: json['qrSignature'],
-      createdAt: json['createdAt'],
-      updatedAt: json['updatedAt'],
-      scheduledAt: json['scheduledAt'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt:
+          json['updatedAt'] != '' ? DateTime.parse(json['updatedAt']) : null,
+      scheduledAt: json['scheduledAt'] != ''
+          ? DateTime.parse(json['scheduledAt'])
+          : null,
       cancelReason: json['cancelReason'],
     );
   }
 
   BookingModel copyWith({
     BookingStatus? status,
-    String? updatedAt,
-    String? scheduledAt,
+    DateTime? updatedAt,
+    DateTime? scheduledAt,
     String? cancelReason,
   }) {
     return BookingModel(

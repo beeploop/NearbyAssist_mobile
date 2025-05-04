@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/providers/system_setting_provider.dart';
 
 enum TokenType {
   accessToken(key: 'accessToken'),
@@ -23,7 +24,7 @@ enum KeyType {
 class SecureStorage {
   final String _userKey = 'userKey';
   final String _expertiseKey = 'expertiseKey';
-  final String _serverURLKey = 'serverURL';
+  final String _settingsKey = 'settings';
   late FlutterSecureStorage _storage;
 
   SecureStorage() {
@@ -44,7 +45,7 @@ class SecureStorage {
 
   Future<void> saveUser(UserModel user) async {
     try {
-      final userData = jsonEncode(user.toJson());
+      final userData = jsonEncode(user);
       await _storage.write(key: _userKey, value: userData);
     } catch (error) {
       logger.logError(error.toString());
@@ -86,21 +87,30 @@ class SecureStorage {
       final value = await _storage.read(key: _expertiseKey);
       if (value == null) throw Exception('Expertises not found');
 
-      return (value as List)
+      final decoded = jsonDecode(value);
+      return (decoded as List)
           .map((expertise) => ExpertiseModel.fromJson(expertise))
           .toList();
-    } catch (error) {
+    } catch (error, trace) {
       logger.logError(error.toString());
+      logger.logError(trace);
       rethrow;
     }
   }
 
-  Future<String?> getServeURL() async {
-    return await _storage.read(key: _serverURLKey);
+  Future<void> saveSettings(SystemSettingProvider settings) async {
+    logger.logDebug('saved settings');
+    final encoded = jsonEncode(settings.toJson());
+    await _storage.write(key: _settingsKey, value: encoded);
   }
 
-  Future<void> updateServerURL(String url) async {
-    await _storage.write(key: _serverURLKey, value: url);
+  Future<void> loadSettings() async {
+    logger.logDebug('called load settings');
+    final value = await _storage.read(key: _settingsKey);
+    logger.logDebug('loaded setting value: $value');
+    if (value == null) return;
+
+    SystemSettingProvider().loadFromJson(jsonDecode(value));
   }
 
   Future<void> clearAll() async {

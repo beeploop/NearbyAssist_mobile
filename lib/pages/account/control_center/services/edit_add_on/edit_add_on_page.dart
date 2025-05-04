@@ -6,11 +6,12 @@ import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
-class ViewExtraPage extends StatefulWidget {
-  const ViewExtraPage({
+class EditAddOnPage extends StatefulWidget {
+  const EditAddOnPage({
     super.key,
     required this.serviceId,
     required this.extra,
@@ -20,10 +21,10 @@ class ViewExtraPage extends StatefulWidget {
   final ServiceExtraModel extra;
 
   @override
-  State<ViewExtraPage> createState() => _ViewExtraPageState();
+  State<EditAddOnPage> createState() => _EditAddOnPageState();
 }
 
-class _ViewExtraPageState extends State<ViewExtraPage> {
+class _EditAddOnPageState extends State<EditAddOnPage> {
   bool _hasChanged = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -53,54 +54,14 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(CupertinoIcons.trash),
+              icon: const Icon(CupertinoIcons.trash, color: Colors.red),
               onPressed: () {
                 if (user.isRestricted) {
                   showAccountRestrictedModal(context);
                   return;
                 }
 
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    icon: const Icon(
-                      CupertinoIcons.exclamationmark_triangle,
-                      color: Colors.amber,
-                      size: 30,
-                    ),
-                    title: const Text('Delete Extra'),
-                    content: const Text(
-                      'This is a permanent action. This will fail if there are active bookings using this extra. Are you sure?',
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Cancel'),
-                      ),
-                      FilledButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _handleDelete();
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              const WidgetStatePropertyAll(Colors.red),
-                          shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        child: const Text('Continue'),
-                      ),
-                    ],
-                  ),
-                );
+                _showDeleteConfirmation();
               },
             ),
             const SizedBox(width: 10),
@@ -223,6 +184,49 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
     );
   }
 
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          CupertinoIcons.exclamationmark_triangle,
+          color: Colors.amber,
+          size: 30,
+        ),
+        title: const Text('Delete Add-on'),
+        content: const Text(
+          'This is a permanent action. This will fail if there are active bookings using this extra. Are you sure?',
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _handleDelete();
+            },
+            style: ButtonStyle(
+              backgroundColor: const WidgetStatePropertyAll(Colors.red),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _handleSave() async {
     final loader = context.loaderOverlay;
 
@@ -235,8 +239,7 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
       if (_titleController.text.isEmpty ||
           _descriptionController.text.isEmpty ||
           _priceController.text.isEmpty) {
-        _onError("Don't leave empty fields");
-        return;
+        throw "Don't leave empty fields";
       }
 
       final updated = ServiceExtraModel(
@@ -249,9 +252,11 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
       await provider.updateExtra(widget.serviceId, updated);
       navigator.pop();
     } on DioException catch (error) {
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
@@ -269,42 +274,13 @@ class _ViewExtraPageState extends State<ViewExtraPage> {
       await provider.deleteExtra(widget.serviceId, widget.extra.id);
       navigator.pop();
     } on DioException catch (error) {
-      _onError(error.response?.data['message']);
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
     } catch (error) {
-      _onError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
     } finally {
       loader.hide();
     }
-  }
-
-  void _onError(String error) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          icon: const Icon(
-            CupertinoIcons.xmark_circle_fill,
-            color: Colors.red,
-            size: 40,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          title: const Text('Failed'),
-          content: Text(
-            error,
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

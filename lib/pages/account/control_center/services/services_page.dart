@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/control_center/services/widget/service_item.dart';
-import 'package:nearby_assist/pages/account/services/publish_service/publish_service_page.dart';
+import 'package:nearby_assist/pages/account/control_center/services/publish_service/publish_service_page.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';

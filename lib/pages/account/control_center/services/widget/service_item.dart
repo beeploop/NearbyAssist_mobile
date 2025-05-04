@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/pages/account/services/detail/service_detail_page.dart';
+import 'package:nearby_assist/pages/account/control_center/services/service_detail/service_detail_page.dart';
 
 class ServiceItem extends StatelessWidget {
   const ServiceItem({

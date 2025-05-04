@@ -51,8 +51,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     if (_user == null) return;
     setState(() {
       _nameController.text = _user!.name;
-      _phoneController.text = _user!.phone ?? '';
-      _addressController.text = _user!.address ?? '';
+      _phoneController.text = _user!.phone;
+      _addressController.text = _user!.address;
     });
   }
 

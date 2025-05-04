@@ -77,7 +77,7 @@ class _AccountPageState extends State<AccountPage> {
                     icon: CupertinoIcons.square_arrow_left,
                     textColor: Colors.red,
                     iconColor: Colors.red,
-                    endIcon: false,
+                    hasEndIcon: false,
                     onPress: _logout,
                   ),
 
@@ -108,6 +108,7 @@ class _AccountPageState extends State<AccountPage> {
                       showAccountNotVendorModal(context);
                       return;
                     }
+
                     context.pushNamed("controlCenter");
                   },
                   icon: const Icon(

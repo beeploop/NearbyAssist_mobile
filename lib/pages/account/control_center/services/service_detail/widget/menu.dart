@@ -1,108 +1,52 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/pages/account/services/detail/widget/extras.dart';
-import 'package:nearby_assist/pages/account/services/detail/widget/images.dart';
-import 'package:nearby_assist/pages/account/services/detail/widget/overview.dart';
+import 'package:dio/dio.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:provider/provider.dart';
 
-class ServiceDetailPage extends StatefulWidget {
-  const ServiceDetailPage({
-    super.key,
-    required this.service,
-  });
+class Menu extends StatefulWidget {
+  const Menu({super.key, required this.service});
 
   final ServiceModel service;
 
   @override
-  State<ServiceDetailPage> createState() => _ServiceDetailPageState();
+  State<Menu> createState() => _MenuState();
 }
 
-class _ServiceDetailPageState extends State<ServiceDetailPage> {
+class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
-    return LoaderOverlay(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Detail',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          actions: [
-            Icon(
-              CupertinoIcons.circle_fill,
-              color: widget.service.disabled ? Colors.red : Colors.green,
-              size: 10,
-            ),
-            PopupMenuButton(
-              icon: const Icon(CupertinoIcons.ellipsis_vertical),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: widget.service.disabled
-                      ? _showEnableServiceConfirmation
-                      : _showDisableServiceConfirmation,
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Icon(
-                          widget.service.disabled
-                              ? CupertinoIcons.checkmark_circle
-                              : CupertinoIcons.nosign,
-                          size: 18,
-                          color: widget.service.disabled
-                              ? Colors.green
-                              : Colors.grey,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(widget.service.disabled
-                            ? 'Enable service'
-                            : 'Disable service'),
-                      ],
-                    ),
-                  ),
-                )
+    return PopupMenuButton(
+      icon: const Icon(CupertinoIcons.ellipsis_vertical),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          onTap: widget.service.disabled
+              ? _showEnableServiceConfirmation
+              : _showDisableServiceConfirmation,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.3,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Icon(
+                  widget.service.disabled
+                      ? CupertinoIcons.checkmark_circle
+                      : CupertinoIcons.nosign,
+                  size: 18,
+                  color: widget.service.disabled ? Colors.green : Colors.grey,
+                ),
+                const SizedBox(width: 10),
+                Text(widget.service.disabled
+                    ? 'Enable service'
+                    : 'Disable service'),
               ],
             ),
-          ],
-        ),
-        body: DefaultTabController(
-          initialIndex: 0,
-          length: 3,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TabBar(
-                unselectedLabelColor: Colors.grey,
-                overlayColor: WidgetStatePropertyAll(Colors.transparent),
-                dividerColor: Colors.transparent,
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicatorPadding: EdgeInsets.all(10),
-                tabs: [
-                  Tab(child: Text('Overview')),
-                  Tab(child: Text('Images')),
-                  Tab(child: Text('Add-ons')),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Flexible(
-                child: TabBarView(
-                  children: [
-                    Overview(serviceId: widget.service.id),
-                    Images(serviceId: widget.service.id),
-                    Extras(serviceId: widget.service.id),
-                  ],
-                ),
-              ),
-            ],
           ),
-        ),
-      ),
+        )
+      ],
     );
   }
 

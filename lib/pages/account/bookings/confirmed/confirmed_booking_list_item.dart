@@ -107,7 +107,7 @@ class ConfirmedBookingListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Schedule
-        Text(DateFormatter.monthAndDate(booking.scheduledAt ?? "")),
+        Text(DateFormatter.monthAndDateFromDT(booking.scheduledAt!)),
         const SizedBox(width: 10),
 
         // Details button

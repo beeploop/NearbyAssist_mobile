@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/booking/widget/input_field.dart';
-import 'package:nearby_assist/pages/widget/address_input.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +27,7 @@ class _UserInformationSectionState extends State<UserInformationSection> {
 
     nameController.text = user.name;
     emailController.text = user.email;
-    addressController.text = '';
+    addressController.text = user.address;
   }
 
   @override
@@ -58,7 +57,12 @@ class _UserInformationSectionState extends State<UserInformationSection> {
           labelText: 'Email',
         ),
         const SizedBox(height: 20),
-        AddressInput(controller: widget.addressController, readOnly: true),
+        InputField(
+          readOnly: true,
+          controller: addressController,
+          hintText: 'purok, brgy, city, province',
+          labelText: 'Address',
+        ),
       ],
     );
   }

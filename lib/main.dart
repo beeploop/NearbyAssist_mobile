@@ -24,7 +24,6 @@ import 'package:provider/provider.dart';
 
 final logger = CustomLogger();
 late ApiEndpoint endpoint;
-late SystemSettingProvider systemSettings;
 
 void main() async {
   WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
@@ -34,11 +33,11 @@ void main() async {
   const env = String.fromEnvironment('ENV_FILE', defaultValue: '.env');
   await dotenv.load(fileName: env);
 
-  // Initialize systemSettings
-  systemSettings = SystemSettingProvider();
-
   // Initialize the API endpoints
   endpoint = ApiEndpoint.fromEnv();
+
+  // Load saved settings
+  await SecureStorage().loadSettings();
 
   OneSignalService().initialize();
 
@@ -48,6 +47,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => SystemSettingProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => SearchProvider()),
         ChangeNotifierProvider(create: (context) => ServiceProvider()),
@@ -84,7 +84,6 @@ class _App extends State<App> {
   Future<void> initialization() async {
     try {
       logger.logDebug('called initialization in main.dart');
-      await loadSystemSetting();
       await loadUser();
       await loadTags();
     } catch (error) {
@@ -95,24 +94,11 @@ class _App extends State<App> {
   }
 
   Future<void> loadUser() async {
-    logger.logDebug('called loadUser in main.dart');
     await context.read<UserProvider>().tryLoadUser();
   }
 
   Future<void> loadTags() async {
-    logger.logDebug('called loadTags in main.dart');
     await context.read<ExpertiseProvider>().tryLoadLocal();
-  }
-
-  Future<void> loadSystemSetting() async {
-    final storage = SecureStorage();
-    final serverURL = await storage.getServeURL();
-    switch (serverURL) {
-      case null:
-        systemSettings.changeServerURL(endpoint.baseUrl);
-      default:
-        systemSettings.changeServerURL(serverURL);
-    }
   }
 
   @override

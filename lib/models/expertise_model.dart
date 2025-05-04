@@ -15,11 +15,9 @@ class ExpertiseModel {
     return ExpertiseModel(
       id: json['id'],
       title: json['title'],
-      tags: List<TagModel>.from(
-        json['tags'].map(
-          (tag) => TagModel.fromJson(tag),
-        ),
-      ),
+      tags: ((json['tags'] ?? []) as List)
+          .map((tag) => TagModel.fromJson(tag))
+          .toList(),
     );
   }
 

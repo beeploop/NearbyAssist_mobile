@@ -107,7 +107,7 @@ class PendingRequestListItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         // Created date
-        Text(DateFormatter.monthAndDate(booking.createdAt)),
+        Text(DateFormatter.monthAndDateFromDT(booking.createdAt)),
         const SizedBox(width: 10),
 
         // Details button
