@@ -58,7 +58,6 @@ class _AppSettingPageState extends State<AppSettingPage> {
           onPress: _healthcheck,
         ),
         const Divider(),
-
         const SizedBox(height: 10),
         SettingItem(
           title: "Clear Data",
@@ -66,7 +65,6 @@ class _AppSettingPageState extends State<AppSettingPage> {
           icon: CupertinoIcons.clear,
           onPress: _clearData,
         ),
-
         const SizedBox(height: 10),
         SettingItem(
           title: "Welcome Page Type",
@@ -75,9 +73,6 @@ class _AppSettingPageState extends State<AppSettingPage> {
           onPress: () {},
           trailing: _useWelcomePageV2(),
         ),
-
-        //
-        Text(prettyJSON(SystemSettingProvider().toJson())),
       ],
     );
   }
