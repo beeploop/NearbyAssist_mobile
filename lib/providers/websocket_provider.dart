@@ -19,8 +19,8 @@ enum EventType { message, notification, sync }
 class WebsocketProvider extends ChangeNotifier {
   Timer? _pingTimer;
   Timer? _pongTimeoutTimer;
-  final _pingInterval = const Duration(seconds: 30);
-  final _pongTimeout = const Duration(seconds: 10);
+  final _pingInterval = const Duration(seconds: 15);
+  final _pongTimeout = const Duration(seconds: 30);
   WebSocketChannel? _channel;
   WebsocketStatus _status = WebsocketStatus.disconnected;
   MessageProvider? _messageProvider;

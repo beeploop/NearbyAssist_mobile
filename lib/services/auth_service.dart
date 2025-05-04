@@ -26,6 +26,7 @@ class AuthService {
 
       return signedUser;
     } catch (error) {
+      logger.logError(error.toString());
       rethrow;
     }
   }

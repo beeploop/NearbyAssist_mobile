@@ -26,6 +26,15 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<MessageProvider>(context, listen: false)
+          .markSeen(widget.recipientId);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -59,7 +68,6 @@ class _ChatPageState extends State<ChatPage> {
     return Consumer2<UserProvider, MessageProvider>(
       builder: (context, userProvider, messageProvider, child) {
         final user = userProvider.user;
-        messageProvider.markSeen(widget.recipientId);
 
         return Chat(
           theme: DefaultChatTheme(

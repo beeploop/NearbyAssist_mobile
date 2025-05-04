@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 
 enum Event {
   pong,
@@ -24,7 +22,6 @@ class EventHandler {
   EventResult process(dynamic event) {
     try {
       final decoded = jsonDecode(event);
-      logger.logDebug(prettyJSON(decoded));
 
       final evt = Event.values.firstWhere(
         (e) => e.name == decoded['type'],
