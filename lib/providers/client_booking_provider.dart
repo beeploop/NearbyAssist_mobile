@@ -141,8 +141,8 @@ class ClientBookingProvider extends ChangeNotifier {
       updatedAt: DateTime.now(),
     );
 
-    _history.add(completedBooking);
-    _toRate.add(completedBooking);
+    _history.insert(0, completedBooking);
+    _toRate.insert(0, completedBooking);
 
     notifyListeners();
   }
@@ -158,7 +158,7 @@ class ClientBookingProvider extends ChangeNotifier {
       scheduledAt: DateTime.parse(schedule),
     );
 
-    _confirmed.add(confirmedBooking);
+    _confirmed.insert(0, confirmedBooking);
 
     notifyListeners();
   }
@@ -174,7 +174,7 @@ class ClientBookingProvider extends ChangeNotifier {
       cancelReason: reason,
     );
 
-    _history.add(rejectedBooking);
+    _history.insert(0, rejectedBooking);
 
     notifyListeners();
   }
