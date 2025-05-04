@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/events.dart';
 import 'package:nearby_assist/models/notification_model.dart';
 import 'package:nearby_assist/models/received_message_model.dart';
+import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/token_change_notifier.dart';
@@ -20,11 +21,12 @@ class WebsocketProvider extends ChangeNotifier {
   Timer? _pongTimeoutTimer;
   final _pingInterval = const Duration(seconds: 30);
   final _pongTimeout = const Duration(seconds: 10);
+  WebSocketChannel? _channel;
+  WebsocketStatus _status = WebsocketStatus.disconnected;
   MessageProvider? _messageProvider;
   NotificationsProvider? _notifProvider;
   UserProvider? _userProvider;
-  WebSocketChannel? _channel;
-  WebsocketStatus _status = WebsocketStatus.disconnected;
+  ClientBookingProvider? _clientBookingProvider;
 
   WebsocketStatus get status => _status;
 
@@ -38,6 +40,10 @@ class WebsocketProvider extends ChangeNotifier {
 
   void setUserProvider(UserProvider userProvider) {
     _userProvider = userProvider;
+  }
+
+  void setClientBookingProvider(ClientBookingProvider provider) {
+    _clientBookingProvider = provider;
   }
 
   void init() {
@@ -136,57 +142,48 @@ class WebsocketProvider extends ChangeNotifier {
   }
 
   void _receivePong() {
+    logger.logDebug('received pong');
     _pongTimeoutTimer?.cancel();
     _pongTimeoutTimer = null;
   }
 
   void _processEvent(dynamic event) {
     try {
-      if (event == "pong") {
-        _receivePong();
-        return;
-      }
+      final result = EventHandler().process(event);
+      switch (result.event) {
+        case Event.pong:
+          _receivePong();
 
-      final decoded = jsonDecode(event);
-      logger.logInfo(decoded);
-      switch (decoded['type']) {
-        case 'message':
-          final payload = ReceivedMessageModel.fromJson(decoded['payload']);
-          _receiveMessage(payload);
-        case 'notification':
-          final payload = NotificationModel.fromJson(decoded['payload']);
-          _pushNotif(payload);
-        case 'sync':
-          _syncUser();
-        default:
+        case Event.message:
+          final payload = ReceivedMessageModel.fromJson(result.data['payload']);
+          _messageProvider?.receive(payload);
+
+        case Event.notification:
+          final payload = NotificationModel.fromJson(result.data['payload']);
+          _notifProvider?.pushNotification(payload);
+
+        case Event.sync:
+          _userProvider?.syncAccount();
+
+        case Event.bookingComplete:
+          final bookingId = result.data['payload'];
+          _clientBookingProvider?.bookingCompleted(bookingId);
+
+        case Event.bookingConfirmed:
+          final bookingId = result.data['payload']['id'];
+          final schedule = result.data['payload']['schedule'];
+          _clientBookingProvider?.bookingConfirmed(bookingId, schedule);
+
+        case Event.bookingRejected:
+          final bookingId = result.data['payload']['id'];
+          final reason = result.data['payload']['reason'];
+          _clientBookingProvider?.bookingRejected(bookingId, reason);
+
+        case Event.unknown:
           throw 'unknown event type';
       }
     } catch (error) {
       logger.logError(error.toString());
     }
-  }
-
-  Future<void> _receiveMessage(ReceivedMessageModel message) async {
-    if (_messageProvider == null) {
-      throw 'message provider is null';
-    }
-
-    _messageProvider!.receive(message);
-  }
-
-  void _pushNotif(NotificationModel notif) {
-    if (_notifProvider == null) {
-      throw 'notification provider is null';
-    }
-
-    _notifProvider!.pushNotification(notif);
-  }
-
-  void _syncUser() {
-    if (_userProvider == null) {
-      throw 'user provider is null';
-    }
-
-    _userProvider!.syncAccount();
   }
 }

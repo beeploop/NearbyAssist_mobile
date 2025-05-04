@@ -129,4 +129,53 @@ class ClientBookingProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  // handle websocket event for completing booking in client side, only call this in websocket event process
+  void bookingCompleted(String bookingId) {
+    final index = _confirmed.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    final booking = _confirmed.removeAt(index);
+    final completedBooking = booking.copyWith(
+      status: BookingStatus.done,
+      updatedAt: DateTime.now(),
+    );
+
+    _history.add(completedBooking);
+    _toRate.add(completedBooking);
+
+    notifyListeners();
+  }
+
+  void bookingConfirmed(String bookingId, String schedule) {
+    final index = _pending.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    final booking = _pending.removeAt(index);
+    final confirmedBooking = booking.copyWith(
+      status: BookingStatus.confirmed,
+      updatedAt: DateTime.now(),
+      scheduledAt: DateTime.parse(schedule),
+    );
+
+    _confirmed.add(confirmedBooking);
+
+    notifyListeners();
+  }
+
+  void bookingRejected(String bookingId, String reason) {
+    final index = _pending.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    final booking = _pending.removeAt(index);
+    final rejectedBooking = booking.copyWith(
+      status: BookingStatus.rejected,
+      updatedAt: DateTime.now(),
+      cancelReason: reason,
+    );
+
+    _history.add(rejectedBooking);
+
+    notifyListeners();
+  }
 }
