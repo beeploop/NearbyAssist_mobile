@@ -83,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         const Icon(CupertinoIcons.phone, size: 20),
                         const SizedBox(width: 10),
-                        AutoSizeText(provider.user.phone ?? ''),
+                        AutoSizeText(provider.user.phone),
                       ],
                     ),
                     const SizedBox(height: 10),

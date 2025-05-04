@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
-import 'package:nearby_assist/pages/account/services/publish_service/widget/service_extra.dart';
-import 'package:nearby_assist/pages/account/services/publish_service/widget/service_extra_controller.dart';
+import 'package:nearby_assist/pages/account/control_center/services/publish_service/widget/service_extra.dart';
+import 'package:nearby_assist/pages/account/control_center/services/publish_service/widget/service_extra_controller.dart';
 
 class ServicePricing extends StatefulWidget {
   const ServicePricing({

@@ -108,7 +108,7 @@ class _ImagesState extends State<Images> {
                       ),
                     );
                   },
-                  child: const Text('Add New'),
+                  child: const Text('Upload'),
                 ),
               ),
             ],
@@ -183,6 +183,8 @@ class _ImagesState extends State<Images> {
             widget.serviceId,
             _fillableImageController.image!,
           );
+
+      _fillableImageController.clearImage();
     } on DioException catch (error) {
       if (!mounted) return;
       showGenericErrorModal(context, message: error.response?.data['message']);

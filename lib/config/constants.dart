@@ -19,6 +19,8 @@ final placeHolderUser = UserModel(
   name: '',
   email: '',
   imageUrl: '',
+  phone: '09123456789',
+  address: '',
   isVendor: false,
   isVerified: false,
   isRestricted: false,

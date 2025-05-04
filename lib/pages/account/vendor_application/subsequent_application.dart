@@ -19,14 +19,14 @@ import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AddVendorExpertisePage extends StatefulWidget {
-  const AddVendorExpertisePage({super.key});
+class SubsequentApplication extends StatefulWidget {
+  const SubsequentApplication({super.key});
 
   @override
-  State<AddVendorExpertisePage> createState() => _AddVendorExpertisePageState();
+  State<SubsequentApplication> createState() => _SubsequentApplicationState();
 }
 
-class _AddVendorExpertisePageState extends State<AddVendorExpertisePage> {
+class _SubsequentApplicationState extends State<SubsequentApplication> {
   List<ExpertiseModel> _expertiseList = [];
   ExpertiseModel? _selectedExpertise;
   List<String> _unlockables = [];

@@ -108,6 +108,7 @@ class _AccountPageState extends State<AccountPage> {
                       showAccountNotVendorModal(context);
                       return;
                     }
+
                     context.pushNamed("controlCenter");
                   },
                   icon: const Icon(

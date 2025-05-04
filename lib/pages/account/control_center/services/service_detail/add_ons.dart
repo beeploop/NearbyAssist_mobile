@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
-import 'package:nearby_assist/pages/account/services/detail/add_extra_page.dart';
-import 'package:nearby_assist/pages/account/services/detail/view_extra_page.dart';
+import 'package:nearby_assist/pages/account/control_center/services/new_add_on/new_addon_page.dart';
+import 'package:nearby_assist/pages/account/control_center/services/edit_add_on/edit_add_on_page.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
@@ -10,16 +10,16 @@ import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
-class Extras extends StatefulWidget {
-  const Extras({super.key, required this.serviceId});
+class AddOns extends StatefulWidget {
+  const AddOns({super.key, required this.serviceId});
 
   final String serviceId;
 
   @override
-  State<Extras> createState() => _ExtrasState();
+  State<AddOns> createState() => _AddOnsState();
 }
 
-class _ExtrasState extends State<Extras> {
+class _AddOnsState extends State<AddOns> {
   @override
   Widget build(BuildContext context) {
     return Consumer2<UserProvider, ControlCenterProvider>(
@@ -30,15 +30,13 @@ class _ExtrasState extends State<Extras> {
         return Stack(
           children: [
             SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...service.extras.map((extra) => _serviceExtra(extra)),
-                    const SizedBox(height: 70),
-                  ],
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...service.extras.map((extra) => _serviceAddOn(extra)),
+                  const SizedBox(height: 70),
+                ],
               ),
             ),
 
@@ -68,9 +66,7 @@ class _ExtrasState extends State<Extras> {
                   Navigator.push(
                     context,
                     CupertinoPageRoute(
-                      builder: (context) => AddExtraPage(
-                        serviceId: service.id,
-                      ),
+                      builder: (context) => NewAddOnPage(serviceId: service.id),
                     ),
                   );
                 },
@@ -83,12 +79,12 @@ class _ExtrasState extends State<Extras> {
     );
   }
 
-  Widget _serviceExtra(ServiceExtraModel extra) {
+  Widget _serviceAddOn(ServiceExtraModel extra) {
     return ListTile(
       onTap: () => Navigator.push(
         context,
         CupertinoPageRoute(
-          builder: (context) => ViewExtraPage(
+          builder: (context) => EditAddOnPage(
             serviceId: widget.serviceId,
             extra: extra,
           ),

@@ -29,15 +29,6 @@ class _BookingPageState extends State<BookingPage> {
   int _currentStep = 0;
 
   @override
-  void initState() {
-    super.initState();
-    final user = Provider.of<UserProvider>(context, listen: false).user;
-    if (user.address != null) {
-      _addressController.text = user.address!;
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
       child: Scaffold(

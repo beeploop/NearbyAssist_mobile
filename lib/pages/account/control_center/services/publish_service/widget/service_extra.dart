@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/pages/account/services/publish_service/widget/service_extra_controller.dart';
+import 'package:nearby_assist/pages/account/control_center/services/publish_service/widget/service_extra_controller.dart';
 
 class ServiceExtra extends StatefulWidget {
   const ServiceExtra({

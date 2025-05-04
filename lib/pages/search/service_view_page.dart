@@ -1,16 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
-import 'package:nearby_assist/pages/account/services/widget/image_section.dart';
-import 'package:nearby_assist/pages/account/services/widget/rating_count_bar.dart';
-import 'package:nearby_assist/pages/account/services/widget/service_actions.dart';
-import 'package:nearby_assist/pages/account/services/widget/vendor_info_section.dart';
+import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/pages/booking/booking_page.dart';
+import 'package:nearby_assist/pages/widget/rating_count_bar.dart';
+import 'package:nearby_assist/pages/search/widget/service_actions.dart';
 import 'package:nearby_assist/pages/search/widget/service_review_item.dart';
+import 'package:nearby_assist/pages/search/widget/vendor_info_section.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
@@ -107,13 +109,11 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ImageSection(images: details.service.images),
+              _images(details.service.images),
               const SizedBox(height: 10),
 
               // Vendor info
-              VendorInfoSection(
-                vendor: details.vendor,
-              ),
+              VendorInfoSection(vendor: details.vendor),
               const SizedBox(height: 20),
 
               // Actions
@@ -183,6 +183,42 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
               // Bottom padding
               const SizedBox(height: 40),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _images(List<ServiceImageModel> images) {
+    final height = MediaQuery.of(context).size.width * 0.8;
+
+    return SizedBox(
+      height: height,
+      child: ListView.separated(
+        shrinkWrap: true,
+        separatorBuilder: (context, _) => const SizedBox(width: 10),
+        scrollDirection: Axis.horizontal,
+        itemCount: images.length,
+        itemBuilder: (context, idx) => Container(
+          width: height,
+          height: height,
+          decoration: BoxDecoration(
+            border: Border.all(),
+          ),
+          child: CachedNetworkImage(
+            imageUrl: '${endpoint.publicResource}/${images[idx].url}',
+            fit: BoxFit.cover,
+            progressIndicatorBuilder: (context, url, downloadProgress) {
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: CircularProgressIndicator(
+                  value: downloadProgress.progress,
+                ),
+              );
+            },
+            errorWidget: (context, url, error) => const Icon(
+              CupertinoIcons.photo,
+            ),
           ),
         ),
       ),

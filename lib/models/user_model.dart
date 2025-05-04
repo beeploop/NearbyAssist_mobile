@@ -9,8 +9,8 @@ class UserModel {
   bool isVerified;
   bool isVendor;
   bool isRestricted;
-  String? address;
-  String? phone;
+  String address;
+  String phone;
   double? latitude;
   double? longitude;
   List<ExpertiseModel> expertise;
@@ -24,8 +24,8 @@ class UserModel {
     required this.isVerified,
     required this.isVendor,
     required this.isRestricted,
-    this.address,
-    this.phone,
+    required this.address,
+    required this.phone,
     this.latitude,
     this.longitude,
     required this.expertise,

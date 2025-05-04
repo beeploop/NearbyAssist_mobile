@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nearby_assist/pages/account/services/detail/edit_service_page.dart';
+import 'package:nearby_assist/pages/account/control_center/services/edit_service/edit_service_page.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
@@ -28,43 +28,40 @@ class _OverviewState extends State<Overview> {
         return Stack(
           children: [
             SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title
-                    _label('Title'),
-                    Text(service.title),
-                    const SizedBox(height: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title
+                  _label('Title'),
+                  Text(service.title),
+                  const SizedBox(height: 20),
 
-                    // Description
-                    _label('Description'),
-                    Text(service.description),
-                    const SizedBox(height: 20),
+                  // Description
+                  _label('Description'),
+                  Text(service.description),
+                  const SizedBox(height: 20),
 
-                    // Rate
-                    _label('Rate'),
-                    Text(
-                      formatCurrency(service.rate),
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 20),
+                  // Rate
+                  _label('Rate'),
+                  Text(
+                    formatCurrency(service.rate),
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 20),
 
-                    // Tags
-                    _label('Tags'),
-                    Wrap(
-                      spacing: 4,
-                      runSpacing: 4,
-                      children: service.tags
-                          .map((tag) => _tagChip(tag.title))
-                          .toList(),
-                    ),
+                  // Tags
+                  _label('Tags'),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children:
+                        service.tags.map((tag) => _tagChip(tag.title)).toList(),
+                  ),
 
-                    // Bottom padding
-                    const SizedBox(height: 20),
-                  ],
-                ),
+                  // Bottom padding
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
 
