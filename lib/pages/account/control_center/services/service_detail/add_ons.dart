@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
+import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/control_center/services/new_add_on/new_addon_page.dart';
 import 'package:nearby_assist/pages/account/control_center/services/edit_add_on/edit_add_on_page.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
@@ -11,9 +12,9 @@ import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:provider/provider.dart';
 
 class AddOns extends StatefulWidget {
-  const AddOns({super.key, required this.serviceId});
+  const AddOns({super.key, required this.service});
 
-  final String serviceId;
+  final ServiceModel service;
 
   @override
   State<AddOns> createState() => _AddOnsState();
@@ -22,60 +23,56 @@ class AddOns extends StatefulWidget {
 class _AddOnsState extends State<AddOns> {
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserProvider, ControlCenterProvider>(
-      builder: (context, userProvider, ccProvider, child) {
-        final service = ccProvider.services
-            .firstWhere((service) => service.id == widget.serviceId);
+    return Scaffold(
+      appBar: AppBar(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widget.service.extras
+              .map((extra) => _serviceAddOn(extra))
+              .toList(),
+        ),
+      ),
+      bottomNavigationBar: Consumer2<UserProvider, ControlCenterProvider>(
+        builder: (context, userProvider, ccProvider, _) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: FilledButton(
+              onPressed: () async {
+                if (userProvider.user.isRestricted) {
+                  showAccountRestrictedModal(context);
+                  return;
+                }
 
-        return Stack(
-          children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...service.extras.map((extra) => _serviceAddOn(extra)),
-                  const SizedBox(height: 70),
-                ],
-              ),
-            ),
-
-            //
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: FilledButton(
-                style: const ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                ),
-                onPressed: () async {
-                  if (userProvider.user.isRestricted) {
-                    showAccountRestrictedModal(context);
-                    return;
-                  }
-
-                  if (service.disabled) {
-                    showGenericErrorModal(
-                      context,
-                      message: 'Service is disabled',
-                    );
-                    return;
-                  }
-
-                  Navigator.push(
+                if (widget.service.disabled) {
+                  showGenericErrorModal(
                     context,
-                    CupertinoPageRoute(
-                      builder: (context) => NewAddOnPage(serviceId: service.id),
-                    ),
+                    message: 'Service is disabled',
                   );
-                },
-                child: const Text('New add-on'),
+                  return;
+                }
+
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) =>
+                        NewAddOnPage(serviceId: widget.service.id),
+                  ),
+                );
+              },
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
               ),
+              child: const Text('New add-on'),
             ),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
@@ -85,7 +82,7 @@ class _AddOnsState extends State<AddOns> {
         context,
         CupertinoPageRoute(
           builder: (context) => EditAddOnPage(
-            serviceId: widget.serviceId,
+            serviceId: widget.service.id,
             extra: extra,
           ),
         ),

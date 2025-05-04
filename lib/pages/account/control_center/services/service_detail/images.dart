@@ -29,92 +29,99 @@ class _ImagesState extends State<Images> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserProvider, ControlCenterProvider>(
-      builder: (context, userProvider, ccProvider, _) {
-        final service = ccProvider.services
-            .firstWhere((service) => service.id == widget.serviceId);
+    return LoaderOverlay(
+      child: Consumer2<UserProvider, ControlCenterProvider>(
+        builder: (context, userProvider, ccProvider, _) {
+          final service = ccProvider.services
+              .firstWhere((service) => service.id == widget.serviceId);
 
-        return LoaderOverlay(
-          child: Stack(
+          return Scaffold(
+            appBar: AppBar(),
+            body: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GridView(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                    ),
+                    children: service.images
+                        .map((image) => _imageWidget(image))
+                        .toList(),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  right: 20,
+                  child: FilledButton(
+                    style: const ButtonStyle(
+                      minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+                    ),
+                    onPressed: () {
+                      if (userProvider.user.isRestricted) {
+                        showAccountRestrictedModal(context);
+                        return;
+                      }
+
+                      if (service.disabled) {
+                        showGenericErrorModal(
+                          context,
+                          message: 'Service is disabled',
+                        );
+                        return;
+                      }
+
+                      _showPickerModal();
+                    },
+                    child: const Text('Upload'),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showPickerModal() {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                  ),
-                  children: service.images
-                      .map((image) => _imageWidget(image))
-                      .toList(),
-                ),
+              FillableImageContainer(
+                controller: _fillableImageController,
+                icon: CupertinoIcons.photo,
+                labelText: 'Tap to upload',
               ),
-              Positioned(
-                bottom: 20,
-                left: 20,
-                right: 20,
-                child: FilledButton(
-                  style: const ButtonStyle(
-                    minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                  ),
-                  onPressed: () {
-                    if (userProvider.user.isRestricted) {
-                      showAccountRestrictedModal(context);
-                      return;
-                    }
+              const SizedBox(height: 10),
 
-                    if (service.disabled) {
-                      showGenericErrorModal(
-                        context,
-                        message: 'Service is disabled',
-                      );
-                      return;
-                    }
-
-                    showModalBottomSheet(
-                      context: context,
-                      showDragHandle: true,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      builder: (context) => SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.6,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              FillableImageContainer(
-                                controller: _fillableImageController,
-                                icon: CupertinoIcons.photo,
-                                labelText: 'Tap to upload',
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Upload button
-                              FilledButton(
-                                style: const ButtonStyle(
-                                  minimumSize: WidgetStatePropertyAll(
-                                      Size.fromHeight(50)),
-                                ),
-                                onPressed: _handleUpload,
-                                child: const Text('upload'),
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('Upload'),
+              // Upload button
+              FilledButton(
+                style: const ButtonStyle(
+                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
                 ),
+                onPressed: _handleUpload,
+                child: const Text('upload'),
               ),
+              const SizedBox(height: 20),
             ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

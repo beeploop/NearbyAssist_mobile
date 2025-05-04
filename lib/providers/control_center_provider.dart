@@ -6,6 +6,7 @@ import 'package:nearby_assist/models/booking_qr_code_data.dart';
 import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
+import 'package:nearby_assist/models/service_review_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/control_center_service.dart';
 
@@ -298,6 +299,14 @@ class ControlCenterProvider extends ChangeNotifier {
       );
       _schedules.removeWhere((e) => e.id == bookingId);
       notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<List<ServiceReviewModel>> getReviews(String serviceId) async {
+    try {
+      return await ControlCenterService().getReviews(serviceId);
     } catch (error) {
       rethrow;
     }
