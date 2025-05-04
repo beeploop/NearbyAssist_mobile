@@ -311,4 +311,18 @@ class ControlCenterProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<ServiceReviewModel> getClientReviewOnBooking(
+    String clientId,
+    String bookingId,
+  ) async {
+    try {
+      return await ControlCenterService().getClientReviewOnBooking(
+        clientId,
+        bookingId,
+      );
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

@@ -3,6 +3,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/post_review_model.dart';
+import 'package:nearby_assist/models/service_review_model.dart';
 import 'package:nearby_assist/services/client_booking_service.dart';
 
 class ClientBookingProvider extends ChangeNotifier {
@@ -180,5 +181,13 @@ class ClientBookingProvider extends ChangeNotifier {
     _history.insert(0, rejectedBooking);
 
     notifyListeners();
+  }
+
+  Future<ServiceReviewModel> getReviewOnBooking(String bookingId) async {
+    try {
+      return await ClientBookingService().getReviewOnBooking(bookingId);
+    } catch (error) {
+      rethrow;
+    }
   }
 }

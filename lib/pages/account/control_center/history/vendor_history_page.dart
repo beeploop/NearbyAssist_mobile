@@ -42,7 +42,7 @@ class _VendorHistoryPageState extends State<VendorHistoryPage> {
     return Consumer<UserProvider>(
       builder: (context, provider, _) {
         return Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ListView.separated(
             separatorBuilder: (context, index) => const Divider(),
             itemCount: requests.length,
