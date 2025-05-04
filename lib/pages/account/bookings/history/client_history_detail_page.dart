@@ -108,6 +108,18 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
               ),
               const SizedBox(height: 20),
 
+              // Reason if rejected or cancelled
+              if (widget.booking.status == BookingStatus.rejected ||
+                  widget.booking.status == BookingStatus.cancelled)
+                const AutoSizeText(
+                  'Reason:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              const SizedBox(height: 10),
+              if (widget.booking.status == BookingStatus.rejected ||
+                  widget.booking.status == BookingStatus.cancelled)
+                AutoSizeText(widget.booking.cancelReason ?? ''),
+
               // Bottom padding
               const SizedBox(height: 20),
             ],

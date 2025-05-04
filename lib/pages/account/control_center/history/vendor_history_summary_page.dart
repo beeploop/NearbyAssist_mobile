@@ -81,9 +81,7 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
               const SizedBox(height: 20),
               const AutoSizeText(
                 'Extras:',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               ...widget.booking.extras.map((extra) {
@@ -102,6 +100,22 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                 label: 'Total Cost:',
                 text: formatCurrency(widget.booking.total()),
               ),
+
+              const SizedBox(height: 20),
+
+              // Reason if rejected or cancelled
+              if (widget.booking.status == BookingStatus.rejected ||
+                  widget.booking.status == BookingStatus.cancelled)
+                const AutoSizeText(
+                  'Reason:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              const SizedBox(height: 10),
+              if (widget.booking.status == BookingStatus.rejected ||
+                  widget.booking.status == BookingStatus.cancelled)
+                AutoSizeText(widget.booking.cancelReason ?? ''),
+
+              // Bottom padding
               const SizedBox(height: 20),
             ],
           ),
