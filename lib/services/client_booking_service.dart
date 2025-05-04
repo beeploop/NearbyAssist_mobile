@@ -3,7 +3,9 @@ import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/post_review_model.dart';
+import 'package:nearby_assist/models/service_review_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
+import 'package:nearby_assist/services/secure_storage.dart';
 
 class ClientBookingService {
   Future<void> fetchBooking(String id) async {
@@ -150,6 +152,23 @@ class ClientBookingService {
       final api = ApiService.authenticated();
       await api.dio.post(endpoint.postReview, data: review.toJson());
     } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<ServiceReviewModel> getReviewOnBooking(String bookingId) async {
+    try {
+      final user = await SecureStorage().getUser();
+
+      final api = ApiService.authenticated();
+      final response = await api.dio.get(
+        endpoint.reviewOnBooking,
+        queryParameters: {'userId': user.id, 'bookingId': bookingId},
+      );
+
+      return ServiceReviewModel.fromJson(response.data['review']);
+    } catch (error) {
+      logger.logError(error.toString());
       rethrow;
     }
   }

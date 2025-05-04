@@ -39,7 +39,7 @@ class _ClientHistoryPageState extends State<ClientHistoryPage> {
 
   Widget _mainContent(List<BookingModel> requests) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ListView.separated(
         separatorBuilder: (context, index) => const Divider(),
         itemCount: requests.length,

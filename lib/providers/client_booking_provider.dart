@@ -3,6 +3,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/post_review_model.dart';
+import 'package:nearby_assist/models/service_review_model.dart';
 import 'package:nearby_assist/services/client_booking_service.dart';
 
 class ClientBookingProvider extends ChangeNotifier {
@@ -105,12 +106,15 @@ class ClientBookingProvider extends ChangeNotifier {
       await ClientBookingService().cancelBooking(id, reason);
 
       final targetIdx = _pending.indexWhere((request) => request.id == id);
-      final cancelledBooking = _pending.removeAt(targetIdx);
-      _history.add(cancelledBooking.copyWith(
+      final booking = _pending.removeAt(targetIdx);
+
+      final cancelledBooking = booking.copyWith(
         status: BookingStatus.cancelled,
         updatedAt: DateTime.now(),
         cancelReason: reason,
-      ));
+      );
+      _history.insert(0, cancelledBooking);
+
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -126,6 +130,63 @@ class ClientBookingProvider extends ChangeNotifier {
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
+      rethrow;
+    }
+  }
+
+  // handle websocket event for completing booking in client side, only call this in websocket event process
+  void bookingCompleted(String bookingId) {
+    final index = _confirmed.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    final booking = _confirmed.removeAt(index);
+    final completedBooking = booking.copyWith(
+      status: BookingStatus.done,
+      updatedAt: DateTime.now(),
+    );
+
+    _history.insert(0, completedBooking);
+    _toRate.insert(0, completedBooking);
+
+    notifyListeners();
+  }
+
+  void bookingConfirmed(String bookingId, String schedule) {
+    final index = _pending.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    final booking = _pending.removeAt(index);
+    final confirmedBooking = booking.copyWith(
+      status: BookingStatus.confirmed,
+      updatedAt: DateTime.now(),
+      scheduledAt: DateTime.parse(schedule),
+    );
+
+    _confirmed.insert(0, confirmedBooking);
+
+    notifyListeners();
+  }
+
+  void bookingRejected(String bookingId, String reason) {
+    final index = _pending.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    final booking = _pending.removeAt(index);
+    final rejectedBooking = booking.copyWith(
+      status: BookingStatus.rejected,
+      updatedAt: DateTime.now(),
+      cancelReason: reason,
+    );
+
+    _history.insert(0, rejectedBooking);
+
+    notifyListeners();
+  }
+
+  Future<ServiceReviewModel> getReviewOnBooking(String bookingId) async {
+    try {
+      return await ClientBookingService().getReviewOnBooking(bookingId);
+    } catch (error) {
       rethrow;
     }
   }

@@ -291,4 +291,19 @@ class ControlCenterService {
       rethrow;
     }
   }
+
+  Future<ServiceReviewModel> getClientReviewOnBooking(
+      String clientId, String bookingId) async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get(
+        endpoint.reviewOnBooking,
+        queryParameters: {'userId': clientId, 'bookingId': bookingId},
+      );
+
+      return ServiceReviewModel.fromJson(response.data['review']);
+    } catch (error) {
+      rethrow;
+    }
+  }
 }

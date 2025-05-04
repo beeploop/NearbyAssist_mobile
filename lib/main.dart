@@ -107,11 +107,13 @@ class _App extends State<App> {
     final websocketProvider = context.read<WebsocketProvider>();
     final messageProvider = context.read<MessageProvider>();
     final notificationProvider = context.read<NotificationsProvider>();
+    final clientBookingProvider = context.read<ClientBookingProvider>();
     final expertiseProvider = context.read<ExpertiseProvider>();
 
     websocketProvider.setMessageProvider(messageProvider);
     websocketProvider.setNotifProvider(notificationProvider);
     websocketProvider.setUserProvider(userProvider);
+    websocketProvider.setClientBookingProvider(clientBookingProvider);
 
     notificationProvider.fetchNotifications();
     expertiseProvider.fetchExpertise();

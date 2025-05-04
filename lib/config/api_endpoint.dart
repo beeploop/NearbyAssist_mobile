@@ -92,6 +92,7 @@ class ApiEndpoint {
   String get unsaveService => '$_baseUrl/api/v1/services/unsave';
 
   String get getReviews => '$_baseUrl/api/v1/services/reviews';
+  String get reviewOnBooking => '$_baseUrl/api/v1/reviews/booking';
 
   String get createBooking => '$_baseUrl/api/v1/bookings';
   String get cancelBooking => '$_baseUrl/api/v1/bookings/cancel';
