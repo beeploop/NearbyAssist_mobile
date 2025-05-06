@@ -118,6 +118,8 @@ class MessageProvider extends ChangeNotifier {
       _updateMyMessageStatus(newMessage, types.Status.error);
       _updateInboxPreview(newMessage.receiver, newMessage.content, true);
       rethrow;
+    } finally {
+      _sortInbox();
     }
   }
 
@@ -158,6 +160,7 @@ class MessageProvider extends ChangeNotifier {
 
       _addMessageToConversation(decryptedMessage);
 
+      _sortInbox();
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
