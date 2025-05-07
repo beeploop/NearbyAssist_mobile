@@ -4,6 +4,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/models/social_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:nearby_assist/services/user_account_service.dart';
@@ -85,6 +86,18 @@ class UserProvider extends ChangeNotifier {
         expertiseId: expertise.id,
         supportingDoc: supportingDoc,
       );
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateDBL(int value) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.post('${endpoint.udpateDBL}/$value');
+
+      user.dbl = value;
+      notifyListeners();
     } catch (error) {
       rethrow;
     }

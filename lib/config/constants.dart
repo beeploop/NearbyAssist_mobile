@@ -2,7 +2,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 
-const appVersion = "v0.13.5-alpha";
+const appVersion = "v0.14.0-alpha";
 const appName = "NearbyAssist";
 const appLegalese = "© 2024 NearbyAssist";
 
@@ -26,6 +26,7 @@ final placeHolderUser = UserModel(
   isRestricted: false,
   expertise: [],
   socials: [],
+  dbl: 0,
 );
 
 const serviceTags = [
