@@ -129,6 +129,18 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
               ),
               const SizedBox(height: 10),
 
+              // Title
+              const Text(
+                'Title',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                details.service.title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+              ),
+              const SizedBox(height: 20),
+
               // Details
               const Text(
                 'Description',
