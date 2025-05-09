@@ -16,8 +16,7 @@ class RecommendationProvider extends ChangeNotifier {
       if (_hasFetched) return;
       _hasFetched = true;
 
-      final svc = RecommendationService();
-      final response = await svc.fetchRecommendations();
+      final response = await RecommendationService().fetchRecommendations();
 
       _recommendations = (response['services'] as List)
           .map((recommendation) => RecommendationModel.fromJson(recommendation))

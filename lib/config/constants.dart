@@ -1,8 +1,7 @@
 import 'package:latlong2/latlong.dart';
-import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 
-const appVersion = "v0.14.5-alpha";
+const appVersion = "v0.14.6-alpha";
 const appName = "NearbyAssist";
 const appLegalese = "© 2024 NearbyAssist";
 
@@ -27,18 +26,4 @@ final placeHolderUser = UserModel(
   expertise: [],
   socials: [],
   dbl: 0,
-);
-
-const serviceTags = [
-  'computer repair',
-  'carpentry',
-  'electric',
-  'plumbing',
-  'cuddle',
-];
-
-final fakeUser = ThirdPartyLoginPayloadModel(
-  name: 'John Doe',
-  email: 'johndoe@email.com',
-  imageUrl: 'assets/images/profile.png',
 );

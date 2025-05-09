@@ -6,6 +6,7 @@ import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/recommendation_provider.dart';
 import 'package:nearby_assist/providers/system_setting_provider.dart';
+import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/config/api_endpoint.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
@@ -84,6 +85,7 @@ class _App extends State<App> {
   Future<void> initialization() async {
     try {
       logger.logDebug('called initialization in main.dart');
+      await LocationService().requestPermissions();
       await loadUser();
       await loadTags();
     } catch (error) {
