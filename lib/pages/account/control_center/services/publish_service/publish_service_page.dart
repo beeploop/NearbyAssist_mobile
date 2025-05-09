@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/new_extra.dart';
 import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -31,16 +32,18 @@ class _PublishServicePageState extends State<PublishServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Stepper(
-        type: StepperType.horizontal,
-        elevation: 0,
-        steps: _steps(),
-        currentStep: _currentStep,
-        onStepContinue: _onContinue,
-        onStepCancel: _onCancel,
-        controlsBuilder: _controlsBuilder,
+    return LoaderOverlay(
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Stepper(
+          type: StepperType.horizontal,
+          elevation: 0,
+          steps: _steps(),
+          currentStep: _currentStep,
+          onStepContinue: _onContinue,
+          onStepCancel: _onCancel,
+          controlsBuilder: _controlsBuilder,
+        ),
       ),
     );
   }
@@ -158,7 +161,11 @@ class _PublishServicePageState extends State<PublishServicePage> {
   }
 
   void _handlePublish() async {
+    final loader = context.loaderOverlay;
+
     try {
+      loader.show();
+
       final provider = context.read<ControlCenterProvider>();
       final user = context.read<UserProvider>().user;
 
@@ -186,6 +193,8 @@ class _PublishServicePageState extends State<PublishServicePage> {
     } catch (error) {
       if (!mounted) return;
       showGenericErrorModal(context, message: error.toString());
+    } finally {
+      loader.hide();
     }
   }
 
