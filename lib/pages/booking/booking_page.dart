@@ -120,7 +120,7 @@ class _BookingPageState extends State<BookingPage> {
           _currentStep >= 2
               ? Expanded(
                   child: FilledButton(
-                    onPressed: _book,
+                    onPressed: _showBookingConfirmation,
                     child: const Text('Book'),
                   ),
                 )
@@ -137,6 +137,37 @@ class _BookingPageState extends State<BookingPage> {
 
   bool _isValid() {
     return true;
+  }
+
+  void _showBookingConfirmation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          CupertinoIcons.question_circle,
+          color: Colors.amber,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text('Confirm', style: TextStyle(fontSize: 20)),
+        content: const Text('Are you sure you want to submit this request?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _book();
+            },
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _book() async {
