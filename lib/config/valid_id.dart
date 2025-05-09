@@ -1,9 +1,11 @@
 enum ValidID {
-  driverLicense(value: 'Driver\'s License'),
+  philSys(value: 'PhilSys ID'),
   umid(value: 'UMID'),
+  driverLicense(value: "Driver's License"),
+  prc(value: 'PRC'),
+  voters(value: "Voter's ID"),
   passport(value: 'Passport'),
   tin(value: 'TIN'),
-  prc(value: 'PRC'),
   none(value: 'none');
 
   const ValidID({required this.value});
