@@ -53,7 +53,7 @@ class _ReportUserPageState extends State<ReportUserPage> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            'Bug Report',
+            'Report User',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

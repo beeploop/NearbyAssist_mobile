@@ -26,6 +26,10 @@ final reasons = [
     category: ReportCategory.misconduct,
     title: "Offensive images/messages",
   ),
+  ReportReason(
+    category: ReportCategory.misconduct,
+    title: 'Other',
+  ),
 
   // BookingRelated
   ReportReason(
@@ -39,5 +43,9 @@ final reasons = [
   ReportReason(
     category: ReportCategory.bookingRelated,
     title: "Poor quality service",
+  ),
+  ReportReason(
+    category: ReportCategory.bookingRelated,
+    title: 'Other',
   ),
 ];
