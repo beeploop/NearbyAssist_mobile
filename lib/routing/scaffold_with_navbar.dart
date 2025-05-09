@@ -40,7 +40,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
             BottomNavigationBarItem(
               activeIcon: Icon(CupertinoIcons.bookmark_fill),
               icon: Icon(CupertinoIcons.bookmark),
-              label: 'saves',
+              label: 'saved',
             ),
             BottomNavigationBarItem(
               activeIcon: Icon(CupertinoIcons.person_fill),
