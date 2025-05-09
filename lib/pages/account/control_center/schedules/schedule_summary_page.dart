@@ -7,7 +7,6 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/booking_qr_code_data.dart';
 import 'package:nearby_assist/pages/account/control_center/schedules/widget/menu.dart';
-import 'package:nearby_assist/pages/account/control_center/widget/qr_reader/qr_reader.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
@@ -26,6 +25,14 @@ class ScheduleSummaryPage extends StatefulWidget {
 }
 
 class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
+  final _qrController = MobileScannerController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _qrController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
@@ -142,16 +149,24 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
 
   void _handleCompleteBooking() async {
     try {
+      _qrController.start();
+
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        isDismissible: false,
-        builder: (context) => SizedBox(
-          height: MediaQuery.of(context).size.height * 0.85,
-          child: QrReader(onDetect: _onQRDetect),
+        builder: (context) => MobileScanner(
+          controller: _qrController,
+          onDetect: _onQRDetect,
+          overlayBuilder: (context, constraints) => Center(
+            child: Container(
+              width: constraints.maxWidth * 0.6,
+              height: constraints.maxWidth * 0.6,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: 2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
         ),
       );
     } catch (error) {
@@ -164,11 +179,17 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
     final loader = context.loaderOverlay;
 
     try {
+      _qrController.stop();
       loader.show();
       Navigator.pop(context); // Called to close the dialog for the camera
 
-      final detectedValue = capture.barcodes.first.rawValue;
-      if (detectedValue == null) {
+      final code = capture.barcodes.firstOrNull;
+      if (code == null) {
+        throw 'No code data read';
+      }
+
+      final detectedValue = code.rawValue;
+      if (detectedValue == null || detectedValue.isEmpty) {
         throw 'Error scanning QR';
       }
 

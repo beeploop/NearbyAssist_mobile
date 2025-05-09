@@ -33,6 +33,7 @@ class _QrReaderState extends State<QrReader> {
       height: 200,
       width: 200,
     );
+
     return Stack(
       children: [
         Center(
