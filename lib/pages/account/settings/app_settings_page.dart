@@ -51,14 +51,14 @@ class _AppSettingPageState extends State<AppSettingPage> {
           icon: CupertinoIcons.tag,
           onPress: _updateTags,
         ),
+        const Divider(),
+        const SizedBox(height: 10),
         SettingItem(
           title: "Healthcheck",
           subtitle: "Check status and connection of the server",
           icon: CupertinoIcons.waveform_path,
           onPress: _healthcheck,
         ),
-        const Divider(),
-        const SizedBox(height: 10),
         SettingItem(
           title: "Clear Data",
           subtitle: "Clear cached data and logout",
@@ -67,28 +67,30 @@ class _AppSettingPageState extends State<AppSettingPage> {
         ),
         const SizedBox(height: 10),
         SettingItem(
-          title: "Welcome Page Type",
-          subtitle: "Switch version of welcome page to use",
-          icon: CupertinoIcons.compass,
+          title: "Use old search page",
+          subtitle: "Switch between search page versions",
+          icon: CupertinoIcons.arrow_2_circlepath,
           onPress: () {},
-          trailing: _useWelcomePageV2(),
+          trailing: _useSearchPageV2(),
         ),
       ],
     );
   }
 
-  Widget _useWelcomePageV2() {
+  Widget _useSearchPageV2() {
     return Consumer<SystemSettingProvider>(builder: (context, provider, _) {
-      bool toggled = provider.isWelcomePageV2;
+      bool toggled = provider.isSearchPageV2;
 
       return Switch(
         value: toggled,
         onChanged: (value) {
           switch (value) {
             case true:
-              SystemSettingProvider().changeWelcomePage(WelcomePageType.type2);
+              SystemSettingProvider()
+                  .changeWelcomePage(SearchPageVersion.version2);
             case false:
-              SystemSettingProvider().changeWelcomePage(WelcomePageType.type1);
+              SystemSettingProvider()
+                  .changeWelcomePage(SearchPageVersion.version1);
           }
         },
       );

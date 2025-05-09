@@ -11,7 +11,7 @@ class SearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SystemSettingProvider>(
       builder: (context, provider, _) {
-        if (provider.welcomePage == WelcomePageType.type2) {
+        if (provider.welcomePage == SearchPageVersion.version2) {
           return const SearchPageV2();
         }
 

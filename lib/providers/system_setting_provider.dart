@@ -2,18 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 
-enum WelcomePageType {
-  type1(id: 'type1', name: 'version 1'),
-  type2(id: 'type2', name: 'version 2');
+enum SearchPageVersion {
+  version1(id: 'version1', name: 'version 1'),
+  version2(id: 'version2', name: 'version 2');
 
-  const WelcomePageType({required this.id, required this.name});
+  const SearchPageVersion({required this.id, required this.name});
   final String id;
   final String name;
 }
 
 class SystemSettingProvider extends ChangeNotifier {
   String _serverURL = endpoint.baseUrl;
-  WelcomePageType _welcomePage = WelcomePageType.type2;
+  SearchPageVersion _searchPageVersion = SearchPageVersion.version2;
 
   static final SystemSettingProvider _instance =
       SystemSettingProvider._internal();
@@ -23,8 +23,8 @@ class SystemSettingProvider extends ChangeNotifier {
   factory SystemSettingProvider() => _instance;
 
   String get serverURL => _serverURL;
-  WelcomePageType get welcomePage => _welcomePage;
-  bool get isWelcomePageV2 => _welcomePage == WelcomePageType.type2;
+  SearchPageVersion get welcomePage => _searchPageVersion;
+  bool get isSearchPageV2 => _searchPageVersion == SearchPageVersion.version2;
 
   Future<void> changeServerURL(String url) async {
     logger.logDebug('changed server url: $url');
@@ -34,9 +34,9 @@ class SystemSettingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeWelcomePage(WelcomePageType type) async {
+  Future<void> changeWelcomePage(SearchPageVersion type) async {
     logger.logDebug('changed welcome page type: ${type.name}');
-    _welcomePage = type;
+    _searchPageVersion = type;
     await SecureStorage().saveSettings(this);
     notifyListeners();
   }
@@ -44,14 +44,14 @@ class SystemSettingProvider extends ChangeNotifier {
   loadFromJson(Map<String, dynamic> json) {
     logger.logDebug('loaded setting from json: $json');
     final welcomeType = switch (json['welcome_page_type'] as String) {
-      'type1' => WelcomePageType.type1,
-      'type2' => WelcomePageType.type2,
-      _ => WelcomePageType.type1,
+      'version1' => SearchPageVersion.version1,
+      'version2' => SearchPageVersion.version2,
+      _ => SearchPageVersion.version1,
     };
 
     _serverURL =
         json['server_url'] == '' ? endpoint.baseUrl : json['server_url'];
-    _welcomePage = welcomeType;
+    _searchPageVersion = welcomeType;
     notifyListeners();
   }
 
