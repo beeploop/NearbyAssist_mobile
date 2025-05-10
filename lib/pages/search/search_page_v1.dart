@@ -59,7 +59,7 @@ class _SearchPageV1State extends State<SearchPageV1> {
 
                         // Services
                         const AutoSizeText(
-                          'Services',
+                          'Recommended Services',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
