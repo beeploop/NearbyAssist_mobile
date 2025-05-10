@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/pages/account/profile/add_social_page.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/profile_settings_page.dart';
 import 'package:nearby_assist/pages/account/profile/widget/expertise_section.dart';
 import 'package:nearby_assist/pages/account/profile/widget/profile_avatar.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -31,6 +32,19 @@ class _ProfilePageState extends State<ProfilePage> {
             'Profile',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(CupertinoIcons.line_horizontal_3),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => const ProfileSettingsPage(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: context.read<UserProvider>().syncAccount,

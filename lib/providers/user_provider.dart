@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/change_address_model.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
+import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/social_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
+import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 import 'package:nearby_assist/services/user_account_service.dart';
@@ -96,7 +99,29 @@ class UserProvider extends ChangeNotifier {
       final api = ApiService.authenticated();
       await api.dio.post('${endpoint.udpateDBL}/$value');
 
-      user.dbl = value;
+      _user?.dbl = value;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> changeAddress(String address) async {
+    try {
+      final location = await LocationService().getLocation();
+
+      final data = ChangeAddressModel(
+        address: address,
+        location: LocationModel(
+          latitude: location.latitude,
+          longitude: location.longitude,
+        ),
+      );
+
+      final api = ApiService.authenticated();
+      await api.dio.put(endpoint.changeAddress, data: data.toJson());
+
+      _user?.address = address;
       notifyListeners();
     } catch (error) {
       rethrow;
