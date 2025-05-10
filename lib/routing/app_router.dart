@@ -125,7 +125,8 @@ GoRouter generateRoutes(
           name: RoutePath.route.name,
           builder: (context, state) {
             final serviceId = state.uri.queryParameters['serviceId']!;
-            return RoutePage(serviceId: serviceId);
+            final vendorName = state.uri.queryParameters['vendorName'] ?? '';
+            return RoutePage(serviceId: serviceId, vendorName: vendorName);
           }),
       GoRoute(
           path: RoutePath.chat.path,

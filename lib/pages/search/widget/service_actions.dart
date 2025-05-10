@@ -38,7 +38,10 @@ class _ServiceActionsState extends State<ServiceActions> {
 
                     context.pushNamed(
                       'route',
-                      queryParameters: {'serviceId': widget.service.service.id},
+                      queryParameters: {
+                        'serviceId': widget.service.service.id,
+                        'vendorName': widget.service.vendor.name,
+                      },
                     );
                   },
                   icon: const Icon(CupertinoIcons.arrow_up_right_diamond),

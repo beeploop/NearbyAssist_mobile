@@ -9,9 +9,14 @@ import 'package:nearby_assist/providers/route_provider.dart';
 import 'package:provider/provider.dart';
 
 class RoutePage extends StatefulWidget {
-  const RoutePage({super.key, required this.serviceId});
+  const RoutePage({
+    super.key,
+    required this.serviceId,
+    required this.vendorName,
+  });
 
   final String serviceId;
+  final String vendorName;
 
   @override
   State<RoutePage> createState() => _RoutePageState();
@@ -19,7 +24,6 @@ class RoutePage extends StatefulWidget {
 
 class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
   final _initialZoom = 14.0;
-  final _minZoom = 16.0;
   final _maxZoom = 18.0;
   late final _controller = AnimatedMapController(vsync: this);
 
@@ -85,14 +89,61 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
         ),
         MarkerLayer(
           markers: [
+            // user
             Marker(
+              height: 60,
+              width: 90,
               rotate: true,
               alignment: Alignment.topCenter,
               point: coordinates.first,
-              child: const Icon(
-                Icons.person_pin,
-                size: 30.0,
-                color: Colors.red,
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.red,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    child: const Text(
+                      "I'm here",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.person_pin, size: 30.0, color: Colors.red),
+                ],
+              ),
+            ),
+
+            // vendor
+            Marker(
+              height: 60,
+              width: 120,
+              rotate: true,
+              alignment: Alignment.topCenter,
+              point: coordinates.last,
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.red,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    child: Text(
+                      widget.vendorName,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.person_pin, size: 30.0, color: Colors.red),
+                ],
               ),
             ),
           ],
@@ -106,12 +157,18 @@ class _RoutePageState extends State<RoutePage> with TickerProviderStateMixin {
   }
 
   void _fitMarkers(List<LatLng> coordinates) {
+    final bounds = LatLngBounds.fromPoints(coordinates);
+
+    if (bounds.northEast == bounds.southWest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.animateTo(dest: coordinates.first, zoom: 16);
+      });
+      return;
+    }
     _controller.animatedFitCamera(
-      cameraFit: CameraFit.coordinates(
-        coordinates: coordinates,
-        padding: const EdgeInsets.all(50),
-        maxZoom: _maxZoom,
-        minZoom: _minZoom,
+      cameraFit: CameraFit.bounds(
+        bounds: bounds,
+        padding: const EdgeInsets.fromLTRB(80, 180, 80, 80),
       ),
     );
   }
