@@ -221,6 +221,8 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     return ListTile(
       leading: Icon(icon),
       title: Text(method.name),
+      selectedColor: Colors.green,
+      selected: searchProvider.sortingMethod == method,
       dense: true,
       onTap: () {
         searchProvider.changeSortingMethod(method);
