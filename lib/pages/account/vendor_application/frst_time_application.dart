@@ -8,6 +8,7 @@ import 'package:nearby_assist/models/expertise_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
+import 'package:nearby_assist/pages/account/vendor_application/widget/bullet_list.dart';
 import 'package:nearby_assist/pages/widget/clickable_text.dart';
 import 'package:nearby_assist/pages/widget/divider_with_text.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
@@ -60,6 +61,7 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _tagsDropdown(provider.user.expertise),
                     const SizedBox(height: 20),
@@ -70,19 +72,36 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 20),
-                    const DividerWithText(text: 'Supporting Document'),
+
+                    // Document
+                    const DividerWithText(text: 'Document'),
                     const SizedBox(height: 10),
                     const Text(
-                      'Document that prove you are capable of offering satisfactory service for this role. Example documents are license and certifications',
-                      style: TextStyle(fontSize: 12),
+                      'Document that prove you are capable of offering satisfactory service for this role.',
                     ),
+                    const SizedBox(height: 10),
+
+                    //
+                    const Text(
+                      'List of accepted documents:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const BulletList(
+                      list: [
+                        "PRC License",
+                        "NC II Certificate",
+                        "Certificate of Employment (COE)"
+                      ],
+                    ),
+
                     const SizedBox(height: 10),
                     Row(
                       children: [
                         FillableImageContainer(
                           controller: _supportingDocController,
                           icon: CupertinoIcons.doc_on_clipboard,
-                          labelText: 'Supporting Document',
+                          labelText: 'Document',
                         ),
                         Expanded(
                           child: Container(
@@ -93,6 +112,8 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
                       ],
                     ),
                     const SizedBox(height: 20),
+
+                    // Police clearance
                     const DividerWithText(text: 'Police Clearance'),
                     const SizedBox(height: 10),
                     Row(
