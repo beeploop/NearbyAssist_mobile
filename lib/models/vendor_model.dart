@@ -10,6 +10,7 @@ class VendorModel {
   final double rating;
   final List<String> expertise;
   final List<SocialModel> socials;
+  final String address;
 
   VendorModel({
     required this.id,
@@ -20,6 +21,7 @@ class VendorModel {
     required this.rating,
     required this.expertise,
     required this.socials,
+    required this.address,
   });
 
   factory VendorModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class VendorModel {
       socials: ((json['socials'] ?? []) as List)
           .map((social) => SocialModel.fromJson(social))
           .toList(),
+      address: json['address'],
     );
   }
 
@@ -47,6 +50,7 @@ class VendorModel {
       'rating': rating,
       'expertise': expertise,
       'socials': jsonEncode(socials.map((social) => social.toJson()).toList()),
+      'address': address,
     };
   }
 }

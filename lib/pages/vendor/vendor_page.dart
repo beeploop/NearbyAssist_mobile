@@ -112,12 +112,28 @@ class _VendorPageState extends State<VendorPage> {
           ),
           const SizedBox(height: 10),
 
+          // Address
+          const AutoSizeText(
+            'Address',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              const Icon(CupertinoIcons.home, size: 20),
+              const SizedBox(width: 10),
+              AutoSizeText(
+                model.vendor.address,
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
           // Socials
           const AutoSizeText(
             'Socials',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
 
