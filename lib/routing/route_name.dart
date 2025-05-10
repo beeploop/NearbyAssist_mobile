@@ -2,7 +2,7 @@ enum RoutePath {
   login(path: "/login"),
 
   search(path: "/search"),
-  map(path: "map"),
+  map(path: "/map"),
 
   viewService(path: "/viewService"),
 

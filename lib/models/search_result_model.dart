@@ -1,3 +1,5 @@
+import 'package:nearby_assist/models/service_model.dart';
+
 class SearchResultModel {
   String id;
   String vendorName;
@@ -8,6 +10,7 @@ class SearchResultModel {
   double longitude;
   int completedBookings;
   double distance;
+  ServiceModel? service;
 
   SearchResultModel({
     required this.id,
@@ -19,6 +22,7 @@ class SearchResultModel {
     required this.longitude,
     required this.completedBookings,
     required this.distance,
+    this.service,
   });
 
   factory SearchResultModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,7 @@ class SearchResultModel {
       longitude: json['longitude'],
       completedBookings: int.parse(json['completedBookings'].toString()),
       distance: double.parse(json['distance'].toString()),
+      service: ServiceModel.fromJson(json['service']),
     );
   }
 }

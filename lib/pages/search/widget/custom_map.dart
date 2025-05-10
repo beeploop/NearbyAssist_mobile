@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
+import 'package:nearby_assist/pages/search/widget/search_result_list_item.dart';
 import 'package:nearby_assist/pages/search/widget/service_sorting_method.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
@@ -23,7 +24,7 @@ class CustomMap extends StatefulWidget {
 
 class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
   final _initialZoom = 13.0;
-  final _maxZoom = 18.0;
+  final _maxZoom = 22.0;
   final _animateZoom = 16.0;
   OverlayEntry? orderingPreferenceOverlay;
   late final _controller = AnimatedMapController(vsync: this);
@@ -81,9 +82,9 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                       point: LatLng(_location.latitude, _location.longitude),
                       child: GestureDetector(
                         onTap: _centerMap,
-                        child: const Icon(
+                        child: Icon(
                           CupertinoIcons.person_circle_fill,
-                          color: Colors.red,
+                          color: Colors.red.withOpacity(0.5),
                           size: 40,
                         ),
                       ),
@@ -122,6 +123,13 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                         CupertinoIcons.list_bullet,
                         color: Colors.green.shade800,
                       ),
+                      onPressed: () => _showListView(services),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        CupertinoIcons.sort_down,
+                        color: Colors.green.shade800,
+                      ),
                       onPressed: () {
                         if (orderingPreferenceOverlay == null) {
                           _showOrderingPreference();
@@ -144,6 +152,41 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
           ],
         );
       },
+    );
+  }
+
+  void _showListView(List<SearchResultModel> results) {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.7,
+        width: double.infinity,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Services',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+
+              //
+              ListView.separated(
+                shrinkWrap: true,
+                itemCount: results.length,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) {
+                  return SearchResultListItem(result: results[index]);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -239,11 +282,15 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       List<SearchResultModel> services, ServiceSortingMethod method) {
     final sorted =
         SearchResultSorter(method: method, services: services).sort();
+    const offset = 0;
 
     List<Marker> markers = [];
     for (int i = 0; i < sorted.length; i++) {
       markers.add(_createMarker(
-        point: LatLng(sorted[i].latitude, sorted[i].longitude),
+        point: LatLng(
+          sorted[i].latitude + (i * offset),
+          sorted[i].longitude + (i * offset),
+        ),
         order: i + 1,
         icon: CupertinoIcons.location_solid,
         color: Colors.red,

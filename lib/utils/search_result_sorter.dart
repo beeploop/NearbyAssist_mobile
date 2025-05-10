@@ -26,7 +26,7 @@ class SearchResultSorter {
   }
 
   List<SearchResultModel> _sortWithSuggestionScore() {
-    services.sort((a, b) => a.suggestionScore.compareTo(b.suggestionScore));
+    services.sort((a, b) => b.suggestionScore.compareTo(a.suggestionScore));
     return services;
   }
 
@@ -36,13 +36,13 @@ class SearchResultSorter {
   }
 
   List<SearchResultModel> _sortWithRating() {
-    services.sort((a, b) => a.rating.compareTo(b.rating));
+    services.sort((a, b) => b.rating.compareTo(a.rating));
     return services;
   }
 
   List<SearchResultModel> _sortWithCompletedBookings() {
     services.sort(
-      (a, b) => a.completedBookings.compareTo(b.completedBookings),
+      (a, b) => b.completedBookings.compareTo(a.completedBookings),
     );
     return services;
   }
