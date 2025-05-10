@@ -88,6 +88,24 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 10),
 
+                    // Address
+                    const AutoSizeText(
+                      'Address',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Icon(CupertinoIcons.home, size: 20),
+                        const SizedBox(width: 10),
+                        AutoSizeText(
+                          provider.user.address,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
                     // Socials
                     Row(
                       children: [
