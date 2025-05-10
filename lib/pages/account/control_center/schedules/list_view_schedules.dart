@@ -1,36 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_booking_list_item.dart';
-import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_request_summary_page.dart';
-import 'package:nearby_assist/providers/client_booking_provider.dart';
+import 'package:nearby_assist/pages/account/control_center/schedules/schedule_list_item.dart';
+import 'package:nearby_assist/pages/account/control_center/schedules/schedule_summary_page.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:provider/provider.dart';
 
-class ConfirmedRequestsPage extends StatefulWidget {
-  const ConfirmedRequestsPage({super.key});
+class ListViewSchedules extends StatefulWidget {
+  const ListViewSchedules({super.key});
 
   @override
-  State<ConfirmedRequestsPage> createState() => _ConfirmedRequestsPageState();
+  State<ListViewSchedules> createState() => _ListViewSchedulesState();
 }
 
-class _ConfirmedRequestsPageState extends State<ConfirmedRequestsPage> {
+class _ListViewSchedulesState extends State<ListViewSchedules> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Confirmed Bookings',
+          'Schedules',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Consumer<ClientBookingProvider>(
+      body: Consumer<ControlCenterProvider>(
         builder: (context, provider, _) {
           return RefreshIndicator(
-            onRefresh: provider.fetchConfirmed,
-            child: provider.confirmed.isEmpty
+            onRefresh: provider.fetchSchedules,
+            child: provider.schedules.isEmpty
                 ? _emptyState()
-                : _mainContent(provider.confirmed),
+                : _mainContent(provider.schedules),
           );
         },
       ),
@@ -38,23 +38,21 @@ class _ConfirmedRequestsPageState extends State<ConfirmedRequestsPage> {
   }
 
   Widget _mainContent(List<BookingModel> requests) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: ListView.separated(
-        separatorBuilder: (context, index) => const SizedBox(height: 10),
-        itemCount: requests.length,
-        itemBuilder: (context, index) => ConfirmedBookingListItem(
-          booking: requests[index],
-          onTap: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) =>
-                    ConfirmedRequestSummarPage(booking: requests[index]),
+    return ListView.separated(
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
+      itemCount: requests.length,
+      itemBuilder: (context, index) => ScheduleListItem(
+        booking: requests[index],
+        onTap: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => ScheduleSummaryPage(
+                booking: requests[index],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -76,7 +74,7 @@ class _ConfirmedRequestsPageState extends State<ConfirmedRequestsPage> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'No requests',
+                    'No schedules',
                     style: TextStyle(color: Colors.grey),
                   ),
                   Text(

@@ -4,7 +4,8 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/config/assets.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/pages/account/account_page.dart';
-import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_requests_page.dart';
+import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_request_page.dart';
+import 'package:nearby_assist/pages/account/bookings/confirmed/list_view_requests_page.dart';
 import 'package:nearby_assist/pages/account/bookings/history/client_history_page.dart';
 import 'package:nearby_assist/pages/account/bookings/pending/pending_request_page.dart';
 import 'package:nearby_assist/pages/account/bookings/to_rate/to_rate_page.dart';
@@ -164,7 +165,7 @@ GoRouter generateRoutes(
       GoRoute(
           path: RoutePath.confirmed.path,
           name: RoutePath.confirmed.name,
-          builder: (context, state) => const ConfirmedRequestsPage()),
+          builder: (context, state) => const ConfirmedRequestPage()),
       GoRoute(
           path: RoutePath.toRate.path,
           name: RoutePath.toRate.name,

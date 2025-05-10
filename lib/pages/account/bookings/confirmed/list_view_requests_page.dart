@@ -1,36 +1,36 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/pages/account/control_center/requests/request_list_item.dart';
-import 'package:nearby_assist/pages/account/control_center/requests/request_summary_page.dart';
-import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_booking_list_item.dart';
+import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_request_summary_page.dart';
+import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:provider/provider.dart';
 
-class RequestsPage extends StatefulWidget {
-  const RequestsPage({super.key});
+class ListViewConfirmed extends StatefulWidget {
+  const ListViewConfirmed({super.key});
 
   @override
-  State<RequestsPage> createState() => _RequestsPageState();
+  State<ListViewConfirmed> createState() => _ListViewConfirmedState();
 }
 
-class _RequestsPageState extends State<RequestsPage> {
+class _ListViewConfirmedState extends State<ListViewConfirmed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Received Requests',
+          'Confirmed Bookings',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: Consumer<ControlCenterProvider>(
+      body: Consumer<ClientBookingProvider>(
         builder: (context, provider, _) {
           return RefreshIndicator(
-            onRefresh: provider.fetchRequests,
-            child: provider.requests.isEmpty
+            onRefresh: provider.fetchConfirmed,
+            child: provider.confirmed.isEmpty
                 ? _emptyState()
-                : _mainContent(provider.requests),
+                : _mainContent(provider.confirmed),
           );
         },
       ),
@@ -38,21 +38,23 @@ class _RequestsPageState extends State<RequestsPage> {
   }
 
   Widget _mainContent(List<BookingModel> requests) {
-    return ListView.separated(
-      separatorBuilder: (context, index) => const Divider(),
-      itemCount: requests.length,
-      itemBuilder: (context, index) => RequestListItem(
-        booking: requests[index],
-        onTap: () {
-          Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (context) => RequestSummaryPage(
-                booking: requests[index],
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: ListView.separated(
+        separatorBuilder: (context, index) => const SizedBox(height: 10),
+        itemCount: requests.length,
+        itemBuilder: (context, index) => ConfirmedBookingListItem(
+          booking: requests[index],
+          onTap: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) =>
+                    ConfirmedRequestSummarPage(booking: requests[index]),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

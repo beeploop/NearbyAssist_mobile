@@ -38,24 +38,21 @@ class _PendingRequestPageState extends State<PendingRequestPage> {
   }
 
   Widget _mainContent(List<BookingModel> requests) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: ListView.separated(
-        separatorBuilder: (context, index) => const Divider(),
-        itemCount: requests.length,
-        itemBuilder: (context, index) => PendingRequestListItem(
-          booking: requests[index],
-          onTap: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => PendingRequestSummaryPage(
-                  booking: requests[index],
-                ),
+    return ListView.separated(
+      separatorBuilder: (context, index) => const Divider(),
+      itemCount: requests.length,
+      itemBuilder: (context, index) => PendingRequestListItem(
+        booking: requests[index],
+        onTap: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => PendingRequestSummaryPage(
+                booking: requests[index],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -77,17 +77,14 @@ class ToRateListItem extends StatelessWidget {
             children: [
               Text(
                 booking.service.title,
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
               ),
               Text(
                 booking.service.description,
+                style: const TextStyle(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 12,
-                ),
+                maxLines: 2,
               ),
             ],
           ),
