@@ -18,6 +18,7 @@ class BookingModel {
   DateTime? updatedAt;
   DateTime? scheduledAt;
   String? cancelReason;
+  String cancelledById;
 
   BookingModel({
     required this.id,
@@ -32,6 +33,7 @@ class BookingModel {
     required this.updatedAt,
     required this.scheduledAt,
     required this.cancelReason,
+    required this.cancelledById,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class BookingModel {
         'confirmed' => BookingStatus.confirmed,
         'done' => BookingStatus.done,
         'rejected' => BookingStatus.rejected,
+        'cancelled' => BookingStatus.cancelled,
         _ => BookingStatus.cancelled,
       },
       qrSignature: json['qrSignature'],
@@ -59,6 +62,7 @@ class BookingModel {
           ? DateTime.parse(json['scheduledAt'])
           : null,
       cancelReason: json['cancelReason'],
+      cancelledById: json['cancelledById'],
     );
   }
 
@@ -81,6 +85,7 @@ class BookingModel {
       updatedAt: updatedAt ?? this.updatedAt,
       scheduledAt: scheduledAt ?? this.scheduledAt,
       cancelReason: cancelReason ?? this.cancelReason,
+      cancelledById: cancelledById,
     );
   }
 

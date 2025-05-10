@@ -5,6 +5,7 @@ import 'package:nearby_assist/pages/account/control_center/history/widget/review
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -117,6 +118,9 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   const SizedBox(height: 20),
 
                   // Reason if rejected or cancelled
+                  _whoCancelled(),
+                  const SizedBox(height: 10),
+
                   if (widget.booking.status == BookingStatus.rejected ||
                       widget.booking.status == BookingStatus.cancelled)
                     const AutoSizeText(
@@ -147,6 +151,44 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
               ),
             );
           }),
+    );
+  }
+
+  Widget _whoCancelled() {
+    final user = context.watch<UserProvider>().user;
+
+    if (widget.booking.status != BookingStatus.cancelled) {
+      return const SizedBox(height: 10);
+    }
+
+    if (widget.booking.cancelledById == user.id) {
+      return RichText(
+        text: const TextSpan(
+          style: TextStyle(color: Colors.black, fontSize: 12),
+          children: [
+            TextSpan(
+                text: 'Cancelled by: ',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            TextSpan(
+              text: 'You',
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RichText(
+      text: const TextSpan(
+        style: TextStyle(color: Colors.black, fontSize: 12),
+        children: [
+          TextSpan(
+              text: 'Cancelled by: ',
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(
+            text: 'Client',
+          ),
+        ],
+      ),
     );
   }
 }
