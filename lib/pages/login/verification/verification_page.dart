@@ -1,20 +1,13 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dio/dio.dart';
-import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/models/signup_model.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
-import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
-import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
-import 'package:nearby_assist/pages/account/profile/widget/identity_capture.dart';
 import 'package:nearby_assist/pages/login/verification/widget/input_field.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
+import 'package:nearby_assist/services/google_auth_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
@@ -38,12 +31,7 @@ class _VerificationPageState extends State<VerificationPage> {
   bool _submittable = false;
   final _nameController = TextEditingController(),
       _addressController = TextEditingController(),
-      _phoneController = TextEditingController(),
-      _idNumberController = TextEditingController(),
-      _frontIdController = FillableImageContainerController(),
-      _backIdController = FillableImageContainerController(),
-      _selfieController = FillableImageContainerController();
-  ValidID _selectedIDType = ValidID.none;
+      _phoneController = TextEditingController();
 
   void _initializeValues() {
     setState(() {
@@ -55,6 +43,12 @@ class _VerificationPageState extends State<VerificationPage> {
   void initState() {
     super.initState();
     _initializeValues();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    GoogleAuthService().logout();
   }
 
   @override
@@ -100,102 +94,32 @@ class _VerificationPageState extends State<VerificationPage> {
                 ),
                 const SizedBox(height: 20),
 
-                // ID Type
-                DropdownSearch<ValidID>(
-                  decoratorProps: const DropDownDecoratorProps(
-                    decoration: InputDecoration(
-                      labelText: 'ID Type',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  items: (filter, props) => ValidID.values,
-                  itemAsString: (id) => id.value,
-                  compareFn: (id, selectedID) => id == selectedID,
-                  selectedItem: _selectedIDType,
-                  onChanged: (validID) => setState(
-                    () => validID != null
-                        ? _selectedIDType = validID
-                        : ValidID.none,
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // ID Number
-                InputField(
-                  controller: _idNumberController,
-                  labelText: 'ID Number',
-                  validInputListenerCallback: (valid) =>
-                      setState(() => _submittable = valid),
-                ),
-                const SizedBox(height: 20),
-
-                // Front ID
-                const AutoSizeText('ID Front'),
-                const SizedBox(height: 10),
-                IdentityCapture(
-                  controller: _frontIdController,
-                  labelText: 'Front ID',
-                  hintText: 'Tap to capture',
-                  icon: CupertinoIcons.photo,
-                ),
-                const SizedBox(height: 10),
-
-                // Back ID
-                const AutoSizeText('ID Back'),
-                const SizedBox(height: 10),
-                IdentityCapture(
-                  controller: _backIdController,
-                  labelText: 'Back ID',
-                  hintText: 'Tap to capture',
-                  icon: CupertinoIcons.photo,
-                ),
-                const SizedBox(height: 20),
-
-                // Divider
-                const Divider(),
-                const SizedBox(height: 20),
-
-                // Selfie
-                const AutoSizeText('Selfie'),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    FillableImageContainer(
-                      controller: _selfieController,
-                      labelText: 'Face',
-                      hintText: 'Tap to open camera',
-                      icon: CupertinoIcons.camera_viewfinder,
-                      source: ImageSource.camera,
-                      validInputListenerCallback: (valid) =>
-                          setState(() => _submittable = valid),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
                 // Signup button
-                FilledButton(
-                  onPressed: _handleSignup,
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(
-                      !_submittable ? Colors.grey : null,
-                    ),
-                    minimumSize: const WidgetStatePropertyAll(
-                      Size.fromHeight(50),
-                    ),
-                    shape: WidgetStatePropertyAll(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                  child: const Text('Sign up'),
-                ),
 
                 // Bottom padding
                 const SizedBox(height: 20),
               ],
             ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: FilledButton(
+            onPressed: _handleSignup,
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(
+                !_submittable ? Colors.grey : null,
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
+              ),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            child: const Text('Sign up'),
           ),
         ),
       ),
@@ -221,11 +145,6 @@ class _VerificationPageState extends State<VerificationPage> {
         address: _addressController.text,
         latitude: location.latitude,
         longitude: location.longitude,
-        idType: _selectedIDType,
-        referenceNumber: _idNumberController.text,
-        frontId: _frontIdController.imageBytes!,
-        backId: _backIdController.imageBytes!,
-        selfie: _selfieController.imageBytes!,
       );
 
       data.selfValidate();

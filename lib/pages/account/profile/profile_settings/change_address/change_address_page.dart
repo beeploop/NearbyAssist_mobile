@@ -58,6 +58,9 @@ class _ChangeAddressPageState extends State<ChangeAddressPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
+              ),
             ),
             child: const Text('Change Address'),
           ),

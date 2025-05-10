@@ -11,6 +11,7 @@ import 'package:nearby_assist/pages/account/profile/widget/profile_avatar.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/launch_url.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
 import 'package:nearby_assist/utils/social_type_icon.dart';
 import 'package:provider/provider.dart';
 
@@ -176,6 +177,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     // Expertise
                     if (provider.user.isVerified) const ExpertiseSection(),
                     const Divider(),
+
+                    Text(prettyJSON(provider.user)),
 
                     // Bottom padding
                     const SizedBox(height: 20),

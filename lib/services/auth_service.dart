@@ -1,17 +1,13 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/signup_model.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
-import 'package:nearby_assist/services/image_resize_service.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
 // ignore: depend_on_referenced_packages
-import 'package:http_parser/http_parser.dart';
 
 class AuthService {
   Future<UserModel> signup(SignupModel userData) async {
@@ -33,29 +29,12 @@ class AuthService {
 
   Future<UserModel> _serverSignup(SignupModel userData) async {
     try {
-      final data = FormData.fromMap({
-        'user': jsonEncode(userData),
-        'files': [
-          MultipartFile.fromBytes(
-            await compute(ImageResizeService.resize, userData.frontId),
-            filename: 'frontId',
-            contentType: MediaType('image', 'jpeg'),
-          ),
-          MultipartFile.fromBytes(
-            await compute(ImageResizeService.resize, userData.backId),
-            filename: 'backId',
-            contentType: MediaType('image', 'jpeg'),
-          ),
-          MultipartFile.fromBytes(
-            await compute(ImageResizeService.resize, userData.selfie),
-            filename: 'face',
-            contentType: MediaType('image', 'jpeg'),
-          ),
-        ],
-      });
-
       final api = ApiService.unauthenticated();
-      final response = await api.dio.post(endpoint.register, data: data);
+      final response = await api.dio.post(
+        endpoint.register,
+        data: userData.toJson(),
+      );
+      logger.logDebug(response.data);
 
       final accessToken = response.data['accessToken'];
       final refreshToken = response.data['refreshToken'];
