@@ -15,51 +15,66 @@ class SearchResultListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () => context.pushNamed(
-        'viewService',
-        queryParameters: {'serviceId': result.id},
-      ),
-      titleAlignment: ListTileTitleAlignment.top,
-      leading: result.service!.images.isNotEmpty
-          ? CachedNetworkImage(
-              imageUrl:
-                  '${endpoint.publicResource}/${result.service!.images[0].url}',
-              fit: BoxFit.fitHeight,
-              progressIndicatorBuilder: (context, url, downloadProgress) {
-                return CircularProgressIndicator(
-                    value: downloadProgress.progress);
-              },
-              errorWidget: (context, url, error) => const Icon(
-                CupertinoIcons.photo,
-              ),
-            )
-          : Icon(
-              _icon(result.service!.tags.first.title),
-              size: 26,
-              grade: 10,
-            ),
-      title: Text(
-        result.service!.title,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ),
-      subtitle: RatingBar.builder(
-        initialRating: result.rating,
-        allowHalfRating: true,
-        itemSize: 20,
-        itemBuilder: (context, _) => const Icon(
-          Icons.star,
-          color: Colors.yellow,
+    return SizedBox(
+      height: 60,
+      child: ListTile(
+        onTap: () => context.pushNamed(
+          'viewService',
+          queryParameters: {'serviceId': result.id},
         ),
-        onRatingUpdate: (_) {},
-        ignoreGestures: true,
-      ),
-      trailing: Text(
-        formatCurrency(result.rate),
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-          color: Colors.black,
+        titleAlignment: ListTileTitleAlignment.top,
+        leading: result.service!.images.isNotEmpty
+            ? CachedNetworkImage(
+                imageUrl:
+                    '${endpoint.publicResource}/${result.service!.images[0].url}',
+                fit: BoxFit.fitHeight,
+                progressIndicatorBuilder: (context, url, downloadProgress) {
+                  return CircularProgressIndicator(
+                      value: downloadProgress.progress);
+                },
+                errorWidget: (context, url, error) => const Icon(
+                  CupertinoIcons.photo,
+                ),
+              )
+            : Icon(
+                _icon(result.service!.tags.first.title),
+                size: 26,
+                grade: 10,
+              ),
+        title: Text(
+          result.vendorName,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          result.service!.title,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            RatingBar.builder(
+              initialRating: result.rating,
+              allowHalfRating: true,
+              itemSize: 20,
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.yellow,
+              ),
+              onRatingUpdate: (_) {},
+              ignoreGestures: true,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              formatCurrency(result.rate),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.black,
+              ),
+            ),
+          ],
         ),
       ),
     );

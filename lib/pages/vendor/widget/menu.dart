@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/report/report_user_reason_page.dart';
+import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/show_unverified_account_modal.dart';
+import 'package:provider/provider.dart';
 
 class Menu extends StatelessWidget {
   const Menu({super.key, required this.vendorId});
@@ -9,23 +12,33 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
-      icon: const Icon(CupertinoIcons.ellipsis_vertical),
-      itemBuilder: (context) => [
-        _popupItem(
-          context,
-          onTap: () {
-            Navigator.push(
+    return Consumer<UserProvider>(
+      builder: (context, provider, _) {
+        return PopupMenuButton(
+          icon: const Icon(CupertinoIcons.ellipsis_vertical),
+          itemBuilder: (context) => [
+            _popupItem(
               context,
-              CupertinoPageRoute(
-                builder: (context) => ReportUserReasonPage(userId: vendorId),
-              ),
-            );
-          },
-          icon: CupertinoIcons.nosign,
-          text: 'Report user',
-        ),
-      ],
+              onTap: () {
+                if (!provider.user.isVerified) {
+                  showUnverifiedAccountModal(context);
+                  return;
+                }
+
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) =>
+                        ReportUserReasonPage(userId: vendorId),
+                  ),
+                );
+              },
+              icon: CupertinoIcons.nosign,
+              text: 'Report user',
+            ),
+          ],
+        );
+      },
     );
   }
 
