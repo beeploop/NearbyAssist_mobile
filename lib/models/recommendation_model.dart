@@ -1,3 +1,4 @@
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 
 class RecommendationModel {
@@ -8,7 +9,8 @@ class RecommendationModel {
   String title;
   String description;
   double rating;
-  double rate;
+  double price;
+  PricingType pricingType;
   List<TagModel> tags;
 
   RecommendationModel({
@@ -19,7 +21,8 @@ class RecommendationModel {
     required this.title,
     required this.description,
     required this.rating,
-    required this.rate,
+    required this.price,
+    required this.pricingType,
     required this.tags,
   });
 
@@ -32,7 +35,20 @@ class RecommendationModel {
       title: json['title'],
       description: json['description'],
       rating: double.parse(json['rating']),
-      rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
+      price:
+          double.tryParse(json['price'].toString().replaceAll(",", "")) ?? 0.0,
+      pricingType: () {
+        switch (json['pricingType']) {
+          case 'fixed':
+            return PricingType.fixed;
+          case 'per_hour':
+            return PricingType.perHour;
+          case 'per_day':
+            return PricingType.perDay;
+          default:
+            return PricingType.fixed;
+        }
+      }(),
       tags: ((json['tags'] ?? []) as List)
           .map((tag) => TagModel.fromJson(tag))
           .toList(),

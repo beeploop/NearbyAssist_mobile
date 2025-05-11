@@ -254,7 +254,7 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   double _computeTotal() {
-    double total = widget.details.service.rate;
+    double total = widget.details.service.price;
     for (final extra in _selectedExtras) {
       total += extra.price;
     }

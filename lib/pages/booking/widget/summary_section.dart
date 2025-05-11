@@ -63,8 +63,8 @@ class _SummarySectionState extends State<SummarySection> {
         // Extras
         const SizedBox(height: 20),
         RowTile(
-          label: 'Base Rate:',
-          text: formatCurrency(widget.detail.service.rate),
+          label: 'Base Price:',
+          text: formatCurrency(widget.detail.service.price),
         ),
         const SizedBox(height: 20),
         const Text(
@@ -97,7 +97,7 @@ class _SummarySectionState extends State<SummarySection> {
   }
 
   double _calculateTotalCost() {
-    double total = widget.detail.service.rate;
+    double total = widget.detail.service.price;
     for (final extra in widget.selectedExtras) {
       total += extra.price;
     }

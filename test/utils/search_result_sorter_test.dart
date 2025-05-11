@@ -7,7 +7,7 @@ void main() {
   final services = [
     SearchResultModel(
       id: '1',
-      rate: 200,
+      price: 200,
       rating: 3,
       completedBookings: 1,
       distance: 3.4028235,
@@ -19,7 +19,7 @@ void main() {
     ),
     SearchResultModel(
       id: '2',
-      rate: 450,
+      price: 450,
       rating: 0,
       completedBookings: 0,
       distance: 3.4028235,
@@ -31,7 +31,7 @@ void main() {
     ),
     SearchResultModel(
       id: '3',
-      rate: 500,
+      price: 500,
       rating: 3,
       completedBookings: 0,
       distance: 3.4028235,
@@ -53,9 +53,9 @@ void main() {
     expect(result.map((e) => e.id), ['1', '3', '2']);
   });
 
-  test('test sorting by rate', () {
+  test('test sorting by price', () {
     final sorter = SearchResultSorter(
-      method: ServiceSortingMethod.rate,
+      method: ServiceSortingMethod.price,
       services: [...services],
     );
 

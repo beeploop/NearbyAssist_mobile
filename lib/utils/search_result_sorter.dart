@@ -14,8 +14,8 @@ class SearchResultSorter {
     switch (method) {
       case ServiceSortingMethod.suggestionScore:
         return _sortWithSuggestionScore();
-      case ServiceSortingMethod.rate:
-        return _sortWithRate();
+      case ServiceSortingMethod.price:
+        return _sortWithPrice();
       case ServiceSortingMethod.rating:
         return _sortWithRating();
       case ServiceSortingMethod.completedBookings:
@@ -30,8 +30,8 @@ class SearchResultSorter {
     return services;
   }
 
-  List<SearchResultModel> _sortWithRate() {
-    services.sort((a, b) => a.rate.compareTo(b.rate));
+  List<SearchResultModel> _sortWithPrice() {
+    services.sort((a, b) => a.price.compareTo(b.price));
     return services;
   }
 

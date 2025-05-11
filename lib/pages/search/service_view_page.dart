@@ -15,6 +15,7 @@ import 'package:nearby_assist/pages/search/widget/service_review_item.dart';
 import 'package:nearby_assist/pages/search/widget/vendor_info_section.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/format_pricing_with_pricing_type.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:nearby_assist/utils/show_unverified_account_modal.dart';
@@ -355,7 +356,10 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
             ),
             child: Center(
               child: Text(
-                formatCurrency(details.service.rate),
+                formatPriceWithPricingType(
+                  details.service.price,
+                  details.service.pricingType,
+                ),
                 style: const TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),

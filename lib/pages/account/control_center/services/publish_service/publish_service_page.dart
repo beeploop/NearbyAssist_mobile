@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/new_extra.dart';
 import 'package:nearby_assist/models/new_service.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/service_overview.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/service_pricing.dart';
@@ -25,6 +26,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _basePriceController = TextEditingController();
+  PricingType _pricingType = PricingType.fixed;
   final List<TagModel> _selectedTags = [];
   final List<ServiceExtra> _serviceExtras = [];
 
@@ -64,6 +66,12 @@ class _PublishServicePageState extends State<PublishServicePage> {
         title: const Text('Step 2'),
         content: ServicePricing(
           basePriceController: _basePriceController,
+          onPricingTypeChange: (type) {
+            setState(() {
+              _pricingType = type;
+            });
+          },
+          defaultPricing: _pricingType,
           serviceExtras: _serviceExtras,
         ),
       ),
@@ -173,7 +181,8 @@ class _PublishServicePageState extends State<PublishServicePage> {
         vendorId: user.id,
         title: _titleController.text,
         description: _descriptionController.text,
-        rate: double.tryParse(_basePriceController.text) ?? 0,
+        price: double.tryParse(_basePriceController.text) ?? 0,
+        pricingType: _pricingType,
         tags: _selectedTags,
         extras: _serviceExtras
             .map((extra) => NewExtra(

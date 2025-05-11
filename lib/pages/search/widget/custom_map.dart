@@ -232,7 +232,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
             ),
             _orderPreferenceItem(
               searchProvider,
-              ServiceSortingMethod.rate,
+              ServiceSortingMethod.price,
               CupertinoIcons.money_dollar,
             ),
             _orderPreferenceItem(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
@@ -27,7 +28,8 @@ class _EditServicePageState extends State<EditServicePage> {
   bool _hasChanged = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _rateController = TextEditingController();
+  final _priceController = TextEditingController();
+  late PricingType _pricingType;
   final List<TagModel> _selectedTags = [];
   final List<TagModel> _availableTags = [];
 
@@ -35,7 +37,8 @@ class _EditServicePageState extends State<EditServicePage> {
   void initState() {
     _titleController.text = widget.service.title;
     _descriptionController.text = widget.service.description;
-    _rateController.text = widget.service.rate.toString();
+    _priceController.text = widget.service.price.toString();
+    _pricingType = widget.service.pricingType;
     _selectedTags.addAll(widget.service.tags);
 
     final expertises =
@@ -120,14 +123,14 @@ class _EditServicePageState extends State<EditServicePage> {
             ),
             const SizedBox(height: 20),
 
-            // Rate
-            const Text('Rate'),
+            // Price
+            const Text('Price'),
             const SizedBox(height: 10),
             TextFormField(
-              controller: _rateController,
+              controller: _priceController,
               keyboardType: TextInputType.number,
               onChanged: (value) {
-                if (double.parse(value) != widget.service.rate) {
+                if (double.parse(value) != widget.service.price) {
                   setState(() {
                     _hasChanged = true;
                   });
@@ -142,6 +145,30 @@ class _EditServicePageState extends State<EditServicePage> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
               ),
+            ),
+            const SizedBox(height: 10),
+
+            // Pricing type
+            Row(
+              children: [
+                const Text('Pricing: '),
+                const SizedBox(width: 10),
+                DropdownButton<PricingType>(
+                  value: _pricingType,
+                  items: PricingType.values
+                      .map((type) => DropdownMenuItem(
+                            value: type,
+                            child: Text(type.label),
+                          ))
+                      .toList(),
+                  onChanged: (type) {
+                    setState(() {
+                      _pricingType = type ?? widget.service.pricingType;
+                      _hasChanged = true;
+                    });
+                  },
+                ),
+              ],
             ),
             const SizedBox(height: 20),
 
@@ -230,7 +257,7 @@ class _EditServicePageState extends State<EditServicePage> {
 
       if (_titleController.text.isEmpty ||
           _descriptionController.text.isEmpty ||
-          _rateController.text.isEmpty ||
+          _priceController.text.isEmpty ||
           _selectedTags.isEmpty) {
         throw "Don't leave empty fields";
       }
@@ -247,11 +274,13 @@ class _EditServicePageState extends State<EditServicePage> {
         vendorId: widget.service.vendorId,
         title: _titleController.text,
         description: _descriptionController.text,
-        rate: double.parse(_rateController.text),
+        price: double.parse(_priceController.text),
+        pricingType: _pricingType,
         tags: _selectedTags,
       );
 
       await provider.updateService(updatedData, widget.service.extras);
+
       navigator.pop();
     } on LocationServiceDisabledException catch (_) {
       if (!mounted) return;

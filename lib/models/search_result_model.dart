@@ -4,7 +4,7 @@ class SearchResultModel {
   String id;
   String vendorName;
   double suggestionScore;
-  double rate;
+  double price;
   double rating;
   double latitude;
   double longitude;
@@ -16,7 +16,7 @@ class SearchResultModel {
     required this.id,
     required this.vendorName,
     required this.suggestionScore,
-    required this.rate,
+    required this.price,
     required this.rating,
     required this.latitude,
     required this.longitude,
@@ -30,7 +30,7 @@ class SearchResultModel {
       id: json['id'],
       vendorName: json['vendorName'],
       suggestionScore: double.parse(json['suggestionScore'].toString()),
-      rate: double.parse(json['rate'].toString()),
+      price: double.parse(json['price'].toString()),
       rating: double.parse(json['rating'].toString()),
       latitude: json['latitude'],
       longitude: json['longitude'],

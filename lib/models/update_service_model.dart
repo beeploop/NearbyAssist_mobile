@@ -1,3 +1,4 @@
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 
 class UpdateServiceModel {
@@ -5,7 +6,8 @@ class UpdateServiceModel {
   final String vendorId;
   final String title;
   final String description;
-  final double rate;
+  final double price;
+  final PricingType pricingType;
   final List<TagModel> tags;
 
   UpdateServiceModel({
@@ -13,7 +15,8 @@ class UpdateServiceModel {
     required this.vendorId,
     required this.title,
     required this.description,
-    required this.rate,
+    required this.price,
+    required this.pricingType,
     required this.tags,
   });
 
@@ -23,7 +26,8 @@ class UpdateServiceModel {
       'vendorId': vendorId,
       'title': title,
       'description': description,
-      'rate': rate.toString(),
+      'price': price.toString(),
+      'pricingType': pricingType.name,
       'tags': tags.map((tag) => tag.title).toList(),
     };
   }

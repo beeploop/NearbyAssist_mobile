@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/utils/money_formatter.dart';
 
 class ServiceInformationSection extends StatefulWidget {
   const ServiceInformationSection({
@@ -62,8 +63,8 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
         Text(widget.details.service.description),
         const SizedBox(height: 20),
         RowTile(
-          label: 'Base Rate',
-          text: '₱ ${widget.details.service.rate}',
+          label: 'Base Price',
+          text: formatCurrency(widget.details.service.price),
         ),
 
         const SizedBox(height: 20),

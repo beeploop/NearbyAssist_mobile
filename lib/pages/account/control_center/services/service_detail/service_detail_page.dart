@@ -14,6 +14,7 @@ import 'package:nearby_assist/pages/account/control_center/services/service_deta
 import 'package:nearby_assist/pages/account/control_center/services/service_detail/widget/rating_count_bar.dart';
 import 'package:nearby_assist/pages/account/control_center/services/service_detail/widget/review_item.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/utils/format_pricing_with_pricing_type.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +94,10 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                     Text(service.description),
                     const SizedBox(height: 10),
                     Text(
-                      formatCurrency(service.rate),
+                      formatPriceWithPricingType(
+                        service.price,
+                        service.pricingType,
+                      ),
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,

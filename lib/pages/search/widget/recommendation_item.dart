@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/recommendation_model.dart';
-import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/format_pricing_with_pricing_type.dart';
 
 class RecommendationItem extends StatelessWidget {
   const RecommendationItem({
@@ -50,7 +50,7 @@ class RecommendationItem extends StatelessWidget {
                     ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -66,7 +66,10 @@ class RecommendationItem extends StatelessWidget {
                   Row(
                     children: [
                       AutoSizeText(
-                        formatCurrency(data.rate),
+                        formatPriceWithPricingType(
+                          data.price,
+                          data.pricingType,
+                        ),
                         style: const TextStyle(fontSize: 16),
                       ),
                       const Spacer(),

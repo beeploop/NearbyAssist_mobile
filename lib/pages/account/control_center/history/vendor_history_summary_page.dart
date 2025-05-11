@@ -89,8 +89,13 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   ),
                   const SizedBox(height: 10),
                   RowTile(
-                    label: 'Base Rate:',
-                    text: formatCurrency(widget.booking.service.rate),
+                    label: 'Base Price:',
+                    text: formatCurrency(widget.booking.service.price),
+                  ),
+                  const SizedBox(height: 10),
+                  RowTile(
+                    label: 'Pricing Type',
+                    text: widget.booking.service.pricingType.label,
                   ),
                   const SizedBox(height: 20),
                   const AutoSizeText(

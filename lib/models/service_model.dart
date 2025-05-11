@@ -1,4 +1,5 @@
 import 'package:nearby_assist/models/location_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
@@ -8,7 +9,8 @@ class ServiceModel {
   final String vendorId;
   final String title;
   final String description;
-  final double rate;
+  final double price;
+  final PricingType pricingType;
   final List<TagModel> tags;
   final List<ServiceExtraModel> extras;
   List<ServiceImageModel> images;
@@ -20,7 +22,8 @@ class ServiceModel {
     required this.vendorId,
     required this.title,
     required this.description,
-    required this.rate,
+    required this.price,
+    required this.pricingType,
     required this.tags,
     required this.extras,
     required this.images,
@@ -34,7 +37,20 @@ class ServiceModel {
       vendorId: json['vendorId'],
       title: json['title'],
       description: json['description'],
-      rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
+      price:
+          double.tryParse(json['price'].toString().replaceAll(",", "")) ?? 0.0,
+      pricingType: () {
+        switch (json['pricingType']) {
+          case 'fixed':
+            return PricingType.fixed;
+          case 'per_hour':
+            return PricingType.perHour;
+          case 'per_day':
+            return PricingType.perDay;
+          default:
+            return PricingType.fixed;
+        }
+      }(),
       tags: ((json['tags'] ?? []) as List)
           .map((tag) => TagModel.fromJson(tag))
           .toList(),

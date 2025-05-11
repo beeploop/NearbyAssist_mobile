@@ -67,7 +67,7 @@ class SearchResultListItem extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              formatCurrency(result.rate),
+              formatCurrency(result.price),
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,

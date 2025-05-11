@@ -1,5 +1,6 @@
 import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/minimal_user_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/tag_model.dart';
 
@@ -91,7 +92,7 @@ class BookingModel {
 
   double total() {
     return extras.fold<double>(
-      service.rate,
+      service.price,
       (prev, extra) => prev + extra.price,
     );
   }
@@ -102,7 +103,8 @@ class MinimalServiceModel {
   final String vendorId;
   final String title;
   final String description;
-  final double rate;
+  final double price;
+  final PricingType pricingType;
   final List<TagModel> tags;
   final LocationModel location;
 
@@ -111,7 +113,8 @@ class MinimalServiceModel {
     required this.vendorId,
     required this.title,
     required this.description,
-    required this.rate,
+    required this.price,
+    required this.pricingType,
     required this.tags,
     required this.location,
   });
@@ -122,7 +125,20 @@ class MinimalServiceModel {
       vendorId: json['vendorId'],
       title: json['title'],
       description: json['description'],
-      rate: double.tryParse(json['rate'].toString().replaceAll(",", "")) ?? 0.0,
+      price:
+          double.tryParse(json['price'].toString().replaceAll(",", "")) ?? 0.0,
+      pricingType: () {
+        switch (json['pricingType']) {
+          case 'fixed':
+            return PricingType.fixed;
+          case 'per_hour':
+            return PricingType.perHour;
+          case 'per_day':
+            return PricingType.perDay;
+          default:
+            return PricingType.fixed;
+        }
+      }(),
       tags: List.from(
         ((json['tags'] ?? []) as List).map((tag) => TagModel.fromJson(tag)),
       ),
@@ -135,7 +151,8 @@ class MinimalServiceModel {
       'vendorId': vendorId,
       'title': title,
       'description': description,
-      'rate': rate.toString(),
+      'price': price.toString(),
+      'pricingType': pricingType.name,
       'tags': tags,
       'location': location.toJson(),
     };

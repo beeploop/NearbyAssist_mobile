@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/widget/service_extra.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/widget/service_extra_controller.dart';
 
@@ -8,10 +9,14 @@ class ServicePricing extends StatefulWidget {
   const ServicePricing({
     super.key,
     required this.basePriceController,
+    required this.defaultPricing,
+    required this.onPricingTypeChange,
     required this.serviceExtras,
   });
 
   final TextEditingController basePriceController;
+  final PricingType defaultPricing;
+  final void Function(PricingType type) onPricingTypeChange;
   final List<ServiceExtra> serviceExtras;
 
   @override
@@ -31,8 +36,34 @@ class _ServicePricingState extends State<ServicePricing> {
             fontWeight: FontWeight.bold,
           ),
         ),
+
+        //
         const SizedBox(height: 10),
         _basePriceField(),
+        const SizedBox(height: 10),
+
+        // Pricing type
+        Row(
+          children: [
+            const Text('Pricing: '),
+            const SizedBox(width: 10),
+            DropdownButton<PricingType>(
+              value: widget.defaultPricing,
+              items: PricingType.values
+                  .map((type) => DropdownMenuItem(
+                        value: type,
+                        child: Text(type.label),
+                      ))
+                  .toList(),
+              onChanged: (type) {
+                widget.onPricingTypeChange(type ?? PricingType.fixed);
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+
+        //
         const Divider(),
         TextButton.icon(
           onPressed: _addField,
@@ -48,7 +79,7 @@ class _ServicePricingState extends State<ServicePricing> {
   Widget _basePriceField() {
     return Row(
       children: [
-        const Text('Base Price:'),
+        const Text('Base Price: '),
         const SizedBox(width: 10),
         Expanded(
           child: TextFormField(
