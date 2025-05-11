@@ -4,6 +4,7 @@ class BookingRequestModel {
   final String vendorId;
   final String clientId;
   final String serviceId;
+  final int quantity;
   final String totalCost;
   final List<ServiceExtraModel> extras;
 
@@ -11,6 +12,7 @@ class BookingRequestModel {
     required this.vendorId,
     required this.clientId,
     required this.serviceId,
+    required this.quantity,
     required this.totalCost,
     required this.extras,
   });
@@ -20,6 +22,7 @@ class BookingRequestModel {
       'vendorId': vendorId,
       'clientId': clientId,
       'serviceId': serviceId,
+      'quantity': quantity,
       'cost': totalCost,
       'extras': extras.map((e) => e.toJson()).toList(),
     };

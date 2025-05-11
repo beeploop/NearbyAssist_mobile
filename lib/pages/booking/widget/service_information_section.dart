@@ -1,6 +1,7 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
@@ -8,10 +9,14 @@ import 'package:nearby_assist/utils/money_formatter.dart';
 class ServiceInformationSection extends StatefulWidget {
   const ServiceInformationSection({
     super.key,
+    required this.pricingType,
+    required this.quantityController,
     required this.selectedExtras,
     required this.details,
   });
 
+  final PricingType pricingType;
+  final TextEditingController quantityController;
   final List<ServiceExtraModel> selectedExtras;
   final DetailedServiceModel details;
 
@@ -66,10 +71,37 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
           label: 'Base Price',
           text: formatCurrency(widget.details.service.price),
         ),
+        const SizedBox(height: 10),
+        RowTile(label: 'Pricing Type', text: widget.pricingType.label),
+        const SizedBox(height: 12),
+
+        // Quantity
+        if (widget.pricingType != PricingType.fixed)
+          TextFormField(
+            controller: widget.quantityController,
+            onTapOutside: (event) => FocusScope.of(context).unfocus(),
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: () {
+                switch (widget.pricingType) {
+                  case PricingType.fixed:
+                    return 'Quantity';
+                  case PricingType.perHour:
+                    return 'Hours';
+                  case PricingType.perDay:
+                    return 'Days';
+                }
+              }(),
+              border: const OutlineInputBorder(),
+              hintText: '',
+              hintStyle: const TextStyle(color: Colors.grey),
+            ),
+          ),
+        if (widget.pricingType != PricingType.fixed) const SizedBox(height: 10),
 
         const SizedBox(height: 20),
         const Divider(),
-        const Text('Extras', style: TextStyle(fontWeight: FontWeight.bold)),
+        const Text('Add-ons:', style: TextStyle(fontWeight: FontWeight.bold)),
 
         // Extras
         ..._buildExtras(),

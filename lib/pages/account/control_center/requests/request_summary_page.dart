@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_generic_success_modal.dart';
@@ -183,9 +185,19 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
               label: 'Pricing Type',
               text: widget.booking.service.pricingType.label,
             ),
+            if (widget.booking.service.pricingType != PricingType.fixed)
+              const SizedBox(height: 10),
+            if (widget.booking.service.pricingType != PricingType.fixed)
+              RowTile(
+                label: 'Booked for',
+                text: formatQuantityBooked(
+                  widget.booking.quantity,
+                  widget.booking.service.pricingType,
+                ),
+              ),
             const SizedBox(height: 20),
             const AutoSizeText(
-              'Extras:',
+              'Add-ons:',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),

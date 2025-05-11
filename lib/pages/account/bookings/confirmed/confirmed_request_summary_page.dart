@@ -2,10 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/pages/account/bookings/confirmed/widget/booking_qr_image.dart';
 import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 
 class ConfirmedRequestSummarPage extends StatefulWidget {
@@ -94,9 +96,19 @@ class _ConfirmedRequestSummarPageState
             label: 'Pricing Type',
             text: widget.booking.service.pricingType.label,
           ),
+          if (widget.booking.service.pricingType != PricingType.fixed)
+            const SizedBox(height: 10),
+          if (widget.booking.service.pricingType != PricingType.fixed)
+            RowTile(
+              label: 'Booked for',
+              text: formatQuantityBooked(
+                widget.booking.quantity,
+                widget.booking.service.pricingType,
+              ),
+            ),
           const SizedBox(height: 20),
           const AutoSizeText(
-            'Extras:',
+            'Add-ons:',
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),

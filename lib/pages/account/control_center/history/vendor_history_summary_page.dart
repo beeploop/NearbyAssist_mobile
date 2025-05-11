@@ -1,11 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/pages/account/control_center/history/widget/review_item.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -97,9 +99,19 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                     label: 'Pricing Type',
                     text: widget.booking.service.pricingType.label,
                   ),
+                  if (widget.booking.service.pricingType != PricingType.fixed)
+                    const SizedBox(height: 10),
+                  if (widget.booking.service.pricingType != PricingType.fixed)
+                    RowTile(
+                      label: 'Booked for',
+                      text: formatQuantityBooked(
+                        widget.booking.quantity,
+                        widget.booking.service.pricingType,
+                      ),
+                    ),
                   const SizedBox(height: 20),
                   const AutoSizeText(
-                    'Extras:',
+                    'Add-ons:',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),

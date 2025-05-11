@@ -12,6 +12,7 @@ class BookingModel {
   MinimalUserModel client;
   MinimalServiceModel service;
   List<ServiceExtraModel> extras;
+  int quantity;
   double cost;
   BookingStatus status;
   String qrSignature;
@@ -27,6 +28,7 @@ class BookingModel {
     required this.client,
     required this.service,
     required this.extras,
+    required this.quantity,
     required this.cost,
     required this.status,
     required this.qrSignature,
@@ -46,6 +48,7 @@ class BookingModel {
       extras: ((json['extras'] ?? []) as List)
           .map<ServiceExtraModel>((extra) => ServiceExtraModel.fromJson(extra))
           .toList(),
+      quantity: json['quantity'],
       cost: double.tryParse(json['cost'].toString()) ?? 0.0,
       status: switch (json['status']) {
         'pending' => BookingStatus.pending,
@@ -79,6 +82,7 @@ class BookingModel {
       client: client,
       service: service,
       extras: extras,
+      quantity: quantity,
       cost: cost,
       status: status ?? this.status,
       qrSignature: qrSignature,
@@ -91,10 +95,13 @@ class BookingModel {
   }
 
   double total() {
-    return extras.fold<double>(
-      service.price,
-      (prev, extra) => prev + extra.price,
-    );
+    final base = switch (service.pricingType) {
+      PricingType.fixed => service.price,
+      PricingType.perHour => service.price * quantity,
+      PricingType.perDay => service.price * quantity,
+    };
+
+    return extras.fold<double>(base, (prev, extra) => prev + extra.price);
   }
 }
 

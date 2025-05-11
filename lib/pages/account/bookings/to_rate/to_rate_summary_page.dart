@@ -69,7 +69,7 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               ),
               const SizedBox(height: 20),
               const AutoSizeText(
-                'Extras:',
+                'Add-ons:',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),

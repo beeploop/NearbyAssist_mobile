@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_request_model.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/service_information_section.dart';
 import 'package:nearby_assist/pages/booking/widget/summary_section.dart';
@@ -25,6 +26,7 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   final List<ServiceExtraModel> _selectedExtras = [];
   final _addressController = TextEditingController();
+  final _quantityController = TextEditingController(text: '1');
 
   int _currentStep = 0;
 
@@ -58,6 +60,8 @@ class _BookingPageState extends State<BookingPage> {
         isActive: _currentStep >= 0,
         title: const Text('Step 1'),
         content: ServiceInformationSection(
+          pricingType: widget.details.service.pricingType,
+          quantityController: _quantityController,
           selectedExtras: _selectedExtras,
           details: widget.details,
         ),
@@ -73,6 +77,7 @@ class _BookingPageState extends State<BookingPage> {
         isActive: _currentStep >= 2,
         title: const Text('Step 3'),
         content: SummarySection(
+          quantityController: _quantityController,
           detail: widget.details,
           clientAddress: _addressController.text,
           selectedExtras: _selectedExtras,
@@ -136,6 +141,9 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   bool _isValid() {
+    final quantity = int.tryParse(_quantityController.text);
+    if (quantity == null || quantity < 1) return false;
+
     return true;
   }
 
@@ -176,11 +184,15 @@ class _BookingPageState extends State<BookingPage> {
     try {
       loader.show();
 
+      final quantity = int.tryParse(_quantityController.text);
+      if (quantity == null || quantity < 1) throw "Invalid quantity amount";
+
       final booking = BookingRequestModel(
         vendorId: widget.details.vendor.id,
         clientId: context.read<UserProvider>().user.id,
         serviceId: widget.details.service.id,
         extras: _selectedExtras,
+        quantity: quantity,
         totalCost: _computeTotal().toString(),
       );
 
@@ -254,10 +266,15 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   double _computeTotal() {
-    double total = widget.details.service.price;
-    for (final extra in _selectedExtras) {
-      total += extra.price;
-    }
-    return total;
+    final quantity = int.tryParse(_quantityController.text) ?? 1;
+    final service = widget.details.service;
+
+    final base = switch (widget.details.service.pricingType) {
+      PricingType.fixed => service.price,
+      PricingType.perHour => service.price * quantity,
+      PricingType.perDay => service.price * quantity,
+    };
+
+    return _selectedExtras.fold(base, (prev, extra) => prev + extra.price);
   }
 }

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
 
 class SummarySection extends StatefulWidget {
   const SummarySection({
     super.key,
+    required this.quantityController,
     required this.detail,
     required this.clientAddress,
     required this.selectedExtras,
   });
 
+  final TextEditingController quantityController;
   final DetailedServiceModel detail;
   final String clientAddress;
   final List<ServiceExtraModel> selectedExtras;
@@ -67,8 +71,24 @@ class _SummarySectionState extends State<SummarySection> {
           text: formatCurrency(widget.detail.service.price),
         ),
         const SizedBox(height: 20),
+        RowTile(
+          label: 'Pricing Type:',
+          text: widget.detail.service.pricingType.label,
+        ),
+        const SizedBox(height: 20),
+        if (widget.detail.service.pricingType != PricingType.fixed)
+          const SizedBox(height: 10),
+        if (widget.detail.service.pricingType != PricingType.fixed)
+          RowTile(
+            label: 'Booking for:',
+            text: formatQuantityBooked(
+              int.tryParse(widget.quantityController.text) ?? 1,
+              widget.detail.service.pricingType,
+            ),
+          ),
+        const SizedBox(height: 20),
         const Text(
-          'Extras:',
+          'Add-ons:',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -97,10 +117,16 @@ class _SummarySectionState extends State<SummarySection> {
   }
 
   double _calculateTotalCost() {
-    double total = widget.detail.service.price;
-    for (final extra in widget.selectedExtras) {
-      total += extra.price;
-    }
-    return total;
+    final quantity = int.tryParse(widget.quantityController.text) ?? 1;
+    final service = widget.detail.service;
+
+    final base = switch (widget.detail.service.pricingType) {
+      PricingType.fixed => service.price,
+      PricingType.perHour => service.price * quantity,
+      PricingType.perDay => service.price * quantity,
+    };
+
+    return widget.selectedExtras
+        .fold(base, (prev, extra) => prev + extra.price);
   }
 }
