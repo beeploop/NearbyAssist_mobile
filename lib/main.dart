@@ -117,7 +117,11 @@ class _App extends State<App> {
     websocketProvider.setUserProvider(userProvider);
     websocketProvider.setClientBookingProvider(clientBookingProvider);
 
-    notificationProvider.fetchNotifications();
+    if (userProvider.status == AuthStatus.authenticated) {
+      messageProvider.refreshInbox();
+      notificationProvider.fetchNotifications();
+    }
+
     expertiseProvider.fetchExpertise();
 
     return MaterialApp.router(
