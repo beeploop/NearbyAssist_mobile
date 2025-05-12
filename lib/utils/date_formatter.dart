@@ -36,4 +36,15 @@ final class DateFormatter {
       return "invalid date";
     }
   }
+
+  static String monthDateRangeDT(DateTime start, DateTime end) {
+    try {
+      final s = DateFormat.MMMMd().format(start);
+      final e = DateFormat.MMMMd().format(end);
+
+      return '$s - $e';
+    } catch (error) {
+      return "invalid date range";
+    }
+  }
 }

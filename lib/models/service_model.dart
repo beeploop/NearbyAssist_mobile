@@ -64,4 +64,27 @@ class ServiceModel {
       disabled: json['disabled'],
     );
   }
+
+  ServiceModel copyWith({
+    String? title,
+    String? description,
+    double? price,
+    PricingType? pricingType,
+    List<TagModel>? tags,
+    List<ServiceExtraModel>? extras,
+  }) {
+    return ServiceModel(
+      id: id,
+      vendorId: vendorId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      pricingType: pricingType ?? this.pricingType,
+      tags: tags ?? this.tags,
+      extras: extras ?? this.extras,
+      location: location,
+      images: images,
+      disabled: disabled,
+    );
+  }
 }

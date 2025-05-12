@@ -7,10 +7,10 @@ import 'package:nearby_assist/models/service_review_model.dart';
 import 'package:nearby_assist/services/client_booking_service.dart';
 
 class ClientBookingProvider extends ChangeNotifier {
-  final List<BookingModel> _pending = [];
-  final List<BookingModel> _confirmed = [];
-  final List<BookingModel> _toRate = [];
-  final List<BookingModel> _history = [];
+  List<BookingModel> _pending = [];
+  List<BookingModel> _confirmed = [];
+  List<BookingModel> _toRate = [];
+  List<BookingModel> _history = [];
 
   List<BookingModel> get pending => _pending;
   List<BookingModel> get confirmed => _confirmed;
@@ -28,11 +28,7 @@ class ClientBookingProvider extends ChangeNotifier {
   Future<void> fetchPending() async {
     try {
       final response = await ClientBookingService().fetchSentRequests();
-
-      _pending.clear();
-      _pending.addAll(
-        response.where((booking) => booking.status == BookingStatus.pending),
-      );
+      _pending = response;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -43,8 +39,7 @@ class ClientBookingProvider extends ChangeNotifier {
   Future<void> fetchConfirmed() async {
     try {
       final response = await ClientBookingService().fetchAccepted();
-      _confirmed.clear();
-      _confirmed.addAll(response);
+      _confirmed = response;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -55,8 +50,7 @@ class ClientBookingProvider extends ChangeNotifier {
   Future<void> fetchToRate() async {
     try {
       final response = await ClientBookingService().fetchToReviewBookings();
-      _toRate.clear();
-      _toRate.addAll(response);
+      _toRate = response;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -67,8 +61,7 @@ class ClientBookingProvider extends ChangeNotifier {
   Future<void> fetchHistory() async {
     try {
       final response = await ClientBookingService().fetchHistory();
-      _history.clear();
-      _history.addAll(response);
+      _history = response;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -93,7 +86,7 @@ class ClientBookingProvider extends ChangeNotifier {
   Future<void> book(BookingRequestModel booking) async {
     try {
       final response = await ClientBookingService().createBooking(booking);
-      _pending.add(response);
+      _pending = [response, ..._pending];
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -105,15 +98,17 @@ class ClientBookingProvider extends ChangeNotifier {
     try {
       await ClientBookingService().cancelBooking(id, reason);
 
-      final targetIdx = _pending.indexWhere((request) => request.id == id);
-      final booking = _pending.removeAt(targetIdx);
+      final index = _pending.indexWhere((request) => request.id == id);
+      if (index == -1) return;
 
-      final cancelledBooking = booking.copyWith(
+      final cancelledBooking = _pending[index].copyWith(
         status: BookingStatus.cancelled,
         updatedAt: DateTime.now(),
         cancelReason: reason,
       );
-      _history.insert(0, cancelledBooking);
+
+      _pending = List.of(_pending)..removeAt(index);
+      _history = [cancelledBooking, ..._history];
 
       notifyListeners();
     } catch (error) {
@@ -126,7 +121,8 @@ class ClientBookingProvider extends ChangeNotifier {
     try {
       await ClientBookingService().postReview(review);
 
-      _toRate.removeWhere((request) => request.id == review.bookingId);
+      _toRate =
+          _toRate.where((request) => request.id != review.bookingId).toList();
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -139,30 +135,56 @@ class ClientBookingProvider extends ChangeNotifier {
     final index = _confirmed.indexWhere((booking) => booking.id == bookingId);
     if (index == -1) return;
 
-    final booking = _confirmed.removeAt(index);
-    final completedBooking = booking.copyWith(
+    final completedBooking = _confirmed[index].copyWith(
       status: BookingStatus.done,
       updatedAt: DateTime.now(),
     );
 
-    _history.insert(0, completedBooking);
-    _toRate.insert(0, completedBooking);
+    _confirmed = List.of(_confirmed)..removeAt(index);
+    _history = [completedBooking, ..._history];
+    _toRate = [completedBooking, ..._toRate];
 
     notifyListeners();
   }
 
-  void bookingConfirmed(String bookingId, String schedule) {
+  void bookingConfirmed(
+    String bookingId,
+    String scheduleStart,
+    String scheduleEnd,
+  ) {
     final index = _pending.indexWhere((booking) => booking.id == bookingId);
     if (index == -1) return;
 
-    final booking = _pending.removeAt(index);
-    final confirmedBooking = booking.copyWith(
+    final confirmedBooking = _pending[index].copyWith(
       status: BookingStatus.confirmed,
       updatedAt: DateTime.now(),
-      scheduledAt: DateTime.parse(schedule),
+      scheduleStart: DateTime.parse(scheduleStart),
+      scheduleEnd: DateTime.parse(scheduleEnd),
     );
 
-    _confirmed.insert(0, confirmedBooking);
+    _pending = List.of(_pending)..removeAt(index);
+    _confirmed = [confirmedBooking, ..._confirmed];
+
+    notifyListeners();
+  }
+
+  void bookingRescheduled(
+    String bookingId,
+    String scheduleStart,
+    String scheduleEnd,
+  ) {
+    final index = _confirmed.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    _confirmed = _confirmed.map((booking) {
+      if (booking.id == bookingId) {
+        return booking.copyWith(
+          scheduleStart: DateTime.parse(scheduleStart),
+          scheduleEnd: DateTime.parse(scheduleEnd),
+        );
+      }
+      return booking;
+    }).toList();
 
     notifyListeners();
   }
@@ -171,14 +193,13 @@ class ClientBookingProvider extends ChangeNotifier {
     final index = _pending.indexWhere((booking) => booking.id == bookingId);
     if (index == -1) return;
 
-    final booking = _pending.removeAt(index);
-    final rejectedBooking = booking.copyWith(
+    final rejectedBooking = _pending[index].copyWith(
       status: BookingStatus.rejected,
       updatedAt: DateTime.now(),
       cancelReason: reason,
     );
 
-    _history.insert(0, rejectedBooking);
+    _history = [rejectedBooking, ..._history];
 
     notifyListeners();
   }

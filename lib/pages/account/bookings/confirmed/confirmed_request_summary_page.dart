@@ -7,6 +7,7 @@ import 'package:nearby_assist/pages/account/bookings/confirmed/widget/booking_qr
 import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 
@@ -106,6 +107,14 @@ class _ConfirmedRequestSummarPageState
                 widget.booking.service.pricingType,
               ),
             ),
+          const SizedBox(height: 10),
+          RowTile(
+            label: 'Scheduled on: ',
+            text: DateFormatter.monthDateRangeDT(
+              widget.booking.scheduleStart!,
+              widget.booking.scheduleEnd!,
+            ),
+          ),
           const SizedBox(height: 20),
           const AutoSizeText(
             'Add-ons:',
@@ -130,6 +139,7 @@ class _ConfirmedRequestSummarPageState
             label: 'Total Cost:',
             text: formatCurrency(widget.booking.total()),
           ),
+          const SizedBox(height: 20),
 
           // QR Code to scan for completing the booking
           const Text(

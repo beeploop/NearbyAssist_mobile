@@ -142,7 +142,7 @@ class WebsocketProvider extends ChangeNotifier {
   }
 
   void _receivePong() {
-    logger.logDebug('received pong');
+    // logger.logDebug('received pong');
     _pongTimeoutTimer?.cancel();
     _pongTimeoutTimer = null;
   }
@@ -171,8 +171,25 @@ class WebsocketProvider extends ChangeNotifier {
 
         case Event.bookingConfirmed:
           final bookingId = result.data['payload']['id'];
-          final schedule = result.data['payload']['schedule'];
-          _clientBookingProvider?.bookingConfirmed(bookingId, schedule);
+          final scheduleStart = result.data['payload']['scheduleStart'];
+          final scheduleEnd = result.data['payload']['scheduleEnd'];
+
+          _clientBookingProvider?.bookingConfirmed(
+            bookingId,
+            scheduleStart,
+            scheduleEnd,
+          );
+
+        case Event.bookingRescheduled:
+          final bookingId = result.data['payload']['id'];
+          final scheduleStart = result.data['payload']['scheduleStart'];
+          final scheduleEnd = result.data['payload']['scheduleEnd'];
+
+          _clientBookingProvider?.bookingRescheduled(
+            bookingId,
+            scheduleStart,
+            scheduleEnd,
+          );
 
         case Event.bookingRejected:
           final bookingId = result.data['payload']['id'];

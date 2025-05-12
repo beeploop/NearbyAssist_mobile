@@ -77,6 +77,7 @@ class _EditServicePageState extends State<EditServicePage> {
             const Text('Title'),
             const SizedBox(height: 10),
             TextFormField(
+              maxLength: 50,
               controller: _titleController,
               onChanged: (value) {
                 if (value != widget.service.title) {

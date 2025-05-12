@@ -208,15 +208,17 @@ class ControlCenterService {
     }
   }
 
-  Future<void> acceptRequest(String id, String schedule) async {
-    logger.logDebug('called acceptRequest');
-    logger.logDebug('parameters: {id: $id, schedule: $schedule}');
-
+  Future<void> acceptRequest(
+      String id, String scheduleStart, String scheduleEnd) async {
     try {
       final api = ApiService.authenticated();
       await api.dio.put(
         endpoint.acceptRequest,
-        data: {'bookingId': id, 'schedule': schedule},
+        data: {
+          'bookingId': id,
+          'scheduleStart': scheduleStart,
+          'scheduleEnd': scheduleEnd,
+        },
       );
     } catch (error) {
       logger.logError(error.toString());
@@ -253,12 +255,17 @@ class ControlCenterService {
     }
   }
 
-  Future<void> reschedule(String bookingId, String schedule) async {
+  Future<void> reschedule(
+      String bookingId, String scheduleStart, String scheduleEnd) async {
     try {
       final api = ApiService.authenticated();
       await api.dio.put(
         endpoint.rescheduleBooking,
-        data: {'bookingId': bookingId, 'schedule': schedule},
+        data: {
+          'bookingId': bookingId,
+          'scheduleStart': scheduleStart,
+          'scheduleEnd': scheduleEnd,
+        },
       );
     } catch (error) {
       rethrow;

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
-import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/is_previous_day.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_generic_success_modal.dart';
@@ -22,6 +22,23 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  late DateTimeRange _selectedDates;
+  final _scheduleController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDates = DateTimeRange(
+      start: widget.booking.scheduleStart!,
+      end: widget.booking.scheduleEnd!,
+    );
+
+    final start = _selectedDates.start.toString().split(" ")[0];
+    final end = _selectedDates.end.toString().split(" ")[0];
+
+    _scheduleController.text = '$start - $end';
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
@@ -51,7 +68,7 @@ class _MenuState extends State<Menu> {
           icon: CupertinoIcons.clear_circled,
           text: 'Cancel',
           color: Colors.red,
-          clickable: isPreviousDay(widget.booking.scheduledAt!),
+          clickable: isPreviousDay(widget.booking.scheduleStart!),
         ),
       ],
     );
@@ -89,10 +106,6 @@ class _MenuState extends State<Menu> {
   }
 
   void _showRescheduleModal() {
-    final rescheduleController = TextEditingController(
-      text: DateFormatter.monthAndDateFromDT(widget.booking.scheduledAt!),
-    );
-
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -106,28 +119,16 @@ class _MenuState extends State<Menu> {
         ),
         title: const Text('Set new date', style: TextStyle(fontSize: 20)),
         content: TextField(
-          controller: rescheduleController,
+          controller: _scheduleController,
           decoration: const InputDecoration(
             labelText: 'Schedule',
             filled: true,
             prefixIcon: Icon(CupertinoIcons.calendar),
           ),
           readOnly: true,
-          onTap: () async {
-            DateTime? schedule = await showDatePicker(
-                context: context,
-                initialDate: widget.booking.scheduledAt!,
-                firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(
-                  const Duration(days: 30),
-                ));
-
-            if (schedule == null) return;
-
-            setState(() {
-              rescheduleController.text = schedule.toString().split(" ")[0];
-            });
-          },
+          onTap: widget.booking.service.pricingType == PricingType.perDay
+              ? _pickDateRange
+              : _pickDate,
         ),
         actions: [
           TextButton(
@@ -137,7 +138,7 @@ class _MenuState extends State<Menu> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              _rescheduleConfirmation(rescheduleController.text);
+              _rescheduleConfirmation();
             },
             child: const Text('Reschedule'),
           ),
@@ -146,7 +147,7 @@ class _MenuState extends State<Menu> {
     );
   }
 
-  void _rescheduleConfirmation(String schedule) {
+  void _rescheduleConfirmation() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -166,10 +167,7 @@ class _MenuState extends State<Menu> {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _handleReschedule(widget.booking.id, schedule);
-            },
+            onPressed: () => _handleReschedule(widget.booking.id),
             child: const Text('Continue'),
           ),
         ],
@@ -223,15 +221,31 @@ class _MenuState extends State<Menu> {
     );
   }
 
-  Future<void> _handleReschedule(String bookingId, String schedule) async {
+  Future<void> _handleReschedule(String bookingId) async {
     final loader = context.loaderOverlay;
 
     try {
       loader.show();
+      Navigator.pop(context);
+
+      if (widget.booking.service.pricingType == PricingType.perDay) {
+        // add 1 because inDays counts the next day as day 1
+        final days = _selectedDates.duration.inDays + 1;
+        if (days > widget.booking.quantity) {
+          throw "Range of days selected is greater than the requested duration";
+        }
+      }
+
+      if (_scheduleController.text.isEmpty) {
+        throw 'Invalid schedule';
+      }
+
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
 
       await context
           .read<ControlCenterProvider>()
-          .reschedule(bookingId, schedule);
+          .reschedule(bookingId, start, end);
 
       if (!mounted) return;
       showGenericSuccessModal(context, message: 'Booking rescheduled');
@@ -269,5 +283,51 @@ class _MenuState extends State<Menu> {
     } finally {
       loader.hide();
     }
+  }
+
+  Future<void> _pickDate() async {
+    DateTime? schedule = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30),
+      ), // restrict schedule to 30 days advance
+    );
+
+    if (schedule == null) return;
+
+    setState(() {
+      _selectedDates = DateTimeRange(
+        start: schedule,
+        end: schedule,
+      );
+
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
+
+      _scheduleController.text = '$start - $end';
+    });
+  }
+
+  Future<void> _pickDateRange() async {
+    final range = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30),
+      ), // restrict schedule to 30 days advance
+    );
+
+    if (range == null) return;
+
+    setState(() {
+      _selectedDates = range;
+
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
+
+      _scheduleController.text = '$start - $end';
+    });
   }
 }

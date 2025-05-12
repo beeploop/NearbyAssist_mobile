@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/control_center/schedules/calendar_view_schedules.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:provider/provider.dart';
 
 class SchedulesPage extends StatefulWidget {
   const SchedulesPage({super.key});
@@ -12,6 +14,10 @@ class SchedulesPage extends StatefulWidget {
 class _SchedulesPageState extends State<SchedulesPage> {
   @override
   Widget build(BuildContext context) {
-    return const CalendarViewSchedules();
+    return Consumer<ControlCenterProvider>(
+      builder: (context, provider, _) {
+        return CalendarViewSchedules(schedules: provider.schedules);
+      },
+    );
   }
 }

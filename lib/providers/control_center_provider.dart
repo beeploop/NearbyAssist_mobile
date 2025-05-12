@@ -11,10 +11,10 @@ import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/services/control_center_service.dart';
 
 class ControlCenterProvider extends ChangeNotifier {
-  final List<ServiceModel> _services = [];
-  final List<BookingModel> _requests = [];
-  final List<BookingModel> _schedules = [];
-  final List<BookingModel> _history = [];
+  List<ServiceModel> _services = [];
+  List<BookingModel> _requests = [];
+  List<BookingModel> _schedules = [];
+  List<BookingModel> _history = [];
 
   List<ServiceModel> get services => _services;
   List<BookingModel> get requests => _requests;
@@ -24,8 +24,7 @@ class ControlCenterProvider extends ChangeNotifier {
   Future<void> fetchServices(String vendorId) async {
     try {
       final result = await ControlCenterService().fetchServices(vendorId);
-      _services.clear();
-      _services.addAll(result.services);
+      _services = result.services;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -36,8 +35,7 @@ class ControlCenterProvider extends ChangeNotifier {
   Future<void> fetchRequests() async {
     try {
       final response = await ControlCenterService().fetchReceivedRequests();
-      _requests.clear();
-      _requests.addAll(response);
+      _requests = response;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -48,8 +46,7 @@ class ControlCenterProvider extends ChangeNotifier {
   Future<void> fetchSchedules() async {
     try {
       final response = await ControlCenterService().fetchConfirmed();
-      _schedules.clear();
-      _schedules.addAll(response);
+      _schedules = response;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -60,8 +57,7 @@ class ControlCenterProvider extends ChangeNotifier {
   Future<void> fetchHistory() async {
     try {
       final response = await ControlCenterService().fetchHistory();
-      _history.clear();
-      _history.addAll(response);
+      _history = response;
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -86,7 +82,7 @@ class ControlCenterProvider extends ChangeNotifier {
   Future<void> addService(NewService service) async {
     try {
       final response = await ControlCenterService().createService(service);
-      _services.add(response);
+      _services = [response, ..._services];
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -100,21 +96,21 @@ class ControlCenterProvider extends ChangeNotifier {
       await ControlCenterService().updateService(updated);
 
       final index = _services.indexWhere((service) => service.id == updated.id);
-      final updatedService = ServiceModel(
-        id: updated.id,
-        vendorId: updated.vendorId,
-        title: updated.title,
-        description: updated.description,
-        price: updated.price,
-        pricingType: updated.pricingType,
-        tags: updated.tags,
-        extras: extras,
-        location: _services[index].location,
-        images: _services[index].images,
-        disabled: _services[index].disabled,
-      );
-      _services.removeAt(index);
-      _services.add(updatedService);
+      if (index == -1) return;
+
+      _services = _services.map((service) {
+        if (service.id == updated.id) {
+          return service.copyWith(
+            title: updated.title,
+            description: updated.description,
+            price: updated.price,
+            pricingType: updated.pricingType,
+            tags: updated.tags,
+          );
+        }
+        return service;
+      }).toList();
+
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -126,11 +122,13 @@ class ControlCenterProvider extends ChangeNotifier {
     try {
       final response = await ControlCenterService().addExtra(newExtra);
 
-      for (var service in _services) {
+      _services = _services.map((service) {
         if (service.id == newExtra.serviceId) {
-          service.extras.add(response);
+          return service.copyWith(extras: [...service.extras, response]);
         }
-      }
+        return service;
+      }).toList();
+
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -143,7 +141,19 @@ class ControlCenterProvider extends ChangeNotifier {
       await ControlCenterService().deleteExtra(extraId);
 
       final index = _services.indexWhere((service) => service.id == serviceId);
-      _services[index].extras.removeWhere((extra) => extra.id == extraId);
+      if (index == -1) return;
+
+      final service = _services[index];
+      final newExtras =
+          service.extras.where((extra) => extra.id != extraId).toList();
+
+      final updatedService = service.copyWith(extras: newExtras);
+      _services = [
+        ..._services.sublist(0, index),
+        updatedService,
+        ..._services.sublist(index + 1)
+      ];
+
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -156,6 +166,8 @@ class ControlCenterProvider extends ChangeNotifier {
       await ControlCenterService().updateExtra(updated);
 
       final index = _services.indexWhere((service) => service.id == serviceId);
+      if (index == -1) return;
+
       final updatedExtras = _services[index].extras.map((extra) {
         if (extra.id == updated.id) {
           return ServiceExtraModel(
@@ -230,13 +242,26 @@ class ControlCenterProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> confirm(String id, String schedule) async {
+  Future<void> confirm(
+      String id, String scheduleStart, String scheduleEnd) async {
     try {
-      await ControlCenterService().acceptRequest(id, schedule);
+      await ControlCenterService().acceptRequest(
+        id,
+        scheduleStart,
+        scheduleEnd,
+      );
 
       final index = _requests.indexWhere((request) => request.id == id);
-      final booking = _requests.removeAt(index);
-      _schedules.add(booking.copyWith(scheduledAt: DateTime.parse(schedule)));
+      if (index == -1) return;
+
+      final confirmedBooking = _requests[index].copyWith(
+        scheduleStart: DateTime.parse(scheduleStart),
+        scheduleEnd: DateTime.parse(scheduleEnd),
+      );
+
+      _requests = List.of(_requests)..removeAt(index);
+      _schedules = [confirmedBooking, ..._schedules];
+
       notifyListeners();
     } catch (error) {
       logger.logError(error.toString());
@@ -249,10 +274,16 @@ class ControlCenterProvider extends ChangeNotifier {
       await ControlCenterService().rejectRequest(id, reason);
 
       final index = _requests.indexWhere((request) => request.id == id);
-      final booking = _requests.removeAt(index);
-      _history.add(
-        booking.copyWith(status: BookingStatus.rejected, cancelReason: reason),
+      if (index == -1) return;
+
+      final rejectedBooking = _requests[index].copyWith(
+        status: BookingStatus.rejected,
+        cancelReason: reason,
       );
+
+      _requests = List.of(_requests)..removeAt(index);
+      _history = [rejectedBooking, ..._history];
+
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -263,27 +294,49 @@ class ControlCenterProvider extends ChangeNotifier {
     try {
       await ControlCenterService().completeBooking(data);
 
-      final booking = _schedules.firstWhere((e) => e.id == data.bookingId);
+      final index =
+          _schedules.indexWhere((booking) => booking.id == data.bookingId);
+      if (index == -1) return;
 
-      _history.add(
-        booking.copyWith(status: BookingStatus.done, updatedAt: DateTime.now()),
+      final completedBooking = _schedules[index].copyWith(
+        status: BookingStatus.done,
+        updatedAt: DateTime.now(),
       );
-      _schedules.removeWhere((e) => e.id == data.bookingId);
+
+      _schedules = List.of(_schedules)..removeAt(index);
+      _history = [completedBooking, ..._history];
+
       notifyListeners();
     } catch (error) {
       rethrow;
     }
   }
 
-  Future<void> reschedule(String bookingId, String schedule) async {
+  Future<void> reschedule(
+    String bookingId,
+    String scheduleStart,
+    String scheduleEnd,
+  ) async {
     try {
-      await ControlCenterService().reschedule(bookingId, schedule);
+      await ControlCenterService().reschedule(
+        bookingId,
+        scheduleStart,
+        scheduleEnd,
+      );
 
       final index = _schedules.indexWhere((booking) => booking.id == bookingId);
-      if (index == -1) {
-        return;
-      }
-      _schedules[index].scheduledAt = DateTime.parse(schedule);
+      if (index == -1) return;
+
+      _schedules = _schedules.map((booking) {
+        if (booking.id == bookingId) {
+          return booking.copyWith(
+            scheduleStart: DateTime.parse(scheduleStart),
+            scheduleEnd: DateTime.parse(scheduleEnd),
+          );
+        }
+        return booking;
+      }).toList();
+
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -294,11 +347,17 @@ class ControlCenterProvider extends ChangeNotifier {
     try {
       await ControlCenterService().cancel(bookingId, reason);
 
-      final booking = _schedules.firstWhere((e) => e.id == bookingId);
-      _history.add(
-        booking.copyWith(status: BookingStatus.cancelled, cancelReason: reason),
+      final index = _schedules.indexWhere((booking) => booking.id == bookingId);
+      if (index == -1) return;
+
+      final cancelledBooking = _schedules[index].copyWith(
+        status: BookingStatus.cancelled,
+        cancelReason: reason,
       );
-      _schedules.removeWhere((e) => e.id == bookingId);
+
+      _schedules = List.of(_schedules)..removeAt(index);
+      _history = [cancelledBooking, ..._history];
+
       notifyListeners();
     } catch (error) {
       rethrow;

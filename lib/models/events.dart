@@ -7,6 +7,7 @@ enum Event {
   sync,
   bookingComplete,
   bookingConfirmed,
+  bookingRescheduled,
   bookingRejected,
   unknown,
 }

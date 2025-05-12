@@ -32,6 +32,10 @@ class RequestSummaryPage extends StatefulWidget {
 }
 
 class _RequestSummaryPageState extends State<RequestSummaryPage> {
+  DateTimeRange _selectedDates = DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now(),
+  );
   final _scheduleController = TextEditingController();
   late UserModel _user;
 
@@ -257,7 +261,9 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             prefixIcon: Icon(CupertinoIcons.calendar),
           ),
           readOnly: true,
-          onTap: _pickDate,
+          onTap: widget.booking.service.pricingType == PricingType.perDay
+              ? _pickDateRange
+              : _pickDate,
         ),
         actions: [
           TextButton(
@@ -323,11 +329,22 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       loader.show();
       Navigator.pop(context);
 
+      if (widget.booking.service.pricingType == PricingType.perDay) {
+        // add 1 because inDays counts the next day as day 1
+        final days = _selectedDates.duration.inDays + 1;
+        if (days > widget.booking.quantity) {
+          throw "Range of days selected is greater than the requested duration";
+        }
+      }
+
       if (schedule.isEmpty) {
         throw 'Invalid schedule';
       }
 
-      await context.read<ControlCenterProvider>().confirm(id, schedule);
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
+
+      await context.read<ControlCenterProvider>().confirm(id, start, end);
 
       if (!mounted) return;
       showGenericSuccessModal(context, message: 'Confirmed request');
@@ -374,13 +391,43 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(
-          const Duration(days: 30)), // restrict schedule to 30 days advance
+        const Duration(days: 30),
+      ), // restrict schedule to 30 days advance
     );
 
     if (schedule == null) return;
 
     setState(() {
-      _scheduleController.text = schedule.toString().split(" ")[0];
+      _selectedDates = DateTimeRange(
+        start: schedule,
+        end: schedule,
+      );
+
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
+
+      _scheduleController.text = '$start - $end';
+    });
+  }
+
+  Future<void> _pickDateRange() async {
+    final range = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30),
+      ), // restrict schedule to 30 days advance
+    );
+
+    if (range == null) return;
+
+    setState(() {
+      _selectedDates = range;
+
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
+
+      _scheduleController.text = '$start - $end';
     });
   }
 }

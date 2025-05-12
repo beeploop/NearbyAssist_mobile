@@ -11,6 +11,7 @@ import 'package:nearby_assist/pages/account/control_center/schedules/widget/menu
 import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
@@ -131,6 +132,14 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
                   widget.booking.service.pricingType,
                 ),
               ),
+            const SizedBox(height: 10),
+            RowTile(
+              label: 'Scheduled on: ',
+              text: DateFormatter.monthDateRangeDT(
+                widget.booking.scheduleStart!,
+                widget.booking.scheduleEnd!,
+              ),
+            ),
             const SizedBox(height: 20),
             const AutoSizeText(
               'Add-ons:',

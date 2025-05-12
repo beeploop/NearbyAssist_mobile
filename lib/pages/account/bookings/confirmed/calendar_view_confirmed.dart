@@ -3,20 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_booking_list_item.dart';
 import 'package:nearby_assist/pages/account/bookings/confirmed/confirmed_request_summary_page.dart';
-import 'package:nearby_assist/providers/client_booking_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarViewConfirmed extends StatefulWidget {
-  const CalendarViewConfirmed({super.key});
+  const CalendarViewConfirmed({super.key, required this.schedules});
+
+  final List<BookingModel> schedules;
 
   @override
   State<CalendarViewConfirmed> createState() => _CalendarViewConfirmedState();
 }
 
 class _CalendarViewConfirmedState extends State<CalendarViewConfirmed> {
-  late List<BookingModel> _schedules;
-  List<BookingModel> _events = [];
+  final ValueNotifier<List<BookingModel>> _events = ValueNotifier([]);
   CalendarFormat _format = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -25,13 +24,25 @@ class _CalendarViewConfirmedState extends State<CalendarViewConfirmed> {
   @override
   void initState() {
     super.initState();
-    _schedules =
-        Provider.of<ClientBookingProvider>(context, listen: false).confirmed;
-
-    _bookings = groupSchedules(_schedules);
-
     _selectedDay = _focusedDay;
-    _events = _getEventsForDay(_selectedDay!);
+    _bookings = groupSchedules(widget.schedules);
+    _events.value = _getEventsForDay(_selectedDay!);
+  }
+
+  @override
+  void dispose() {
+    _events.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant CalendarViewConfirmed oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.schedules != widget.schedules) {
+      _bookings = groupSchedules(widget.schedules);
+      _events.value = _getEventsForDay(_selectedDay!);
+    }
   }
 
   @override
@@ -58,7 +69,7 @@ class _CalendarViewConfirmedState extends State<CalendarViewConfirmed> {
               setState(() {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
-                _events = _getEventsForDay(selectedDay);
+                _events.value = _getEventsForDay(selectedDay);
               });
             },
             onPageChanged: (focusedDay) {
@@ -87,49 +98,56 @@ class _CalendarViewConfirmedState extends State<CalendarViewConfirmed> {
           const SizedBox(height: 10),
 
           // events
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (context, index) => const SizedBox(height: 10),
-              itemCount: _events.length,
-              itemBuilder: (context, index) => ConfirmedBookingListItem(
-                backgroundColor: Colors.green.shade100,
-                booking: _events[index],
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) =>
-                          ConfirmedRequestSummarPage(booking: _events[index]),
-                    ),
-                  );
-                },
-              ),
-            ),
+          ValueListenableBuilder(
+            valueListenable: _events,
+            builder: (context, value, _) {
+              return Padding(
+                padding: const EdgeInsets.all(10),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
+                  itemCount: value.length,
+                  itemBuilder: (context, index) => ConfirmedBookingListItem(
+                    backgroundColor: Colors.green.shade100,
+                    booking: value[index],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) =>
+                              ConfirmedRequestSummarPage(booking: value[index]),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  Map<DateTime, List<String>> groupSchedules(List<BookingModel> bookings) {
+  Map<DateTime, List<String>> groupSchedules(List<BookingModel> schedules) {
     final Map<DateTime, List<String>> grouped = {};
 
-    for (final booking in bookings) {
-      final schedule = booking.scheduledAt;
-      if (schedule == null) continue;
+    for (final schedule in schedules) {
+      final start = schedule.scheduleStart;
+      final end = schedule.scheduleEnd;
+      if (start == null || end == null) continue;
 
-      final normalized = DateTime.utc(
-        schedule.year,
-        schedule.month,
-        schedule.day,
-      );
+      for (DateTime day = DateTime.utc(start.year, start.month, start.day);
+          !day.isAfter(DateTime.utc(end.year, end.month, end.day));
+          day = day.add(const Duration(days: 1))) {
+        final normalized = DateTime.utc(day.year, day.month, day.day);
 
-      if (grouped.containsKey(normalized)) {
-        grouped[normalized]!.add(booking.id);
-      } else {
-        grouped[normalized] = [booking.id];
+        if (grouped.containsKey(normalized)) {
+          grouped[normalized]!.add(schedule.id);
+        } else {
+          grouped[normalized] = [schedule.id];
+        }
       }
     }
 
@@ -141,7 +159,7 @@ class _CalendarViewConfirmedState extends State<CalendarViewConfirmed> {
     final bookingIds = _bookings[normalizedDay];
     if (bookingIds == null) return [];
 
-    return _schedules
+    return widget.schedules
         .where((booking) => bookingIds.contains(booking.id))
         .toList();
   }

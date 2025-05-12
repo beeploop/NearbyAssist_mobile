@@ -50,7 +50,7 @@ class ScheduleListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              formatCurrency(booking.cost),
+              formatCurrency(booking.total()),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
             OutlinedButton(

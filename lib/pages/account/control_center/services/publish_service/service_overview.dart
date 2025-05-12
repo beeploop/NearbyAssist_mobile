@@ -57,6 +57,7 @@ class _ServiceOverviewState extends State<ServiceOverview> {
         const AutoSizeText('Title'),
         const SizedBox(height: 10),
         TextFormField(
+          maxLength: 50,
           controller: widget.titleController,
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           decoration: const InputDecoration(

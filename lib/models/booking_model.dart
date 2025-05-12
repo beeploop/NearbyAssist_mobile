@@ -18,7 +18,8 @@ class BookingModel {
   String qrSignature;
   DateTime createdAt;
   DateTime? updatedAt;
-  DateTime? scheduledAt;
+  DateTime? scheduleStart;
+  DateTime? scheduleEnd;
   String? cancelReason;
   String cancelledById;
 
@@ -34,7 +35,8 @@ class BookingModel {
     required this.qrSignature,
     required this.createdAt,
     required this.updatedAt,
-    required this.scheduledAt,
+    required this.scheduleStart,
+    required this.scheduleEnd,
     required this.cancelReason,
     required this.cancelledById,
   });
@@ -62,8 +64,11 @@ class BookingModel {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt:
           json['updatedAt'] != '' ? DateTime.parse(json['updatedAt']) : null,
-      scheduledAt: json['scheduledAt'] != ''
-          ? DateTime.parse(json['scheduledAt'])
+      scheduleStart: json['scheduleStart'] != ''
+          ? DateTime.parse(json['scheduleStart'])
+          : null,
+      scheduleEnd: json['scheduleEnd'] != ''
+          ? DateTime.parse(json['scheduleEnd'])
           : null,
       cancelReason: json['cancelReason'],
       cancelledById: json['cancelledById'],
@@ -73,7 +78,8 @@ class BookingModel {
   BookingModel copyWith({
     BookingStatus? status,
     DateTime? updatedAt,
-    DateTime? scheduledAt,
+    DateTime? scheduleStart,
+    DateTime? scheduleEnd,
     String? cancelReason,
   }) {
     return BookingModel(
@@ -88,7 +94,8 @@ class BookingModel {
       qrSignature: qrSignature,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      scheduledAt: scheduledAt ?? this.scheduledAt,
+      scheduleStart: scheduleStart ?? this.scheduleStart,
+      scheduleEnd: scheduleEnd ?? this.scheduleEnd,
       cancelReason: cancelReason ?? this.cancelReason,
       cancelledById: cancelledById,
     );
@@ -102,6 +109,11 @@ class BookingModel {
     };
 
     return extras.fold<double>(base, (prev, extra) => prev + extra.price);
+  }
+
+  @override
+  String toString() {
+    return '{id: $id, client: ${client.name}, start: $scheduleStart, end: $scheduleEnd}';
   }
 }
 
