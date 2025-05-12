@@ -54,10 +54,28 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               const SizedBox(height: 20),
               const Text('Service Information', style: TextStyle(fontSize: 16)),
 
-              // Extras
-              const SizedBox(height: 20),
-              AutoSizeText(widget.booking.service.title),
+              // Title
+              const AutoSizeText(
+                'Title:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 10),
+              AutoSizeText(
+                widget.booking.service.title,
+              ),
+              const SizedBox(height: 10),
+
+              // Description
+              const AutoSizeText(
+                'Description',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              AutoSizeText(
+                widget.booking.service.description,
+              ),
+              const SizedBox(height: 20),
+
               RowTile(
                 label: 'Base Price:',
                 text: formatCurrency(widget.booking.service.price),
@@ -91,25 +109,35 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
                 label: 'Total Cost:',
                 text: formatCurrency(widget.booking.total()),
               ),
-              const SizedBox(height: 20),
 
-              // Actions
-              FilledButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => RatePage(booking: widget.booking),
-                    ),
-                  );
-                },
-                style: const ButtonStyle(
-                  minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                ),
-                child: const Text('Rate'),
-              ),
+              // Bottom padding
+              const SizedBox(height: 20),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: FilledButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => RatePage(booking: widget.booking),
+              ),
+            );
+          },
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            minimumSize: const WidgetStatePropertyAll(
+              Size.fromHeight(50),
+            ),
+          ),
+          child: const Text('Rate'),
         ),
       ),
     );

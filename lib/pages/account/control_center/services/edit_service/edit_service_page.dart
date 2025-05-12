@@ -62,6 +62,26 @@ class _EditServicePageState extends State<EditServicePage> {
           ),
         ),
         body: _body(),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: FilledButton(
+            onPressed: _hasChanged ? _handleSave : () {},
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                !_hasChanged ? Colors.grey : null,
+              ),
+            ),
+            child: const Text('Save'),
+          ),
+        ),
       ),
     );
   }
@@ -177,19 +197,6 @@ class _EditServicePageState extends State<EditServicePage> {
             const Text('Select tags'),
             const SizedBox(height: 10),
             _tagDropdown(),
-            const SizedBox(height: 20),
-
-            // Save button
-            FilledButton(
-              style: ButtonStyle(
-                minimumSize: const WidgetStatePropertyAll(Size.fromHeight(50)),
-                backgroundColor: WidgetStatePropertyAll(
-                  !_hasChanged ? Colors.grey : null,
-                ),
-              ),
-              onPressed: _hasChanged ? _handleSave : () {},
-              child: const Text('Save'),
-            ),
 
             // Bottom padding
             const SizedBox(height: 20),

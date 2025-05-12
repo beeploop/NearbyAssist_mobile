@@ -110,21 +110,15 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                       Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          builder: (context) => AddOns(service: service),
+                          builder: (context) => AddOns(serviceId: service.id),
                         ),
                       );
                     }),
                     const SizedBox(height: 6),
                     _addons(service.extras),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
 
                     // Reviews
-                    const Text(
-                      'Reviews',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-
                     snapshot.connectionState == ConnectionState.waiting
                         ? const Text('Reviews 0',
                             style: TextStyle(fontWeight: FontWeight.w600))

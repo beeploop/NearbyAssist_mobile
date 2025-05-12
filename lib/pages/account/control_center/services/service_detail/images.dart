@@ -37,50 +37,49 @@ class _ImagesState extends State<Images> {
 
           return Scaffold(
             appBar: AppBar(),
-            body: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GridView(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
+                children:
+                    service.images.map((image) => _imageWidget(image)).toList(),
+              ),
+            ),
+            bottomNavigationBar: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: FilledButton(
+                onPressed: () {
+                  if (userProvider.user.isRestricted) {
+                    showAccountRestrictedModal(context);
+                    return;
+                  }
+
+                  if (service.disabled) {
+                    showGenericErrorModal(
+                      context,
+                      message: 'Service is disabled',
+                    );
+                    return;
+                  }
+
+                  _showPickerModal();
+                },
+                style: ButtonStyle(
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    children: service.images
-                        .map((image) => _imageWidget(image))
-                        .toList(),
+                  ),
+                  minimumSize: const WidgetStatePropertyAll(
+                    Size.fromHeight(50),
                   ),
                 ),
-                Positioned(
-                  bottom: 20,
-                  left: 20,
-                  right: 20,
-                  child: FilledButton(
-                    style: const ButtonStyle(
-                      minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-                    ),
-                    onPressed: () {
-                      if (userProvider.user.isRestricted) {
-                        showAccountRestrictedModal(context);
-                        return;
-                      }
-
-                      if (service.disabled) {
-                        showGenericErrorModal(
-                          context,
-                          message: 'Service is disabled',
-                        );
-                        return;
-                      }
-
-                      _showPickerModal();
-                    },
-                    child: const Text('Upload'),
-                  ),
-                ),
-              ],
+                child: const Text('Upload'),
+              ),
             ),
           );
         },

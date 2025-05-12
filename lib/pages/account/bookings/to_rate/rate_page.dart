@@ -34,6 +34,23 @@ class _RatePageState extends State<RatePage> {
           ),
         ),
         body: buildBody(),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: FilledButton(
+            onPressed: _handleSubmit,
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
+              ),
+            ),
+            child: const Text('Submit'),
+          ),
+        ),
       ),
     );
   }
@@ -97,13 +114,6 @@ class _RatePageState extends State<RatePage> {
             const SizedBox(height: 20),
 
             // Submit Button
-            FilledButton(
-              onPressed: _handleSubmit,
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
-              ),
-              child: const Text('Submit'),
-            ),
             const SizedBox(height: 40),
           ],
         ),

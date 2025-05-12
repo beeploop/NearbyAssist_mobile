@@ -16,7 +16,7 @@ class NewAddOnPage extends StatefulWidget {
 }
 
 class _NewAddOnPageState extends State<NewAddOnPage> {
-  bool _fieldsHasValues = false;
+  bool _submittable = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
@@ -33,6 +33,26 @@ class _NewAddOnPageState extends State<NewAddOnPage> {
           ),
         ),
         body: _body(),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: FilledButton(
+            onPressed: _submittable ? _handleSave : () {},
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                !_submittable ? Colors.grey : null,
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
+              ),
+            ),
+            child: const Text('Save'),
+          ),
+        ),
       ),
     );
   }
@@ -48,6 +68,7 @@ class _NewAddOnPageState extends State<NewAddOnPage> {
             const Text('Title'),
             const SizedBox(height: 10),
             TextFormField(
+              maxLength: 60,
               controller: _titleController,
               onChanged: _listenToInput,
               onTapOutside: (_) =>
@@ -86,19 +107,6 @@ class _NewAddOnPageState extends State<NewAddOnPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Save button
-            FilledButton(
-              style: ButtonStyle(
-                minimumSize: const WidgetStatePropertyAll(Size.fromHeight(50)),
-                backgroundColor: WidgetStatePropertyAll(
-                  !_fieldsHasValues ? Colors.grey : null,
-                ),
-              ),
-              onPressed: _fieldsHasValues ? _handleSave : () {},
-              child: const Text('Save'),
-            ),
 
             // Bottom padding
             const SizedBox(height: 20),
@@ -113,11 +121,11 @@ class _NewAddOnPageState extends State<NewAddOnPage> {
         _descriptionController.text.isNotEmpty &&
         _priceController.text.isNotEmpty) {
       setState(() {
-        _fieldsHasValues = true;
+        _submittable = true;
       });
     } else {
       setState(() {
-        _fieldsHasValues = false;
+        _submittable = false;
       });
     }
   }
@@ -127,14 +135,13 @@ class _NewAddOnPageState extends State<NewAddOnPage> {
 
     try {
       loader.show();
+      final navigator = Navigator.of(context);
 
       if (_titleController.text.isEmpty ||
           _descriptionController.text.isEmpty ||
           _priceController.text.isEmpty) {
         throw "Don't leave empty fields";
       }
-
-      final navigator = Navigator.of(context);
 
       final data = AddExtraModel(
         serviceId: widget.serviceId,
@@ -144,6 +151,7 @@ class _NewAddOnPageState extends State<NewAddOnPage> {
       );
 
       await context.read<ControlCenterProvider>().addExtra(data);
+
       navigator.pop();
     } on DioException catch (error) {
       if (!mounted) return;

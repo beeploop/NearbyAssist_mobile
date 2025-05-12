@@ -176,10 +176,28 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             const SizedBox(height: 20),
             const Text('Service Information', style: TextStyle(fontSize: 16)),
 
-            // Extras
-            const SizedBox(height: 20),
-            AutoSizeText(widget.booking.service.title),
+            // Title
+            const AutoSizeText(
+              'Title:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 10),
+            AutoSizeText(
+              widget.booking.service.title,
+            ),
+            const SizedBox(height: 10),
+
+            // Description
+            const AutoSizeText(
+              'Description',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            AutoSizeText(
+              widget.booking.service.description,
+            ),
+            const SizedBox(height: 20),
+
             RowTile(
               label: 'Base Price:',
               text: formatCurrency(widget.booking.service.price),
