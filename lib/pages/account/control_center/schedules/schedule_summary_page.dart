@@ -52,7 +52,7 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
         ),
         body: _buildBody(),
         bottomNavigationBar: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: FilledButton(
             onPressed: _handleCompleteBooking,
             style: ButtonStyle(
@@ -60,6 +60,9 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
               ),
             ),
             child: const Text('Complete'),

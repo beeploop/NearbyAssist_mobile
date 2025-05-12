@@ -8,6 +8,7 @@ import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
@@ -87,12 +88,29 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                   const Text('Service Information',
                       style: TextStyle(fontSize: 16)),
 
-                  // Extras
-                  const SizedBox(height: 20),
+                  // Title
+                  const AutoSizeText(
+                    'Title:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
                   AutoSizeText(
                     widget.booking.service.title,
                   ),
                   const SizedBox(height: 10),
+
+                  // Description
+                  const AutoSizeText(
+                    'Description',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  AutoSizeText(
+                    widget.booking.service.description,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Price
                   RowTile(
                     label: 'Base Price:',
                     text: formatCurrency(widget.booking.service.price),
@@ -112,6 +130,9 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                         widget.booking.service.pricingType,
                       ),
                     ),
+                  if (widget.booking.service.pricingType != PricingType.fixed)
+                    const SizedBox(height: 10),
+                  _dateModified(),
                   const SizedBox(height: 20),
                   const AutoSizeText(
                     'Add-ons:',
@@ -211,5 +232,37 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
         ],
       ),
     );
+  }
+
+  Widget _dateModified() {
+    final date = widget.booking.updatedAt;
+
+    switch (widget.booking.status) {
+      case BookingStatus.pending:
+        return RowTile(
+          label: 'Date requested',
+          text: DateFormatter.monthAndDateFromDT(date!),
+        );
+      case BookingStatus.confirmed:
+        return RowTile(
+          label: 'Date confirmed',
+          text: DateFormatter.monthAndDateFromDT(date!),
+        );
+      case BookingStatus.done:
+        return RowTile(
+          label: 'Date completed',
+          text: DateFormatter.monthAndDateFromDT(date!),
+        );
+      case BookingStatus.rejected:
+        return RowTile(
+          label: 'Date rejected',
+          text: DateFormatter.monthAndDateFromDT(date!),
+        );
+      case BookingStatus.cancelled:
+        return RowTile(
+          label: 'Date cancelled',
+          text: DateFormatter.monthAndDateFromDT(date!),
+        );
+    }
   }
 }
