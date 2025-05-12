@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/models/verify_account_model.dart';
@@ -29,6 +30,7 @@ class VerifyAccountPage extends StatefulWidget {
 }
 
 class _VerifyAccountPageState extends State<VerifyAccountPage> {
+  bool _submittable = false;
   UserModel? _user;
   final _nameController = TextEditingController();
   final _addressController = TextEditingController();
@@ -42,18 +44,53 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   @override
   void initState() {
     super.initState();
-    _initialValues();
-  }
-
-  void _initialValues() {
     _user = Provider.of<UserProvider>(context, listen: false).user;
-
     if (_user == null) return;
+
     setState(() {
       _nameController.text = _user!.name;
       _phoneController.text = _user!.phone;
       _addressController.text = _user!.address;
+      _nameController.addListener(_inputListener);
+      _phoneController.addListener(_inputListener);
+      _addressController.addListener(_inputListener);
+      _idNumberController.addListener(_inputListener);
+      _frontIdController.addListener(_inputListener);
+      _backIdController.addListener(_inputListener);
+      _seflieController.addListener(_inputListener);
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nameController.removeListener(_inputListener);
+    _phoneController.removeListener(_inputListener);
+    _addressController.removeListener(_inputListener);
+    _idNumberController.removeListener(_inputListener);
+    _frontIdController.removeListener(_inputListener);
+    _backIdController.removeListener(_inputListener);
+    _seflieController.removeListener(_inputListener);
+  }
+
+  void _inputListener() {
+    if (_nameController.text.trim().isNotEmpty &&
+        _phoneController.text.trim().isNotEmpty &&
+        _phoneController.text.length == phoneNumberLength &&
+        _addressController.text.trim().isNotEmpty &&
+        _selectedIDType != ValidID.none &&
+        _idNumberController.text.trim().isNotEmpty &&
+        _frontIdController.hasImage &&
+        _backIdController.hasImage &&
+        _seflieController.hasImage) {
+      setState(() {
+        _submittable = true;
+      });
+    } else {
+      setState(() {
+        _submittable = false;
+      });
+    }
   }
 
   @override
@@ -117,9 +154,10 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               itemAsString: (id) => id.value,
               compareFn: (id, selectedID) => id == selectedID,
               selectedItem: _selectedIDType,
-              onChanged: (id) => setState(
-                () => id != null ? _selectedIDType = id : ValidID.none,
-              ),
+              onChanged: (id) => setState(() {
+                _selectedIDType = id ?? ValidID.none;
+                _inputListener();
+              }),
             ),
             const SizedBox(height: 20),
 
@@ -173,10 +211,20 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
 
             // Submit button
             FilledButton(
-              style: const ButtonStyle(
-                minimumSize: WidgetStatePropertyAll(Size.fromHeight(50)),
+              style: ButtonStyle(
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                backgroundColor: WidgetStatePropertyAll(
+                  !_submittable ? Colors.grey : null,
+                ),
+                minimumSize: const WidgetStatePropertyAll(
+                  Size.fromHeight(50),
+                ),
               ),
-              onPressed: _submit,
+              onPressed: _submittable ? _submit : () {},
               child: const Text('Submit'),
             ),
 

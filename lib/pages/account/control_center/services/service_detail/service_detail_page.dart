@@ -103,6 +103,32 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
                         fontSize: 18,
                       ),
                     ),
+                    const SizedBox(height: 10),
+
+                    // Tags
+                    Wrap(
+                      runSpacing: 4,
+                      spacing: 4,
+                      children: service.tags
+                          .map((tag) => Chip(
+                                label: Text(tag.title),
+                                labelStyle: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                visualDensity: VisualDensity.compact,
+                                padding: const EdgeInsets.all(2),
+                                backgroundColor: Colors.green.shade800,
+                                shape: const RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.transparent),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
                     const SizedBox(height: 14),
 
                     // Add-ons
@@ -162,7 +188,18 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
   }
 
   Widget _images(List<ServiceImageModel> images) {
-    final height = MediaQuery.of(context).size.width * 0.8;
+    final height = MediaQuery.of(context).size.width - 40;
+
+    if (images.isEmpty) {
+      return Container(
+        height: height,
+        width: height,
+        decoration: BoxDecoration(color: Colors.grey.shade300),
+        child: const Center(
+          child: Icon(CupertinoIcons.photo),
+        ),
+      );
+    }
 
     return SizedBox(
       height: height,

@@ -17,9 +17,37 @@ class AddSocialPage extends StatefulWidget {
 }
 
 class _AddSocialPageState extends State<AddSocialPage> {
+  bool _submittable = false;
   SocialType _selectedSocialType = SocialType.other;
   final _titleController = TextEditingController();
   final _urlController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController.addListener(_inputListener);
+    _urlController.addListener(_inputListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _titleController.removeListener(_inputListener);
+    _urlController.removeListener(_inputListener);
+  }
+
+  void _inputListener() {
+    if (_titleController.text.trim().isNotEmpty &&
+        _urlController.text.trim().isNotEmpty) {
+      setState(() {
+        _submittable = true;
+      });
+    } else {
+      setState(() {
+        _submittable = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,14 +118,20 @@ class _AddSocialPageState extends State<AddSocialPage> {
           ),
         ),
         bottomNavigationBar: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: FilledButton(
-            onPressed: _handleAdd,
+            onPressed: _submittable ? _handleAdd : () {},
             style: ButtonStyle(
               shape: WidgetStatePropertyAll(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                !_submittable ? Colors.grey : null,
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
               ),
             ),
             child: const Text('Submit'),

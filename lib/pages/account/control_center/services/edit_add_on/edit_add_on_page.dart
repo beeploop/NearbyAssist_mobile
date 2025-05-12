@@ -68,6 +68,37 @@ class _EditAddOnPageState extends State<EditAddOnPage> {
           ],
         ),
         body: _body(),
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: FilledButton(
+            onPressed: () {
+              if (user.isRestricted) {
+                showAccountRestrictedModal(context);
+                return;
+              }
+
+              if (!_hasChanged) {
+                return;
+              }
+
+              _handleSave();
+            },
+            style: ButtonStyle(
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                !_hasChanged ? Colors.grey : null,
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size.fromHeight(50),
+              ),
+            ),
+            child: const Text('Save'),
+          ),
+        ),
       ),
     );
   }
@@ -150,30 +181,6 @@ class _EditAddOnPageState extends State<EditAddOnPage> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
               ),
-            ),
-            const SizedBox(height: 20),
-
-            // Save button
-            FilledButton(
-              style: ButtonStyle(
-                minimumSize: const WidgetStatePropertyAll(Size.fromHeight(50)),
-                backgroundColor: WidgetStatePropertyAll(
-                  !_hasChanged ? Colors.grey : null,
-                ),
-              ),
-              onPressed: () {
-                if (user.isRestricted) {
-                  showAccountRestrictedModal(context);
-                  return;
-                }
-
-                if (!_hasChanged) {
-                  return;
-                }
-
-                _handleSave();
-              },
-              child: const Text('Save'),
             ),
 
             // Bottom padding

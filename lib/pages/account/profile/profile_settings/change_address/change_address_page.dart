@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
@@ -16,13 +17,35 @@ class ChangeAddressPage extends StatefulWidget {
 }
 
 class _ChangeAddressPageState extends State<ChangeAddressPage> {
+  bool _submittable = false;
   final _addressController = TextEditingController();
+  late UserModel user;
 
   @override
   void initState() {
     super.initState();
-    final user = Provider.of<UserProvider>(context, listen: false).user;
+    user = Provider.of<UserProvider>(context, listen: false).user;
     _addressController.text = user.address;
+    _addressController.addListener(_inputListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _addressController.removeListener(_inputListener);
+  }
+
+  void _inputListener() {
+    if (user.address.trim() != _addressController.text.trim() &&
+        _addressController.text.isNotEmpty) {
+      setState(() {
+        _submittable = true;
+      });
+    } else {
+      setState(() {
+        _submittable = false;
+      });
+    }
   }
 
   @override
@@ -51,12 +74,15 @@ class _ChangeAddressPageState extends State<ChangeAddressPage> {
         bottomNavigationBar: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: FilledButton(
-            onPressed: _showAddressChangeConfirmation,
+            onPressed: _submittable ? _showAddressChangeConfirmation : () {},
             style: ButtonStyle(
               shape: WidgetStatePropertyAll(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                !_submittable ? Colors.grey : null,
               ),
               minimumSize: const WidgetStatePropertyAll(
                 Size.fromHeight(50),

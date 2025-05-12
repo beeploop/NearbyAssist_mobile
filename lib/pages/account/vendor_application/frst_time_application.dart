@@ -29,6 +29,7 @@ class FirstTimeApplication extends StatefulWidget {
 }
 
 class _FirstTimeApplicationState extends State<FirstTimeApplication> {
+  bool _submittable = false;
   List<ExpertiseModel> _expertiseList = [];
   ExpertiseModel? _selectedExpertise;
   List<String> _unlockables = [];
@@ -42,6 +43,30 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
 
     _expertiseList =
         Provider.of<ExpertiseProvider>(context, listen: false).expertise;
+    _supportingDocController.addListener(_inputListener);
+    _policeClearanceController.addListener(_inputListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _supportingDocController.removeListener(_inputListener);
+    _policeClearanceController.removeListener(_inputListener);
+  }
+
+  void _inputListener() {
+    if (_hasAgreedToTAC &&
+        _selectedExpertise != null &&
+        _supportingDocController.hasImage &&
+        _policeClearanceController.hasImage) {
+      setState(() {
+        _submittable = true;
+      });
+    } else {
+      setState(() {
+        _submittable = false;
+      });
+    }
   }
 
   @override
@@ -135,11 +160,16 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
                     _checkboxTAC(),
                     const SizedBox(height: 10),
                     FilledButton(
-                      style: const ButtonStyle(
-                        minimumSize:
-                            WidgetStatePropertyAll(Size.fromHeight(50)),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          !_submittable ? Colors.grey : null,
+                        ),
+                        minimumSize: const WidgetStatePropertyAll(
+                          Size.fromHeight(50),
+                        ),
                       ),
-                      onPressed: () => _handleSubmit(provider.user),
+                      onPressed: () =>
+                          _submittable ? _handleSubmit(provider.user) : () {},
                       child: const Text('Submit'),
                     ),
 
@@ -197,6 +227,8 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
         setState(() {
           _unlockables = unlocks.map((e) => e.title).toList();
         });
+
+        _inputListener();
       }),
     );
   }
@@ -207,7 +239,10 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
       children: [
         Checkbox(
           value: _hasAgreedToTAC,
-          onChanged: (bool? value) => setState(() => _hasAgreedToTAC = value!),
+          onChanged: (bool? value) => setState(() {
+            _hasAgreedToTAC = value!;
+            _inputListener();
+          }),
         ),
         ClickableText(
           text: "I agreed to the ",
