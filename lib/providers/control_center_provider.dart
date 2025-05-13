@@ -385,4 +385,25 @@ class ControlCenterProvider extends ChangeNotifier {
       rethrow;
     }
   }
+
+  void receivedRequest(BookingModel request) {
+    _requests = [request, ..._requests];
+    notifyListeners();
+  }
+
+  void cancelledRequest(String bookingId, String reason) {
+    final index = _requests.indexWhere((req) => req.id == bookingId);
+    if (index == -1) return;
+
+    final cancelledBooking = _requests[index].copyWith(
+      status: BookingStatus.cancelled,
+      updatedAt: DateTime.now(),
+      cancelReason: reason,
+    );
+
+    _requests = List.of(_requests)..removeAt(index);
+    _history = [cancelledBooking, ..._history];
+
+    notifyListeners();
+  }
 }

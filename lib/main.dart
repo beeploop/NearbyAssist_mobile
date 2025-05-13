@@ -111,11 +111,13 @@ class _App extends State<App> {
     final notificationProvider = context.read<NotificationsProvider>();
     final clientBookingProvider = context.read<ClientBookingProvider>();
     final expertiseProvider = context.read<ExpertiseProvider>();
+    final controlCenterProvider = context.read<ControlCenterProvider>();
 
     websocketProvider.setMessageProvider(messageProvider);
     websocketProvider.setNotifProvider(notificationProvider);
     websocketProvider.setUserProvider(userProvider);
     websocketProvider.setClientBookingProvider(clientBookingProvider);
+    websocketProvider.setControlCenterProvider(controlCenterProvider);
 
     if (userProvider.status == AuthStatus.authenticated) {
       messageProvider.refreshInbox();

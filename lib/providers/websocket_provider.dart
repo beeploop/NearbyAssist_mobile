@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/main.dart';
+import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/models/events.dart';
 import 'package:nearby_assist/models/notification_model.dart';
 import 'package:nearby_assist/models/received_message_model.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
+import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/token_change_notifier.dart';
@@ -27,6 +29,7 @@ class WebsocketProvider extends ChangeNotifier {
   NotificationsProvider? _notifProvider;
   UserProvider? _userProvider;
   ClientBookingProvider? _clientBookingProvider;
+  ControlCenterProvider? _controlCenterProvider;
 
   WebsocketStatus get status => _status;
 
@@ -44,6 +47,10 @@ class WebsocketProvider extends ChangeNotifier {
 
   void setClientBookingProvider(ClientBookingProvider provider) {
     _clientBookingProvider = provider;
+  }
+
+  void setControlCenterProvider(ControlCenterProvider provider) {
+    _controlCenterProvider = provider;
   }
 
   void init() {
@@ -195,6 +202,15 @@ class WebsocketProvider extends ChangeNotifier {
           final bookingId = result.data['payload']['id'];
           final reason = result.data['payload']['reason'];
           _clientBookingProvider?.bookingRejected(bookingId, reason);
+
+        case Event.receivedBooking:
+          final booking = BookingModel.fromJson(result.data['payload']);
+          _controlCenterProvider?.receivedRequest(booking);
+
+        case Event.bookingCancelled:
+          final bookingId = result.data['payload']['id'];
+          final reason = result.data['payload']['reason'];
+          _controlCenterProvider?.cancelledRequest(bookingId, reason);
 
         case Event.unknown:
           throw 'unknown event type';

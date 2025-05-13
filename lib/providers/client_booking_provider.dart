@@ -199,6 +199,7 @@ class ClientBookingProvider extends ChangeNotifier {
       cancelReason: reason,
     );
 
+    _pending = List.of(_pending)..removeAt(index);
     _history = [rejectedBooking, ..._history];
 
     notifyListeners();
