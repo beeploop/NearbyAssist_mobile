@@ -61,7 +61,7 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               ),
               const SizedBox(height: 10),
               AutoSizeText(
-                widget.booking.service.title,
+                widget.booking.serviceTitle,
               ),
               const SizedBox(height: 10),
 
@@ -72,18 +72,18 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
               ),
               const SizedBox(height: 10),
               AutoSizeText(
-                widget.booking.service.description,
+                widget.booking.serviceDescription,
               ),
               const SizedBox(height: 20),
 
               RowTile(
                 label: 'Base Price:',
-                text: formatCurrency(widget.booking.service.price),
+                text: formatCurrency(widget.booking.price),
               ),
               const SizedBox(height: 10),
               RowTile(
                 label: 'Pricing Type',
-                text: widget.booking.service.pricingType.label,
+                text: widget.booking.pricingType.label,
               ),
               const SizedBox(height: 20),
               const AutoSizeText(

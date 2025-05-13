@@ -93,7 +93,7 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   ),
                   const SizedBox(height: 10),
                   AutoSizeText(
-                    widget.booking.service.title,
+                    widget.booking.serviceTitle,
                   ),
                   const SizedBox(height: 10),
 
@@ -104,31 +104,31 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   ),
                   const SizedBox(height: 10),
                   AutoSizeText(
-                    widget.booking.service.description,
+                    widget.booking.serviceDescription,
                   ),
                   const SizedBox(height: 20),
 
                   // Price
                   RowTile(
                     label: 'Base Price:',
-                    text: formatCurrency(widget.booking.service.price),
+                    text: formatCurrency(widget.booking.price),
                   ),
                   const SizedBox(height: 10),
                   RowTile(
                     label: 'Pricing Type',
-                    text: widget.booking.service.pricingType.label,
+                    text: widget.booking.pricingType.label,
                   ),
-                  if (widget.booking.service.pricingType != PricingType.fixed)
+                  if (widget.booking.pricingType != PricingType.fixed)
                     const SizedBox(height: 10),
-                  if (widget.booking.service.pricingType != PricingType.fixed)
+                  if (widget.booking.pricingType != PricingType.fixed)
                     RowTile(
                       label: 'Booked for',
                       text: formatQuantityBooked(
                         widget.booking.quantity,
-                        widget.booking.service.pricingType,
+                        widget.booking.pricingType,
                       ),
                     ),
-                  if (widget.booking.service.pricingType != PricingType.fixed)
+                  if (widget.booking.pricingType != PricingType.fixed)
                     const SizedBox(height: 10),
                   _dateModified(),
                   const SizedBox(height: 20),

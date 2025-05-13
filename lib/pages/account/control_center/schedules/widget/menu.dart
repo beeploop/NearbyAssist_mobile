@@ -126,7 +126,7 @@ class _MenuState extends State<Menu> {
             prefixIcon: Icon(CupertinoIcons.calendar),
           ),
           readOnly: true,
-          onTap: widget.booking.service.pricingType == PricingType.perDay
+          onTap: widget.booking.pricingType == PricingType.perDay
               ? _pickDateRange
               : _pickDate,
         ),
@@ -228,7 +228,7 @@ class _MenuState extends State<Menu> {
       loader.show();
       Navigator.pop(context);
 
-      if (widget.booking.service.pricingType == PricingType.perDay) {
+      if (widget.booking.pricingType == PricingType.perDay) {
         // add 1 because inDays counts the next day as day 1
         final days = _selectedDates.duration.inDays + 1;
         if (days > widget.booking.quantity) {

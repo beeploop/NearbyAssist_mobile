@@ -183,7 +183,7 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             ),
             const SizedBox(height: 10),
             AutoSizeText(
-              widget.booking.service.title,
+              widget.booking.serviceTitle,
             ),
             const SizedBox(height: 10),
 
@@ -194,27 +194,27 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             ),
             const SizedBox(height: 10),
             AutoSizeText(
-              widget.booking.service.description,
+              widget.booking.serviceDescription,
             ),
             const SizedBox(height: 20),
 
             RowTile(
               label: 'Base Price:',
-              text: formatCurrency(widget.booking.service.price),
+              text: formatCurrency(widget.booking.price),
             ),
             const SizedBox(height: 10),
             RowTile(
               label: 'Pricing Type',
-              text: widget.booking.service.pricingType.label,
+              text: widget.booking.pricingType.label,
             ),
-            if (widget.booking.service.pricingType != PricingType.fixed)
+            if (widget.booking.pricingType != PricingType.fixed)
               const SizedBox(height: 10),
-            if (widget.booking.service.pricingType != PricingType.fixed)
+            if (widget.booking.pricingType != PricingType.fixed)
               RowTile(
                 label: 'Booked for',
                 text: formatQuantityBooked(
                   widget.booking.quantity,
-                  widget.booking.service.pricingType,
+                  widget.booking.pricingType,
                 ),
               ),
             const SizedBox(height: 20),
@@ -279,7 +279,7 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             prefixIcon: Icon(CupertinoIcons.calendar),
           ),
           readOnly: true,
-          onTap: widget.booking.service.pricingType == PricingType.perDay
+          onTap: widget.booking.pricingType == PricingType.perDay
               ? _pickDateRange
               : _pickDate,
         ),
@@ -347,7 +347,7 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       loader.show();
       Navigator.pop(context);
 
-      if (widget.booking.service.pricingType == PricingType.perDay) {
+      if (widget.booking.pricingType == PricingType.perDay) {
         // add 1 because inDays counts the next day as day 1
         final days = _selectedDates.duration.inDays + 1;
         if (days > widget.booking.quantity) {

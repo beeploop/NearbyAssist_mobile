@@ -24,7 +24,7 @@ class BookingRequestModel {
       'serviceId': serviceId,
       'quantity': quantity,
       'cost': totalCost,
-      'extras': extras.map((e) => e.toJson()).toList(),
+      'extras': extras.map((extra) => extra.toJson()).toList(),
     };
   }
 }

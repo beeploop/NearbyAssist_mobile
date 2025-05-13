@@ -42,7 +42,7 @@ class RequestListItem extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          booking.service.title,
+          booking.serviceTitle,
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
         ),

@@ -66,7 +66,7 @@ class _RatePageState extends State<RatePage> {
 
             // Title
             Text(
-              widget.booking.service.title,
+              widget.booking.serviceTitle,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -133,7 +133,7 @@ class _RatePageState extends State<RatePage> {
 
       final review = PostReviewModel(
         bookingId: widget.booking.id,
-        serviceId: widget.booking.service.id,
+        serviceId: widget.booking.serviceId,
         rating: _rating.toInt(),
         text: _reviewController.text,
       );

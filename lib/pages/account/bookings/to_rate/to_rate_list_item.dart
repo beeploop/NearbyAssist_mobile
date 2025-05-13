@@ -76,12 +76,12 @@ class ToRateListItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                booking.service.title,
+                booking.serviceTitle,
                 style: const TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                booking.service.description,
+                booking.serviceDescription,
                 style: const TextStyle(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,

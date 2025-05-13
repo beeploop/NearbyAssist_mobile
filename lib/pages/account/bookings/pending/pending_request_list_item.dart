@@ -37,12 +37,12 @@ class PendingRequestListItem extends StatelessWidget {
           ),
         ),
         title: Text(
-          booking.service.title,
+          booking.serviceTitle,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          booking.service.description,
+          booking.serviceDescription,
           overflow: TextOverflow.ellipsis,
           maxLines: 3,
         ),

@@ -1,19 +1,19 @@
-class ServiceExtraModel {
-  String id;
+class BookingExtraModel {
+  String bookingId;
   String title;
   String description;
   double price;
 
-  ServiceExtraModel({
-    required this.id,
+  BookingExtraModel({
+    required this.bookingId,
     required this.title,
     required this.description,
     required this.price,
   });
 
-  factory ServiceExtraModel.fromJson(Map<String, dynamic> json) {
-    return ServiceExtraModel(
-      id: json['id'],
+  factory BookingExtraModel.fromJson(Map<String, dynamic> json) {
+    return BookingExtraModel(
+      bookingId: json['bookingId'],
       title: json['title'],
       description: json['description'],
       price: double.tryParse(json['price'].toString()) ?? 0.0,
@@ -22,7 +22,7 @@ class ServiceExtraModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'bookingId': bookingId,
       'title': title,
       'description': description,
       'price': price.toString(),
