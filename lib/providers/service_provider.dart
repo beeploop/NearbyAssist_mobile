@@ -7,7 +7,7 @@ class ServiceProvider extends ChangeNotifier {
   List<SearchResultModel> _services = [];
   final Map<String, DetailedServiceModel> _serviceDetails = {};
 
-  List<SearchResultModel> getServices() => _services;
+  List<SearchResultModel> get services => _services;
 
   Future<DetailedServiceModel> getService(
     String id, {
@@ -20,7 +20,7 @@ class ServiceProvider extends ChangeNotifier {
         }
       }
 
-      final detail = await SearchService().getServiceDetails(id, fresh: fresh);
+      final detail = await SearchService().getServiceDetails(id, fresh: true);
       _serviceDetails[id] = detail;
       notifyListeners();
 

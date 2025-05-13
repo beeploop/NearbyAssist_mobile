@@ -3,7 +3,7 @@ import 'package:nearby_assist/models/service_model.dart';
 class SearchResultModel {
   String id;
   String vendorName;
-  double suggestionScore;
+  double suggestibility;
   double price;
   double rating;
   double latitude;
@@ -15,7 +15,7 @@ class SearchResultModel {
   SearchResultModel({
     required this.id,
     required this.vendorName,
-    required this.suggestionScore,
+    required this.suggestibility,
     required this.price,
     required this.rating,
     required this.latitude,
@@ -29,9 +29,9 @@ class SearchResultModel {
     return SearchResultModel(
       id: json['id'],
       vendorName: json['vendorName'],
-      suggestionScore: double.parse(json['suggestionScore'].toString()),
-      price: double.parse(json['price'].toString()),
-      rating: double.parse(json['rating'].toString()),
+      suggestibility: double.parse(json['suggestibility'].toString()),
+      price: double.tryParse(json['price']) ?? 0.0,
+      rating: double.tryParse(json['rating']) ?? 0.0,
       latitude: json['latitude'],
       longitude: json['longitude'],
       completedBookings: int.parse(json['completedBookings'].toString()),

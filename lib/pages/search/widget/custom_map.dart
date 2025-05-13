@@ -11,6 +11,7 @@ import 'package:nearby_assist/pages/search/widget/search_result_list_item.dart';
 import 'package:nearby_assist/pages/search/widget/service_sorting_method.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
+import 'package:nearby_assist/providers/system_setting_provider.dart';
 import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/utils/search_result_sorter.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +50,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Consumer2<ServiceProvider, SearchProvider>(
       builder: (context, serviceProvider, searchProvider, child) {
-        final services = serviceProvider.getServices();
+        final services = serviceProvider.services;
         _fitMarkers(services);
 
         return Stack(
@@ -65,6 +66,10 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                   onTap: (tapPos, latlng) {
                     // Remove focus from the searchbar
                     FocusManager.instance.primaryFocus?.unfocus();
+
+                    if (orderingPreferenceOverlay != null) {
+                      _hideOrderingPreference();
+                    }
                   }),
               children: [
                 TileLayer(
@@ -123,7 +128,12 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                         CupertinoIcons.list_bullet,
                         color: Colors.green.shade800,
                       ),
-                      onPressed: () => _showListView(services),
+                      onPressed: () {
+                        if (orderingPreferenceOverlay != null) {
+                          _hideOrderingPreference();
+                        }
+                        _showListView(services);
+                      },
                     ),
                     IconButton(
                       icon: Icon(
@@ -140,10 +150,27 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                     ),
                     IconButton(
                       icon: Icon(
+                        CupertinoIcons.sparkles,
+                        color: Colors.green.shade800,
+                      ),
+                      onPressed: () {
+                        if (orderingPreferenceOverlay != null) {
+                          _hideOrderingPreference();
+                        }
+                        _showSuggestionPreferenceSettings();
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
                         CupertinoIcons.map_pin_ellipse,
                         color: Colors.green.shade800,
                       ),
-                      onPressed: () => _fitMarkers(services),
+                      onPressed: () {
+                        if (orderingPreferenceOverlay != null) {
+                          _hideOrderingPreference();
+                        }
+                        _fitMarkers(services);
+                      },
                     ),
                   ],
                 ),
@@ -190,6 +217,83 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
+  void _showSuggestionPreferenceSettings() {
+    final criterionPreference = SystemSettingProvider().criteriaRanking;
+
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.6,
+        width: double.infinity,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'System Suggestion Preferences',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Hold & drag to re-arrange the order of the suggestion criteria based on your preference',
+              ),
+              const SizedBox(height: 20),
+
+              // Criteria ranking
+              ReorderableListView.builder(
+                shrinkWrap: true,
+                proxyDecorator: (child, index, animation) => Material(
+                  type: MaterialType.transparency,
+                  child: child,
+                ),
+                onReorder: SystemSettingProvider().reorderCriterion,
+                itemCount: criterionPreference.length,
+                itemBuilder: (context, index) {
+                  final criterion = criterionPreference[index];
+
+                  IconData? icon;
+                  switch (criterion.identifier) {
+                    case 'p':
+                      icon = CupertinoIcons.money_dollar;
+                      break;
+                    case 'r':
+                      icon = CupertinoIcons.star;
+                      break;
+                    case 'd':
+                      icon = CupertinoIcons.map;
+                      break;
+                    case 'b':
+                      icon = CupertinoIcons.checkmark;
+                      break;
+                  }
+
+                  return Padding(
+                    key: ValueKey(criterion.name),
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        title: Text(criterion.name),
+                        leading: Icon(icon),
+                        trailing: const Icon(CupertinoIcons.line_horizontal_3),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showOrderingPreference() {
     final overlay = Overlay.of(context);
     final size = MediaQuery.of(context).size.width * 0.5;
@@ -227,7 +331,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
 
             _orderPreferenceItem(
               searchProvider,
-              ServiceSortingMethod.suggestionScore,
+              ServiceSortingMethod.suggestibility,
               CupertinoIcons.sparkles,
             ),
             _orderPreferenceItem(

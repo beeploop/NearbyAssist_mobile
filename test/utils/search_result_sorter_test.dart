@@ -11,7 +11,7 @@ void main() {
       rating: 3,
       completedBookings: 1,
       distance: 3.4028235,
-      suggestionScore: 1.0,
+      suggestibility: 1.0,
       service: null,
       latitude: 0.00,
       longitude: 0.00,
@@ -23,7 +23,7 @@ void main() {
       rating: 0,
       completedBookings: 0,
       distance: 3.4028235,
-      suggestionScore: 0.37776,
+      suggestibility: 0.37776,
       service: null,
       latitude: 0.00,
       longitude: 0.00,
@@ -35,7 +35,7 @@ void main() {
       rating: 3,
       completedBookings: 0,
       distance: 3.4028235,
-      suggestionScore: 0.66,
+      suggestibility: 0.66,
       service: null,
       latitude: 0.00,
       longitude: 0.00,
@@ -43,9 +43,9 @@ void main() {
     ),
   ];
 
-  test('test sorting by suggestion score', () {
+  test('test sorting by suggestibility', () {
     final sorter = SearchResultSorter(
-      method: ServiceSortingMethod.suggestionScore,
+      method: ServiceSortingMethod.suggestibility,
       services: [...services],
     );
 

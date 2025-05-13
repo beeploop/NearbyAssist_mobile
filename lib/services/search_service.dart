@@ -3,6 +3,7 @@ import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
+import 'package:nearby_assist/providers/system_setting_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/location_service.dart';
 
@@ -16,6 +17,10 @@ class SearchService {
       final response = await api.dio.get(endpoint.search, queryParameters: {
         'q': tags.map((tag) => tag.replaceAll(' ', '_')).join(','),
         'l': '${location.latitude},${location.longitude}',
+        'preference': SystemSettingProvider()
+            .criteriaRanking
+            .map((criteria) => criteria.identifier)
+            .join(','),
       });
 
       return (response.data['services'] as List).map((service) {

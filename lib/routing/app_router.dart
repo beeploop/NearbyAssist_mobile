@@ -69,10 +69,15 @@ GoRouter generateRoutes(
         branches: [
           StatefulShellBranch(routes: [
             GoRoute(
-              path: RoutePath.search.path,
-              name: RoutePath.search.name,
-              builder: (context, state) => const SearchPage(),
-            ),
+                path: RoutePath.search.path,
+                name: RoutePath.search.name,
+                builder: (context, state) => const SearchPage(),
+                routes: [
+                  GoRoute(
+                      path: RoutePath.map.path,
+                      name: RoutePath.map.name,
+                      builder: (context, state) => const MapPage()),
+                ]),
           ]),
           StatefulShellBranch(routes: [
             GoRoute(
@@ -96,10 +101,6 @@ GoRouter generateRoutes(
           ]),
         ],
       ),
-      GoRoute(
-          path: RoutePath.map.path,
-          name: RoutePath.map.name,
-          builder: (context, state) => const MapPage()),
       GoRoute(
           path: RoutePath.notifications.path,
           name: RoutePath.notifications.name,

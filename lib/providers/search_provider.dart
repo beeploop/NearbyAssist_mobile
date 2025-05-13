@@ -7,7 +7,7 @@ import 'package:nearby_assist/services/search_service.dart';
 class SearchProvider extends ChangeNotifier {
   bool _searching = false;
   String _latestSearchTerm = '';
-  ServiceSortingMethod _sortingMethod = ServiceSortingMethod.suggestionScore;
+  ServiceSortingMethod _sortingMethod = ServiceSortingMethod.suggestibility;
 
   ServiceSortingMethod get sortingMethod => _sortingMethod;
 
