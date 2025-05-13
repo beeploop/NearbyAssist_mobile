@@ -203,11 +203,16 @@ class WebsocketProvider extends ChangeNotifier {
           final reason = result.data['payload']['reason'];
           _clientBookingProvider?.bookingRejected(bookingId, reason);
 
+        case Event.vendorCancelledBooking:
+          final bookingId = result.data['payload']['id'];
+          final reason = result.data['payload']['reason'];
+          _clientBookingProvider?.bookingCancelled(bookingId, reason);
+
         case Event.receivedBooking:
           final booking = BookingModel.fromJson(result.data['payload']);
           _controlCenterProvider?.receivedRequest(booking);
 
-        case Event.bookingCancelled:
+        case Event.clientCancelledBooking:
           final bookingId = result.data['payload']['id'];
           final reason = result.data['payload']['reason'];
           _controlCenterProvider?.cancelledRequest(bookingId, reason);

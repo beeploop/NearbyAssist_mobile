@@ -9,7 +9,8 @@ enum Event {
   bookingConfirmed,
   bookingRescheduled,
   bookingRejected,
-  bookingCancelled,
+  vendorCancelledBooking,
+  clientCancelledBooking,
   receivedBooking,
   unknown,
 }

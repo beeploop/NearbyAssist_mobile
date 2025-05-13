@@ -103,6 +103,7 @@ class BookingModel {
     DateTime? scheduleStart,
     DateTime? scheduleEnd,
     String? cancelReason,
+    String? cancelledById,
   }) {
     return BookingModel(
       id: id,
@@ -123,7 +124,7 @@ class BookingModel {
       scheduleStart: scheduleStart ?? this.scheduleStart,
       scheduleEnd: scheduleEnd ?? this.scheduleEnd,
       cancelReason: cancelReason ?? this.cancelReason,
-      cancelledById: cancelledById,
+      cancelledById: cancelledById ?? this.cancelledById,
     );
   }
 

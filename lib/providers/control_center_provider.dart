@@ -399,6 +399,7 @@ class ControlCenterProvider extends ChangeNotifier {
       status: BookingStatus.cancelled,
       updatedAt: DateTime.now(),
       cancelReason: reason,
+      cancelledById: _requests[index].client.id,
     );
 
     _requests = List.of(_requests)..removeAt(index);

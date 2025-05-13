@@ -205,6 +205,23 @@ class ClientBookingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void bookingCancelled(String bookingId, String reason) {
+    final index = _confirmed.indexWhere((booking) => booking.id == bookingId);
+    if (index == -1) return;
+
+    final cancelledBooking = _confirmed[index].copyWith(
+      status: BookingStatus.cancelled,
+      updatedAt: DateTime.now(),
+      cancelReason: reason,
+      cancelledById: _confirmed[index].vendor.id,
+    );
+
+    _confirmed = List.of(_confirmed)..removeAt(index);
+    _history = [cancelledBooking, ..._history];
+
+    notifyListeners();
+  }
+
   Future<ServiceReviewModel> getReviewOnBooking(String bookingId) async {
     try {
       return await ClientBookingService().getReviewOnBooking(bookingId);
