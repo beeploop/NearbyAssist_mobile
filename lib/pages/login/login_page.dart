@@ -15,6 +15,7 @@ import 'package:nearby_assist/pages/widget/google_auth_button.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
+import 'package:nearby_assist/services/google_auth_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:provider/provider.dart';
@@ -143,9 +144,11 @@ class _LoginPageState extends State<LoginPage> {
     } on DioException catch (error) {
       if (!mounted) return;
       showGenericErrorModal(context, message: error.response?.data['message']);
+      GoogleAuthService().logout();
     } catch (error) {
       if (!mounted) return;
       showGenericErrorModal(context, message: error.toString());
+      GoogleAuthService().logout();
     } finally {
       loader.hide();
     }
