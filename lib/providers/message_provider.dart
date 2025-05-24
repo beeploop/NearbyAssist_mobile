@@ -14,7 +14,7 @@ import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/encryption.dart';
 import 'package:nearby_assist/services/message_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
-import 'package:nearby_assist/services/vendor_service.dart';
+import 'package:nearby_assist/services/user_account_service.dart';
 
 class MessageProvider extends ChangeNotifier {
   final List<ConversationModel> _inbox = [];
@@ -294,14 +294,14 @@ class MessageProvider extends ChangeNotifier {
   }
 
 // userId = id of the recipient
-  Future<void> _createInboxItem(String vendorId, String message) async {
+  Future<void> _createInboxItem(String userId, String message) async {
     try {
       final user = await SecureStorage().getUser();
-      final vendor = await VendorService().getVendor(vendorId);
+      final recipient = await UserAccountService().findUser(userId);
       final preview = InboxPreviewModel(
-        userId: vendor.id,
-        name: vendor.name,
-        imageUrl: vendor.imageUrl,
+        userId: recipient.id,
+        name: recipient.name,
+        imageUrl: recipient.imageUrl,
         lastMessage: message,
         lastMessageSender: user.id,
         lastMessageDate: DateTime.now(),
@@ -358,6 +358,6 @@ class MessageProvider extends ChangeNotifier {
 
   void _sortInbox() {
     _inbox.sort((a, b) =>
-        b.preview.lastMessageDate.compareTo(a.preview.lastMessageDate));
+        a.preview.lastMessageDate.compareTo(b.preview.lastMessageDate));
   }
 }

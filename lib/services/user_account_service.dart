@@ -40,4 +40,15 @@ class UserAccountService {
       rethrow;
     }
   }
+
+  Future<UserModel> findUser(String userId) async {
+    try {
+      final api = ApiService.authenticated();
+      final response = await api.dio.get('${endpoint.getUser}/$userId');
+
+      return UserModel.fromJson(response.data['user']);
+    } catch (error) {
+      rethrow;
+    }
+  }
 }
