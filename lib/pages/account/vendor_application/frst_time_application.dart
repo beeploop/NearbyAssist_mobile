@@ -276,6 +276,7 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
 
     try {
       loader.show();
+      final userProvider = context.read<UserProvider>();
 
       if (!_hasAgreedToTAC) {
         throw 'You did not agreed to the terms and conditions';
@@ -289,12 +290,18 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
           _policeClearanceController.image == null) {
         throw 'Upload required documents';
       }
+
       final service = VendorApplicationService();
       await service.apply(
         expertise: _selectedExpertise!,
         supportingDoc: _supportingDocController.imageBytes!,
         policeClearance: _policeClearanceController.imageBytes!,
       );
+
+      final user = userProvider.user.copyWith(
+        hasPendingApplication: true,
+      );
+      await userProvider.updateUser(user);
 
       if (!mounted) return;
       showGenericSuccessModal(

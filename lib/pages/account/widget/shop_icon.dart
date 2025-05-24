@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/utils/show_account_not_vendor_modal.dart';
+import 'package:nearby_assist/utils/show_has_pending_application.dart';
 import 'package:provider/provider.dart';
 
 class ShopIcon extends StatefulWidget {
@@ -52,6 +53,11 @@ class _ShopIconState extends State<ShopIcon> {
   }
 
   void _handlePress() {
+    if (widget.user.hasPendingApplication) {
+      showHasPendingApplication(context);
+      return;
+    }
+
     if (!widget.user.isVendor) {
       showAccountNotVendorModal(context);
       return;

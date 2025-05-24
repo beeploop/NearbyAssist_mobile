@@ -27,4 +27,5 @@ final placeHolderUser = UserModel(
   socials: [],
   dbl: 0,
   hasPendingVerification: false,
+  hasPendingApplication: false,
 );

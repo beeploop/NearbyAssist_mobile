@@ -17,6 +17,7 @@ class UserModel {
   List<SocialModel> socials;
   int dbl;
   bool hasPendingVerification;
+  bool hasPendingApplication;
 
   UserModel({
     required this.id,
@@ -34,6 +35,7 @@ class UserModel {
     required this.socials,
     required this.dbl,
     required this.hasPendingVerification,
+    required this.hasPendingApplication,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +59,7 @@ class UserModel {
           .toList(),
       dbl: json['dbl'],
       hasPendingVerification: json['hasPendingVerification'],
+      hasPendingApplication: json['hasPendingApplication'],
     );
   }
 
@@ -77,6 +80,7 @@ class UserModel {
       'socials': socials.map((social) => social.toJson()).toList(),
       'dbl': dbl,
       'hasPendingVerification': hasPendingVerification,
+      'hasPendingApplication': hasPendingApplication,
     };
   }
 
@@ -85,6 +89,7 @@ class UserModel {
     String? phone,
     String? address,
     bool? hasPendingVerification,
+    bool? hasPendingApplication,
   }) {
     return UserModel(
       id: id,
@@ -103,6 +108,8 @@ class UserModel {
       dbl: dbl,
       hasPendingVerification:
           hasPendingVerification ?? this.hasPendingVerification,
+      hasPendingApplication:
+          hasPendingApplication ?? this.hasPendingApplication,
     );
   }
 }

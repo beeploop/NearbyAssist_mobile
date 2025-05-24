@@ -219,6 +219,7 @@ class _SubsequentApplicationState extends State<SubsequentApplication> {
 
     try {
       loader.show();
+      final userProvider = context.read<UserProvider>();
 
       if (!_hasAgreedToTAC) {
         throw 'You did not agreed to the terms and conditions';
@@ -236,6 +237,11 @@ class _SubsequentApplicationState extends State<SubsequentApplication> {
             _selectedExpertise!,
             _supportingDocController.imageBytes!,
           );
+
+      final user = userProvider.user.copyWith(
+        hasPendingApplication: true,
+      );
+      await userProvider.updateUser(user);
 
       if (!mounted) return;
       showGenericSuccessModal(
