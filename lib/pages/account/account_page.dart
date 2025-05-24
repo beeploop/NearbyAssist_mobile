@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/pages/account/widget/account_tile_widget.dart';
-import 'package:nearby_assist/pages/account/widget/banner_section_v2.dart';
+import 'package:nearby_assist/pages/account/widget/banner_section_v3.dart';
 import 'package:nearby_assist/pages/account/widget/other_section_v2.dart';
 import 'package:nearby_assist/pages/account/bookings/widget/quick_actions.dart';
 import 'package:nearby_assist/pages/account/widget/shop_icon.dart';
@@ -59,7 +59,7 @@ class _AccountPageState extends State<AccountPage> {
                         );
                       }
 
-                      return const BannerSectionV2();
+                      return const BannerSectionV3();
                     },
                   ),
                   const SizedBox(height: 10),

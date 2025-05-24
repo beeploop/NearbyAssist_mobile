@@ -1,13 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/pages/account/profile/add_social_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_settings/profile_settings_page.dart';
 import 'package:nearby_assist/pages/account/profile/widget/expertise_section.dart';
-import 'package:nearby_assist/pages/account/profile/widget/profile_avatar.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/launch_url.dart';
@@ -56,7 +57,28 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // User Avatar
-                    const Center(child: ProfileAvatar()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          height: MediaQuery.of(context).size.width * 0.3,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.green.shade800,
+                              width: 4,
+                            ),
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(
+                                provider.user.imageUrl,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 10),
 
                     // Name
@@ -69,6 +91,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           fontSize: 20,
                         ),
                       ),
+                    ),
+
+                    // Verification indicator
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        provider.user.isVerified ? _verified() : _unverified(),
+                      ],
                     ),
                     const SizedBox(height: 20),
 
@@ -186,6 +216,35 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _unverified() {
+    return OutlinedButton.icon(
+      onPressed: () {
+        context.pushNamed('verifyAccount');
+      },
+      style: OutlinedButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(color: Colors.blue.shade600),
+      ),
+      icon: Icon(CupertinoIcons.checkmark_seal, color: Colors.blue.shade600),
+      label: Text('Unverified', style: TextStyle(color: Colors.blue.shade600)),
+    );
+  }
+
+  Widget _verified() {
+    return OutlinedButton.icon(
+      onPressed: () {},
+      style: OutlinedButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(color: Colors.blue.shade600),
+      ),
+      icon: Icon(
+        CupertinoIcons.checkmark_seal_fill,
+        color: Colors.blue.shade600,
+      ),
+      label: Text('Verified', style: TextStyle(color: Colors.blue.shade600)),
     );
   }
 
