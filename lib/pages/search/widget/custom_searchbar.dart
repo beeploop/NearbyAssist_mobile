@@ -55,10 +55,7 @@ class _CustomSearchbarState extends State<CustomSearchbar> {
                     ),
                   ),
                 )
-              : const Icon(
-                  CupertinoIcons.search,
-                  size: 20,
-                ),
+              : Container(),
           suggestionsBuilder: (context, controller) {
             final input = controller.value.text;
 
@@ -75,6 +72,16 @@ class _CustomSearchbarState extends State<CustomSearchbar> {
                       ),
                     ));
           },
+          barTrailing: [
+            IconButton(
+              onPressed: () {
+                if (_searchController.text.isEmpty) return;
+
+                _handleSearch(_searchController.text);
+              },
+              icon: const Icon(CupertinoIcons.search),
+            ),
+          ],
         );
       },
     );

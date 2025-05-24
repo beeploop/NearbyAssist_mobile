@@ -5,14 +5,20 @@ import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
 class SearchProvider extends ChangeNotifier {
+  double _radius = 500;
   bool _searching = false;
   String _latestSearchTerm = '';
   ServiceSortingMethod _sortingMethod = ServiceSortingMethod.suggestibility;
 
+  double get radius => _radius;
   ServiceSortingMethod get sortingMethod => _sortingMethod;
-
   bool get searching => _searching;
   String get latestSearchTerm => _latestSearchTerm;
+
+  void updateRadius(double value) {
+    _radius = value;
+    notifyListeners();
+  }
 
   void changeSortingMethod(ServiceSortingMethod method) {
     _sortingMethod = method;
@@ -41,6 +47,7 @@ class SearchProvider extends ChangeNotifier {
       return await SearchService().findServices(
         location: location,
         tags: queries,
+        radius: _radius,
       );
     } catch (error) {
       rethrow;

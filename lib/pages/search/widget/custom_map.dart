@@ -51,7 +51,11 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     return Consumer2<ServiceProvider, SearchProvider>(
       builder: (context, serviceProvider, searchProvider, child) {
         final services = serviceProvider.services;
-        _fitMarkers(services);
+
+        _fitCoordinateWithRadius(
+          LatLng(_location.latitude, _location.longitude),
+          searchProvider.radius,
+        );
 
         return Stack(
           children: [
@@ -77,13 +81,25 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                   userAgentPackageName: 'com.example.app',
                   tileProvider: _tileProvider(),
                 ),
+                CircleLayer(
+                  circles: [
+                    CircleMarker(
+                      point: LatLng(_location.latitude, _location.longitude),
+                      radius: searchProvider.radius,
+                      useRadiusInMeter: true,
+                      color: Colors.blue.withOpacity(0.2),
+                      borderColor: Colors.blue.shade600,
+                      borderStrokeWidth: 2,
+                    ),
+                  ],
+                ),
                 MarkerLayer(
                   markers: [
                     Marker(
                       height: 80,
                       width: 60,
                       rotate: true,
-                      alignment: Alignment.topCenter,
+                      alignment: Alignment.center,
                       point: LatLng(_location.latitude, _location.longitude),
                       child: GestureDetector(
                         onTap: _centerMap,
@@ -106,7 +122,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
             ),
             Positioned(
               bottom: 20,
-              right: 20,
+              right: 10,
               child: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
@@ -169,7 +185,10 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                         if (orderingPreferenceOverlay != null) {
                           _hideOrderingPreference();
                         }
-                        _fitMarkers(services);
+                        _fitCoordinateWithRadius(
+                          LatLng(_location.latitude, _location.longitude),
+                          searchProvider.radius,
+                        );
                       },
                     ),
                   ],
@@ -225,7 +244,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       showDragHandle: true,
       isScrollControlled: true,
       builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.6,
+        height: MediaQuery.of(context).size.height * 0.5,
         width: double.infinity,
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -326,7 +345,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Title
-            const Text('Ordering Preference'),
+            const Text('Order services by:'),
             const SizedBox(height: 10),
 
             _orderPreferenceItem(
@@ -419,7 +438,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       height: 80,
       width: 60,
       rotate: true,
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
       point: point,
       child: GestureDetector(
         onTap: onTap,
@@ -451,27 +470,22 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
-  void _fitMarkers(List<SearchResultModel> services) {
-    final userPosition = LatLng(_location.latitude, _location.longitude);
+  void _fitCoordinateWithRadius(LatLng center, double radius) {
+    final north = const Distance().offset(center, radius, 0);
+    final south = const Distance().offset(center, radius, 180);
+    final east = const Distance().offset(center, radius, 90);
+    final west = const Distance().offset(center, radius, 270);
 
-    final coordinates = services.map((service) {
-      return LatLng(service.latitude, service.longitude);
-    }).toList();
-    coordinates.add(userPosition);
-    final bounds = LatLngBounds.fromPoints(coordinates);
-
-    if (bounds.northEast == bounds.southWest) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _controller.animateTo(dest: userPosition, zoom: _animateZoom);
-      });
-      return;
-    }
+    final bounds = LatLngBounds.fromPoints([
+      LatLng(north.latitude, east.longitude),
+      LatLng(south.latitude, west.longitude),
+    ]);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.animatedFitCamera(
         cameraFit: CameraFit.bounds(
           bounds: bounds,
-          padding: const EdgeInsets.fromLTRB(80, 180, 80, 80),
+          padding: const EdgeInsets.fromLTRB(40, 180, 40, 40),
         ),
       );
     });

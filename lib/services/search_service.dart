@@ -11,12 +11,14 @@ class SearchService {
   Future<List<SearchResultModel>> findServices({
     required Position location,
     required List<String> tags,
+    required double radius,
   }) async {
     try {
       final api = ApiService.authenticated();
       final response = await api.dio.get(endpoint.search, queryParameters: {
         'q': tags.map((tag) => tag.replaceAll(' ', '_')).join(','),
         'l': '${location.latitude},${location.longitude}',
+        'r': radius,
         'preference': SystemSettingProvider()
             .criteriaRanking
             .map((criteria) => criteria.identifier)
