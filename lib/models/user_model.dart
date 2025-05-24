@@ -16,6 +16,7 @@ class UserModel {
   List<ExpertiseModel> expertise;
   List<SocialModel> socials;
   int dbl;
+  bool hasPendingVerification;
 
   UserModel({
     required this.id,
@@ -32,6 +33,7 @@ class UserModel {
     required this.expertise,
     required this.socials,
     required this.dbl,
+    required this.hasPendingVerification,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +56,7 @@ class UserModel {
           .map((social) => SocialModel.fromJson(social))
           .toList(),
       dbl: json['dbl'],
+      hasPendingVerification: json['hasPendingVerification'],
     );
   }
 
@@ -73,10 +76,16 @@ class UserModel {
       'expertises': expertise.map((e) => e.toJson()).toList(),
       'socials': socials.map((social) => social.toJson()).toList(),
       'dbl': dbl,
+      'hasPendingVerification': hasPendingVerification,
     };
   }
 
-  UserModel copyWith({String? name, String? phone, String? address}) {
+  UserModel copyWith({
+    String? name,
+    String? phone,
+    String? address,
+    bool? hasPendingVerification,
+  }) {
     return UserModel(
       id: id,
       name: name ?? this.name,
@@ -92,6 +101,8 @@ class UserModel {
       expertise: expertise,
       socials: socials,
       dbl: dbl,
+      hasPendingVerification:
+          hasPendingVerification ?? this.hasPendingVerification,
     );
   }
 }

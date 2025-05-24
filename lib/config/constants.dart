@@ -26,4 +26,5 @@ final placeHolderUser = UserModel(
   expertise: [],
   socials: [],
   dbl: 0,
+  hasPendingVerification: false,
 );

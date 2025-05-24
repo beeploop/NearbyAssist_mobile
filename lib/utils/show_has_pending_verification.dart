@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-void showUnverifiedAccountModal(BuildContext context) {
+void showHasPendingVerification(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -11,30 +11,25 @@ void showUnverifiedAccountModal(BuildContext context) {
         size: 28,
         color: Colors.amber,
       ),
-      title: const Text('Account not verified'),
+      title: const Text('Pending Verification'),
       content: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'You need to verify your account to access this feature.',
+            'Your account verification is still in progress. Some features are temporarily unavailable until the process is complete.',
+            textAlign: TextAlign.justify,
           ),
           Text(
-            '\nComplete your verification to continue using all available services.',
+            '\n\nPlease check back later.',
+            textAlign: TextAlign.center,
           ),
         ],
       ),
       actions: [
         TextButton(
-          style: const ButtonStyle(
-            foregroundColor: WidgetStatePropertyAll(Colors.red),
-          ),
-          onPressed: () => context.pop(),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(
-              Colors.green.shade800,
+              Colors.red.shade800,
             ),
             shape: WidgetStatePropertyAll(
               RoundedRectangleBorder(
@@ -42,12 +37,9 @@ void showUnverifiedAccountModal(BuildContext context) {
               ),
             ),
           ),
-          onPressed: () {
-            Navigator.pop(context);
-            context.pushNamed('verifyAccount');
-          },
+          onPressed: () => context.pop(),
           child: const Text(
-            'Verify Now',
+            'Close',
             style: TextStyle(color: Colors.white),
           ),
         ),

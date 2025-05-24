@@ -23,8 +23,9 @@ class UserProvider extends ChangeNotifier {
   AuthStatus get status =>
       _user == null ? AuthStatus.unauthenticated : AuthStatus.authenticated;
 
-  void updateUser(UserModel user) {
+  Future<void> updateUser(UserModel user) async {
     _user = user;
+    SecureStorage().saveUser(user);
     notifyListeners();
   }
 

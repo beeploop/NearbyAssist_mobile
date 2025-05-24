@@ -5,6 +5,7 @@ import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/providers/saves_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
+import 'package:nearby_assist/utils/show_has_pending_verification.dart';
 import 'package:nearby_assist/utils/show_unverified_account_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -32,6 +33,11 @@ class _ServiceActionsState extends State<ServiceActions> {
                 child: TextButton.icon(
                   onPressed: () {
                     if (!provider.user.isVerified) {
+                      if (provider.user.hasPendingVerification) {
+                        showHasPendingVerification(context);
+                        return;
+                      }
+
                       showUnverifiedAccountModal(context);
                       return;
                     }

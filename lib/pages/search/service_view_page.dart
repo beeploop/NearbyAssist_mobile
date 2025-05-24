@@ -17,6 +17,8 @@ import 'package:nearby_assist/providers/service_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/format_pricing_with_pricing_type.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/pretty_json.dart';
+import 'package:nearby_assist/utils/show_has_pending_verification.dart';
 import 'package:nearby_assist/utils/show_restricted_account_modal.dart';
 import 'package:nearby_assist/utils/show_unverified_account_modal.dart';
 import 'package:provider/provider.dart';
@@ -335,8 +337,14 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 child: TextButton(
                   onPressed: () {
                     if (user.id == details.vendor.id) return;
+                    logger.logDebug(prettyJSON(user));
 
                     if (!user.isVerified) {
+                      if (user.hasPendingVerification) {
+                        showHasPendingVerification(context);
+                        return;
+                      }
+
                       showUnverifiedAccountModal(context);
                       return;
                     }
@@ -365,6 +373,11 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                     if (user.id == details.vendor.id) return;
 
                     if (!user.isVerified) {
+                      if (user.hasPendingVerification) {
+                        showHasPendingVerification(context);
+                        return;
+                      }
+
                       showUnverifiedAccountModal(context);
                       return;
                     }

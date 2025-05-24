@@ -265,8 +265,9 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
         name: data.name,
         phone: data.phone,
         address: data.address,
+        hasPendingVerification: true,
       );
-      userProvider.updateUser(updatedUser);
+      await userProvider.updateUser(updatedUser);
 
       if (!mounted) return;
       showGenericSuccessModal(

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/report/report_user_reason_page.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/show_has_pending_verification.dart';
 import 'package:nearby_assist/utils/show_unverified_account_modal.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,11 @@ class Menu extends StatelessWidget {
               context,
               onTap: () {
                 if (!provider.user.isVerified) {
+                  if (provider.user.hasPendingVerification) {
+                    showHasPendingVerification(context);
+                    return;
+                  }
+
                   showUnverifiedAccountModal(context);
                   return;
                 }
