@@ -28,7 +28,10 @@ void showUnverifiedAccountModal(BuildContext context) {
               ),
             ),
           ),
-          onPressed: () => context.pushNamed('verifyAccount'),
+          onPressed: () {
+            Navigator.pop(context);
+            context.pushNamed('verifyAccount');
+          },
           child: const Text(
             'Verify',
             style: TextStyle(color: Colors.white),
