@@ -94,8 +94,6 @@ class _VerificationPageState extends State<VerificationPage> {
                 ),
                 const SizedBox(height: 20),
 
-                // Signup button
-
                 // Bottom padding
                 const SizedBox(height: 20),
               ],
@@ -103,7 +101,7 @@ class _VerificationPageState extends State<VerificationPage> {
           ),
         ),
         bottomNavigationBar: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: FilledButton(
             onPressed: _handleSignup,
             style: ButtonStyle(
@@ -127,12 +125,12 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void _handleSignup() async {
-    if (!_submittable) return;
-
     final loader = context.loaderOverlay;
 
     try {
       loader.show();
+
+      if (!_submittable) return;
 
       final userProvider = context.read<UserProvider>();
       final location = await LocationService().getLocation();

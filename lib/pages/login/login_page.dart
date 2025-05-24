@@ -16,6 +16,7 @@ import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
 import 'package:nearby_assist/services/google_auth_service.dart';
+import 'package:nearby_assist/services/user_account_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:provider/provider.dart';
@@ -143,7 +144,11 @@ class _LoginPageState extends State<LoginPage> {
       router.goNamed('search');
     } on DioException catch (error) {
       if (!mounted) return;
-      showGenericErrorModal(context, message: error.response?.data['message']);
+      showGenericErrorModal(
+        context,
+        message: error.response?.data['message'],
+        align: TextAlign.center,
+      );
       GoogleAuthService().logout();
     } catch (error) {
       if (!mounted) return;
@@ -154,16 +159,35 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _handleRegister(ThirdPartyLoginPayloadModel user) {
-    Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => VerificationPage(
-          user: user,
-          onSuccessCallback: () => context.goNamed('search'),
+  Future<void> _handleRegister(ThirdPartyLoginPayloadModel user) async {
+    try {
+      final navigator = Navigator.of(context);
+
+      final exists = await UserAccountService().doesEmailExists(user.email);
+      if (exists != null && exists) {
+        await GoogleAuthService().logout();
+
+        if (!mounted) return;
+        showGenericErrorModal(
+          context,
+          message: 'An account with this email already exists',
+        );
+        return;
+      }
+
+      navigator.push(
+        CupertinoPageRoute(
+          builder: (context) => VerificationPage(
+            user: user,
+            onSuccessCallback: () => context.goNamed('search'),
+          ),
         ),
-      ),
-    );
+      );
+    } catch (error) {
+      logger.logError(error.toString());
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
+    }
   }
 
   void _showTesterMenu() {

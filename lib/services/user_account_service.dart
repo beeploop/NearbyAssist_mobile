@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/social_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
@@ -49,6 +50,24 @@ class UserAccountService {
       return UserModel.fromJson(response.data['user']);
     } catch (error) {
       rethrow;
+    }
+  }
+
+  Future<bool?> doesEmailExists(String email) async {
+    try {
+      await ApiService.unauthenticated()
+          .dio
+          .get('${endpoint.doesEmailExists}/$email');
+
+      return true;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        return false;
+      }
+
+      return null;
+    } catch (error) {
+      return null;
     }
   }
 }

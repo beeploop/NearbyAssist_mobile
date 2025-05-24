@@ -5,6 +5,7 @@ void showGenericErrorModal(
   BuildContext context, {
   String? title,
   required String message,
+  TextAlign? align,
 }) {
   showDialog(
     context: context,
@@ -19,7 +20,7 @@ void showGenericErrorModal(
           borderRadius: BorderRadius.circular(10),
         ),
         title: Text(title ?? 'Failed'),
-        content: Text(message),
+        content: Text(message, textAlign: align),
         actions: [
           TextButton(
             onPressed: () {
@@ -32,4 +33,3 @@ void showGenericErrorModal(
     },
   );
 }
-

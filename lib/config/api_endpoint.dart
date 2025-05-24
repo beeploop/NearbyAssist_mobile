@@ -52,6 +52,7 @@ class ApiEndpoint {
 
   String get me => '$_baseUrl/api/v1/user';
   String get getUser => '$_baseUrl/api/v1/user';
+  String get doesEmailExists => '$_baseUrl/api/v1/user/exists';
   String get addSocial => '$_baseUrl/api/v1/user/socials';
   String get deleteSocial => '$_baseUrl/api/v1/user/socials';
   String get addExpertise => '$_baseUrl/api/v1/user/addExpertise';
