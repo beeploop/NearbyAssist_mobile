@@ -118,6 +118,7 @@ class _App extends State<App> {
     websocketProvider.setUserProvider(userProvider);
     websocketProvider.setClientBookingProvider(clientBookingProvider);
     websocketProvider.setControlCenterProvider(controlCenterProvider);
+    expertiseProvider.fetchTags();
 
     if (userProvider.status == AuthStatus.authenticated) {
       messageProvider.refreshInbox();

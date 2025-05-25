@@ -1,42 +1,43 @@
 import 'package:flutter/foundation.dart';
+import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/expertise_model.dart';
-import 'package:nearby_assist/models/tag_model.dart';
+import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
-import 'package:nearby_assist/services/tag_service.dart';
 
 class ExpertiseProvider extends ChangeNotifier {
   List<ExpertiseModel> _expertise = [];
+  List<String> _tags = [];
 
   List<ExpertiseModel> get expertise => _expertise;
-
-  List<TagModel> getTagsOfExpertise(String? expertiseId) {
-    if (expertiseId == null) {
-      return [];
-    }
-
-    final expertise =
-        _expertise.firstWhere((element) => element.id == expertiseId);
-    return expertise.tags;
-  }
-
-  List<TagModel> getAllTags() {
-    final List<TagModel> tags = [];
-
-    for (final expertise in _expertise) {
-      tags.addAll(expertise.tags);
-    }
-
-    return tags;
-  }
+  List<String> get tags => _tags;
 
   Future<void> fetchExpertise() async {
     try {
-      final service = TagService();
-      final response = await service.getExpertiseWithTags();
+      final api = ApiService.unauthenticated();
+      final response = await api.dio.get(endpoint.expertiseList);
 
-      _expertise = response;
-      await SecureStorage().saveTags(response);
+      final list = (response.data['expertise'] as List)
+          .map((expertise) => ExpertiseModel.fromJson(expertise))
+          .toList();
 
+      _expertise = list;
+      await SecureStorage().saveExpertise(list);
+
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> fetchTags() async {
+    try {
+      final api = ApiService.unauthenticated();
+      final response = await api.dio.get(endpoint.tagsList);
+
+      final list =
+          (response.data['tags'] as List).map((tag) => tag.toString()).toList();
+
+      _tags = list;
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -45,7 +46,7 @@ class ExpertiseProvider extends ChangeNotifier {
 
   Future<void> tryLoadLocal() async {
     try {
-      final expertises = await SecureStorage().getTags();
+      final expertises = await SecureStorage().getExpertise();
       _expertise = expertises;
       notifyListeners();
     } catch (error) {

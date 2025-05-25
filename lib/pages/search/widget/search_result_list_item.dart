@@ -37,7 +37,7 @@ class SearchResultListItem extends StatelessWidget {
                 ),
               )
             : Icon(
-                _icon(result.service!.tags.first.title),
+                _icon(result.service!.tags.first),
                 size: 26,
                 grade: 10,
               ),

@@ -44,7 +44,7 @@ class ServiceItem extends StatelessWidget {
                 ),
               )
             : Icon(
-                _icon(service.tags.first.title),
+                _icon(service.tags.first),
                 size: 26,
                 grade: 10,
               ),

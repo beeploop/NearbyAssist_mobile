@@ -4,7 +4,6 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/new_extra.dart';
 import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/pricing_type.dart';
-import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/service_overview.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/service_pricing.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/service_publish.dart';
@@ -26,8 +25,8 @@ class _PublishServicePageState extends State<PublishServicePage> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _basePriceController = TextEditingController();
+  final _tagsController = TextEditingController();
   PricingType _pricingType = PricingType.fixed;
-  final List<TagModel> _selectedTags = [];
   final List<ServiceExtra> _serviceExtras = [];
 
   int _currentStep = 0;
@@ -58,7 +57,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
         content: ServiceOverview(
           titleController: _titleController,
           descriptionController: _descriptionController,
-          selectedTags: _selectedTags,
+          tagsController: _tagsController,
         ),
       ),
       Step(
@@ -110,7 +109,8 @@ class _PublishServicePageState extends State<PublishServicePage> {
   bool _isValid() {
     if (_currentStep == 0) {
       if (_titleController.text.isEmpty ||
-          _descriptionController.text.isEmpty) {
+          _descriptionController.text.isEmpty ||
+          _tagsController.text.isEmpty) {
         showCustomSnackBar(
           context,
           'Fill up required fields',
@@ -183,7 +183,10 @@ class _PublishServicePageState extends State<PublishServicePage> {
         description: _descriptionController.text,
         price: double.tryParse(_basePriceController.text) ?? 0,
         pricingType: _pricingType,
-        tags: _selectedTags,
+        tags: _tagsController.text
+            .split(",")
+            .map((tag) => tag.trim().toLowerCase())
+            .toList(),
         extras: _serviceExtras
             .map((extra) => NewExtra(
                   title: extra.controller.title,

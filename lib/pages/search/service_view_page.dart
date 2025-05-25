@@ -158,7 +158,7 @@ class _ServiceViewPageState extends State<ServiceViewPage> {
                 spacing: 4,
                 children: details.service.tags
                     .map((tag) => Chip(
-                          label: Text(tag.title),
+                          label: Text(tag),
                           labelStyle: const TextStyle(
                             fontSize: 12,
                             color: Colors.white,

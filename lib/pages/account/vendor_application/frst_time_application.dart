@@ -32,7 +32,6 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
   bool _submittable = false;
   List<ExpertiseModel> _expertiseList = [];
   ExpertiseModel? _selectedExpertise;
-  List<String> _unlockables = [];
   final _supportingDocController = FillableImageContainerController();
   final _policeClearanceController = FillableImageContainerController();
   bool _hasAgreedToTAC = false;
@@ -89,13 +88,6 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _tagsDropdown(provider.user.expertise),
-                    const SizedBox(height: 20),
-                    const Text(
-                        'Selected expertise will unlock the following tags:'),
-                    Text(
-                      _unlockables.join(', '),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
                     const SizedBox(height: 20),
 
                     // Document
@@ -221,13 +213,6 @@ class _FirstTimeApplicationState extends State<FirstTimeApplication> {
       selectedItem: _selectedExpertise,
       onChanged: (item) => setState(() {
         _selectedExpertise = item;
-        final unlocks =
-            context.read<ExpertiseProvider>().getTagsOfExpertise(item?.id);
-
-        setState(() {
-          _unlockables = unlocks.map((e) => e.title).toList();
-        });
-
         _inputListener();
       }),
     );

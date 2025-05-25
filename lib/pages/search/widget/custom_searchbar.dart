@@ -59,16 +59,15 @@ class _CustomSearchbarState extends State<CustomSearchbar> {
           suggestionsBuilder: (context, controller) {
             final input = controller.value.text;
 
-            return expertiseProvider
-                .getAllTags()
-                .where((tag) => tag.title.contains(input))
+            return expertiseProvider.tags
+                .where((tag) => tag.contains(input))
                 .map((filteredItem) => GestureDetector(
                       onTap: () {
-                        _searchController.closeView(filteredItem.title);
+                        _searchController.closeView(filteredItem);
                       },
                       child: ListTile(
                         leading: const Icon(CupertinoIcons.tag),
-                        title: Text(filteredItem.title),
+                        title: Text(filteredItem),
                       ),
                     ));
           },

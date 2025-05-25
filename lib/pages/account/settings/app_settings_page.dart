@@ -117,7 +117,9 @@ class _AppSettingPageState extends State<AppSettingPage> {
 
     try {
       loader.show();
-      await context.read<ExpertiseProvider>().fetchExpertise();
+      final expertiseProvider = context.read<ExpertiseProvider>();
+      await expertiseProvider.fetchExpertise();
+      await expertiseProvider.fetchTags();
       _showSuccessSnackbar('Tags updated');
     } catch (error) {
       _showErrorSnackbar(error.toString());

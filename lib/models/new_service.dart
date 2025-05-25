@@ -1,6 +1,5 @@
 import 'package:nearby_assist/models/new_extra.dart';
 import 'package:nearby_assist/models/pricing_type.dart';
-import 'package:nearby_assist/models/tag_model.dart';
 
 class NewService {
   final String vendorId;
@@ -8,7 +7,7 @@ class NewService {
   final String description;
   final double price;
   final PricingType pricingType;
-  final List<TagModel> tags;
+  final List<String> tags;
   final List<NewExtra> extras;
 
   NewService({
@@ -28,7 +27,7 @@ class NewService {
       'description': description,
       'price': price.toString(),
       'pricingType': pricingType.name,
-      'tags': tags.map((tag) => tag.title).toList(),
+      'tags': tags.map((tag) => tag).toList(),
       'extras': extras.map((extra) => extra.toJson()).toList(),
     };
   }

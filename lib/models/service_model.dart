@@ -2,7 +2,6 @@ import 'package:nearby_assist/models/location_model.dart';
 import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
-import 'package:nearby_assist/models/tag_model.dart';
 
 class ServiceModel {
   final String id;
@@ -11,7 +10,7 @@ class ServiceModel {
   final String description;
   final double price;
   final PricingType pricingType;
-  final List<TagModel> tags;
+  final List<String> tags;
   final List<ServiceExtraModel> extras;
   List<ServiceImageModel> images;
   final LocationModel location;
@@ -51,9 +50,8 @@ class ServiceModel {
             return PricingType.fixed;
         }
       }(),
-      tags: ((json['tags'] ?? []) as List)
-          .map((tag) => TagModel.fromJson(tag))
-          .toList(),
+      tags:
+          ((json['tags'] ?? []) as List).map((tag) => tag.toString()).toList(),
       extras: ((json['extras'] ?? []) as List)
           .map((extra) => ServiceExtraModel.fromJson(extra))
           .toList(),
@@ -70,7 +68,7 @@ class ServiceModel {
     String? description,
     double? price,
     PricingType? pricingType,
-    List<TagModel>? tags,
+    List<String>? tags,
     List<ServiceExtraModel>? extras,
   }) {
     return ServiceModel(

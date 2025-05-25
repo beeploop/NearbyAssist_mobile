@@ -113,6 +113,7 @@ class ApiEndpoint {
   String get myRequests => '$_baseUrl/api/v1/bookings/mine';
   String get clientRequests => '$_baseUrl/api/v1/bookings/mine';
 
+  String get tagsList => '$_baseUrl/api/v1/tags';
   String get expertiseList => '$_baseUrl/api/v1/tags/expertise';
 
   String get qrSignature => '$_baseUrl/api/v1/qr/generateSignature';

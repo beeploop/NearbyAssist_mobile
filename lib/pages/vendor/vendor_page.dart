@@ -283,7 +283,7 @@ class _VendorPageState extends State<VendorPage> {
                       ),
                     )
                   : Icon(
-                      _icon(service.tags.first.title),
+                      _icon(service.tags.first),
                       size: 26,
                       grade: 10,
                     ),

@@ -1,16 +1,12 @@
 import 'package:dio/dio.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
-import 'package:collection/collection.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_model.dart';
-import 'package:nearby_assist/models/tag_model.dart';
 import 'package:nearby_assist/models/update_service_model.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
-import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
 import 'package:provider/provider.dart';
@@ -29,9 +25,8 @@ class _EditServicePageState extends State<EditServicePage> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
+  final _tagsController = TextEditingController();
   late PricingType _pricingType;
-  final List<TagModel> _selectedTags = [];
-  final List<TagModel> _availableTags = [];
 
   @override
   void initState() {
@@ -39,14 +34,7 @@ class _EditServicePageState extends State<EditServicePage> {
     _descriptionController.text = widget.service.description;
     _priceController.text = widget.service.price.toString();
     _pricingType = widget.service.pricingType;
-    _selectedTags.addAll(widget.service.tags);
-
-    final expertises =
-        Provider.of<UserProvider>(context, listen: false).user.expertise;
-
-    for (final expertise in expertises) {
-      _availableTags.addAll(expertise.tags);
-    }
+    _tagsController.text = widget.service.tags.join(", ");
 
     super.initState();
   }
@@ -196,64 +184,33 @@ class _EditServicePageState extends State<EditServicePage> {
             // Tags
             const Text('Select tags'),
             const SizedBox(height: 10),
-            _tagDropdown(),
+            TextFormField(
+              controller: _tagsController,
+              onChanged: (value) {
+                if (value != widget.service.description) {
+                  setState(() {
+                    _hasChanged = true;
+                  });
+                } else {
+                  setState(() {
+                    _hasChanged = false;
+                  });
+                }
+              },
+              onTapOutside: (event) => FocusScope.of(context).unfocus(),
+              decoration: const InputDecoration(
+                labelText: 'Tags',
+                border: OutlineInputBorder(),
+                hintText: 'Tags',
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+            ),
 
             // Bottom padding
             const SizedBox(height: 20),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _tagDropdown() {
-    return DropdownSearch<TagModel>.multiSelection(
-      decoratorProps: const DropDownDecoratorProps(
-        decoration: InputDecoration(
-          hintText: 'select tags',
-          border: OutlineInputBorder(),
-        ),
-      ),
-      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-        containerBuilder: (context, child) {
-          return Padding(
-            padding: const EdgeInsets.all(10),
-            child: child,
-          );
-        },
-        modalBottomSheetProps: const ModalBottomSheetProps(
-          showDragHandle: true,
-        ),
-        showSearchBox: true,
-        showSelectedItems: true,
-        searchFieldProps: const TextFieldProps(
-          decoration: InputDecoration(
-            hintText: 'filter tags',
-          ),
-        ),
-        searchDelay: const Duration(milliseconds: 500),
-      ),
-      autoValidateMode: AutovalidateMode.always,
-      items: (filter, props) => _availableTags,
-      itemAsString: (tag) => tag.title,
-      compareFn: (tag, selected) => tag.id == selected.id,
-      selectedItems: _selectedTags,
-      onChanged: (items) {
-        if (const ListEquality().equals(widget.service.tags, items) ||
-            items.isEmpty ||
-            _selectedTags.isEmpty) {
-          setState(() {
-            _hasChanged = false;
-          });
-          return;
-        }
-
-        _selectedTags.clear();
-        _selectedTags.addAll(items);
-        setState(() {
-          _hasChanged = true;
-        });
-      },
     );
   }
 
@@ -266,7 +223,7 @@ class _EditServicePageState extends State<EditServicePage> {
       if (_titleController.text.isEmpty ||
           _descriptionController.text.isEmpty ||
           _priceController.text.isEmpty ||
-          _selectedTags.isEmpty) {
+          _tagsController.text.isEmpty) {
         throw "Don't leave empty fields";
       }
 
@@ -284,7 +241,10 @@ class _EditServicePageState extends State<EditServicePage> {
         description: _descriptionController.text,
         price: double.parse(_priceController.text),
         pricingType: _pricingType,
-        tags: _selectedTags,
+        tags: _tagsController.text
+            .split(",")
+            .map((tag) => tag.trim().toLowerCase())
+            .toList(),
       );
 
       await provider.updateService(updatedData, widget.service.extras);

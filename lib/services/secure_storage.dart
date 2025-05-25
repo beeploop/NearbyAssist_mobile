@@ -75,13 +75,13 @@ class SecureStorage {
     return await _storage.read(key: type.key);
   }
 
-  Future<void> saveTags(List<ExpertiseModel> expertises) async {
-    final tagsData = jsonEncode(expertises);
-    await _storage.write(key: _expertiseKey, value: tagsData);
+  Future<void> saveExpertise(List<ExpertiseModel> expertises) async {
+    final expertiseData = jsonEncode(expertises);
+    await _storage.write(key: _expertiseKey, value: expertiseData);
   }
 
-  Future<List<ExpertiseModel>> getTags() async {
-    logger.logDebug('called getTags in secure_storage.dart');
+  Future<List<ExpertiseModel>> getExpertise() async {
+    logger.logDebug('called getExpertise');
 
     try {
       final value = await _storage.read(key: _expertiseKey);
