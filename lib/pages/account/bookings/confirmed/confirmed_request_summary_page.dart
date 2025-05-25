@@ -66,6 +66,19 @@ class _ConfirmedRequestSummarPageState
           ),
           const Divider(),
 
+          // Date created
+          Row(
+            children: [
+              const Text('Date Booked',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const Spacer(),
+              Text(
+                DateFormatter.yearMonthDateFromDT(widget.booking.createdAt),
+              ),
+            ],
+          ),
+          const Divider(),
+
           // Vendor information
           const SizedBox(height: 20),
           const Text('Vendor Information', style: TextStyle(fontSize: 16)),

@@ -5,6 +5,7 @@ import 'package:nearby_assist/models/booking_model.dart';
 import 'package:nearby_assist/pages/account/bookings/to_rate/rate_page.dart';
 import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 
 class ToRateSummaryPage extends StatefulWidget {
@@ -36,6 +37,19 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Date created
+              Row(
+                children: [
+                  const Text('Date Booked',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  const Spacer(),
+                  Text(
+                    DateFormatter.yearMonthDateFromDT(widget.booking.createdAt),
+                  ),
+                ],
+              ),
+              const Divider(),
+
               // Vendor information
               const SizedBox(height: 20),
               const Text('Vendor Information', style: TextStyle(fontSize: 16)),

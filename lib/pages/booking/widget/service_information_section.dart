@@ -4,7 +4,9 @@ import 'package:nearby_assist/models/detailed_service_model.dart';
 import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 
 class ServiceInformationSection extends StatefulWidget {
   const ServiceInformationSection({
@@ -12,13 +14,17 @@ class ServiceInformationSection extends StatefulWidget {
     required this.pricingType,
     required this.quantityController,
     required this.selectedExtras,
+    required this.scheduleController,
     required this.details,
+    required this.onSelectedDateRangeCallback,
   });
 
   final PricingType pricingType;
   final TextEditingController quantityController;
   final List<ServiceExtraModel> selectedExtras;
+  final TextEditingController scheduleController;
   final DetailedServiceModel details;
+  final void Function(DateTime start, DateTime end) onSelectedDateRangeCallback;
 
   @override
   State<ServiceInformationSection> createState() =>
@@ -61,19 +67,56 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
         ),
         Text(widget.details.service.title),
         const SizedBox(height: 20),
+
+        // Description
         const Text(
           'Description',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         Text(widget.details.service.description),
         const SizedBox(height: 20),
+
+        // Schedule
+        Row(
+          children: [
+            const Text(
+              'Preferred schedule',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            TextButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.all(0),
+              ),
+              onPressed: () {
+                if (widget.pricingType == PricingType.perDay) {
+                  _pickDateRange();
+                } else {
+                  _pickDate();
+                }
+              },
+              child: Text(widget.scheduleController.text.isEmpty
+                  ? 'Pick date'
+                  : _pickedDateFormat()),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+
+        // Base Price
         RowTile(
           label: 'Base Price',
           text: formatCurrency(widget.details.service.price),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
+
+        // Pricing type
         RowTile(label: 'Pricing Type', text: widget.pricingType.label),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
 
         // Quantity
         if (widget.pricingType != PricingType.fixed)
@@ -101,9 +144,9 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
 
         const SizedBox(height: 20),
         const Divider(),
-        const Text('Add-ons:', style: TextStyle(fontWeight: FontWeight.bold)),
 
-        // Extras
+        // Add-ons
+        const Text('Add-ons:', style: TextStyle(fontWeight: FontWeight.bold)),
         ..._buildExtras(),
       ],
     );
@@ -151,5 +194,65 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
         ),
       );
     }).toList();
+  }
+
+  Future<void> _pickDate() async {
+    DateTime? schedule = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30),
+      ), // restrict schedule to 30 days advance
+    );
+
+    if (schedule == null) return;
+    widget.onSelectedDateRangeCallback(schedule, schedule);
+  }
+
+  Future<void> _pickDateRange() async {
+    final range = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 30),
+      ), // restrict schedule to 30 days advance
+    );
+
+    if (range == null) return;
+
+    if (widget.details.service.pricingType == PricingType.perDay) {
+      // add 1 because inDays counts the next day as day 1
+      final days = range.duration.inDays + 1;
+
+      if (!mounted) return;
+      switch (days.compareTo(int.parse(widget.quantityController.text))) {
+        case -1:
+          showGenericErrorModal(
+            context,
+            message:
+                'Range of dates selected is less than requested number of days',
+          );
+          return;
+        case 1:
+          showGenericErrorModal(
+            context,
+            message:
+                'Range of dates selected is greater than requested number of days',
+          );
+          return;
+      }
+    }
+
+    widget.onSelectedDateRangeCallback(range.start, range.end);
+  }
+
+  String _pickedDateFormat() {
+    final dates = widget.scheduleController.text.split(" - ");
+
+    if (widget.pricingType == PricingType.perDay) {
+      return '${DateFormatter.yearMonthDate(dates[0])} - ${DateFormatter.yearMonthDate(dates[1])}';
+    }
+    return DateFormatter.yearMonthDate(dates[0]);
   }
 }

@@ -12,6 +12,7 @@ import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
@@ -44,6 +45,11 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
     super.initState();
 
     _user = Provider.of<UserProvider>(context, listen: false).user;
+    _scheduleController.text = _pickedDateFormat();
+    _selectedDates = DateTimeRange(
+      start: widget.booking.requestedStart,
+      end: widget.booking.requestedEnd,
+    );
   }
 
   @override
@@ -158,6 +164,19 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             ),
             const Divider(),
 
+            // Date created
+            Row(
+              children: [
+                const Text('Date Booked',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                const Spacer(),
+                Text(
+                  DateFormatter.yearMonthDateFromDT(widget.booking.createdAt),
+                ),
+              ],
+            ),
+            const Divider(),
+
             // Vendor information
             const SizedBox(height: 20),
             const Text('Vendor Information', style: TextStyle(fontSize: 16)),
@@ -175,6 +194,7 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             // Service Price
             const SizedBox(height: 20),
             const Text('Service Information', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
 
             // Title
             const AutoSizeText(
@@ -235,6 +255,21 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
             const SizedBox(height: 20),
             const Divider(),
 
+            // Dates
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                const Text(
+                  'Preferred schedule',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                Text(_pickedDateFormat()),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const Divider(),
+
             // Estimated cost
             const SizedBox(height: 20),
             RowTile(
@@ -261,14 +296,14 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       builder: (context) => AlertDialog(
         icon: const Icon(
           CupertinoIcons.question_circle,
-          color: Colors.green,
+          color: Colors.amber,
           size: 40,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
         title: const Text(
-          'Set a schedule for this booking',
+          'Confirm schedule',
           style: TextStyle(fontSize: 20),
         ),
         content: TextField(
@@ -350,8 +385,11 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       if (widget.booking.pricingType == PricingType.perDay) {
         // add 1 because inDays counts the next day as day 1
         final days = _selectedDates.duration.inDays + 1;
-        if (days > widget.booking.quantity) {
-          throw "Range of days selected is greater than the requested duration";
+        switch (days.compareTo(widget.booking.quantity)) {
+          case -1:
+            throw 'Range of days selected is less than the requested duration';
+          case 1:
+            throw "Range of days selected is greater than the requested duration";
         }
       }
 
@@ -422,9 +460,9 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
       );
 
       final start = _selectedDates.start.toString().split(" ")[0];
-      final end = _selectedDates.end.toString().split(" ")[0];
+      final formattedStart = DateFormatter.yearMonthDate(start);
 
-      _scheduleController.text = '$start - $end';
+      _scheduleController.text = formattedStart;
     });
   }
 
@@ -444,8 +482,18 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
 
       final start = _selectedDates.start.toString().split(" ")[0];
       final end = _selectedDates.end.toString().split(" ")[0];
+      final formattedStart = DateFormatter.yearMonthDate(start);
+      final formattedEnd = DateFormatter.yearMonthDate(end);
 
-      _scheduleController.text = '$start - $end';
+      _scheduleController.text = '$formattedStart - $formattedEnd';
     });
+  }
+
+  String _pickedDateFormat() {
+    if (widget.booking.pricingType == PricingType.perDay) {
+      return '${DateFormatter.yearMonthDateFromDT(widget.booking.requestedStart)} - ${DateFormatter.yearMonthDateFromDT(widget.booking.requestedEnd)}';
+    }
+
+    return DateFormatter.yearMonthDateFromDT(widget.booking.requestedStart);
   }
 }

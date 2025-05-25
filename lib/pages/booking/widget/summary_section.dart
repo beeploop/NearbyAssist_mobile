@@ -4,6 +4,7 @@ import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:provider/provider.dart';
@@ -15,12 +16,14 @@ class SummarySection extends StatefulWidget {
     required this.detail,
     required this.clientAddress,
     required this.selectedExtras,
+    required this.scheduleController,
   });
 
   final TextEditingController quantityController;
   final DetailedServiceModel detail;
   final String clientAddress;
   final List<ServiceExtraModel> selectedExtras;
+  final TextEditingController scheduleController;
 
   @override
   State<SummarySection> createState() => _SummarySectionState();
@@ -60,11 +63,11 @@ class _SummarySectionState extends State<SummarySection> {
         RowTile(label: 'Client Email:', text: user.email),
         const Divider(),
 
-        // Service Price
+        // Service information
         const SizedBox(height: 20),
         const Text('Service Information', style: TextStyle(fontSize: 16)),
 
-        // Extras
+        // Service Price
         const SizedBox(height: 20),
         RowTile(
           label: 'Base Price:',
@@ -90,7 +93,6 @@ class _SummarySectionState extends State<SummarySection> {
         const Text(
           'Add-ons:',
           style: TextStyle(
-            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -102,6 +104,21 @@ class _SummarySectionState extends State<SummarySection> {
             withLeftPad: true,
           );
         }),
+        const SizedBox(height: 20),
+        const Divider(),
+
+        // Dates
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            const Text(
+              'Preferred schedule',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            Text(_pickedDateFormat()),
+          ],
+        ),
         const SizedBox(height: 20),
         const Divider(),
 
@@ -128,5 +145,14 @@ class _SummarySectionState extends State<SummarySection> {
 
     return widget.selectedExtras
         .fold(base, (prev, extra) => prev + extra.price);
+  }
+
+  String _pickedDateFormat() {
+    final dates = widget.scheduleController.text.split(" - ");
+
+    if (widget.detail.service.pricingType == PricingType.perDay) {
+      return '${DateFormatter.yearMonthDate(dates[0])} - ${DateFormatter.yearMonthDate(dates[1])}';
+    }
+    return DateFormatter.yearMonthDate(dates[0]);
   }
 }

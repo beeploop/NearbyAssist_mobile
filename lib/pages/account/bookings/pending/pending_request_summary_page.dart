@@ -11,6 +11,7 @@ import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
@@ -81,6 +82,20 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
                 ),
                 const Divider(),
 
+                // Date created
+                Row(
+                  children: [
+                    const Text('Date Booked',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Spacer(),
+                    Text(
+                      DateFormatter.yearMonthDateFromDT(
+                          widget.booking.createdAt),
+                    ),
+                  ],
+                ),
+                const Divider(),
+
                 // Vendor information
                 const SizedBox(height: 20),
                 const Text('Vendor Information',
@@ -102,6 +117,7 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
                 const SizedBox(height: 20),
                 const Text('Service Information',
                     style: TextStyle(fontSize: 16)),
+                const SizedBox(height: 20),
 
                 // Title
                 const AutoSizeText(
@@ -159,6 +175,21 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
                     withLeftPad: true,
                   );
                 }),
+                const SizedBox(height: 20),
+                const Divider(),
+
+                // Dates
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Text(
+                      'Preferred schedule',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Spacer(),
+                    Text(_pickedDateFormat()),
+                  ],
+                ),
                 const SizedBox(height: 20),
                 const Divider(),
 
@@ -254,5 +285,13 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
     } finally {
       loader.hide();
     }
+  }
+
+  String _pickedDateFormat() {
+    if (widget.booking.pricingType == PricingType.perDay) {
+      return '${DateFormatter.yearMonthDateFromDT(widget.booking.requestedStart)} - ${DateFormatter.yearMonthDateFromDT(widget.booking.requestedEnd)}';
+    }
+
+    return DateFormatter.yearMonthDateFromDT(widget.booking.requestedStart);
   }
 }

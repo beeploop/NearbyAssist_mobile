@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
-import 'package:nearby_assist/utils/date_formatter.dart';
 
 class RequestListItem extends StatelessWidget {
   const RequestListItem({
@@ -46,26 +45,17 @@ class RequestListItem extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
         ),
-        trailing: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              DateFormatter.monthAndDateFromDT(booking.createdAt),
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-            OutlinedButton(
-              onPressed: onTap,
-              style: ButtonStyle(
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                visualDensity: VisualDensity.compact,
+        trailing: OutlinedButton(
+          onPressed: onTap,
+          style: ButtonStyle(
+            shape: WidgetStatePropertyAll(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
               ),
-              child: const Text('Details'),
             ),
-          ],
+            visualDensity: VisualDensity.compact,
+          ),
+          child: const Text('Details'),
         ),
       ),
     );

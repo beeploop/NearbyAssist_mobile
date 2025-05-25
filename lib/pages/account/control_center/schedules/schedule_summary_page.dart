@@ -94,6 +94,19 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
             ),
             const Divider(),
 
+            // Date created
+            Row(
+              children: [
+                const Text('Date Booked',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                const Spacer(),
+                Text(
+                  DateFormatter.yearMonthDateFromDT(widget.booking.createdAt),
+                ),
+              ],
+            ),
+            const Divider(),
+
             // Vendor information
             const SizedBox(height: 20),
             const Text('Vendor Information', style: TextStyle(fontSize: 16)),
@@ -111,6 +124,7 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
             // Service Price
             const SizedBox(height: 20),
             const Text('Service Information', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
 
             // Title
             const AutoSizeText(
@@ -186,7 +200,6 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
               text: formatCurrency(widget.booking.total()),
             ),
 
-            // Complete Button
             const SizedBox(height: 40),
           ],
         ),

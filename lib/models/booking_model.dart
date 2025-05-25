@@ -20,6 +20,8 @@ class BookingModel {
   String qrSignature;
   DateTime createdAt;
   DateTime? updatedAt;
+  DateTime requestedStart;
+  DateTime requestedEnd;
   DateTime? scheduleStart;
   DateTime? scheduleEnd;
   String? cancelReason;
@@ -41,6 +43,8 @@ class BookingModel {
     required this.qrSignature,
     required this.createdAt,
     required this.updatedAt,
+    required this.requestedStart,
+    required this.requestedEnd,
     required this.scheduleStart,
     required this.scheduleEnd,
     required this.cancelReason,
@@ -86,6 +90,8 @@ class BookingModel {
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt:
           json['updatedAt'] != '' ? DateTime.parse(json['updatedAt']) : null,
+      requestedStart: DateTime.parse(json['requestedStart']),
+      requestedEnd: DateTime.parse(json['requestedEnd']),
       scheduleStart: json['scheduleStart'] != ''
           ? DateTime.parse(json['scheduleStart'])
           : null,
@@ -121,6 +127,8 @@ class BookingModel {
       qrSignature: qrSignature,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      requestedStart: requestedStart,
+      requestedEnd: requestedEnd,
       scheduleStart: scheduleStart ?? this.scheduleStart,
       scheduleEnd: scheduleEnd ?? this.scheduleEnd,
       cancelReason: cancelReason ?? this.cancelReason,

@@ -62,6 +62,20 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   ),
                   const Divider(),
 
+                  // Date created
+                  Row(
+                    children: [
+                      const Text('Date Booked',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      Text(
+                        DateFormatter.yearMonthDateFromDT(
+                            widget.booking.createdAt),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+
                   // Vendor information
                   const SizedBox(height: 20),
                   const Text('Vendor Information',
@@ -128,9 +142,6 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                         widget.booking.pricingType,
                       ),
                     ),
-                  if (widget.booking.pricingType != PricingType.fixed)
-                    const SizedBox(height: 10),
-                  _dateModified(),
                   const SizedBox(height: 20),
 
                   // Add-ons
@@ -155,10 +166,12 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                     label: 'Total Cost:',
                     text: formatCurrency(widget.booking.total()),
                   ),
-
                   const SizedBox(height: 20),
 
                   // Reason if rejected or cancelled
+                  const SizedBox(height: 10),
+                  _dateModified(),
+                  const SizedBox(height: 10),
                   _whoCancelled(),
                   const SizedBox(height: 10),
 
@@ -203,33 +216,21 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
     }
 
     if (widget.booking.cancelledById == user.id) {
-      return RichText(
-        text: const TextSpan(
-          style: TextStyle(color: Colors.black, fontSize: 12),
-          children: [
-            TextSpan(
-                text: 'Cancelled by: ',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            TextSpan(
-              text: 'You',
-            ),
-          ],
-        ),
+      return const Row(
+        children: [
+          Text('Cancelled by', style: TextStyle(fontWeight: FontWeight.bold)),
+          Spacer(),
+          Text('You')
+        ],
       );
     }
 
-    return RichText(
-      text: const TextSpan(
-        style: TextStyle(color: Colors.black, fontSize: 12),
-        children: [
-          TextSpan(
-              text: 'Cancelled by: ',
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(
-            text: 'Client',
-          ),
-        ],
-      ),
+    return const Row(
+      children: [
+        Text('Cancelled by', style: TextStyle(fontWeight: FontWeight.bold)),
+        Spacer(),
+        Text('Client')
+      ],
     );
   }
 
@@ -240,27 +241,27 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
       case BookingStatus.pending:
         return RowTile(
           label: 'Date requested',
-          text: DateFormatter.monthAndDateFromDT(date!),
+          text: DateFormatter.yearMonthDateFromDT(date!),
         );
       case BookingStatus.confirmed:
         return RowTile(
           label: 'Date confirmed',
-          text: DateFormatter.monthAndDateFromDT(date!),
+          text: DateFormatter.yearMonthDateFromDT(date!),
         );
       case BookingStatus.done:
         return RowTile(
           label: 'Date completed',
-          text: DateFormatter.monthAndDateFromDT(date!),
+          text: DateFormatter.yearMonthDateFromDT(date!),
         );
       case BookingStatus.rejected:
         return RowTile(
           label: 'Date rejected',
-          text: DateFormatter.monthAndDateFromDT(date!),
+          text: DateFormatter.yearMonthDateFromDT(date!),
         );
       case BookingStatus.cancelled:
         return RowTile(
           label: 'Date cancelled',
-          text: DateFormatter.monthAndDateFromDT(date!),
+          text: DateFormatter.yearMonthDateFromDT(date!),
         );
     }
   }

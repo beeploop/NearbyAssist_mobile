@@ -27,6 +27,11 @@ class _BookingPageState extends State<BookingPage> {
   final List<ServiceExtraModel> _selectedExtras = [];
   final _addressController = TextEditingController();
   final _quantityController = TextEditingController(text: '1');
+  DateTimeRange _selectedDates = DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now(),
+  );
+  final _scheduleController = TextEditingController();
 
   int _currentStep = 0;
 
@@ -63,7 +68,9 @@ class _BookingPageState extends State<BookingPage> {
           pricingType: widget.details.service.pricingType,
           quantityController: _quantityController,
           selectedExtras: _selectedExtras,
+          scheduleController: _scheduleController,
           details: widget.details,
+          onSelectedDateRangeCallback: _updateSelectedRangeCallback,
         ),
       ),
       Step(
@@ -81,6 +88,7 @@ class _BookingPageState extends State<BookingPage> {
           detail: widget.details,
           clientAddress: _addressController.text,
           selectedExtras: _selectedExtras,
+          scheduleController: _scheduleController,
         ),
       ),
     ];
@@ -144,6 +152,8 @@ class _BookingPageState extends State<BookingPage> {
     final quantity = int.tryParse(_quantityController.text);
     if (quantity == null || quantity < 1) return false;
 
+    if (_scheduleController.text.isEmpty) return false;
+
     return true;
   }
 
@@ -187,6 +197,9 @@ class _BookingPageState extends State<BookingPage> {
       final quantity = int.tryParse(_quantityController.text);
       if (quantity == null || quantity < 1) throw "Invalid quantity amount";
 
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
+
       final booking = BookingRequestModel(
         vendorId: widget.details.vendor.id,
         clientId: context.read<UserProvider>().user.id,
@@ -194,6 +207,8 @@ class _BookingPageState extends State<BookingPage> {
         extras: _selectedExtras,
         quantity: quantity,
         totalCost: _computeTotal().toString(),
+        requestedStart: start,
+        requestedEnd: end,
       );
 
       await context.read<ClientBookingProvider>().book(booking);
@@ -276,5 +291,18 @@ class _BookingPageState extends State<BookingPage> {
     };
 
     return _selectedExtras.fold(base, (prev, extra) => prev + extra.price);
+  }
+
+  void _updateSelectedRangeCallback(DateTime startDate, DateTime endDate) {
+    setState(() {
+      _selectedDates = DateTimeRange(
+        start: startDate,
+        end: endDate,
+      );
+
+      final start = _selectedDates.start.toString().split(" ")[0];
+      final end = _selectedDates.end.toString().split(" ")[0];
+      _scheduleController.text = '$start - $end';
+    });
   }
 }

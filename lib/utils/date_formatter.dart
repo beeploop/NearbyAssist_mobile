@@ -14,6 +14,19 @@ final class DateFormatter {
     return DateFormat.MMMMd().format(timestamp);
   }
 
+  static String yearMonthDateFromDT(DateTime timestamp) {
+    return DateFormat.yMMMd().format(timestamp);
+  }
+
+  static String yearMonthDate(String date) {
+    try {
+      final dt = DateTime.parse(date);
+      return DateFormat.yMMMMd().format(dt);
+    } on FormatException catch (_) {
+      return "invalid date";
+    }
+  }
+
   static String monthDateHourMinutes(String timestamp) {
     try {
       final dt = DateTime.parse(timestamp);

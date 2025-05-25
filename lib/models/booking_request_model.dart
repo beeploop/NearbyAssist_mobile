@@ -7,6 +7,8 @@ class BookingRequestModel {
   final int quantity;
   final String totalCost;
   final List<ServiceExtraModel> extras;
+  final String requestedStart;
+  final String requestedEnd;
 
   BookingRequestModel({
     required this.vendorId,
@@ -15,6 +17,8 @@ class BookingRequestModel {
     required this.quantity,
     required this.totalCost,
     required this.extras,
+    required this.requestedStart,
+    required this.requestedEnd,
   });
 
   Map<String, dynamic> toJson() {
@@ -25,6 +29,8 @@ class BookingRequestModel {
       'quantity': quantity,
       'cost': totalCost,
       'extras': extras.map((extra) => extra.toJson()).toList(),
+      'requestedStart': requestedStart,
+      'requestedEnd': requestedEnd,
     };
   }
 }
