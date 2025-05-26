@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/pages/account/profile/profile_settings/change_address/change_address_page.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/change_phone/change_phone_page.dart';
 import 'package:nearby_assist/pages/account/profile/profile_settings/widget/profile_setting_tile.dart';
 
 class ProfileSettingsPage extends StatelessWidget {
@@ -22,6 +23,18 @@ class ProfileSettingsPage extends StatelessWidget {
                   context,
                   CupertinoPageRoute(
                     builder: (context) => const ChangeAddressPage(),
+                  ),
+                );
+              },
+            ),
+            ProfileSettingTile(
+              icon: CupertinoIcons.phone,
+              title: 'Update Phone',
+              onPress: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => const ChangePhonePage(),
                   ),
                 );
               },

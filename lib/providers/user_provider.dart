@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/main.dart';
@@ -123,6 +125,21 @@ class UserProvider extends ChangeNotifier {
       await api.dio.put(endpoint.changeAddress, data: data.toJson());
 
       _user?.address = address;
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> updatePhone(String phone) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put(
+        endpoint.updatePhone,
+        data: jsonEncode({'phone': phone}),
+      );
+
+      _user?.phone = phone;
       notifyListeners();
     } catch (error) {
       rethrow;

@@ -58,6 +58,7 @@ class ApiEndpoint {
   String get addExpertise => '$_baseUrl/api/v1/user/addExpertise';
   String get udpateDBL => '$_baseUrl/api/v1/user/dbl';
   String get changeAddress => '$_baseUrl/api/v1/user/address';
+  String get updatePhone => '$_baseUrl/api/v1/user/phone';
 
   String get privacyPolicy => '$_baseUrl/privacy_policy';
   String get termsAndConditions => '$_baseUrl/terms_and_conditions';
