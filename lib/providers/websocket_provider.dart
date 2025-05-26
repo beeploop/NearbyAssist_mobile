@@ -68,12 +68,14 @@ class WebsocketProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  Future<void> connect() async {
+  Future<void> connect({bool force = false}) async {
     logger.logDebug('called connect in websocket_provider.dart');
 
     try {
-      if (_channel != null || _status != WebsocketStatus.disconnected) return;
-      logger.logDebug('continued calling connect');
+      if (!force) {
+        if (_channel != null || _status != WebsocketStatus.disconnected) return;
+        logger.logDebug('continued calling connect');
+      }
 
       _status = WebsocketStatus.connecting;
       notifyListeners();
@@ -149,7 +151,7 @@ class WebsocketProvider extends ChangeNotifier {
   }
 
   void _receivePong() {
-    // logger.logDebug('received pong');
+    logger.logDebug('received pong');
     _pongTimeoutTimer?.cancel();
     _pongTimeoutTimer = null;
   }

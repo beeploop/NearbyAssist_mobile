@@ -12,6 +12,7 @@ class MessageModel {
   bool seen;
   DateTime? seenAt;
   DateTime createdAt;
+  bool decrypted;
 
   MessageModel({
     required this.id,
@@ -22,6 +23,7 @@ class MessageModel {
     required this.seen,
     this.seenAt,
     required this.createdAt,
+    this.decrypted = false,
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -72,6 +74,7 @@ class MessageModel {
     types.Status? status,
     bool? seen,
     DateTime? createdAt,
+    bool? decrypted,
   }) {
     return MessageModel(
       id: id,
@@ -81,6 +84,7 @@ class MessageModel {
       status: status ?? this.status,
       seen: seen ?? this.seen,
       createdAt: createdAt ?? this.createdAt,
+      decrypted: decrypted ?? this.decrypted,
     );
   }
 

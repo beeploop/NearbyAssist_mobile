@@ -52,10 +52,12 @@ class MessageProvider extends ChangeNotifier {
 
       for (var message in messages) {
         final decrypted = await _decrypt(message.content, userId);
-        message.content = decrypted;
+        final copy = message.copyWith(
+          content: decrypted,
+        );
 
         // This is guaranteed to have a conversation with the user
-        _addMessageToConversation(message);
+        _addMessageToConversation(copy);
       }
     } catch (error) {
       logger.logError(error.toString());
@@ -132,6 +134,7 @@ class MessageProvider extends ChangeNotifier {
   Future<void> receive(ReceivedMessageModel message) async {
     try {
       final decrypted = await _decrypt(message.content, message.sender.id);
+
       final decryptedMessage = MessageModel(
         id: message.id,
         sender: message.sender.id,

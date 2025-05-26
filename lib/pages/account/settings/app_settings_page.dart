@@ -8,6 +8,7 @@ import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/system_setting_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/providers/websocket_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/google_auth_service.dart';
 import 'package:nearby_assist/services/secure_storage.dart';
@@ -57,6 +58,15 @@ class _AppSettingPageState extends State<AppSettingPage> {
           subtitle: "Manually trigger requests and booking sync",
           icon: CupertinoIcons.arrow_2_circlepath,
           onPress: _syncBooking,
+        ),
+        SettingItem(
+          title: "Websocket reconnect",
+          subtitle: "Force websocket reconnection",
+          icon: CupertinoIcons.bolt,
+          onPress: () {
+            context.read<WebsocketProvider>().connect(force: true);
+            _showSuccessSnackbar('reconnected to websocket');
+          },
         ),
         const Divider(),
         const SizedBox(height: 10),
