@@ -8,6 +8,7 @@ import 'package:nearby_assist/pages/search/widget/custom_searchbar.dart';
 import 'package:nearby_assist/pages/search/widget/popular_search_chip.dart';
 import 'package:nearby_assist/pages/search/widget/recommendation_item.dart';
 import 'package:nearby_assist/pages/widget/notification_bell.dart';
+import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/recommendation_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,15 @@ class SearchPageV2 extends StatefulWidget {
 }
 
 class _SearchPageV2State extends State<SearchPageV2> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<MessageProvider>(context, listen: false).refreshInbox();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

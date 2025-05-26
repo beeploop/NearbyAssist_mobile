@@ -37,8 +37,8 @@ class MessageProvider extends ChangeNotifier {
         return [];
       }
 
-      final messages = _getMessagesWith(userId);
-      return messages.map((msg) => msg.toTextMessage()).toList();
+      final conversation = _getMessagesWith(userId);
+      return conversation.map((msg) => msg.toTextMessage()).toList();
     } catch (error) {
       logger.logError(error.toString());
       rethrow;
@@ -48,13 +48,14 @@ class MessageProvider extends ChangeNotifier {
   Future<void> fetchMessagesWithUser(String userId) async {
     try {
       final messages = await MessageService().fetchMessages(userId);
+      messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
       for (var message in messages) {
         final decrypted = await _decrypt(message.content, userId);
         message.content = decrypted;
 
         // This is guaranteed to have a conversation with the user
-        _addMessageToConversation(message, prepend: false);
+        _addMessageToConversation(message);
       }
     } catch (error) {
       logger.logError(error.toString());
@@ -319,10 +320,7 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _addMessageToConversation(
-    MessageModel message, {
-    bool prepend = true,
-  }) async {
+  Future<void> _addMessageToConversation(MessageModel message) async {
     final loggedInUser = await SecureStorage().getUser();
 
     late int convoIndex;
@@ -338,12 +336,7 @@ class MessageProvider extends ChangeNotifier {
           (msg) => msg.id == message.id,
         );
     if (msgIndex == -1) {
-      // only insert if it doesn't exists to avoid duplicate
-      if (!prepend) {
-        _inbox[convoIndex].messages.add(message);
-      } else {
-        _inbox[convoIndex].messages.insert(0, message);
-      }
+      _inbox[convoIndex].messages = [message, ..._inbox[convoIndex].messages];
     }
 
     notifyListeners();

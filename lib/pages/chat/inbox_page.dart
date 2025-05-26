@@ -27,25 +27,20 @@ class _InboxPageState extends State<InboxPage> {
           SizedBox(width: 10),
         ],
       ),
-      body: FutureBuilder(
-        future: context.read<MessageProvider>().refreshInbox(),
-        builder: (context, snapshot) {
-          return Consumer<MessageProvider>(
-            builder: (context, provider, child) {
-              final inbox = provider.inbox;
+      body: Consumer<MessageProvider>(
+        builder: (context, provider, child) {
+          final inbox = provider.inbox;
 
-              return RefreshIndicator(
-                onRefresh: context.read<MessageProvider>().refreshInbox,
-                child: inbox.isEmpty
-                    ? _emptyState()
-                    : ListView.builder(
-                        itemCount: inbox.length,
-                        itemBuilder: (context, index) => InboxItem(
-                          inboxItem: inbox[index],
-                        ),
-                      ),
-              );
-            },
+          return RefreshIndicator(
+            onRefresh: context.read<MessageProvider>().refreshInbox,
+            child: inbox.isEmpty
+                ? _emptyState()
+                : ListView.builder(
+                    itemCount: inbox.length,
+                    itemBuilder: (context, index) => InboxItem(
+                      inboxItem: inbox[index],
+                    ),
+                  ),
           );
         },
       ),
