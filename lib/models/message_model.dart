@@ -43,6 +43,7 @@ class MessageModel {
       'sender': sender,
       'receiver': receiver,
       'content': content,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
@@ -66,7 +67,12 @@ class MessageModel {
     );
   }
 
-  MessageModel copyWith({String? content, types.Status? status, bool? seen}) {
+  MessageModel copyWith({
+    String? content,
+    types.Status? status,
+    bool? seen,
+    DateTime? createdAt,
+  }) {
     return MessageModel(
       id: id,
       sender: sender,
@@ -74,7 +80,7 @@ class MessageModel {
       content: content ?? this.content,
       status: status ?? this.status,
       seen: seen ?? this.seen,
-      createdAt: DateTime.now(),
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 

@@ -108,7 +108,10 @@ class MessageProvider extends ChangeNotifier {
       _addMessageToConversation(newMessage);
 
       final encrypted = await _encrypt(newMessage.content, newMessage.receiver);
-      final encryptedMessage = newMessage.copyWith(content: encrypted);
+      final encryptedMessage = newMessage.copyWith(
+        content: encrypted,
+        createdAt: DateTime.now(),
+      );
       await MessageService().send(encryptedMessage);
 
       _updateMyMessageStatus(newMessage, types.Status.sent);

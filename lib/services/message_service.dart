@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/inbox_preview_model.dart';
 import 'package:nearby_assist/models/message_model.dart';
@@ -8,7 +10,7 @@ class MessageService {
   Future<void> send(MessageModel message) async {
     try {
       final api = ApiService.authenticated();
-      await api.dio.post(endpoint.sendMessage, data: message.toJson());
+      await api.dio.post(endpoint.sendMessage, data: jsonEncode(message));
     } catch (error) {
       logger.logError(error.toString());
       rethrow;
