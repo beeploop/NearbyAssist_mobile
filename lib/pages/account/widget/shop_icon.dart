@@ -53,12 +53,12 @@ class _ShopIconState extends State<ShopIcon> {
   }
 
   void _handlePress() {
-    if (widget.user.hasPendingApplication) {
-      showHasPendingApplication(context);
-      return;
-    }
-
     if (!widget.user.isVendor) {
+      if (widget.user.hasPendingApplication) {
+        showHasPendingApplication(context);
+        return;
+      }
+
       showAccountNotVendorModal(context);
       return;
     }
