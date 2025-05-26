@@ -3,6 +3,15 @@ import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
 
+enum ServiceStatus {
+  underReview(title: 'under_review'),
+  accepted(title: 'accepted'),
+  rejected(title: 'rejected');
+
+  const ServiceStatus({required this.title});
+  final String title;
+}
+
 class ServiceModel {
   final String id;
   final String vendorId;
@@ -15,6 +24,8 @@ class ServiceModel {
   List<ServiceImageModel> images;
   final LocationModel location;
   bool disabled;
+  ServiceStatus status;
+  String rejectReason;
 
   ServiceModel({
     required this.id,
@@ -28,6 +39,8 @@ class ServiceModel {
     required this.images,
     required this.location,
     required this.disabled,
+    required this.status,
+    required this.rejectReason,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -36,8 +49,7 @@ class ServiceModel {
       vendorId: json['vendorId'],
       title: json['title'],
       description: json['description'],
-      price:
-          double.tryParse(json['price'].toString().replaceAll(",", "")) ?? 0.0,
+      price: double.parse(json['price'].toString().replaceAll(",", "").trim()),
       pricingType: () {
         switch (json['pricingType']) {
           case 'fixed':
@@ -60,6 +72,19 @@ class ServiceModel {
           .toList(),
       location: LocationModel.fromJson(json['location']),
       disabled: json['disabled'],
+      status: () {
+        switch (json['status']) {
+          case 'under_review':
+            return ServiceStatus.underReview;
+          case 'accepted':
+            return ServiceStatus.accepted;
+          case 'rejected':
+            return ServiceStatus.rejected;
+          default:
+            return ServiceStatus.underReview;
+        }
+      }(),
+      rejectReason: json['rejectReason'],
     );
   }
 
@@ -70,6 +95,8 @@ class ServiceModel {
     PricingType? pricingType,
     List<String>? tags,
     List<ServiceExtraModel>? extras,
+    ServiceStatus? status,
+    String? rejectReason,
   }) {
     return ServiceModel(
       id: id,
@@ -83,6 +110,8 @@ class ServiceModel {
       location: location,
       images: images,
       disabled: disabled,
+      status: status ?? this.status,
+      rejectReason: rejectReason ?? this.rejectReason,
     );
   }
 }

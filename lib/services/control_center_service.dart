@@ -113,6 +113,15 @@ class ControlCenterService {
     }
   }
 
+  Future<void> resubmit(String serviceId) async {
+    try {
+      final api = ApiService.authenticated();
+      await api.dio.put('${endpoint.resubmitService}/$serviceId');
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<ServiceExtraModel> addExtra(AddExtraModel extra) async {
     try {
       final api = ApiService.authenticated();

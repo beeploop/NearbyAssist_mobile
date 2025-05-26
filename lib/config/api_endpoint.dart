@@ -80,6 +80,7 @@ class ApiEndpoint {
 
   String get addService => '$_baseUrl/api/v1/services';
   String get updateService => '$_baseUrl/api/v1/services';
+  String get resubmitService => '$_baseUrl/api/v1/services';
 
   String get addExtra => '$_baseUrl/api/v1/services/addExtra';
   String get editExtra => '$_baseUrl/api/v1/services/editExtra';

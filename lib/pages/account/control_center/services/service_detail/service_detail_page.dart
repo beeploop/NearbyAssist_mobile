@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/service_extra_model.dart';
 import 'package:nearby_assist/models/service_image_model.dart';
@@ -13,9 +15,11 @@ import 'package:nearby_assist/pages/account/control_center/services/service_deta
 import 'package:nearby_assist/pages/account/control_center/services/service_detail/widget/menu.dart';
 import 'package:nearby_assist/pages/account/control_center/services/service_detail/widget/rating_count_bar.dart';
 import 'package:nearby_assist/pages/account/control_center/services/service_detail/widget/review_item.dart';
+import 'package:nearby_assist/pages/account/widget/service_status_chip.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/utils/format_pricing_with_pricing_type.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
+import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:provider/provider.dart';
 
 class ServiceDetailPage extends StatefulWidget {
@@ -33,141 +37,174 @@ class ServiceDetailPage extends StatefulWidget {
 class _ServiceDetailPageState extends State<ServiceDetailPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Detail',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          Icon(
-            CupertinoIcons.circle_fill,
-            color: widget.service.disabled ? Colors.red : Colors.green,
-            size: 10,
-          ),
-          Menu(service: widget.service),
-        ],
-      ),
-      body: Consumer<ControlCenterProvider>(
-        builder: (context, provider, _) {
+    return LoaderOverlay(
+      child: Consumer<ControlCenterProvider>(
+        builder: (context, provider, child) {
           final service = provider.services
               .firstWhere((service) => service.id == widget.service.id);
 
-          return FutureBuilder(
-            future: provider.getReviews(service.id),
-            builder: (context, snapshot) {
-              return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Images
-                    _rowTitle('Images', 'Edit', () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => Images(serviceId: service.id),
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 6),
-                    _images(widget.service.images),
-                    const SizedBox(height: 10),
-
-                    // Service
-                    _rowTitle('Service', 'Edit', () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) =>
-                              EditServicePage(service: service),
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 6),
-                    Text(
-                      service.title,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(service.description),
-                    const SizedBox(height: 10),
-                    Text(
-                      formatPriceWithPricingType(
-                        service.price,
-                        service.pricingType,
-                      ),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Tags
-                    Wrap(
-                      runSpacing: 4,
-                      spacing: 4,
-                      children: service.tags
-                          .map((tag) => Chip(
-                                label: Text(tag),
-                                labelStyle: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                visualDensity: VisualDensity.compact,
-                                padding: const EdgeInsets.all(2),
-                                backgroundColor: Colors.green.shade800,
-                                shape: const RoundedRectangleBorder(
-                                  side: BorderSide(color: Colors.transparent),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 14),
-
-                    // Add-ons
-                    _rowTitle('Add-ons', 'Edit', () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => AddOns(serviceId: service.id),
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 6),
-                    _addons(service.extras),
-                    const SizedBox(height: 20),
-
-                    // Reviews
-                    snapshot.connectionState == ConnectionState.waiting
-                        ? const Text('Reviews 0',
-                            style: TextStyle(fontWeight: FontWeight.w600))
-                        : Text(
-                            'Reviews ${snapshot.data == null ? 0 : snapshot.data!.length}',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                    const SizedBox(height: 10),
-
-                    snapshot.connectionState == ConnectionState.waiting
-                        ? const RatingCountBar(reviews: [])
-                        : RatingCountBar(reviews: snapshot.data ?? []),
-                    const SizedBox(height: 20),
-
-                    snapshot.connectionState == ConnectionState.waiting
-                        ? const Center(child: CircularProgressIndicator())
-                        : _reviews(snapshot.data),
-
-                    const SizedBox(height: 10),
-                  ],
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text(
+                'Detail',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              actions: [
+                Icon(
+                  CupertinoIcons.circle_fill,
+                  color: widget.service.disabled ? Colors.red : Colors.green,
+                  size: 10,
                 ),
-              );
-            },
+                Menu(service: widget.service),
+              ],
+            ),
+            body: FutureBuilder(
+              future: provider.getReviews(service.id),
+              builder: (context, snapshot) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Status
+                      Row(
+                        children: [
+                          const Spacer(),
+                          ServiceStatusChip(status: service.status),
+                        ],
+                      ),
+
+                      // Images
+                      _rowTitle('Images', 'Edit', () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => Images(serviceId: service.id),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 6),
+                      _images(widget.service.images),
+                      const SizedBox(height: 10),
+
+                      // Service
+                      _rowTitle('Service', 'Edit', () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) =>
+                                EditServicePage(service: service),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 6),
+                      Text(
+                        service.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(service.description),
+                      const SizedBox(height: 10),
+                      Text(
+                        formatPriceWithPricingType(
+                          service.price,
+                          service.pricingType,
+                        ),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Tags
+                      Wrap(
+                        runSpacing: 4,
+                        spacing: 4,
+                        children: service.tags
+                            .map((tag) => Chip(
+                                  label: Text(tag),
+                                  labelStyle: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  visualDensity: VisualDensity.compact,
+                                  padding: const EdgeInsets.all(2),
+                                  backgroundColor: Colors.green.shade800,
+                                  shape: const RoundedRectangleBorder(
+                                    side: BorderSide(color: Colors.transparent),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(20),
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Add-ons
+                      _rowTitle('Add-ons', 'Edit', () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => AddOns(serviceId: service.id),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 6),
+                      _addons(service.extras),
+                      const SizedBox(height: 20),
+
+                      // Reviews
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? const Text('Reviews 0',
+                              style: TextStyle(fontWeight: FontWeight.w600))
+                          : Text(
+                              'Reviews ${snapshot.data == null ? 0 : snapshot.data!.length}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                      const SizedBox(height: 10),
+
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? const RatingCountBar(reviews: [])
+                          : RatingCountBar(reviews: snapshot.data ?? []),
+                      const SizedBox(height: 20),
+
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? const Center(child: CircularProgressIndicator())
+                          : _reviews(snapshot.data),
+
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                );
+              },
+            ),
+            bottomNavigationBar: service.status == ServiceStatus.rejected
+                ? Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: FilledButton(
+                      onPressed: () => _resubmitConfirmation(service.id),
+                      style: ButtonStyle(
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        backgroundColor:
+                            const WidgetStatePropertyAll(Colors.red),
+                        minimumSize: const WidgetStatePropertyAll(
+                          Size.fromHeight(50),
+                        ),
+                      ),
+                      child: const Text('Resubmit'),
+                    ),
+                  )
+                : null,
           );
         },
       ),
@@ -282,5 +319,55 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
         return ReviewItem(review: displayables[index]);
       },
     );
+  }
+
+  void _resubmitConfirmation(String serviceId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        icon: const Icon(
+          CupertinoIcons.question_circle,
+          color: Colors.red,
+          size: 40,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        title: const Text('Resubmit for Review'),
+        content: const Text(
+            'This action will send your service back to our team for re-evaluation. Please ensure all details is correct before proceeding.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _handleResubmit(serviceId);
+            },
+            child: const Text('Continue'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _handleResubmit(String serviceId) async {
+    final loader = context.loaderOverlay;
+
+    try {
+      loader.show();
+
+      await context.read<ControlCenterProvider>().resubmit(serviceId);
+    } on DioException catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.response?.data['message']);
+    } catch (error) {
+      if (!mounted) return;
+      showGenericErrorModal(context, message: error.toString());
+    } finally {
+      loader.hide();
+    }
   }
 }

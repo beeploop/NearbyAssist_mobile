@@ -5,6 +5,7 @@ import 'package:nearby_assist/config/service_tag_icon.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/service_model.dart';
 import 'package:nearby_assist/pages/account/control_center/services/service_detail/service_detail_page.dart';
+import 'package:nearby_assist/pages/account/widget/service_status_chip.dart';
 
 class ServiceItem extends StatelessWidget {
   const ServiceItem({
@@ -48,6 +49,7 @@ class ServiceItem extends StatelessWidget {
                 size: 26,
                 grade: 10,
               ),
+        titleAlignment: ListTileTitleAlignment.top,
         title: Text(
           service.title,
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -58,7 +60,7 @@ class ServiceItem extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
         ),
-        trailing: const Icon(CupertinoIcons.arrow_right),
+        trailing: ServiceStatusChip(status: service.status),
       ),
     );
   }

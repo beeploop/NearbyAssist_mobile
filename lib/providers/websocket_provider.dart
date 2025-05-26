@@ -217,6 +217,15 @@ class WebsocketProvider extends ChangeNotifier {
           final reason = result.data['payload']['reason'];
           _controlCenterProvider?.cancelledRequest(bookingId, reason);
 
+        case Event.serviceAccepted:
+          final serviceId = result.data['payload']['id'];
+          _controlCenterProvider?.serviceAccepted(serviceId);
+
+        case Event.serviceRejected:
+          final serviceId = result.data['payload']['id'];
+          final reason = result.data['payload']['reason'];
+          _controlCenterProvider?.serviceRejected(serviceId, reason);
+
         case Event.unknown:
           throw 'unknown event type';
       }

@@ -118,6 +118,27 @@ class ControlCenterProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> resubmit(String serviceId) async {
+    try {
+      await ControlCenterService().resubmit(serviceId);
+
+      final index = _services.indexWhere((service) => service.id == serviceId);
+      if (index == -1) return;
+
+      final service = _services[index].copyWith(
+        status: ServiceStatus.underReview,
+      );
+
+      _services = List.of(_services)..removeAt(index);
+      _services = [service, ..._services];
+
+      notifyListeners();
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    }
+  }
+
   Future<void> addExtra(AddExtraModel newExtra) async {
     try {
       final response = await ControlCenterService().addExtra(newExtra);
@@ -405,6 +426,33 @@ class ControlCenterProvider extends ChangeNotifier {
     _requests = List.of(_requests)..removeAt(index);
     _history = [cancelledBooking, ..._history];
 
+    notifyListeners();
+  }
+
+  void serviceAccepted(String serviceId) {
+    final index = _services.indexWhere((service) => service.id == serviceId);
+    if (index == -1) return;
+
+    final acceptedService = _services[index].copyWith(
+      status: ServiceStatus.accepted,
+    );
+
+    _services = List.of(_services)..removeAt(index);
+    _services = [acceptedService, ..._services];
+    notifyListeners();
+  }
+
+  void serviceRejected(String serviceId, String reason) {
+    final index = _services.indexWhere((service) => service.id == serviceId);
+    if (index == -1) return;
+
+    final acceptedService = _services[index].copyWith(
+      status: ServiceStatus.rejected,
+      rejectReason: reason,
+    );
+
+    _services = List.of(_services)..removeAt(index);
+    _services = [acceptedService, ..._services];
     notifyListeners();
   }
 }
