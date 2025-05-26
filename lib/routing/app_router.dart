@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/config/assets.dart';
@@ -63,8 +65,64 @@ GoRouter generateRoutes(
         builder: (context, state) => const LoginPage(),
       ),
       StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) => ScaffoldWithNavBar(
-          navigationShell: navigationShell,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state, navigationShell) => PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (navigationShell.currentIndex > 0) {
+              navigationShell.goBranch(0);
+              return;
+            }
+
+            final bool shouldExit = await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    icon: Icon(
+                      CupertinoIcons.question_circle,
+                      color: Colors.red.shade800,
+                      size: 40,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    title: const Text('Exit App'),
+                    content: const Text(
+                      'Are you sure you want to exit the app?',
+                      textAlign: TextAlign.center,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              WidgetStatePropertyAll(Colors.red.shade800),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'Exit',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ) ??
+                false;
+
+            if (context.mounted && shouldExit) {
+              SystemNavigator.pop();
+            }
+          },
+          child: ScaffoldWithNavBar(
+            navigationShell: navigationShell,
+          ),
         ),
         branches: [
           StatefulShellBranch(routes: [
