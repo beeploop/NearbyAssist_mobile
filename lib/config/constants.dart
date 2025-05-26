@@ -1,7 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/models/user_model.dart';
 
-const appVersion = "v0.17.0-rc8";
+const appVersion = "v0.17.0-rc9";
 const appName = "NearbyAssist";
 const appLegalese = "© 2024 NearbyAssist";
 
