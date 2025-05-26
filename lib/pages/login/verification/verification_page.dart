@@ -1,9 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/signup_model.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/change_address/location_editing_controller.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/change_address/location_picker.dart';
 import 'package:nearby_assist/pages/login/verification/widget/input_field.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/services/auth_service.dart';
@@ -32,6 +38,9 @@ class _VerificationPageState extends State<VerificationPage> {
   final _nameController = TextEditingController(),
       _addressController = TextEditingController(),
       _phoneController = TextEditingController();
+  final _mapController = MapController();
+  final _locationController =
+      LocationEditingController(initialLocation: defaultLocation);
 
   void _initializeValues() {
     setState(() {
@@ -75,12 +84,24 @@ class _VerificationPageState extends State<VerificationPage> {
                 const SizedBox(height: 20),
 
                 // Address
-                InputField(
-                  controller: _addressController,
-                  labelText: 'Address',
-                  inputType: TextInputType.streetAddress,
-                  validInputListenerCallback: (valid) =>
-                      setState(() => _submittable = valid),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InputField(
+                        controller: _addressController,
+                        labelText: 'Address',
+                        inputType: TextInputType.streetAddress,
+                        validInputListenerCallback: (valid) =>
+                            setState(() => _submittable = valid),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _showLocationPicker();
+                      },
+                      icon: const Icon(CupertinoIcons.map),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
 
@@ -91,6 +112,7 @@ class _VerificationPageState extends State<VerificationPage> {
                   inputType: TextInputType.phone,
                   validInputListenerCallback: (valid) =>
                       setState(() => _submittable = valid),
+                  maxLength: phoneNumberLength,
                 ),
                 const SizedBox(height: 20),
 
@@ -124,6 +146,53 @@ class _VerificationPageState extends State<VerificationPage> {
     );
   }
 
+  void _showLocationPicker() {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      isDismissible: false,
+      isScrollControlled: true,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.80,
+        width: double.infinity,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                Expanded(
+                  child: LocationPicker(
+                    mapController: _mapController,
+                    locationController: _locationController,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ButtonStyle(
+                      minimumSize: const WidgetStatePropertyAll(
+                        Size.fromHeight(50),
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text('Pick Location'),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   void _handleSignup() async {
     final loader = context.loaderOverlay;
 
@@ -133,7 +202,11 @@ class _VerificationPageState extends State<VerificationPage> {
       if (!_submittable) return;
 
       final userProvider = context.read<UserProvider>();
-      final location = await LocationService().getLocation();
+      if (!_locationController.hasChanged) {
+        final location = await LocationService().getLocation();
+        _locationController
+            .setLocation(LatLng(location.latitude, location.longitude));
+      }
 
       final data = SignupModel(
         name: _nameController.text,
@@ -141,8 +214,8 @@ class _VerificationPageState extends State<VerificationPage> {
         imageURL: widget.user.imageUrl,
         phone: _phoneController.text,
         address: _addressController.text,
-        latitude: location.latitude,
-        longitude: location.longitude,
+        latitude: _locationController.location.latitude,
+        longitude: _locationController.location.longitude,
       );
 
       data.selfValidate();

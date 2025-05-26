@@ -7,12 +7,14 @@ class InputField extends StatefulWidget {
     required this.labelText,
     this.inputType = TextInputType.text,
     this.validInputListenerCallback,
+    this.maxLength,
   });
 
   final TextEditingController controller;
   final String labelText;
   final TextInputType inputType;
   final void Function(bool)? validInputListenerCallback;
+  final int? maxLength;
 
   @override
   State<InputField> createState() => _InputFieldState();
@@ -51,6 +53,7 @@ class _InputFieldState extends State<InputField> {
         labelText: widget.labelText,
         border: const OutlineInputBorder(),
       ),
+      maxLength: widget.maxLength,
     );
   }
 }

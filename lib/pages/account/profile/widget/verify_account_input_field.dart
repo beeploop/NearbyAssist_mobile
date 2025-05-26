@@ -6,11 +6,13 @@ class VerifyAccountInputField extends StatefulWidget {
     required this.controller,
     required this.labelText,
     this.inputType = TextInputType.text,
+    this.maxLength,
   });
 
   final TextEditingController controller;
   final String labelText;
   final TextInputType inputType;
+  final int? maxLength;
 
   @override
   State<VerifyAccountInputField> createState() =>
@@ -28,6 +30,7 @@ class _VerifyAccountInputFieldState extends State<VerifyAccountInputField> {
         labelText: widget.labelText,
         border: const OutlineInputBorder(),
       ),
+      maxLength: widget.maxLength,
     );
   }
 }

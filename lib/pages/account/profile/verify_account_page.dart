@@ -3,19 +3,22 @@ import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/config/valid_id.dart';
 import 'package:nearby_assist/models/user_model.dart';
 import 'package:nearby_assist/models/verify_account_model.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/change_address/location_editing_controller.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/change_address/location_picker.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container.dart';
 import 'package:nearby_assist/pages/account/profile/widget/fillable_image_container_controller.dart';
 import 'package:nearby_assist/pages/account/profile/widget/identity_capture.dart';
 import 'package:nearby_assist/pages/account/profile/widget/verify_account_input_field.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
-import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/verify_account_service.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_generic_success_modal.dart';
@@ -39,6 +42,8 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
   final _frontIdController = FillableImageContainerController();
   final _seflieController = FillableImageContainerController();
   final _backIdController = FillableImageContainerController();
+  final _mapController = MapController();
+  late LocationEditingController _locationController;
   ValidID _selectedIDType = ValidID.none;
 
   @override
@@ -48,6 +53,9 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     if (_user == null) return;
 
     setState(() {
+      _locationController = LocationEditingController(
+          initialLocation: LatLng(_user!.latitude!, _user!.longitude!));
+
       _nameController.text = _user!.name;
       _phoneController.text = _user!.phone;
       _addressController.text = _user!.address;
@@ -58,6 +66,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       _frontIdController.addListener(_inputListener);
       _backIdController.addListener(_inputListener);
       _seflieController.addListener(_inputListener);
+      _locationController.addListener(_inputListener);
     });
   }
 
@@ -71,6 +80,7 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     _frontIdController.removeListener(_inputListener);
     _backIdController.removeListener(_inputListener);
     _seflieController.removeListener(_inputListener);
+    _locationController.removeListener(_inputListener);
   }
 
   void _inputListener() {
@@ -131,14 +141,27 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
               controller: _phoneController,
               labelText: 'Phone Number',
               inputType: TextInputType.phone,
+              maxLength: phoneNumberLength,
             ),
             const SizedBox(height: 20),
 
             // Address
-            VerifyAccountInputField(
-              controller: _addressController,
-              labelText: 'Address',
-              inputType: TextInputType.streetAddress,
+            Row(
+              children: [
+                Expanded(
+                  child: VerifyAccountInputField(
+                    controller: _addressController,
+                    labelText: 'Address',
+                    inputType: TextInputType.streetAddress,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _showLocationPicker();
+                  },
+                  icon: const Icon(CupertinoIcons.map),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
 
@@ -236,6 +259,53 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
     );
   }
 
+  void _showLocationPicker() {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      isDismissible: false,
+      isScrollControlled: true,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.80,
+        width: double.infinity,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                Expanded(
+                  child: LocationPicker(
+                    mapController: _mapController,
+                    locationController: _locationController,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ButtonStyle(
+                      minimumSize: const WidgetStatePropertyAll(
+                        Size.fromHeight(50),
+                      ),
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text('Pick Location'),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   void _submit() async {
     final loader = context.loaderOverlay;
 
@@ -243,14 +313,13 @@ class _VerifyAccountPageState extends State<VerifyAccountPage> {
       loader.show();
 
       final userProvider = context.read<UserProvider>();
-      final location = await LocationService().getLocation();
 
       final data = VerifyAccountModel(
         name: _nameController.text,
         phone: _phoneController.text,
         address: _addressController.text,
-        latitude: location.latitude,
-        longitude: location.longitude,
+        latitude: _locationController.location.latitude,
+        longitude: _locationController.location.longitude,
         idType: _selectedIDType,
         referenceNumber: _idNumberController.text,
         frontId: _frontIdController.imageBytes!,

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nearby_assist/main.dart';
 
 class LocationEditingController extends ChangeNotifier {
+  bool _hasChanged = false;
   LatLng _location;
 
   LocationEditingController({
@@ -10,11 +10,11 @@ class LocationEditingController extends ChangeNotifier {
   }) : _location = initialLocation;
 
   LatLng get location => _location;
+  bool get hasChanged => _hasChanged;
 
   void setLocation(LatLng location) {
-    logger.logDebug(
-        'location updated to: ${location.latitude} ${location.longitude}');
     _location = location;
+    _hasChanged = true;
     notifyListeners();
   }
 }

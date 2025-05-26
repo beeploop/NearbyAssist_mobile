@@ -27,6 +27,7 @@ class UserProvider extends ChangeNotifier {
   Future<void> updateUser(UserModel user) async {
     _user = user;
     SecureStorage().saveUser(user);
+    await syncAccount();
     notifyListeners();
   }
 
