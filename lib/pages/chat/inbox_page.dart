@@ -15,8 +15,6 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   @override
   Widget build(BuildContext context) {
-    final inbox = context.watch<MessageProvider>().inbox;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -29,16 +27,27 @@ class _InboxPageState extends State<InboxPage> {
           SizedBox(width: 10),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: context.read<MessageProvider>().refreshInbox,
-        child: inbox.isEmpty
-            ? _emptyState()
-            : ListView.builder(
-                itemCount: inbox.length,
-                itemBuilder: (context, index) => InboxItem(
-                  inboxItem: inbox[index],
-                ),
-              ),
+      body: FutureBuilder(
+        future: context.read<MessageProvider>().refreshInbox(),
+        builder: (context, snapshot) {
+          return Consumer<MessageProvider>(
+            builder: (context, provider, child) {
+              final inbox = provider.inbox;
+
+              return RefreshIndicator(
+                onRefresh: context.read<MessageProvider>().refreshInbox,
+                child: inbox.isEmpty
+                    ? _emptyState()
+                    : ListView.builder(
+                        itemCount: inbox.length,
+                        itemBuilder: (context, index) => InboxItem(
+                          inboxItem: inbox[index],
+                        ),
+                      ),
+              );
+            },
+          );
+        },
       ),
     );
   }
