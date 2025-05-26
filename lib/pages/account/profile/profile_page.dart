@@ -97,7 +97,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        provider.user.isVerified ? _verified() : _unverified(),
+                        provider.user.isVerified
+                            ? _verified()
+                            : provider.user.hasPendingVerification
+                                ? _pendingVerification()
+                                : _unverified(),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -230,6 +234,21 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       icon: Icon(CupertinoIcons.checkmark_seal, color: Colors.blue.shade600),
       label: Text('Unverified', style: TextStyle(color: Colors.blue.shade600)),
+    );
+  }
+
+  Widget _pendingVerification() {
+    return OutlinedButton.icon(
+      onPressed: () {},
+      style: OutlinedButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        side: BorderSide(color: Colors.blue.shade600),
+      ),
+      icon: Icon(CupertinoIcons.checkmark_seal, color: Colors.blue.shade600),
+      label: Text(
+        'Pending Verification',
+        style: TextStyle(color: Colors.blue.shade600),
+      ),
     );
   }
 

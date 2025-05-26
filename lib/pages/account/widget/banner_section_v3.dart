@@ -49,7 +49,9 @@ class BannerSectionV3 extends StatelessWidget {
                       ),
                       provider.user.isVerified
                           ? _verified()
-                          : _unverified(context),
+                          : provider.user.hasPendingVerification
+                              ? _pendingVerification(context)
+                              : _unverified(context),
                     ],
                   ),
                   Expanded(
@@ -81,6 +83,22 @@ class BannerSectionV3 extends StatelessWidget {
       icon: const Icon(CupertinoIcons.checkmark_seal, size: 18),
       label: const Text(
         'Unverified',
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _pendingVerification(BuildContext context) {
+    return TextButton.icon(
+      onPressed: () {},
+      style: OutlinedButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        iconColor: Colors.white,
+        padding: const EdgeInsets.all(0),
+      ),
+      icon: const Icon(CupertinoIcons.checkmark_seal, size: 18),
+      label: const Text(
+        'Pending Verification',
         style: TextStyle(color: Colors.white),
       ),
     );
