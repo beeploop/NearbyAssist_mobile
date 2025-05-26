@@ -2,10 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_assist/models/booking_model.dart';
+import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/pages/account/bookings/to_rate/rate_page.dart';
 import 'package:nearby_assist/pages/account/bookings/widget/menu.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/utils/date_formatter.dart';
+import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
 
 class ToRateSummaryPage extends StatefulWidget {
@@ -48,6 +50,7 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
                   ),
                 ],
               ),
+
               const Divider(),
 
               // Vendor information
@@ -99,6 +102,31 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
                 label: 'Pricing Type',
                 text: widget.booking.pricingType.label,
               ),
+
+              // Dates and schedules
+              if (widget.booking.pricingType != PricingType.fixed)
+                const SizedBox(height: 10),
+              if (widget.booking.pricingType != PricingType.fixed)
+                RowTile(
+                  label: 'Booked for',
+                  text: formatQuantityBooked(
+                    widget.booking.quantity,
+                    widget.booking.pricingType,
+                  ),
+                ),
+              const SizedBox(height: 10),
+              RowTile(
+                label: 'Scheduled on: ',
+                text: DateFormatter.monthDateRangeDT(
+                  widget.booking.scheduleStart!,
+                  widget.booking.scheduleEnd!,
+                ),
+              ),
+              // date completed
+              const SizedBox(height: 10),
+              _dateModified(),
+
+              // Add-ons
               const SizedBox(height: 20),
               const AutoSizeText(
                 'Add-ons:',
@@ -155,5 +183,37 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
         ),
       ),
     );
+  }
+
+  Widget _dateModified() {
+    final date = widget.booking.updatedAt;
+
+    switch (widget.booking.status) {
+      case BookingStatus.pending:
+        return RowTile(
+          label: 'Date requested',
+          text: DateFormatter.yearMonthDateFromDT(date!),
+        );
+      case BookingStatus.confirmed:
+        return RowTile(
+          label: 'Date confirmed',
+          text: DateFormatter.yearMonthDateFromDT(date!),
+        );
+      case BookingStatus.done:
+        return RowTile(
+          label: 'Date completed',
+          text: DateFormatter.yearMonthDateFromDT(date!),
+        );
+      case BookingStatus.rejected:
+        return RowTile(
+          label: 'Date rejected',
+          text: DateFormatter.yearMonthDateFromDT(date!),
+        );
+      case BookingStatus.cancelled:
+        return RowTile(
+          label: 'Date cancelled',
+          text: DateFormatter.yearMonthDateFromDT(date!),
+        );
+    }
   }
 }

@@ -148,6 +148,10 @@ class _SummarySectionState extends State<SummarySection> {
   }
 
   String _pickedDateFormat() {
+    if (widget.scheduleController.text.isEmpty) {
+      return "";
+    }
+
     final dates = widget.scheduleController.text.split(" - ");
 
     if (widget.detail.service.pricingType == PricingType.perDay) {

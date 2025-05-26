@@ -134,6 +134,8 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                     label: 'Pricing Type',
                     text: widget.booking.pricingType.label,
                   ),
+
+                  // Dates and schedules
                   if (widget.booking.pricingType != PricingType.fixed)
                     const SizedBox(height: 10),
                   if (widget.booking.pricingType != PricingType.fixed)
@@ -144,6 +146,21 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                         widget.booking.pricingType,
                       ),
                     ),
+                  const SizedBox(height: 10),
+                  if (widget.booking.status != BookingStatus.cancelled &&
+                      widget.booking.status != BookingStatus.rejected)
+                    RowTile(
+                      label: 'Scheduled on: ',
+                      text: DateFormatter.monthDateRangeDT(
+                        widget.booking.scheduleStart!,
+                        widget.booking.scheduleEnd!,
+                      ),
+                    ),
+                  // date completed
+                  const SizedBox(height: 10),
+                  _dateModified(),
+
+                  // Add-ons
                   const SizedBox(height: 20),
                   const AutoSizeText(
                     'Add-ons:',
@@ -171,9 +188,6 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                   const SizedBox(height: 20),
 
                   // Reason if rejected or cancelled
-                  const SizedBox(height: 10),
-                  _dateModified(),
-                  const SizedBox(height: 10),
                   _whoCancelled(),
                   const SizedBox(height: 10),
 

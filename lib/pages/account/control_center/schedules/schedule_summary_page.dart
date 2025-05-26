@@ -148,6 +148,7 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
             ),
             const SizedBox(height: 20),
 
+            // Pricing
             RowTile(
               label: 'Base Price:',
               text: formatCurrency(widget.booking.price),
@@ -157,6 +158,8 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
               label: 'Pricing Type',
               text: widget.booking.pricingType.label,
             ),
+
+            // Dates and schedules
             if (widget.booking.pricingType != PricingType.fixed)
               const SizedBox(height: 10),
             if (widget.booking.pricingType != PricingType.fixed)
@@ -176,6 +179,8 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
               ),
             ),
             const SizedBox(height: 20),
+
+            // Add-ons
             const AutoSizeText(
               'Add-ons:',
               style: TextStyle(

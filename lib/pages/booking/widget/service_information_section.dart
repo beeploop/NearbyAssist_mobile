@@ -76,37 +76,6 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
         Text(widget.details.service.description),
         const SizedBox(height: 20),
 
-        // Schedule
-        Row(
-          children: [
-            const Text(
-              'Preferred schedule',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const Spacer(),
-            TextButton(
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                visualDensity: VisualDensity.compact,
-                padding: const EdgeInsets.all(0),
-              ),
-              onPressed: () {
-                if (widget.pricingType == PricingType.perDay) {
-                  _pickDateRange();
-                } else {
-                  _pickDate();
-                }
-              },
-              child: Text(widget.scheduleController.text.isEmpty
-                  ? 'Pick date'
-                  : _pickedDateFormat()),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-
         // Base Price
         RowTile(
           label: 'Base Price',
@@ -141,6 +110,37 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
             ),
           ),
         if (widget.pricingType != PricingType.fixed) const SizedBox(height: 10),
+
+        // Schedule
+        Row(
+          children: [
+            const Text(
+              'Preferred schedule',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const Spacer(),
+            TextButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.all(0),
+              ),
+              onPressed: () {
+                if (widget.pricingType == PricingType.perDay) {
+                  _pickDateRange();
+                } else {
+                  _pickDate();
+                }
+              },
+              child: Text(widget.scheduleController.text.isEmpty
+                  ? 'Pick date'
+                  : _pickedDateFormat()),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
 
         const SizedBox(height: 20),
         const Divider(),
