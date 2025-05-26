@@ -11,6 +11,7 @@ enum Event {
   bookingRejected,
   vendorCancelledBooking,
   clientCancelledBooking,
+  clientCancelledConfirmedBooking,
   receivedBooking,
   serviceAccepted,
   serviceRejected,

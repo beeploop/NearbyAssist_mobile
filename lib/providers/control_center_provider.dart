@@ -429,6 +429,23 @@ class ControlCenterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cancelledConfirmed(String bookingId, String reason) {
+    final index = _schedules.indexWhere((req) => req.id == bookingId);
+    if (index == -1) return;
+
+    final cancelledBooking = _schedules[index].copyWith(
+      status: BookingStatus.cancelled,
+      updatedAt: DateTime.now(),
+      cancelReason: reason,
+      cancelledById: _schedules[index].client.id,
+    );
+
+    _schedules = List.of(_schedules)..removeAt(index);
+    _history = [cancelledBooking, ..._history];
+
+    notifyListeners();
+  }
+
   void serviceAccepted(String serviceId) {
     final index = _services.indexWhere((service) => service.id == serviceId);
     if (index == -1) return;

@@ -94,7 +94,7 @@ class ClientBookingProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> cancel(String id, String reason) async {
+  Future<void> cancelPending(String id, String reason) async {
     try {
       await ClientBookingService().cancelBooking(id, reason);
 
@@ -108,6 +108,29 @@ class ClientBookingProvider extends ChangeNotifier {
       );
 
       _pending = List.of(_pending)..removeAt(index);
+      _history = [cancelledBooking, ..._history];
+
+      notifyListeners();
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> cancelConfirmed(String id, String reason) async {
+    try {
+      await ClientBookingService().cancelBooking(id, reason);
+
+      final index = _confirmed.indexWhere((request) => request.id == id);
+      if (index == -1) return;
+
+      final cancelledBooking = _confirmed[index].copyWith(
+        status: BookingStatus.cancelled,
+        updatedAt: DateTime.now(),
+        cancelReason: reason,
+      );
+
+      _confirmed = List.of(_confirmed)..removeAt(index);
       _history = [cancelledBooking, ..._history];
 
       notifyListeners();

@@ -272,7 +272,7 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
 
       await context
           .read<ClientBookingProvider>()
-          .cancel(widget.booking.id, reason);
+          .cancelPending(widget.booking.id, reason);
 
       if (!mounted) return;
       showGenericSuccessModal(context, message: 'Booking request cancelled');
