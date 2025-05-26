@@ -1,9 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/constants.dart';
 import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/change_address/location_editing_controller.dart';
+import 'package:nearby_assist/pages/account/profile/profile_settings/change_address/location_picker.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
@@ -19,6 +24,8 @@ class ChangeAddressPage extends StatefulWidget {
 class _ChangeAddressPageState extends State<ChangeAddressPage> {
   bool _submittable = false;
   final _addressController = TextEditingController();
+  final _mapController = MapController();
+  late LocationEditingController _locationController;
   late UserModel user;
 
   @override
@@ -27,17 +34,32 @@ class _ChangeAddressPageState extends State<ChangeAddressPage> {
     user = Provider.of<UserProvider>(context, listen: false).user;
     _addressController.text = user.address;
     _addressController.addListener(_inputListener);
+
+    if (user.latitude == null || user.longitude == null) {
+      _locationController = LocationEditingController(
+        initialLocation: defaultLocation,
+      );
+    } else {
+      _locationController = LocationEditingController(
+        initialLocation: LatLng(user.latitude!, user.longitude!),
+      );
+    }
+    _locationController.addListener(_inputListener);
   }
 
   @override
   void dispose() {
     super.dispose();
     _addressController.removeListener(_inputListener);
+    _locationController.removeListener(_inputListener);
+    _mapController.dispose();
   }
 
   void _inputListener() {
     if (user.address.trim() != _addressController.text.trim() &&
-        _addressController.text.isNotEmpty) {
+            _addressController.text.isNotEmpty ||
+        user.latitude! != _locationController.location.latitude &&
+            user.longitude! != _locationController.location.longitude) {
       setState(() {
         _submittable = true;
       });
@@ -66,6 +88,14 @@ class _ChangeAddressPageState extends State<ChangeAddressPage> {
                 decoration: const InputDecoration(
                   labelText: 'Address',
                   border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: LocationPicker(
+                  mapController: _mapController,
+                  locationController: _locationController,
                 ),
               ),
             ],
@@ -141,7 +171,8 @@ class _ChangeAddressPageState extends State<ChangeAddressPage> {
         throw "Invalid address provided";
       }
 
-      await context.read<UserProvider>().changeAddress(_addressController.text);
+      await context.read<UserProvider>().changeAddress(
+          _addressController.text.trim(), _locationController.location);
 
       navigator.pop();
       navigator.pop();
