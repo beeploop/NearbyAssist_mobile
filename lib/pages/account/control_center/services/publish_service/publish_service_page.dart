@@ -154,7 +154,7 @@ class _PublishServicePageState extends State<PublishServicePage> {
               ? Expanded(
                   child: FilledButton(
                     onPressed: _handlePublish,
-                    child: const Text('Publish'),
+                    child: const Text('Submit for Review'),
                   ),
                 )
               : Expanded(

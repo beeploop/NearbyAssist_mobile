@@ -34,6 +34,7 @@ class VerificationPage extends StatefulWidget {
 }
 
 class _VerificationPageState extends State<VerificationPage> {
+  bool _submitted = false;
   bool _submittable = false;
   final _nameController = TextEditingController(),
       _addressController = TextEditingController(),
@@ -200,6 +201,11 @@ class _VerificationPageState extends State<VerificationPage> {
       loader.show();
 
       if (!_submittable) return;
+
+      if (_submitted) return;
+      setState(() {
+        _submitted = true;
+      });
 
       final userProvider = context.read<UserProvider>();
       if (!_locationController.hasChanged) {

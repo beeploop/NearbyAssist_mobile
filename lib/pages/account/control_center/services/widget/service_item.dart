@@ -22,7 +22,6 @@ class ServiceItem extends StatelessWidget {
         color: service.disabled ? Colors.green.shade50 : Colors.green.shade100,
         borderRadius: BorderRadius.circular(10),
       ),
-      padding: const EdgeInsets.all(6),
       child: ListTile(
         onTap: () {
           Navigator.push(

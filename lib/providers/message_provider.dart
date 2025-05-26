@@ -69,6 +69,7 @@ class MessageProvider extends ChangeNotifier {
       final user = await SecureStorage().getUser();
 
       final inboxPreviews = await MessageService().fetchConversations();
+      if (inboxPreviews.isEmpty) return;
 
       for (var preview in inboxPreviews) {
         final decrypted = await _decrypt(preview.lastMessage, preview.userId);
@@ -89,7 +90,8 @@ class MessageProvider extends ChangeNotifier {
       }
 
       _sortInbox();
-    } catch (error) {
+    } catch (error, trace) {
+      logger.logError(trace.toString());
       logger.logError(error.toString());
       rethrow;
     } finally {
