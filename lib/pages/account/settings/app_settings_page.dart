@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/pages/account/settings/widget/setting_item.dart';
+import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/system_setting_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
@@ -51,6 +52,12 @@ class _AppSettingPageState extends State<AppSettingPage> {
           icon: CupertinoIcons.tag,
           onPress: _updateTags,
         ),
+        SettingItem(
+          title: "Sync bookings",
+          subtitle: "Manually trigger requests and booking sync",
+          icon: CupertinoIcons.arrow_2_circlepath,
+          onPress: _syncBooking,
+        ),
         const Divider(),
         const SizedBox(height: 10),
         SettingItem(
@@ -67,7 +74,7 @@ class _AppSettingPageState extends State<AppSettingPage> {
         ),
         const SizedBox(height: 10),
         SettingItem(
-          title: "Use old search page",
+          title: "Use new search page",
           subtitle: "Switch between search page versions",
           icon: CupertinoIcons.arrow_2_circlepath,
           onPress: () {},
@@ -121,6 +128,22 @@ class _AppSettingPageState extends State<AppSettingPage> {
       await expertiseProvider.fetchExpertise();
       await expertiseProvider.fetchTags();
       _showSuccessSnackbar('Tags updated');
+    } catch (error) {
+      _showErrorSnackbar(error.toString());
+    } finally {
+      loader.hide();
+    }
+  }
+
+  void _syncBooking() async {
+    final loader = context.loaderOverlay;
+
+    try {
+      loader.show();
+
+      await context.read<ClientBookingProvider>().fetchAll();
+
+      _showSuccessSnackbar('Booking details synced');
     } catch (error) {
       _showErrorSnackbar(error.toString());
     } finally {
