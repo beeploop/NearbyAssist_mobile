@@ -123,10 +123,11 @@ class _PublishServicePageState extends State<PublishServicePage> {
     }
 
     if (_currentStep == 1) {
-      if (_basePriceController.text.isEmpty) {
+      if (_basePriceController.text.isEmpty ||
+          int.parse(_basePriceController.text) < 1) {
         showCustomSnackBar(
           context,
-          'Set base price',
+          'Invalid base price',
           backgroundColor: Colors.red,
           closeIconColor: Colors.white,
           textColor: Colors.white,
