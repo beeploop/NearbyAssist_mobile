@@ -30,7 +30,7 @@ class _ToRateSummaryPageState extends State<ToRateSummaryPage> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          Menu(booking: widget.booking),
+          Menu(booking: widget.booking, showCancel: false),
         ],
       ),
       body: Padding(

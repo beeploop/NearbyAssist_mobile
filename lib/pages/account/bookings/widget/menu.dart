@@ -12,9 +12,14 @@ import 'package:nearby_assist/utils/show_generic_success_modal.dart';
 import 'package:provider/provider.dart';
 
 class Menu extends StatefulWidget {
-  const Menu({super.key, required this.booking});
+  const Menu({
+    super.key,
+    required this.booking,
+    this.showCancel = true,
+  });
 
   final BookingModel booking;
+  final bool showCancel;
 
   @override
   State<Menu> createState() => _MenuState();
@@ -56,15 +61,16 @@ class _MenuState extends State<Menu> {
           icon: CupertinoIcons.nosign,
           text: 'Report user',
         ),
-        _popupItem(
-          context,
-          onTap: () {
-            _cancelConfirmation();
-          },
-          icon: CupertinoIcons.clear_circled,
-          text: 'Cancel',
-          color: Colors.red,
-        ),
+        if (widget.showCancel)
+          _popupItem(
+            context,
+            onTap: () {
+              _cancelConfirmation();
+            },
+            icon: CupertinoIcons.clear_circled,
+            text: 'Cancel',
+            color: Colors.red,
+          ),
       ],
     );
   }
