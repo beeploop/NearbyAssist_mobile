@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:encrypt/encrypt.dart';
+import 'package:nearby_assist/main.dart';
 
 class Encryption {
   Key _key;
@@ -10,32 +11,78 @@ class Encryption {
     required Key key,
   }) : _key = key;
 
-  factory Encryption.fromBigInt(BigInt value) {
-    var bytes = value.toUnsigned(256).toRadixString(16).padLeft(64, '0');
-    Uint8List b = Uint8List.fromList(List<int>.generate(bytes.length ~/ 2,
-        (i) => int.parse(bytes.substring(i * 2, i * 2 + 2), radix: 16)));
+  Key get key => _key;
 
-    final base64Key = base64.encode(b);
-    final key = Key.fromBase64(base64Key);
+  static Uint8List _binIntToUint8List(BigInt number) {
+    var hex = number.toRadixString(16);
+    if (hex.length % 2 == 1) hex = '0$hex';
 
-    return Encryption(key: key);
+    final bytes = List<int>.generate(
+      hex.length ~/ 2,
+      (i) => int.parse(hex.substring(i * 2, i * 2 + 2), radix: 16),
+    );
+
+    return Uint8List.fromList(bytes);
+  }
+
+  factory Encryption.fromBigInt(BigInt sharedSecret) {
+    try {
+      final bytes = _binIntToUint8List(sharedSecret);
+
+      Uint8List keyBytes = Uint8List(32);
+      final offset = 32 - bytes.length;
+
+      if (bytes.length > 32) {
+        keyBytes = bytes.sublist(0, 32);
+      } else {
+        for (int i = 0; i < bytes.length; i++) {
+          keyBytes[offset + i] = bytes[i];
+        }
+      }
+
+      final key = Key(keyBytes);
+
+      return Encryption(key: key);
+    } catch (error) {
+      rethrow;
+    }
   }
 
   String encrypt(String text) {
-    final iv = IV(_generateIv());
-    final encrypter = Encrypter(AES(_key));
+    try {
+      final iv = IV(_generateIv());
+      final encrypter = Encrypter(
+        AES(_key, mode: AESMode.cbc, padding: 'PKCS7'),
+      );
 
-    final encrypted = encrypter.encrypt(text, iv: iv);
-    return "${base64.encode(iv.bytes)}:${encrypted.base64}";
+      final encrypted = encrypter.encrypt(text, iv: iv);
+      return "${base64.encode(iv.bytes)}:${encrypted.base64}";
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    }
   }
 
   String decrypt(String encrypted) {
-    final parts = encrypted.split(":");
-    final iv = IV.fromBase64(parts[0]);
-    Encrypted msg = Encrypted.fromBase64(parts[1]);
+    try {
+      final parts = encrypted.split(":");
+      if (parts.length != 2) {
+        throw const FormatException(
+          'Encrypted string is not in expected format',
+        );
+      }
 
-    final encrypter = Encrypter(AES(_key));
-    return encrypter.decrypt(msg, iv: iv);
+      final iv = IV.fromBase64(parts[0]);
+      Encrypted msg = Encrypted.fromBase64(parts[1]);
+
+      final encrypter = Encrypter(
+        AES(_key, mode: AESMode.cbc, padding: 'PKCS7'),
+      );
+      return encrypter.decrypt(msg, iv: iv);
+    } catch (error) {
+      logger.logError(error.toString());
+      rethrow;
+    }
   }
 
   Uint8List _generateIv() {
