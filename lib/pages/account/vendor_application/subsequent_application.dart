@@ -28,6 +28,7 @@ class SubsequentApplication extends StatefulWidget {
 }
 
 class _SubsequentApplicationState extends State<SubsequentApplication> {
+  bool _submittable = false;
   List<ExpertiseModel> _expertiseList = [];
   ExpertiseModel? _selectedExpertise;
   final _supportingDocController = FillableImageContainerController();
@@ -39,6 +40,27 @@ class _SubsequentApplicationState extends State<SubsequentApplication> {
 
     _expertiseList =
         Provider.of<ExpertiseProvider>(context, listen: false).expertise;
+    _supportingDocController.addListener(_inputListener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _supportingDocController.removeListener(_inputListener);
+  }
+
+  void _inputListener() {
+    if (_hasAgreedToTAC &&
+        _selectedExpertise != null &&
+        _supportingDocController.hasImage) {
+      setState(() {
+        _submittable = true;
+      });
+    } else {
+      setState(() {
+        _submittable = false;
+      });
+    }
   }
 
   @override
@@ -105,11 +127,16 @@ class _SubsequentApplicationState extends State<SubsequentApplication> {
                     _checkboxTAC(),
                     const SizedBox(height: 10),
                     FilledButton(
-                      style: const ButtonStyle(
-                        minimumSize:
-                            WidgetStatePropertyAll(Size.fromHeight(50)),
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          !_submittable ? Colors.grey : null,
+                        ),
+                        minimumSize: const WidgetStatePropertyAll(
+                          Size.fromHeight(50),
+                        ),
                       ),
-                      onPressed: () => _handleSubmit(provider.user),
+                      onPressed: () =>
+                          _submittable ? _handleSubmit(provider.user) : () {},
                       child: const Text('Submit'),
                     ),
 
@@ -161,6 +188,7 @@ class _SubsequentApplicationState extends State<SubsequentApplication> {
       selectedItem: _selectedExpertise,
       onChanged: (item) => setState(() {
         _selectedExpertise = item;
+        _inputListener();
       }),
     );
   }
@@ -171,7 +199,10 @@ class _SubsequentApplicationState extends State<SubsequentApplication> {
       children: [
         Checkbox(
           value: _hasAgreedToTAC,
-          onChanged: (bool? value) => setState(() => _hasAgreedToTAC = value!),
+          onChanged: (bool? value) => setState(() {
+            _hasAgreedToTAC = value!;
+            _inputListener();
+          }),
         ),
         ClickableText(
           text: "I agreed to the ",
