@@ -19,6 +19,7 @@ enum WebsocketStatus { connected, disconnected, connecting }
 enum EventType { message, notification, sync }
 
 class WebsocketProvider extends ChangeNotifier {
+  bool _isReconnecting = false;
   Timer? _pingTimer;
   Timer? _pongTimeoutTimer;
   final _pingInterval = const Duration(seconds: 15);
@@ -75,6 +76,8 @@ class WebsocketProvider extends ChangeNotifier {
       if (!force) {
         if (_channel != null || _status != WebsocketStatus.disconnected) return;
         logger.logDebug('continued calling connect');
+      } else {
+        disconnect();
       }
 
       _status = WebsocketStatus.connecting;
@@ -98,7 +101,7 @@ class WebsocketProvider extends ChangeNotifier {
       _channel!.stream.listen(
         _processEvent,
         onDone: disconnect,
-        onError: (error) => logger.logError,
+        onError: (error) => _reconnect(),
         cancelOnError: true,
       );
     } on WebSocketChannelException catch (error) {
@@ -110,8 +113,13 @@ class WebsocketProvider extends ChangeNotifier {
 
   Future<void> _reconnect() async {
     logger.logDebug('trying to reconnect websocket');
+    if (_isReconnecting) return;
+    _isReconnecting = true;
+
     disconnect();
     await connect();
+
+    _isReconnecting = false;
   }
 
   void disconnect() {
@@ -162,21 +170,26 @@ class WebsocketProvider extends ChangeNotifier {
       switch (result.event) {
         case Event.pong:
           _receivePong();
+          return;
 
         case Event.message:
           final payload = ReceivedMessageModel.fromJson(result.data['payload']);
           _messageProvider?.receive(payload);
+          return;
 
         case Event.notification:
           final payload = NotificationModel.fromJson(result.data['payload']);
           _notifProvider?.pushNotification(payload);
+          return;
 
         case Event.sync:
           _userProvider?.syncAccount();
+          return;
 
         case Event.bookingComplete:
           final bookingId = result.data['payload'];
           _clientBookingProvider?.bookingCompleted(bookingId);
+          return;
 
         case Event.bookingConfirmed:
           final bookingId = result.data['payload']['id'];
@@ -188,6 +201,7 @@ class WebsocketProvider extends ChangeNotifier {
             scheduleStart,
             scheduleEnd,
           );
+          return;
 
         case Event.bookingRescheduled:
           final bookingId = result.data['payload']['id'];
@@ -199,39 +213,47 @@ class WebsocketProvider extends ChangeNotifier {
             scheduleStart,
             scheduleEnd,
           );
+          return;
 
         case Event.bookingRejected:
           final bookingId = result.data['payload']['id'];
           final reason = result.data['payload']['reason'];
           _clientBookingProvider?.bookingRejected(bookingId, reason);
+          return;
 
         case Event.vendorCancelledBooking:
           final bookingId = result.data['payload']['id'];
           final reason = result.data['payload']['reason'];
           _clientBookingProvider?.bookingCancelled(bookingId, reason);
+          return;
 
         case Event.receivedBooking:
           final booking = BookingModel.fromJson(result.data['payload']);
           _controlCenterProvider?.receivedRequest(booking);
+          return;
 
         case Event.clientCancelledBooking:
           final bookingId = result.data['payload']['id'];
           final reason = result.data['payload']['reason'];
           _controlCenterProvider?.cancelledRequest(bookingId, reason);
+          return;
 
         case Event.clientCancelledConfirmedBooking:
           final bookingId = result.data['payload']['id'];
           final reason = result.data['payload']['reason'];
           _controlCenterProvider?.cancelledConfirmed(bookingId, reason);
+          return;
 
         case Event.serviceAccepted:
           final serviceId = result.data['payload']['id'];
           _controlCenterProvider?.serviceAccepted(serviceId);
+          return;
 
         case Event.serviceRejected:
           final serviceId = result.data['payload']['id'];
           final reason = result.data['payload']['reason'];
           _controlCenterProvider?.serviceRejected(serviceId, reason);
+          return;
 
         case Event.unknown:
           throw 'unknown event type';
