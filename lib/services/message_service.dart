@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/inbox_preview_model.dart';
 import 'package:nearby_assist/models/message_model.dart';
 import 'package:nearby_assist/services/api_service.dart';
-import 'package:nearby_assist/utils/pretty_json.dart';
 
 class MessageService {
   Future<void> send(MessageModel message) async {
@@ -35,7 +33,6 @@ class MessageService {
       final api = ApiService.authenticated();
       final response =
           await api.dio.get('${endpoint.getMessages}/$recipeintId');
-      logger.logInfo(prettyJSON(response.data['messages']));
 
       return (response.data['messages'] as List)
           .map((message) => MessageModel.fromJson(message))

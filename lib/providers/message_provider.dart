@@ -47,18 +47,31 @@ class MessageProvider extends ChangeNotifier {
 
   Future<void> fetchMessagesWithUser(String userId) async {
     try {
-      final messages = await MessageService().fetchMessages(userId);
-      messages.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      final oldMessages = _getMessagesWith(userId);
+      final oldMessageMap = {
+        for (var item in oldMessages) item.id: item,
+      };
 
-      for (var message in messages) {
+      final fetchedMessages = await MessageService().fetchMessages(userId);
+      fetchedMessages.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      final List<MessageModel> newMessages = [];
+
+      for (var message in fetchedMessages) {
+        if (oldMessageMap.containsKey(message.id)) {
+          newMessages.add(oldMessageMap[message.id]!);
+          continue;
+        }
+
         final decrypted = await _decrypt(message.content, userId);
         final copy = message.copyWith(
           content: decrypted,
         );
 
-        // This is guaranteed to have a conversation with the user
-        _addMessageToConversation(copy);
+        newMessages.add(copy);
       }
+
+      _setMessagesWith(userId, newMessages);
     } catch (error) {
       logger.logError(error.toString());
       rethrow;
@@ -342,6 +355,14 @@ class MessageProvider extends ChangeNotifier {
       _inbox[convoIndex].messages = [message, ..._inbox[convoIndex].messages];
     }
 
+    notifyListeners();
+  }
+
+  void _setMessagesWith(String userId, List<MessageModel> messages) {
+    final index = _inbox.indexWhere((convo) => convo.preview.userId == userId);
+    if (index == -1) return;
+
+    _inbox[index].messages = messages;
     notifyListeners();
   }
 
