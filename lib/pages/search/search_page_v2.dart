@@ -11,6 +11,8 @@ import 'package:nearby_assist/pages/widget/notification_bell.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
 import 'package:nearby_assist/providers/recommendation_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
+import 'package:nearby_assist/providers/service_provider.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class SearchPageV2 extends StatefulWidget {
@@ -85,7 +87,22 @@ class _SearchPageV2State extends State<SearchPageV2> {
                         const SizedBox(height: 30),
 
                         CustomSearchbar(
-                          onSearchFinished: () => context.pushNamed('map'),
+                          onSearchFinished: () {
+                            final services =
+                                context.read<ServiceProvider>().services;
+                            if (services.isEmpty) {
+                              showCustomSnackBar(
+                                context,
+                                '0 services found',
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                closeIconColor: Colors.white,
+                                dismissable: true,
+                                duration: const Duration(seconds: 3),
+                              );
+                            }
+                            context.pushNamed('map');
+                          },
                         ),
                         const SizedBox(height: 30),
 

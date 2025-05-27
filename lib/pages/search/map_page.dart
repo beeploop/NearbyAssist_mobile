@@ -5,6 +5,7 @@ import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/custom_searchbar.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:nearby_assist/utils/debouncer.dart';
 import 'package:nearby_assist/utils/show_generic_error_modal.dart';
 import 'package:nearby_assist/utils/show_location_disabled_modal.dart';
@@ -29,7 +30,20 @@ class MapPage extends StatelessWidget {
               child: Column(
                 children: [
                   CustomSearchbar(
-                    onSearchFinished: () {},
+                    onSearchFinished: () {
+                      final services = context.read<ServiceProvider>().services;
+                      if (services.isEmpty) {
+                        showCustomSnackBar(
+                          context,
+                          '0 services found',
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          closeIconColor: Colors.white,
+                          dismissable: true,
+                          duration: const Duration(seconds: 3),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(height: 8),
                   Consumer<SearchProvider>(
@@ -85,6 +99,20 @@ class MapPage extends StatelessWidget {
       );
 
       serviceProvider.replaceAll(results);
+
+      if (results.isEmpty) {
+        if (!context.mounted) return;
+        showCustomSnackBar(
+          context,
+          '0 services found',
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          closeIconColor: Colors.white,
+          dismissable: true,
+          duration: const Duration(seconds: 3),
+        );
+        return;
+      }
     } on LocationServiceDisabledException catch (_) {
       if (!context.mounted) return;
       showLocationDisabledModal(context);
