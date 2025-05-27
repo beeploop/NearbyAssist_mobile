@@ -23,66 +23,68 @@ class MapPage extends StatelessWidget {
         child: Stack(
           children: [
             const CustomMap(),
-            Positioned(
-              top: 20,
-              left: 20,
-              right: 20,
-              child: Column(
-                children: [
-                  CustomSearchbar(
-                    onSearchFinished: () {
-                      final services = context.read<ServiceProvider>().services;
-                      if (services.isEmpty) {
-                        showCustomSnackBar(
-                          context,
-                          '0 services found',
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          closeIconColor: Colors.white,
-                          dismissable: true,
-                          duration: const Duration(seconds: 3),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 8),
-                  Consumer<SearchProvider>(
-                    builder: (context, provider, child) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        padding: const EdgeInsets.only(right: 14),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Slider(
-                                min: 0,
-                                max: 2000,
-                                divisions: 10,
-                                label: provider.radius.round().toString(),
-                                value: provider.radius,
-                                onChanged: (value) {
-                                  if (value < 100) return;
+            Consumer<SearchProvider>(
+              builder: (context, provider, child) {
+                return Positioned(
+                  top: 20,
+                  left: 20,
+                  right: 20,
+                  child: Column(
+                    children: [
+                      CustomSearchbar(
+                        onSearchFinished: () {
+                          final services =
+                              context.read<ServiceProvider>().services;
+                          if (services.isEmpty) {
+                            showCustomSnackBar(
+                              context,
+                              '0 services found',
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              closeIconColor: Colors.white,
+                              dismissable: true,
+                              duration: const Duration(seconds: 3),
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                      if (!provider.boundless)
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.only(right: 14),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Slider(
+                                  min: 0,
+                                  max: 2000,
+                                  divisions: 10,
+                                  label: provider.radius.round().toString(),
+                                  value: provider.radius,
+                                  onChanged: (value) {
+                                    if (value < 100) return;
 
-                                  provider.updateRadius(value);
+                                    provider.updateRadius(value);
 
-                                  debouncer.call(() {
-                                    _handleSearch(context);
-                                  });
-                                },
+                                    debouncer.call(() {
+                                      _handleSearch(context);
+                                    });
+                                  },
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 4),
-                            Text('${provider.radius}m'),
-                          ],
+                              const SizedBox(width: 4),
+                              Text('${provider.radius}m'),
+                            ],
+                          ),
                         ),
-                      );
-                    },
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),

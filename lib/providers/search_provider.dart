@@ -5,15 +5,22 @@ import 'package:nearby_assist/services/location_service.dart';
 import 'package:nearby_assist/services/search_service.dart';
 
 class SearchProvider extends ChangeNotifier {
-  double _radius = 500;
+  bool _boundless = false;
+  double _radius = 400;
   bool _searching = false;
   String _latestSearchTerm = '';
   ServiceSortingMethod _sortingMethod = ServiceSortingMethod.suggestibility;
 
+  bool get boundless => _boundless;
   double get radius => _radius;
   ServiceSortingMethod get sortingMethod => _sortingMethod;
   bool get searching => _searching;
   String get latestSearchTerm => _latestSearchTerm;
+
+  void toggleBoundless() {
+    _boundless = !_boundless;
+    notifyListeners();
+  }
 
   void updateRadius(double value) {
     _radius = value;
@@ -48,6 +55,7 @@ class SearchProvider extends ChangeNotifier {
         location: location,
         tags: queries,
         radius: _radius,
+        boundless: _boundless,
       );
     } catch (error) {
       rethrow;

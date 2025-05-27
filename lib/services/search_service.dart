@@ -12,6 +12,7 @@ class SearchService {
     required Position location,
     required List<String> tags,
     required double radius,
+    required bool boundless,
   }) async {
     try {
       final api = ApiService.authenticated();
@@ -19,6 +20,7 @@ class SearchService {
         'q': tags.map((tag) => tag.replaceAll(' ', '_')).join(','),
         'l': '${location.latitude},${location.longitude}',
         'r': radius,
+        'boundless': boundless,
         'preference': SystemSettingProvider()
             .criteriaRanking
             .map((criteria) => criteria.identifier)

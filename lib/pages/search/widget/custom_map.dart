@@ -52,10 +52,14 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       builder: (context, serviceProvider, searchProvider, child) {
         final services = serviceProvider.services;
 
-        _fitCoordinateWithRadius(
-          LatLng(_location.latitude, _location.longitude),
-          searchProvider.radius,
-        );
+        if (searchProvider.boundless) {
+          _fitMarkers(services);
+        } else {
+          _fitCoordinateWithRadius(
+            LatLng(_location.latitude, _location.longitude),
+            searchProvider.radius,
+          );
+        }
 
         return Stack(
           children: [
@@ -81,18 +85,19 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                   userAgentPackageName: 'com.example.app',
                   tileProvider: _tileProvider(),
                 ),
-                CircleLayer(
-                  circles: [
-                    CircleMarker(
-                      point: LatLng(_location.latitude, _location.longitude),
-                      radius: searchProvider.radius,
-                      useRadiusInMeter: true,
-                      color: Colors.blue.withOpacity(0.2),
-                      borderColor: Colors.blue.shade600,
-                      borderStrokeWidth: 2,
-                    ),
-                  ],
-                ),
+                if (!searchProvider.boundless)
+                  CircleLayer(
+                    circles: [
+                      CircleMarker(
+                        point: LatLng(_location.latitude, _location.longitude),
+                        radius: searchProvider.radius,
+                        useRadiusInMeter: true,
+                        color: Colors.blue.withOpacity(0.2),
+                        borderColor: Colors.blue.shade600,
+                        borderStrokeWidth: 2,
+                      ),
+                    ],
+                  ),
                 MarkerLayer(
                   markers: [
                     Marker(
@@ -178,17 +183,37 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                     ),
                     IconButton(
                       icon: Icon(
-                        CupertinoIcons.map_pin_ellipse,
+                        searchProvider.boundless
+                            ? CupertinoIcons.map_pin_ellipse
+                            : CupertinoIcons.map_pin_slash,
+                        color: Colors.green.shade800,
+                      ),
+                      onPressed: () async {
+                        searchProvider.toggleBoundless();
+                        final results = await searchProvider
+                            .search(searchProvider.latestSearchTerm);
+
+                        serviceProvider.replaceAll(results);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        CupertinoIcons.location_solid,
                         color: Colors.green.shade800,
                       ),
                       onPressed: () {
                         if (orderingPreferenceOverlay != null) {
                           _hideOrderingPreference();
                         }
-                        _fitCoordinateWithRadius(
-                          LatLng(_location.latitude, _location.longitude),
-                          searchProvider.radius,
-                        );
+
+                        if (searchProvider.boundless) {
+                          _fitMarkers(services);
+                        } else {
+                          _fitCoordinateWithRadius(
+                            LatLng(_location.latitude, _location.longitude),
+                            searchProvider.radius,
+                          );
+                        }
                       },
                     ),
                   ],
@@ -470,6 +495,32 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
+  void _fitMarkers(List<SearchResultModel> services) {
+    final userPosition = LatLng(_location.latitude, _location.longitude);
+
+    final coordinates = services.map((service) {
+      return LatLng(service.latitude, service.longitude);
+    }).toList();
+    coordinates.add(userPosition);
+    final bounds = LatLngBounds.fromPoints(coordinates);
+
+    if (bounds.northEast == bounds.southWest) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.animateTo(dest: userPosition, zoom: _animateZoom);
+      });
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.animatedFitCamera(
+        cameraFit: CameraFit.bounds(
+          bounds: bounds,
+          padding: const EdgeInsets.fromLTRB(80, 180, 80, 80),
+        ),
+      );
+    });
+  }
+
   void _fitCoordinateWithRadius(LatLng center, double radius) {
     final north = const Distance().offset(center, radius, 0);
     final south = const Distance().offset(center, radius, 180);
@@ -485,7 +536,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
       _controller.animatedFitCamera(
         cameraFit: CameraFit.bounds(
           bounds: bounds,
-          padding: const EdgeInsets.fromLTRB(40, 180, 40, 40),
+          padding: const EdgeInsets.fromLTRB(20, 180, 20, 20),
         ),
       );
     });
