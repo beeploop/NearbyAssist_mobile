@@ -325,7 +325,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                       child: ListTile(
                         title: Text(criterion.name),
                         leading: Icon(icon),
-                        trailing: const Icon(CupertinoIcons.line_horizontal_3),
+                        trailing: const Icon(Icons.drag_indicator),
                       ),
                     ),
                   );
