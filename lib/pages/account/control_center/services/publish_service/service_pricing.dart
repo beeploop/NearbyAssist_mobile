@@ -88,6 +88,8 @@ class _ServicePricingState extends State<ServicePricing> {
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
+              hintText: '100',
+              hintStyle: TextStyle(color: Colors.grey),
             ),
           ),
         ),

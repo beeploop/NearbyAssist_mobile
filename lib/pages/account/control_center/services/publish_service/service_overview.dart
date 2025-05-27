@@ -41,6 +41,8 @@ class _ServiceOverviewState extends State<ServiceOverview> {
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
+            hintText: 'Name of your service',
+            hintStyle: TextStyle(color: Colors.grey),
           ),
         ),
         const SizedBox(height: 20),
@@ -53,6 +55,9 @@ class _ServiceOverviewState extends State<ServiceOverview> {
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
+            hintText:
+                'Describe your service and provide details the client should know.',
+            hintStyle: TextStyle(color: Colors.grey),
           ),
           minLines: 3,
           maxLines: 6,
@@ -61,12 +66,22 @@ class _ServiceOverviewState extends State<ServiceOverview> {
 
         // Tags
         const AutoSizeText('Tags'),
+        const AutoSizeText(
+          'Searchable keywords to help users discover your service.',
+          style: TextStyle(fontSize: 10),
+        ),
+        const AutoSizeText(
+          'For multiple tags, separate each one with comma (,)',
+          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 10),
         TextFormField(
           controller: widget.tagsController,
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
+            hintText: 'ex. plumbing service, plumber, water leakage repair',
+            hintStyle: TextStyle(color: Colors.grey),
           ),
         ),
 
