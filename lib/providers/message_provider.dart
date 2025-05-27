@@ -10,6 +10,7 @@ import 'package:nearby_assist/models/partial_message_model.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:nearby_assist/models/received_message_model.dart';
+import 'package:nearby_assist/providers/key_pair_provider.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/encryption.dart';
 import 'package:nearby_assist/services/message_service.dart';
@@ -104,8 +105,6 @@ class MessageProvider extends ChangeNotifier {
           _addInboxItem(preview);
         }
       }
-
-      _sortInbox();
     } catch (error, trace) {
       logger.logError(trace.toString());
       logger.logError(error.toString());
@@ -140,7 +139,8 @@ class MessageProvider extends ChangeNotifier {
       _updateInboxPreview(newMessage.receiver, newMessage.content, true);
       rethrow;
     } finally {
-      _sortInbox();
+      _inbox.sort((a, b) =>
+          a.preview.lastMessageDate.compareTo(b.preview.lastMessageDate));
     }
   }
 
@@ -232,7 +232,14 @@ class MessageProvider extends ChangeNotifier {
         publicKey = _publicKeyCache[otherUserId]!;
       }
 
-      final sharedSecret = await dh.computeSharedSecret(publicKey);
+      final userPrivKey = KeyPairProvider().privateKey;
+      final userPubKey = KeyPairProvider().publicKey;
+      if (userPrivKey == null || userPubKey == null) {
+        throw MissingKeyException(message: 'no saved keys');
+      }
+
+      final userKeyPair = dh.keyPairFrom(userPrivKey, userPubKey);
+      final sharedSecret = await dh.computeSharedSecret(userKeyPair, publicKey);
 
       final aes = Encryption.fromBigInt(sharedSecret);
       return aes.encrypt(message);
@@ -255,7 +262,14 @@ class MessageProvider extends ChangeNotifier {
         publicKey = _publicKeyCache[otherUserId]!;
       }
 
-      final sharedSecret = await dh.computeSharedSecret(publicKey);
+      final userPrivKey = KeyPairProvider().privateKey;
+      final userPubKey = KeyPairProvider().publicKey;
+      if (userPrivKey == null || userPubKey == null) {
+        throw MissingKeyException(message: 'no saved keys');
+      }
+
+      final userKeyPair = dh.keyPairFrom(userPrivKey, userPubKey);
+      final sharedSecret = await dh.computeSharedSecret(userKeyPair, publicKey);
 
       final aes = Encryption.fromBigInt(sharedSecret);
       return aes.decrypt(message);
@@ -380,6 +394,6 @@ class MessageProvider extends ChangeNotifier {
 
   void _sortInbox() {
     _inbox.sort((a, b) =>
-        a.preview.lastMessageDate.compareTo(b.preview.lastMessageDate));
+        b.preview.lastMessageDate.compareTo(a.preview.lastMessageDate));
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
+import 'package:nearby_assist/providers/key_pair_provider.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
 import 'package:nearby_assist/providers/recommendation_provider.dart';
 import 'package:nearby_assist/providers/system_setting_provider.dart';
@@ -39,6 +40,7 @@ void main() async {
 
   // Load saved settings
   await SecureStorage().loadSettings();
+  await KeyPairProvider().loadFromLocal();
 
   OneSignalService().initialize();
 

@@ -3,6 +3,7 @@ import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/signup_model.dart';
 import 'package:nearby_assist/models/third_party_login_payload_model.dart';
 import 'package:nearby_assist/models/user_model.dart';
+import 'package:nearby_assist/providers/key_pair_provider.dart';
 import 'package:nearby_assist/services/api_service.dart';
 import 'package:nearby_assist/services/diffie_hellman.dart';
 import 'package:nearby_assist/services/one_signal_service.dart';
@@ -98,6 +99,8 @@ class AuthService {
 
       final store = SecureStorage();
       await store.clearAll();
+
+      KeyPairProvider().clearKeys();
 
       OneSignalService().updateUser(null);
     } catch (error) {
