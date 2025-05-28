@@ -12,6 +12,7 @@ import 'package:nearby_assist/pages/booking/widget/summary_section.dart';
 import 'package:nearby_assist/pages/booking/widget/user_information_section.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
+import 'package:nearby_assist/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class BookingPage extends StatefulWidget {
@@ -110,6 +111,7 @@ class _BookingPageState extends State<BookingPage> {
 
   void _onCancel() {
     if (_currentStep <= 0) {
+      Navigator.pop(context);
       return;
     }
 
@@ -134,7 +136,7 @@ class _BookingPageState extends State<BookingPage> {
               ? Expanded(
                   child: FilledButton(
                     onPressed: _showBookingConfirmation,
-                    child: const Text('Book'),
+                    child: const Text('Submit Request'),
                   ),
                 )
               : Expanded(
@@ -149,10 +151,28 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   bool _isValid() {
-    final quantity = int.tryParse(_quantityController.text);
-    if (quantity == null || quantity < 1) return false;
+    if (_currentStep == 0) {
+      final quantity = int.tryParse(_quantityController.text);
+      if (quantity == null || quantity < 1) {
+        _showErrorSnackbar('Invalid quantity');
+        return false;
+      }
 
-    if (_scheduleController.text.isEmpty) return false;
+      if (_scheduleController.text.isEmpty) {
+        if (!mounted) return false;
+        showCustomSnackBar(
+          context,
+          'Set preferred schedule',
+          backgroundColor: Colors.amber,
+          textColor: Colors.black,
+          closeIconColor: Colors.black87,
+          dismissable: true,
+          duration: const Duration(seconds: 5),
+        );
+
+        return false;
+      }
+    }
 
     return true;
   }
@@ -304,5 +324,17 @@ class _BookingPageState extends State<BookingPage> {
       final end = _selectedDates.end.toString().split(" ")[0];
       _scheduleController.text = '$start - $end';
     });
+  }
+
+  void _showErrorSnackbar(String error) {
+    showCustomSnackBar(
+      context,
+      error,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      closeIconColor: Colors.white,
+      dismissable: true,
+      duration: const Duration(seconds: 5),
+    );
   }
 }
