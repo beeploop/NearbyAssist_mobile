@@ -33,7 +33,14 @@ class RecommendationItem extends StatelessWidget {
             Expanded(
               child: data.thumbnail.isEmpty
                   ? Container(
-                      decoration: const BoxDecoration(color: AppColors.grey),
+                      decoration: BoxDecoration(color: AppColors.greyLight),
+                      width: double.maxFinite,
+                      child: Center(
+                        child: Icon(
+                          CupertinoIcons.photo_fill,
+                          color: AppColors.primary,
+                        ),
+                      ),
                     )
                   : CachedNetworkImage(
                       imageUrl: '${endpoint.publicResource}/${data.thumbnail}',
