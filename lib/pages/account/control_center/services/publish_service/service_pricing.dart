@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/pricing_type.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/widget/service_extra.dart';
@@ -68,7 +69,7 @@ class _ServicePricingState extends State<ServicePricing> {
         TextButton.icon(
           onPressed: _addField,
           icon: const Icon(CupertinoIcons.add_circled),
-          label: const Text('Add Extra'),
+          label: const Text('Create Add-ons'),
         ),
         const SizedBox(height: 10),
         ...widget.serviceExtras,
@@ -86,10 +87,13 @@ class _ServicePricingState extends State<ServicePricing> {
             controller: widget.basePriceController,
             onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
               hintText: '100',
-              hintStyle: TextStyle(color: Colors.grey),
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.grey),
             ),
           ),
         ),

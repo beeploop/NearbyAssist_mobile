@@ -13,7 +13,10 @@ void showAccountRestrictedModal(BuildContext context) {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      title: const Text('Feature disabled'),
+      title: Text(
+        'Feature disabled',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
       content: const Text(
           "Feature temporarily disabled because this account is restricted"),
       actions: [

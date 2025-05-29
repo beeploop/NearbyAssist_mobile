@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 
 class InputField extends StatefulWidget {
   const InputField({
@@ -33,7 +34,10 @@ class _InputFieldState extends State<InputField> {
         labelText: widget.labelText,
         border: const OutlineInputBorder(),
         hintText: widget.hintText,
-        hintStyle: const TextStyle(color: Colors.grey),
+        hintStyle: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: AppColors.grey),
       ),
       minLines: widget.minLines,
       maxLines: widget.maxLines,

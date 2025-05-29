@@ -4,7 +4,10 @@ void showExitDialog(BuildContext context) async {
   return await showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Exit App'),
+      title: Text(
+        'Exit App',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
       content: const Text('Are you sure?'),
       actions: [
         TextButton(

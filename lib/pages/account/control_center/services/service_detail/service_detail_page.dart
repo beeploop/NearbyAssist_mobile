@@ -333,7 +333,10 @@ class _ServiceDetailPageState extends State<ServiceDetailPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Resubmit for Review'),
+        title: Text(
+          'Resubmit for Review',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: const Text(
             'This action will send your service back to our team for re-evaluation. Please ensure all details is correct before proceeding.'),
         actions: [

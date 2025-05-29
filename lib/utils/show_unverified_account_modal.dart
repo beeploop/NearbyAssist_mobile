@@ -11,7 +11,10 @@ void showUnverifiedAccountModal(BuildContext context) {
         size: 28,
         color: Colors.amber,
       ),
-      title: const Text('Account not verified'),
+      title: Text(
+        'Account not verified',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
       content: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [

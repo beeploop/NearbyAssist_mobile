@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:nearby_assist/config/assets.dart';
@@ -41,14 +42,17 @@ class BannerSectionV2 extends StatelessWidget {
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
                     visualDensity: VisualDensity.compact,
-                    iconColor: Colors.blue.shade600,
-                    backgroundColor: Colors.white,
-                    side: BorderSide(color: Colors.blue.shade600),
+                    iconColor: AppColors.blue,
+                    backgroundColor: AppColors.white,
+                    side: BorderSide(color: AppColors.blue),
                   ),
                   icon: const Icon(CupertinoIcons.checkmark_seal),
                   label: Text(
-                    'unverified',
-                    style: TextStyle(color: Colors.blue.shade600),
+                    'Unverified',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColors.white),
                   ),
                 ),
                 const SizedBox(height: 10),

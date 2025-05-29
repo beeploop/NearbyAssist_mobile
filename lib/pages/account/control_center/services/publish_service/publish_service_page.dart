@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/new_extra.dart';
 import 'package:nearby_assist/models/new_service.dart';
 import 'package:nearby_assist/models/pricing_type.dart';
@@ -34,16 +36,71 @@ class _PublishServicePageState extends State<PublishServicePage> {
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
-      child: Scaffold(
-        appBar: AppBar(),
-        body: Stepper(
-          type: StepperType.horizontal,
-          elevation: 0,
-          steps: _steps(),
-          currentStep: _currentStep,
-          onStepContinue: _onContinue,
-          onStepCancel: _onCancel,
-          controlsBuilder: _controlsBuilder,
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+
+          final bool shouldExit = await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  icon: const Icon(
+                    CupertinoIcons.question_circle,
+                    color: AppColors.amber,
+                    size: 40,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  title: Text(
+                    'Discard Editing?',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  content: const Text(
+                    'Exiting this page will discard your inputs',
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            const WidgetStatePropertyAll(AppColors.red),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Exit',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ) ??
+              false;
+
+          if (context.mounted && shouldExit) {
+            Navigator.pop(context);
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(),
+          body: Stepper(
+            type: StepperType.horizontal,
+            elevation: 0,
+            steps: _steps(),
+            currentStep: _currentStep,
+            onStepContinue: _onContinue,
+            onStepCancel: _onCancel,
+            controlsBuilder: _controlsBuilder,
+          ),
         ),
       ),
     );
@@ -114,9 +171,9 @@ class _PublishServicePageState extends State<PublishServicePage> {
         showCustomSnackBar(
           context,
           'Fill up required fields',
-          backgroundColor: Colors.red,
-          closeIconColor: Colors.white,
-          textColor: Colors.white,
+          backgroundColor: AppColors.red,
+          closeIconColor: AppColors.white,
+          textColor: AppColors.white,
         );
         return false;
       }
@@ -128,11 +185,38 @@ class _PublishServicePageState extends State<PublishServicePage> {
         showCustomSnackBar(
           context,
           'Invalid base price',
-          backgroundColor: Colors.red,
-          closeIconColor: Colors.white,
-          textColor: Colors.white,
+          backgroundColor: AppColors.red,
+          closeIconColor: AppColors.white,
+          textColor: AppColors.white,
         );
         return false;
+      }
+
+      if (_serviceExtras.isNotEmpty) {
+        for (final extra in _serviceExtras) {
+          if (extra.controller.titleController.text.isEmpty ||
+              extra.controller.descriptionController.text.isEmpty) {
+            showCustomSnackBar(
+              context,
+              'Invalid add-on information',
+              backgroundColor: AppColors.red,
+              closeIconColor: AppColors.white,
+              textColor: AppColors.white,
+            );
+            return false;
+          }
+
+          if (extra.controller.price <= 0) {
+            showCustomSnackBar(
+              context,
+              'Invalid add-on price',
+              backgroundColor: AppColors.red,
+              closeIconColor: AppColors.white,
+              textColor: AppColors.white,
+            );
+            return false;
+          }
+        }
       }
     }
 
@@ -144,12 +228,13 @@ class _PublishServicePageState extends State<PublishServicePage> {
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Row(
         children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: controls.onStepCancel,
-              child: const Text('Back'),
+          if (_currentStep > 0)
+            Expanded(
+              child: OutlinedButton(
+                onPressed: controls.onStepCancel,
+                child: const Text('Back'),
+              ),
             ),
-          ),
           const SizedBox(width: 10),
           _currentStep >= 2
               ? Expanded(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/service_model.dart';
 
 class ServiceStatusChip extends StatelessWidget {
@@ -32,11 +33,11 @@ class ServiceStatusChip extends StatelessWidget {
   Color _pickColor() {
     switch (status) {
       case ServiceStatus.underReview:
-        return Colors.amber.shade800;
+        return AppColors.amber;
       case ServiceStatus.accepted:
-        return Colors.green.shade800;
+        return AppColors.primary;
       case ServiceStatus.rejected:
-        return Colors.red.shade800;
+        return AppColors.red;
     }
   }
 }

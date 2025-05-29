@@ -11,7 +11,10 @@ void showHasPendingVerification(BuildContext context) {
         size: 28,
         color: Colors.amber,
       ),
-      title: const Text('Pending Verification'),
+      title: Text(
+        'Pending Verification',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
       content: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [

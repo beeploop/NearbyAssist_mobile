@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:nearby_assist/config/theme/app_theme.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
 import 'package:nearby_assist/providers/control_center_provider.dart';
 import 'package:nearby_assist/providers/key_pair_provider.dart';
@@ -129,18 +131,18 @@ class _App extends State<App> {
 
     expertiseProvider.fetchExpertise();
 
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      title: 'NearbyAssist',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-          },
-        ),
-      ),
-      routerConfig: generateRoutes(userProvider, websocketProvider),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'NearbyAssist',
+          theme: AppTheme.defaultTheme,
+          routerConfig: generateRoutes(userProvider, websocketProvider),
+        );
+      },
     );
   }
 }

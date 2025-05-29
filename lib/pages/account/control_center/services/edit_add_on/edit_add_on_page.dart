@@ -200,7 +200,10 @@ class _EditAddOnPageState extends State<EditAddOnPage> {
           color: Colors.amber,
           size: 30,
         ),
-        title: const Text('Delete Add-on'),
+        title: Text(
+          'Delete Add-on',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: const Text(
           'This is a permanent action. This will fail if there are active bookings using this extra. Are you sure?',
         ),

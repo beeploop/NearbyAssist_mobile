@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/booking_model.dart';
 
 class BookingStatusChip extends StatelessWidget {
@@ -32,17 +33,17 @@ class BookingStatusChip extends StatelessWidget {
   Color _pickColor() {
     switch (status) {
       case BookingStatus.pending:
-        return Colors.blueGrey;
+        return AppColors.statusPending;
       case BookingStatus.confirmed:
-        return Colors.teal;
+        return AppColors.statusConfirmed;
       case BookingStatus.done:
-        return Colors.green.shade800;
+        return AppColors.statusDone;
       case BookingStatus.rejected:
-        return Colors.red.shade800;
+        return AppColors.statusRejected;
       case BookingStatus.cancelled:
-        return Colors.grey;
+        return AppColors.statusCancelled;
       default:
-        return Colors.grey;
+        return AppColors.statusCancelled;
     }
   }
 }

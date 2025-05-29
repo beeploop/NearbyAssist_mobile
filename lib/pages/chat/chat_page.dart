@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/partial_message_model.dart';
 import 'package:nearby_assist/pages/chat/widget/menu.dart';
 import 'package:nearby_assist/providers/message_provider.dart';
@@ -71,7 +72,7 @@ class _ChatPageState extends State<ChatPage> {
 
         return Chat(
           theme: DefaultChatTheme(
-            primaryColor: Theme.of(context).primaryColor,
+            primaryColor: AppColors.primary,
             inputBorderRadius: BorderRadius.zero,
             inputBackgroundColor: Colors.transparent,
             sendButtonIcon: const Icon(

@@ -112,13 +112,17 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   const SizedBox(height: 10),
 
                   // Description
-                  const AutoSizeText(
+                  AutoSizeText(
                     'Description',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   AutoSizeText(
                     widget.booking.serviceDescription,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 20),
 
@@ -145,9 +149,12 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   const SizedBox(height: 20),
 
                   // Add-ons
-                  const AutoSizeText(
+                  AutoSizeText(
                     'Add-ons:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   ...widget.booking.extras.map((extra) {
@@ -171,26 +178,36 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
                   // Reason if rejected or cancelled
                   const SizedBox(height: 10),
                   _dateModified(),
+
                   const SizedBox(height: 10),
                   _whoCancelled(),
                   const SizedBox(height: 10),
 
                   if (widget.booking.status == BookingStatus.rejected ||
                       widget.booking.status == BookingStatus.cancelled)
-                    const AutoSizeText(
+                    AutoSizeText(
                       'Reason:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   const SizedBox(height: 10),
                   if (widget.booking.status == BookingStatus.rejected ||
                       widget.booking.status == BookingStatus.cancelled)
-                    AutoSizeText(widget.booking.cancelReason ?? ''),
+                    AutoSizeText(
+                      widget.booking.cancelReason ?? '',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
 
                   const SizedBox(height: 30),
 
-                  const AutoSizeText(
+                  AutoSizeText(
                     'Review:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   snapshot.connectionState == ConnectionState.waiting
@@ -216,20 +233,36 @@ class _VendorHistorySummaryPageState extends State<VendorHistorySummaryPage> {
     }
 
     if (widget.booking.cancelledById == user.id) {
-      return const Row(
+      return Row(
         children: [
-          Text('Cancelled by', style: TextStyle(fontWeight: FontWeight.bold)),
-          Spacer(),
-          Text('You')
+          Text('Cancelled by',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(fontWeight: FontWeight.bold)),
+          const Spacer(),
+          Text(
+            'You',
+            style: Theme.of(context).textTheme.bodyLarge,
+          )
         ],
       );
     }
 
-    return const Row(
+    return Row(
       children: [
-        Text('Cancelled by', style: TextStyle(fontWeight: FontWeight.bold)),
-        Spacer(),
-        Text('Client')
+        Text(
+          'Cancelled by',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const Spacer(),
+        Text(
+          'Client',
+          style: Theme.of(context).textTheme.bodyLarge,
+        )
       ],
     );
   }

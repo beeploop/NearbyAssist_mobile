@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 
 class PopularSearchChip extends StatelessWidget {
   const PopularSearchChip({
@@ -22,7 +23,7 @@ class PopularSearchChip extends StatelessWidget {
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: AppColors.primary,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),

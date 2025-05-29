@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 
 class ServiceOverview extends StatefulWidget {
   const ServiceOverview({
@@ -39,10 +40,13 @@ class _ServiceOverviewState extends State<ServiceOverview> {
           maxLength: 50,
           controller: widget.titleController,
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
             hintText: 'Name of your service',
-            hintStyle: TextStyle(color: Colors.grey),
+            hintStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: AppColors.grey),
           ),
         ),
         const SizedBox(height: 20),
@@ -53,11 +57,14 @@ class _ServiceOverviewState extends State<ServiceOverview> {
         TextFormField(
           controller: widget.descriptionController,
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
             hintText:
                 'Describe your service and provide details the client should know.',
-            hintStyle: TextStyle(color: Colors.grey),
+            hintStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: AppColors.grey),
           ),
           minLines: 3,
           maxLines: 6,
@@ -66,22 +73,29 @@ class _ServiceOverviewState extends State<ServiceOverview> {
 
         // Tags
         const AutoSizeText('Tags'),
-        const AutoSizeText(
+        const SizedBox(height: 8),
+        AutoSizeText(
           'Searchable keywords to help users discover your service.',
-          style: TextStyle(fontSize: 10),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
-        const AutoSizeText(
+        AutoSizeText(
           'For multiple tags, separate each one with comma (,)',
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
         TextFormField(
           controller: widget.tagsController,
           onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
             hintText: 'ex. plumbing service, plumber, water leakage repair',
-            hintStyle: TextStyle(color: Colors.grey),
+            hintStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: AppColors.grey),
           ),
         ),
 

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/notification_model.dart';
 
 class GenericNotification extends StatelessWidget {
@@ -67,19 +68,19 @@ class GenericNotification extends StatelessWidget {
     late Color color;
     switch (notification.type) {
       case NotificationType.success:
-        color = Colors.green.shade800;
+        color = AppColors.primary;
         break;
       case NotificationType.fail:
-        color = Colors.red.shade800;
+        color = AppColors.red;
         break;
       case NotificationType.announcement:
-        color = Colors.amber.shade800;
+        color = AppColors.amber;
         break;
       case NotificationType.generic:
-        color = Colors.cyan.shade800;
+        color = AppColors.cyan;
         break;
       default:
-        color = Colors.cyan.shade800;
+        color = AppColors.cyan;
         break;
     }
 

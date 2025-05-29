@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/pages/search/widget/custom_map.dart';
 import 'package:nearby_assist/pages/search/widget/custom_searchbar.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
@@ -39,9 +40,9 @@ class MapPage extends StatelessWidget {
                             showCustomSnackBar(
                               context,
                               '0 services found',
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              closeIconColor: Colors.white,
+                              backgroundColor: AppColors.red,
+                              textColor: AppColors.white,
+                              closeIconColor: AppColors.white,
                               dismissable: true,
                               duration: const Duration(seconds: 3),
                             );
@@ -52,7 +53,7 @@ class MapPage extends StatelessWidget {
                       if (!provider.boundless)
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.white,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.only(right: 14),
@@ -107,9 +108,9 @@ class MapPage extends StatelessWidget {
         showCustomSnackBar(
           context,
           '0 services found',
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          closeIconColor: Colors.white,
+          backgroundColor: AppColors.red,
+          textColor: AppColors.white,
+          closeIconColor: AppColors.white,
           dismissable: true,
           duration: const Duration(seconds: 3),
         );

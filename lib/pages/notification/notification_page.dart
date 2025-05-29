@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/notification_model.dart';
 import 'package:nearby_assist/pages/notification/widget/generic_notification.dart';
 
@@ -15,7 +16,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: AppColors.greyLighter,
       appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(20),

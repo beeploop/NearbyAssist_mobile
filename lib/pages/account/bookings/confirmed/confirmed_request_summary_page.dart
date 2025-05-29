@@ -96,6 +96,7 @@ class _ConfirmedRequestSummarPageState
           // Service Price
           const SizedBox(height: 20),
           const Text('Service Information', style: TextStyle(fontSize: 16)),
+          const SizedBox(height: 20),
 
           // Title
           const AutoSizeText(
@@ -141,10 +142,13 @@ class _ConfirmedRequestSummarPageState
           const SizedBox(height: 10),
           RowTile(
             label: 'Scheduled on: ',
-            text: DateFormatter.monthDateRangeDT(
-              widget.booking.scheduleStart!,
-              widget.booking.scheduleEnd!,
-            ),
+            text: widget.booking.pricingType == PricingType.perDay
+                ? DateFormatter.monthDateRangeDT(
+                    widget.booking.scheduleStart!,
+                    widget.booking.scheduleEnd!,
+                  )
+                : DateFormatter.monthAndDateFromDT(
+                    widget.booking.scheduleStart!),
           ),
           const SizedBox(height: 20),
           const AutoSizeText(

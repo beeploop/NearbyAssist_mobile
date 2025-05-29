@@ -67,7 +67,10 @@ class _MenuState extends State<Menu> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text(title),
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: const Text(message),
           actions: [
             TextButton(
@@ -110,7 +113,10 @@ class _MenuState extends State<Menu> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text(title),
+          title: Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: const Text(message),
           actions: [
             TextButton(

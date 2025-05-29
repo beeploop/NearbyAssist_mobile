@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/service_tag_icon.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/detailed_vendor_model.dart';
 import 'package:nearby_assist/models/service_model.dart';
@@ -182,7 +183,7 @@ class _VendorPageState extends State<VendorPage> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.green.shade200,
+        color: AppColors.primaryLight,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -228,7 +229,7 @@ class _VendorPageState extends State<VendorPage> {
                             ),
                             visualDensity: VisualDensity.compact,
                             padding: const EdgeInsets.all(2),
-                            backgroundColor: Colors.green.shade800,
+                            backgroundColor: AppColors.primary,
                             shape: const RoundedRectangleBorder(
                               side: BorderSide(color: Colors.transparent),
                               borderRadius: BorderRadius.all(
@@ -259,7 +260,7 @@ class _VendorPageState extends State<VendorPage> {
 
           return Container(
             decoration: BoxDecoration(
-              color: Colors.green.shade100,
+              color: AppColors.primaryLighter,
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.all(6),

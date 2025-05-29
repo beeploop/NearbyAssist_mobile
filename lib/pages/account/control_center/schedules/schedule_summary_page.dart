@@ -97,11 +97,17 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
             // Date created
             Row(
               children: [
-                const Text('Date Booked',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  'Date Booked',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                ),
                 const Spacer(),
                 Text(
                   DateFormatter.yearMonthDateFromDT(widget.booking.createdAt),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
@@ -109,21 +115,30 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
 
             // Vendor information
             const SizedBox(height: 20),
-            const Text('Vendor Information', style: TextStyle(fontSize: 16)),
+            Text(
+              'Vendor Information',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             const SizedBox(height: 20),
             RowTile(label: 'Vendor Name:', text: widget.booking.vendor.name),
             const Divider(),
 
             // Client information
             const SizedBox(height: 20),
-            const Text('Client Information', style: TextStyle(fontSize: 16)),
+            Text(
+              'Client Information',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             const SizedBox(height: 20),
             RowTile(label: 'Client Name:', text: widget.booking.client.name),
             const Divider(),
 
             // Service Price
             const SizedBox(height: 20),
-            const Text('Service Information', style: TextStyle(fontSize: 16)),
+            Text(
+              'Service Information',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             const SizedBox(height: 20),
 
             // Title
@@ -173,10 +188,13 @@ class _ScheduleSummaryPageState extends State<ScheduleSummaryPage> {
             const SizedBox(height: 10),
             RowTile(
               label: 'Scheduled on: ',
-              text: DateFormatter.monthDateRangeDT(
-                widget.booking.scheduleStart!,
-                widget.booking.scheduleEnd!,
-              ),
+              text: widget.booking.pricingType == PricingType.perDay
+                  ? DateFormatter.monthDateRangeDT(
+                      widget.booking.scheduleStart!,
+                      widget.booking.scheduleEnd!,
+                    )
+                  : DateFormatter.monthAndDateFromDT(
+                      widget.booking.scheduleStart!),
             ),
             const SizedBox(height: 20),
 

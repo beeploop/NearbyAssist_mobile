@@ -160,7 +160,10 @@ class _RatePageState extends State<RatePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Successful'),
+          title: Text(
+            'Successful',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -188,7 +191,10 @@ class _RatePageState extends State<RatePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Failed'),
+          title: Text(
+            'Failed',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: Text(error),
           actions: [
             TextButton(

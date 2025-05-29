@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/notification_model.dart';
 import 'package:nearby_assist/pages/notification/notification_page.dart';
 import 'package:nearby_assist/providers/notifications_provider.dart';
@@ -72,8 +73,8 @@ class _NotificationListPageState extends State<NotificationListPage> {
           return Container(
             decoration: BoxDecoration(
               color: notification.isRead
-                  ? Colors.grey.shade200
-                  : Colors.grey.shade300,
+                  ? AppColors.greyLightest
+                  : AppColors.greyLighter,
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.all(10),

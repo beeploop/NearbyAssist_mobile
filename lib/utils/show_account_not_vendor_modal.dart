@@ -14,7 +14,10 @@ void showAccountNotVendorModal(BuildContext context) {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      title: const Text('Feature unavailable'),
+      title: Text(
+        'Feature unavailable',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
       content: const Text(
           'You need to have an expertise in order to start offering services'),
       actions: [

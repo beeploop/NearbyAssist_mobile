@@ -35,7 +35,7 @@ class VendorInfoSection extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.green.shade100,
+          color: Colors.green.shade200,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

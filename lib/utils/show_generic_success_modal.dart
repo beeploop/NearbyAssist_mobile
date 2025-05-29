@@ -19,7 +19,10 @@ void showGenericSuccessModal(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: Text(title ?? 'Success'),
+        title: Text(
+          title ?? 'Success',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: Text(message),
         actions: [
           if (moreActions != null) ...moreActions,

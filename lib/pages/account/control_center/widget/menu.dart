@@ -63,7 +63,10 @@ class _MenuState extends State<Menu> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Daily Booking Limit'),
+        title: Text(
+          'Daily Booking Limit',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: TextFormField(
           controller: controller,
           onTapOutside: (event) => FocusScope.of(context).unfocus(),

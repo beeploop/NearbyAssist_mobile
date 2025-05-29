@@ -61,20 +61,34 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
         const SizedBox(height: 20),
 
         // Title and description
-        const Text(
+        Text(
           'Title',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
-        Text(widget.details.service.title),
+        const SizedBox(height: 8),
+        Text(
+          widget.details.service.title,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         const SizedBox(height: 20),
 
         // Description
-        const Text(
+        Text(
           'Description',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
-        Text(widget.details.service.description),
-        const SizedBox(height: 20),
+        const SizedBox(height: 8),
+        Text(
+          widget.details.service.description,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        const SizedBox(height: 30),
 
         // Base Price
         RowTile(
@@ -114,9 +128,12 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
         // Schedule
         Row(
           children: [
-            const Text(
+            Text(
               'Preferred schedule',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
             TextButton(
@@ -146,7 +163,13 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
         const Divider(),
 
         // Add-ons
-        const Text('Add-ons:', style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          'Add-ons:',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
+        ),
         ..._buildExtras(),
       ],
     );
@@ -204,6 +227,7 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
       lastDate: DateTime.now().add(
         const Duration(days: 30),
       ), // restrict schedule to 30 days advance
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
 
     if (schedule == null) return;
@@ -217,6 +241,7 @@ class _ServiceInformationSectionState extends State<ServiceInformationSection> {
       lastDate: DateTime.now().add(
         const Duration(days: 30),
       ), // restrict schedule to 30 days advance
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
 
     if (range == null) return;

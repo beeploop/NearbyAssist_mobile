@@ -10,7 +10,6 @@ import 'package:nearby_assist/pages/account/widget/booking_status_chip.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/pages/booking/widget/row_tile.dart';
 import 'package:nearby_assist/providers/client_booking_provider.dart';
-import 'package:nearby_assist/providers/user_provider.dart';
 import 'package:nearby_assist/utils/date_formatter.dart';
 import 'package:nearby_assist/utils/format_quantity_booked.dart';
 import 'package:nearby_assist/utils/money_formatter.dart';
@@ -34,8 +33,6 @@ class PendingRequestSummaryPage extends StatefulWidget {
 class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
   @override
   Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().user;
-
     return LoaderOverlay(
       child: Scaffold(
         appBar: AppBar(
@@ -98,8 +95,10 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
 
                 // Vendor information
                 const SizedBox(height: 20),
-                const Text('Vendor Information',
-                    style: TextStyle(fontSize: 16)),
+                Text(
+                  'Vendor Information',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 const SizedBox(height: 20),
                 RowTile(
                     label: 'Vendor Name:', text: widget.booking.vendor.name),
@@ -107,37 +106,50 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
 
                 // Client information
                 const SizedBox(height: 20),
-                const Text('Client Information',
-                    style: TextStyle(fontSize: 16)),
+                Text(
+                  'Client Information',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 const SizedBox(height: 20),
-                RowTile(label: 'Client Name:', text: user.name),
+                RowTile(
+                    label: 'Client Name:', text: widget.booking.client.name),
                 const Divider(),
 
                 // Service Price
                 const SizedBox(height: 20),
-                const Text('Service Information',
-                    style: TextStyle(fontSize: 16)),
+                Text(
+                  'Service Information',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
                 const SizedBox(height: 20),
 
                 // Title
-                const AutoSizeText(
+                AutoSizeText(
                   'Title:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 AutoSizeText(
                   widget.booking.serviceTitle,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 10),
 
                 // Description
-                const AutoSizeText(
+                AutoSizeText(
                   'Description',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 AutoSizeText(
                   widget.booking.serviceDescription,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 20),
 
@@ -150,6 +162,8 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
                   label: 'Pricing Type',
                   text: widget.booking.pricingType.label,
                 ),
+
+                // Dates and schedules
                 if (widget.booking.pricingType != PricingType.fixed)
                   const SizedBox(height: 10),
                 if (widget.booking.pricingType != PricingType.fixed)
@@ -161,11 +175,12 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
                     ),
                   ),
                 const SizedBox(height: 20),
-                const AutoSizeText(
+                AutoSizeText(
                   'Add-ons:',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 ...widget.booking.extras.map((extra) {
@@ -182,12 +197,18 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    const Text(
+                    Text(
                       'Preferred schedule',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     const Spacer(),
-                    Text(_pickedDateFormat()),
+                    Text(
+                      _pickedDateFormat(),
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -236,7 +257,10 @@ class _PendingRequestSummaryPageState extends State<PendingRequestSummaryPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Are you sure?'),
+        title: Text(
+          'Are you sure?',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: InputField(
           controller: reason,
           hintText: 'Reason',

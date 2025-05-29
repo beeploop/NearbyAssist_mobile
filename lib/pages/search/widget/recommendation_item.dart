@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/main.dart';
 import 'package:nearby_assist/models/recommendation_model.dart';
 import 'package:nearby_assist/utils/format_pricing_with_pricing_type.dart';
@@ -22,7 +23,7 @@ class RecommendationItem extends StatelessWidget {
       onTap: () => onPressed(),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.green.shade100,
+          color: AppColors.primaryLighter,
           borderRadius: BorderRadius.circular(4),
         ),
         padding: const EdgeInsets.all(2),
@@ -32,7 +33,7 @@ class RecommendationItem extends StatelessWidget {
             Expanded(
               child: data.thumbnail.isEmpty
                   ? Container(
-                      decoration: BoxDecoration(color: Colors.grey.shade200),
+                      decoration: const BoxDecoration(color: AppColors.grey),
                     )
                   : CachedNetworkImage(
                       imageUrl: '${endpoint.publicResource}/${data.thumbnail}',
@@ -56,10 +57,7 @@ class RecommendationItem extends StatelessWidget {
                 children: [
                   AutoSizeText(
                     data.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
@@ -70,7 +68,6 @@ class RecommendationItem extends StatelessWidget {
                           data.price,
                           data.pricingType,
                         ),
-                        style: const TextStyle(fontSize: 16),
                       ),
                       const Spacer(),
                       RichText(
@@ -78,13 +75,12 @@ class RecommendationItem extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: '${data.rating} ',
-                              style: const TextStyle(
-                                  color: Colors.black, fontSize: 14),
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
-                            WidgetSpan(
+                            const WidgetSpan(
                               child: Icon(
                                 CupertinoIcons.star_fill,
-                                color: Colors.amber.shade600,
+                                color: AppColors.amber,
                                 size: 14,
                               ),
                             ),

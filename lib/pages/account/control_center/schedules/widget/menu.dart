@@ -117,7 +117,10 @@ class _MenuState extends State<Menu> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Set new date', style: TextStyle(fontSize: 20)),
+        title: Text(
+          'Set new date',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: TextField(
           controller: _scheduleController,
           decoration: const InputDecoration(
@@ -159,7 +162,10 @@ class _MenuState extends State<Menu> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Confirm', style: TextStyle(fontSize: 20)),
+        title: Text(
+          'Confirm',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: const Text('Are you sure you want reschedule this booking?'),
         actions: [
           TextButton(
@@ -189,7 +195,10 @@ class _MenuState extends State<Menu> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Cancel this booking?'),
+        title: Text(
+          'Cancel this booking?',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: InputField(
           controller: reason,
           hintText: 'Reason',
@@ -293,6 +302,7 @@ class _MenuState extends State<Menu> {
       lastDate: DateTime.now().add(
         const Duration(days: 30),
       ), // restrict schedule to 30 days advance
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
 
     if (schedule == null) return;
@@ -317,6 +327,7 @@ class _MenuState extends State<Menu> {
       lastDate: DateTime.now().add(
         const Duration(days: 30),
       ), // restrict schedule to 30 days advance
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
     );
 
     if (range == null) return;

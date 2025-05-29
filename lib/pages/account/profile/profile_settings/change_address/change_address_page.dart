@@ -137,7 +137,10 @@ class _ChangeAddressPageState extends State<ChangeAddressPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Change address'),
+        title: Text(
+          'Change address',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

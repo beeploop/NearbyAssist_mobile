@@ -85,7 +85,10 @@ GoRouter generateRoutes(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    title: const Text('Exit App'),
+                    title: Text(
+                      'Exit App',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     content: const Text(
                       'Are you sure you want to exit the app?',
                       textAlign: TextAlign.center,

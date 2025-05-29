@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:nearby_assist/config/report.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/report_user_model.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/services/report_issue_service.dart';
@@ -92,12 +93,12 @@ class _ReportUserPageState extends State<ReportUserPage> {
           ),
         ),
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: FilledButton(
             onPressed: _submittable ? _handleSubmit : () {},
             style: ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(
-                !_submittable ? Colors.grey : null,
+                !_submittable ? AppColors.grey : null,
               ),
               shape: WidgetStatePropertyAll(
                 RoundedRectangleBorder(
@@ -153,14 +154,12 @@ class _ReportUserPageState extends State<ReportUserPage> {
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) => InkWell(
-              overlayColor: WidgetStatePropertyAll(
-                Colors.green.shade200,
-              ),
+              overlayColor: WidgetStatePropertyAll(AppColors.primaryLight),
               onTap: _pickImageFromGallery,
               child: Ink(
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  border: Border.all(color: Colors.green),
+                  color: AppColors.primaryLighter,
+                  border: Border.all(color: AppColors.primary),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 width: constraints.maxWidth,
@@ -170,22 +169,23 @@ class _ReportUserPageState extends State<ReportUserPage> {
                   children: [
                     Text(
                       'select image',
-                      style: TextStyle(
-                        color: Colors.green.shade700,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: AppColors.primary),
                     ),
                     const SizedBox(height: 10),
                     Icon(
                       CupertinoIcons.photo,
-                      color: Colors.green.shade400,
+                      color: AppColors.primary,
                     ),
                     const SizedBox(height: 10),
                     Text(
                       'tap to select',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green.shade700,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: AppColors.primary),
                     ),
                   ],
                 ),
@@ -262,7 +262,10 @@ class _ReportUserPageState extends State<ReportUserPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Submitted'),
+          title: Text(
+            'Submitted',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: const Text(
             'Your report has been submitted. We will review and investigate.',
             textAlign: TextAlign.center,
@@ -295,7 +298,10 @@ class _ReportUserPageState extends State<ReportUserPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Failed'),
+          title: Text(
+            'Failed',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: Text(
             error,
             textAlign: TextAlign.center,

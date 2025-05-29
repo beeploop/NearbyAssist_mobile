@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/pages/account/widget/input_field.dart';
 import 'package:nearby_assist/services/report_issue_service.dart';
 import 'package:nearby_assist/utils/custom_snackbar.dart';
@@ -113,14 +114,12 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) => InkWell(
-              overlayColor: WidgetStatePropertyAll(
-                Colors.green.shade200,
-              ),
+              overlayColor: WidgetStatePropertyAll(AppColors.primary),
               onTap: _pickImageFromGallery,
               child: Ink(
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  border: Border.all(color: Colors.green),
+                  color: AppColors.primaryLighter,
+                  border: Border.all(color: AppColors.primary),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 width: constraints.maxWidth,
@@ -130,22 +129,23 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
                   children: [
                     Text(
                       'select image',
-                      style: TextStyle(
-                        color: Colors.green.shade700,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: AppColors.primary),
                     ),
                     const SizedBox(height: 10),
                     Icon(
                       CupertinoIcons.photo,
-                      color: Colors.green.shade400,
+                      color: AppColors.primary,
                     ),
                     const SizedBox(height: 10),
                     Text(
                       'tap to select',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.green.shade700,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: AppColors.primary),
                     ),
                   ],
                 ),
@@ -211,7 +211,10 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Submitted'),
+          title: Text(
+            'Submitted',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: const Text(
             'Thank you for your feedback. We will take this into consideration.',
             textAlign: TextAlign.center,
@@ -243,7 +246,10 @@ class _ReportIssuePageState extends State<ReportIssuePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Failed'),
+          title: Text(
+            'Failed',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: Text(
             error,
             textAlign: TextAlign.center,

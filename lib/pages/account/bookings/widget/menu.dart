@@ -89,7 +89,10 @@ class _MenuState extends State<Menu> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Are you sure?'),
+        title: Text(
+          'Are you sure?',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: InputField(
           controller: reason,
           hintText: 'Reason',

@@ -302,9 +302,9 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text(
+        title: Text(
           'Confirm schedule',
-          style: TextStyle(fontSize: 20),
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         content: TextField(
           controller: _scheduleController,
@@ -354,7 +354,10 @@ class _RequestSummaryPageState extends State<RequestSummaryPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Reject this request?'),
+        title: Text(
+          'Reject this request?',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: InputField(
           controller: reason,
           hintText: 'Reason',

@@ -189,7 +189,10 @@ class _BookingPageState extends State<BookingPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Confirm', style: TextStyle(fontSize: 20)),
+        title: Text(
+          'Confirm',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: const Text('Are you sure you want to submit this request?'),
         actions: [
           TextButton(
@@ -255,7 +258,10 @@ class _BookingPageState extends State<BookingPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Booking Successful'),
+          title: Text(
+            'Booking Successful',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: const Text(
               'Please wait for the vendor to contact you and confirm your booking.'),
           actions: [
@@ -285,7 +291,10 @@ class _BookingPageState extends State<BookingPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          title: const Text('Booking Failed'),
+          title: Text(
+            'Booking Failed',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: Text(error),
           actions: [
             TextButton(

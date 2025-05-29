@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/pages/account/control_center/services/services_page.dart';
 import 'package:nearby_assist/pages/account/control_center/requests/requests_page.dart';
 import 'package:nearby_assist/pages/account/control_center/history/vendor_history_page.dart';
@@ -58,7 +59,7 @@ class ControlCenterPage extends StatelessWidget {
                                     count: 0,
                                     icon: Icons.checklist,
                                     iconColor: Colors.white,
-                                    backgroundColor: Colors.pink.shade500,
+                                    backgroundColor: AppColors.pink,
                                     label: 'Services',
                                     onPressed: () {
                                       Navigator.push(
@@ -74,7 +75,7 @@ class ControlCenterPage extends StatelessWidget {
                                     count: provider.requests.length,
                                     icon: CupertinoIcons.tray_arrow_down,
                                     iconColor: Colors.white,
-                                    backgroundColor: Colors.blue.shade500,
+                                    backgroundColor: AppColors.blue,
                                     label: 'Requests',
                                     onPressed: () {
                                       Navigator.push(
@@ -90,7 +91,7 @@ class ControlCenterPage extends StatelessWidget {
                                     count: provider.schedules.length,
                                     icon: Icons.calendar_month,
                                     iconColor: Colors.white,
-                                    backgroundColor: Colors.amber.shade500,
+                                    backgroundColor: AppColors.amberLight,
                                     label: 'Schedules',
                                     onPressed: () {
                                       Navigator.push(
@@ -106,7 +107,7 @@ class ControlCenterPage extends StatelessWidget {
                                     count: 0,
                                     icon: Icons.archive,
                                     iconColor: Colors.white,
-                                    backgroundColor: Colors.grey.shade700,
+                                    backgroundColor: AppColors.statusPending,
                                     label: 'History',
                                     onPressed: () {
                                       Navigator.push(

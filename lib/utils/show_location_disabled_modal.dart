@@ -6,7 +6,10 @@ void showLocationDisabledModal(BuildContext context) {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: const Text('Location Services Disabled'),
+        title: Text(
+          'Location Services Disabled',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: const Text(
           'Enable location services to use this feature.',
         ),

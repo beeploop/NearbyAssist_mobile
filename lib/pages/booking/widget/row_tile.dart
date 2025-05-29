@@ -23,20 +23,15 @@ class RowTile extends StatelessWidget {
         if (withLeftPad) const SizedBox(width: 16),
         AutoSizeText(
           label,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.grey.shade900,
-            overflow: TextOverflow.ellipsis,
-          ),
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const Spacer(),
         AutoSizeText(
           text,
-          style: TextStyle(
-            fontWeight: FontWeight.normal,
-            color: Colors.grey.shade900,
-            overflow: TextOverflow.ellipsis,
-          ),
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
     );

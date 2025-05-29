@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/providers/expertise_provider.dart';
 import 'package:nearby_assist/providers/search_provider.dart';
 import 'package:nearby_assist/providers/service_provider.dart';
@@ -32,8 +33,8 @@ class _CustomSearchbarState extends State<CustomSearchbar> {
           isFullScreen: false,
           barHintText: 'search service',
           barElevation: const WidgetStatePropertyAll(4),
-          barBackgroundColor: const WidgetStatePropertyAll(Colors.white),
-          viewBackgroundColor: Colors.white,
+          barBackgroundColor: const WidgetStatePropertyAll(AppColors.white),
+          viewBackgroundColor: AppColors.white,
           textInputAction: TextInputAction.search,
           onSubmitted: (input) {
             FocusManager.instance.primaryFocus?.unfocus();

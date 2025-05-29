@@ -11,7 +11,10 @@ void showHasPendingApplication(BuildContext context) {
         size: 28,
         color: Colors.amber,
       ),
-      title: const Text('Pending Application'),
+      title: Text(
+        'Pending Application',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
       content: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [

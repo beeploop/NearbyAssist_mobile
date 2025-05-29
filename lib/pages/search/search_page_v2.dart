@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nearby_assist/config/assets.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/recommendation_model.dart';
 import 'package:nearby_assist/pages/search/widget/custom_searchbar.dart';
 import 'package:nearby_assist/pages/search/widget/popular_search_chip.dart';
@@ -59,10 +60,10 @@ class _SearchPageV2State extends State<SearchPageV2> {
                           children: [
                             Text(
                               'Hello!',
-                              style: TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green.shade900),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium
+                                  ?.copyWith(color: AppColors.primary),
                             ),
                             const NotificationBell(),
                           ],
@@ -72,12 +73,15 @@ class _SearchPageV2State extends State<SearchPageV2> {
                             children: [
                               TextSpan(
                                 text: 'Welcome to NearbyAssist',
-                                style: TextStyle(color: Colors.green.shade900),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: AppColors.primary),
                               ),
                               const WidgetSpan(
                                 child: Icon(
                                   CupertinoIcons.location_solid,
-                                  color: Colors.red,
+                                  color: AppColors.red,
                                   size: 16,
                                 ),
                               )
@@ -94,9 +98,9 @@ class _SearchPageV2State extends State<SearchPageV2> {
                               showCustomSnackBar(
                                 context,
                                 '0 services found',
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                closeIconColor: Colors.white,
+                                backgroundColor: AppColors.red,
+                                textColor: AppColors.white,
+                                closeIconColor: AppColors.white,
                                 dismissable: true,
                                 duration: const Duration(seconds: 3),
                               );
@@ -194,7 +198,7 @@ class _SearchPageV2State extends State<SearchPageV2> {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: Colors.green.shade700,
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.all(14),
@@ -209,7 +213,7 @@ class _SearchPageV2State extends State<SearchPageV2> {
                 'What service are you looking for today?',
                 style: TextStyle(
                   fontSize: 28,
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontWeight: FontWeight.w600,
                 ),
               ),

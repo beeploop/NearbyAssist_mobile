@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/pages/account/control_center/services/publish_service/widget/service_extra_controller.dart';
 
 class ServiceExtra extends StatefulWidget {
@@ -59,7 +60,14 @@ class _ServiceExtraState extends State<ServiceExtra> {
           child: TextField(
             onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
             controller: widget.controller.titleController,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: 'name of add-on',
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.grey),
+            ),
           ),
         ),
       ],
@@ -75,7 +83,14 @@ class _ServiceExtraState extends State<ServiceExtra> {
           child: TextField(
             onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
             controller: widget.controller.priceController,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: '100',
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.grey),
+            ),
             keyboardType: TextInputType.number,
           ),
         ),
@@ -92,7 +107,14 @@ class _ServiceExtraState extends State<ServiceExtra> {
           child: TextField(
             onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
             controller: widget.controller.descriptionController,
-            decoration: const InputDecoration(border: OutlineInputBorder()),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: 'Describe your add-on',
+              hintStyle: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.grey),
+            ),
             minLines: 2,
             maxLines: 4,
           ),

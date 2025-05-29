@@ -19,7 +19,10 @@ void showGenericErrorModal(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: Text(title ?? 'Failed'),
+        title: Text(
+          title ?? 'Failed',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         content: Text(message, textAlign: align),
         actions: [
           TextButton(

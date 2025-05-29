@@ -110,7 +110,10 @@ class _ChangePhonePageState extends State<ChangePhonePage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        title: const Text('Update Phone'),
+        title: Text(
+          'Update Phone',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

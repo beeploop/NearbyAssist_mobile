@@ -68,12 +68,18 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                   // Date created
                   Row(
                     children: [
-                      const Text('Date Booked',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        'Date Booked',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
                       const Spacer(),
                       Text(
                         DateFormatter.yearMonthDateFromDT(
                             widget.booking.createdAt),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],
                   ),
@@ -81,8 +87,10 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
 
                   // Vendor information
                   const SizedBox(height: 20),
-                  const Text('Vendor Information',
-                      style: TextStyle(fontSize: 16)),
+                  Text(
+                    'Vendor Information',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   const SizedBox(height: 20),
                   RowTile(
                       label: 'Vendor Name:', text: widget.booking.vendor.name),
@@ -90,8 +98,10 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
 
                   // Client information
                   const SizedBox(height: 20),
-                  const Text('Client Information',
-                      style: TextStyle(fontSize: 16)),
+                  Text(
+                    'Client Information',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   const SizedBox(height: 20),
                   RowTile(
                       label: 'Client Name:', text: widget.booking.client.name),
@@ -99,28 +109,39 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
 
                   // Service Price
                   const SizedBox(height: 20),
-                  const Text('Service Information',
-                      style: TextStyle(fontSize: 16)),
+                  Text(
+                    'Service Information',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 20),
 
                   // Title
-                  const AutoSizeText(
+                  AutoSizeText(
                     'Title:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   AutoSizeText(
                     widget.booking.serviceTitle,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 10),
 
                   // Description
-                  const AutoSizeText(
+                  AutoSizeText(
                     'Description',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   AutoSizeText(
                     widget.booking.serviceDescription,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 20),
 
@@ -151,10 +172,13 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
                       widget.booking.status != BookingStatus.rejected)
                     RowTile(
                       label: 'Scheduled on: ',
-                      text: DateFormatter.monthDateRangeDT(
-                        widget.booking.scheduleStart!,
-                        widget.booking.scheduleEnd!,
-                      ),
+                      text: widget.booking.pricingType == PricingType.perDay
+                          ? DateFormatter.monthDateRangeDT(
+                              widget.booking.scheduleStart!,
+                              widget.booking.scheduleEnd!,
+                            )
+                          : DateFormatter.monthAndDateFromDT(
+                              widget.booking.scheduleStart!),
                     ),
                   // date completed
                   const SizedBox(height: 10),
@@ -162,11 +186,12 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
 
                   // Add-ons
                   const SizedBox(height: 20),
-                  const AutoSizeText(
+                  AutoSizeText(
                     'Add-ons:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   ...widget.booking.extras.map((extra) {
@@ -193,20 +218,29 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
 
                   if (widget.booking.status == BookingStatus.rejected ||
                       widget.booking.status == BookingStatus.cancelled)
-                    const AutoSizeText(
+                    AutoSizeText(
                       'Reason:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   const SizedBox(height: 10),
                   if (widget.booking.status == BookingStatus.rejected ||
                       widget.booking.status == BookingStatus.cancelled)
-                    AutoSizeText(widget.booking.cancelReason ?? ''),
+                    AutoSizeText(
+                      widget.booking.cancelReason ?? '',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
 
                   const SizedBox(height: 30),
 
-                  const AutoSizeText(
+                  AutoSizeText(
                     'Review:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   snapshot.connectionState == ConnectionState.waiting
@@ -232,20 +266,32 @@ class _ClientHistoryDetailPageState extends State<ClientHistoryDetailPage> {
     }
 
     if (widget.booking.cancelledById == user.id) {
-      return const Row(
+      return Row(
         children: [
-          Text('Cancelled by', style: TextStyle(fontWeight: FontWeight.bold)),
-          Spacer(),
-          Text('You')
+          Text(
+            'Cancelled by',
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          Text('You', style: Theme.of(context).textTheme.bodyLarge)
         ],
       );
     }
 
-    return const Row(
+    return Row(
       children: [
-        Text('Cancelled by', style: TextStyle(fontWeight: FontWeight.bold)),
-        Spacer(),
-        Text('Vendor')
+        Text(
+          'Cancelled by',
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const Spacer(),
+        Text('Vendor', style: Theme.of(context).textTheme.bodyLarge)
       ],
     );
   }

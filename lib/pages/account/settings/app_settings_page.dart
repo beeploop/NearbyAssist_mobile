@@ -181,7 +181,10 @@ class _AppSettingPageState extends State<AppSettingPage> {
             borderRadius: BorderRadius.circular(10),
           ),
           icon: const Icon(CupertinoIcons.info_circle),
-          title: const Text('Healthcheck'),
+          title: Text(
+            'Healthcheck',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           content: Text(prettyJSON(response.data)),
           actions: [
             TextButton(
