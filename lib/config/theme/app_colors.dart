@@ -13,6 +13,9 @@ class AppColors {
   static final greyLight = Colors.grey.shade400;
   static final greyLighter = Colors.grey.shade300;
   static final greyLightest = Colors.grey.shade200;
+  static final greyDark = Colors.grey.shade600;
+  static final greyDarker = Colors.grey.shade700;
+  static final greyDarkest = Colors.grey.shade800;
   static const white = Colors.white;
   static const red = Colors.red;
   static final pink = Colors.pink.shade500;

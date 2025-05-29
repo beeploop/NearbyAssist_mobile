@@ -6,6 +6,7 @@ import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_ti
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearby_assist/config/constants.dart';
+import 'package:nearby_assist/config/theme/app_colors.dart';
 import 'package:nearby_assist/models/search_result_model.dart';
 import 'package:nearby_assist/pages/search/widget/search_result_list_item.dart';
 import 'package:nearby_assist/pages/search/widget/service_sorting_method.dart';
@@ -153,7 +154,7 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
                         if (orderingPreferenceOverlay != null) {
                           _hideOrderingPreference();
                         }
-                        _showListView(services);
+                        _showListView(services, searchProvider);
                       },
                     ),
                     IconButton(
@@ -226,33 +227,56 @@ class _CustomMapState extends State<CustomMap> with TickerProviderStateMixin {
     );
   }
 
-  void _showListView(List<SearchResultModel> results) {
+  void _showListView(List<SearchResultModel> results, SearchProvider provider) {
+    final sortingMethod = provider.sortingMethod.name;
+
     showModalBottomSheet(
       context: context,
-      showDragHandle: true,
       isScrollControlled: true,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.7,
-        width: double.infinity,
-        child: Container(
-          padding: const EdgeInsets.all(20),
+      showDragHandle: true,
+      isDismissible: true,
+      useRootNavigator: true,
+      builder: (context) => DraggableScrollableSheet(
+        expand: false,
+        key: UniqueKey(),
+        initialChildSize: 0.7,
+        maxChildSize: 0.9,
+        minChildSize: 0.5,
+        builder: (context, controller) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Services',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Text(
+                    'Matching Services',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Sorted by: $sortingMethod',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
+              const Divider(),
 
-              //
-              ListView.separated(
-                shrinkWrap: true,
-                itemCount: results.length,
-                separatorBuilder: (context, index) => const Divider(),
-                itemBuilder: (context, index) {
-                  return SearchResultListItem(result: results[index]);
-                },
+              // Services
+              Expanded(
+                child: ListView(
+                  controller: controller,
+                  children: results
+                      .map((result) => SearchResultListItem(result: result))
+                      .toList(),
+                ),
               ),
             ],
           ),
